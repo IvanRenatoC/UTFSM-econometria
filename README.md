@@ -2,7 +2,7 @@
 
 Material presencial de Iván para complementar la cátedra de Sebastián Azócar en ICS-294. Horario: 18:50–21:25, con pausa de 15 minutos y 140 minutos efectivos.
 
-- [Versión web con láminas](index.html) — abrir en un navegador; GitHub muestra el código hasta habilitar Pages.
+- [Abrir la clase publicada en GitHub Pages](https://ivanrenatoc.github.io/UTFSM-econometria/)
 - [Guía de actividades](guia-actividades-taller-1.md)
 - [Notebook con kernel R](clase-taller-1.ipynb)
 - [Script equivalente para RStudio](clase-taller-1.R)
@@ -23,4 +23,4 @@ Descargar o clonar el repositorio completo y abrirlo desde su carpeta raíz. Par
 
 `index.html` contiene las 47 láminas enmarcadas, soluciones desplegables, copia de código y modo presentación. Los títulos se sincronizan con la guía, el script y el notebook al ejecutar `python3 herramientas/generar_web.py`.
 
-**Publicación pendiente:** GitHub Pages solicita actualizar el plan o convertir el repositorio en público. Se mantiene privado según lo solicitado. Publicar una web implica decidir por separado quién puede verla; no se cambió la visibilidad.
+**Publicación:** repositorio público por autorización del profesor. GitHub Pages configurado desde la rama `main`, carpeta raíz. Dirección de la clase: https://ivanrenatoc.github.io/UTFSM-econometria/.
