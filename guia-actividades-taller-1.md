@@ -1,0 +1,1864 @@
+# Taller 1 · Del código a los datos
+
+**Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
+
+¿Podemos describir salarios sin confundir una asociación con una causa? Primero aprenderemos a dar instrucciones a R; después recorreremos los contenidos de Sebastián, en su mismo orden.
+
+[Instrucciones](instruccion-clase-taller-1.md) · [Notebook de R](clase-taller-1.ipynb) · [Guía docente](guia-docente-taller-1.md) · [Lectura comparativa](Lectura%20clase%201%20-%20material%20existente.md) · [Clase de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/)
+
+## Objetivos
+
+Al terminar la ruta presencial podrás llenar vectores y matrices con ciclos y condiciones, reconocer una base transversal, resumir salarios con gráficos y estadísticos y explicar la interpretación de un intervalo de confianza. Las ampliaciones permiten completar la práctica de todos los apartados.
+
+## Agenda presencial · 140 minutos efectivos
+
+| Hora | Minutos | Trabajo |
+|---|---:|---|
+| 18:50–18:55 | 5 | Diagnóstico y apertura del notebook |
+| 18:55–19:35 | 40 | NIV-01 a NIV-08: demostraciones breves y actividad integradora |
+| 19:35–20:00 | 25 | Parte 1: recorrido en orden; practicar selección simple y estratificada |
+| 20:00–20:15 | 15 | Pausa |
+| 20:15–20:40 | 25 | Parte 2: centro, posición, dispersión y gráficos |
+| 20:40–21:15 | 35 | Parte 3: recorrido en orden; ejecutar TCL, IC de media, proporción y diferencia |
+| 21:15–21:25 | 10 | Autoevaluación y cierre |
+
+La sesión dura 155 minutos incluyendo la pausa. Las actividades marcadas «Ampliación autónoma» se presentan brevemente en su lugar, pero su ejecución detallada se reserva para después. La secuencia completa permanece en el notebook; no se promete resolver todo con igual profundidad en una sesión.
+
+## Antes de comenzar
+
+Trabaja en 4 a 5 parejas: una persona conduce el teclado y otra anticipa e interpreta; alternen después de cada bloque. Guarda el notebook en la raíz de esta carpeta, junto a `datos/`. Ejecuta de arriba abajo. En RStudio puedes usar el script equivalente `clase-taller-1.R`; para el notebook usa Jupyter con kernel R.
+
+Preparación, una sola vez, desde R con acceso a internet:
+
+```r
+install.packages(c("wooldridge", "IRkernel"), repos = "https://cloud.r-project.org")
+# Jupyter debe estar instalado y disponible antes de registrar el kernel.
+IRkernel::installspec(user = TRUE)
+```
+
+Abrir Jupyter y elegir el kernel **R**. No se necesita Python para resolver los ejercicios. RStudio es la alternativa para ejecutar el script si no se dispone de Jupyter. La instalación de Jupyter depende del equipo y debe quedar resuelta antes de la clase.
+
+La copia `datos/wage1.csv` evita depender de internet y del paquete durante la sesión. El código prefiere esa copia y usa el paquete solo como alternativa. No ejecutar instalaciones durante la clase si ya se preparó el entorno.
+
+## Datos, unidades y procedencia
+
+Las aplicaciones son actividades propias elaboradas con datos asociados al libro de Jeffrey M. Wooldridge; no se presentan como ejercicios textuales ni se les asignan páginas del libro. `wage1` contiene 526 observaciones y 24 variables de la CPS de 1976 de Estados Unidos. Para esta guía se usan:
+
+| Variable | Significado | Unidad o codificación |
+|---|---|---|
+| wage | Remuneración media por hora | USD nominales de 1976 por hora |
+| educ | Educación | Años |
+| exper | Experiencia potencial | Años; no experiencia efectiva necesariamente |
+| tenure | Antigüedad con empleador actual | Años |
+| female | Indicador tal como aparece documentado en la base histórica | 1 si mujer, 0 en otro caso según esa codificación |
+| married | Estado civil registrado | 1 si casado/a, 0 en otro caso |
+
+La documentación advierte inconsistencias entre experiencia potencial y antigüedad en algunos registros. No las corregimos arbitrariamente ni usamos esas columnas para inferir trayectoria laboral. Se informan faltantes en las seis variables y se trabaja con casos completos; esto define el conjunto de análisis y no garantiza representatividad. `educ16` se deriva de educ >= 16, sin afirmar titulación.
+
+## Diagnóstico · antes de ejecutar
+
+1. ¿Qué hace `x <- 3`? Asigna 3 a x.
+2. ¿Cuál es el primer índice de un vector en R? 1.
+3. ¿Qué debe cambiar dentro de un `while`? Algún estado que permita que su condición termine, con límite de seguridad.
+
+Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación sin omitirlos. Son objetos artificiales para aprender programación, separados de la evidencia económica.
+
+
+<a id="NIV-01"></a>
+## NIV-01 · Tu primera instrucción
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo guardamos un valor para reutilizarlo?
+
+**Antes de ejecutar:** ¿Cuánto vale saldo después de sumar 3?
+
+**Consigna:** Cambia el saldo inicial a 20 y repite.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-01
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+saldo <- 10
+saldo <- saldo + 3
+print(saldo)
+print(c(tipo = typeof(saldo), longitud = length(saldo)))
+```
+
+
+**Lectura del resultado:** La asignación actualiza un objeto. Con 20 iniciales, el saldo final es 23. Ejecuta una línea desde un script y compárala con escribirla en consola.
+
+**Error frecuente:** Confundir <- con una comparación ==.
+
+**Comprueba:** ¿saldo == 23 modifica el objeto? No.
+
+
+<a id="NIV-02"></a>
+## NIV-02 · Reserva y llena un vector
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo guardamos varios valores?
+
+**Antes de ejecutar:** ¿Qué posición contiene 6?
+
+**Consigna:** Crea tres valores, selecciona los mayores que 4 y modifica la segunda posición.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-02
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+v <- numeric(3)
+v[1] <- 2; v[2] <- 6; v[3] <- 9
+print(v[v > 4])
+v[2] <- 7
+print(v); print(length(v))
+```
+
+
+**Lectura del resultado:** R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo.
+
+**Error frecuente:** Usar el índice 0 como primera posición.
+
+**Comprueba:** ¿length(v) cambia al modificar v[2]? No.
+
+
+<a id="NIV-03"></a>
+## NIV-03 · Tomar una decisión
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo elegimos una acción según una condición?
+
+**Antes de ejecutar:** ¿Qué mensaje produce valor = 8?
+
+**Consigna:** Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector anterior.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-03
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+valor <- 8
+if (valor > 4) {
+  mensaje <- "Supera el umbral"
+} else {
+  mensaje <- "No supera el umbral"
+}
+print(mensaje)
+print(v[v > 4])
+```
+
+
+**Lectura del resultado:** if elige un camino con una condición única. La selección lógica trabaja con varias posiciones. Usa & y | para condiciones por elemento, && y || para condiciones escalares.
+
+**Error frecuente:** Escribir if(v > 4), con una condición por cada elemento.
+
+**Comprueba:** ¿valor > 4 es una asignación? No, es una comparación.
+
+
+<a id="NIV-04"></a>
+## NIV-04 · Repetir con for
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo evitamos escribir cada asignación?
+
+**Antes de ejecutar:** ¿Cuáles serán el primer y último término?
+
+**Consigna:** Llena cinco posiciones con el doble de su índice; amplía a ocho.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-04
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+dobles <- numeric(5)
+for (i in seq_along(dobles)) {
+  dobles[i] <- 2 * i
+}
+print(dobles)
+```
+
+
+**Lectura del resultado:** La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.
+
+**Error frecuente:** Llenar un objeto inexistente o recorrer más índices de los reservados.
+
+**Comprueba:** ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.
+
+
+<a id="NIV-05"></a>
+## NIV-05 · Tres sucesiones
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo se calcula un término desde el anterior?
+
+**Antes de ejecutar:** Predice los cuatro primeros términos de cada sucesión.
+
+**Consigna:** Construye seis términos: aritmética con inicio 2 y paso 3; geométrica con inicio 2 y razón 2; recurrencia con inicio 1 y a[i] = 2*a[i-1]+1.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-05
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+a <- g <- r <- numeric(6)
+a[1] <- 2; g[1] <- 2; r[1] <- 1
+for (i in 2:length(a)) {
+  a[i] <- a[i-1] + 3
+  g[i] <- 2 * g[i-1]
+  r[i] <- 2 * r[i-1] + 1
+}
+print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
+stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
+          all(g == 2 * 2^(seq_along(g)-1)))
+```
+
+
+**Lectura del resultado:** Las fórmulas vectorizadas comprueban las dos primeras sucesiones. La recurrencia exige inicializar el primer valor. Aquí se garantiza longitud 6 antes de usar 2:length(a).
+
+**Error frecuente:** Olvidar el primer término o aplicar 2:n cuando n podría ser menor que 2.
+
+**Comprueba:** ¿Cuál es el tercer término de la recurrencia? 7.
+
+
+<a id="NIV-06"></a>
+## NIV-06 · Un while que termina
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cuántas duplicaciones hacen falta para llegar a 100?
+
+**Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
+
+**Consigna:** Parte en 1, duplica hasta alcanzar 100 y conserva los términos.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-06
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+valor <- 1
+paso <- 0L
+max_pasos <- 20L
+trayectoria <- numeric(max_pasos + 1L)
+trayectoria[1] <- valor
+while (valor < 100 && paso < max_pasos) {
+  valor <- 2 * valor
+  paso <- paso + 1L
+  trayectoria[paso + 1L] <- valor
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))
+```
+
+
+**Lectura del resultado:** Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.
+
+**Error frecuente:** No actualizar valor o paso.
+
+**Comprueba:** ¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.
+
+
+<a id="NIV-07"></a>
+## NIV-07 · Una matriz, dos índices
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo guardamos resultados por filas y columnas?
+
+**Antes de ejecutar:** ¿Cuánto valdrá la posición [2,3]?
+
+**Consigna:** Llena una matriz 2 por 3 con 10*fila + columna; luego modifica [1,1].
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-07
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+m <- matrix(0, nrow = 2, ncol = 3)
+for (i in seq_len(nrow(m))) {
+  for (j in seq_len(ncol(m))) {
+    m[i,j] <- 10*i + j
+  }
+}
+print(m)
+m[1,1] <- 99
+print(m); print(dim(m))
+```
+
+
+**Lectura del resultado:** La posición [2,3] vale 23 antes y después de modificar [1,1]. Una matriz tiene un tipo común; un data.frame permite columnas de distintos tipos.
+
+**Error frecuente:** Intercambiar fila y columna.
+
+**Comprueba:** ¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.
+
+
+<a id="NIV-08"></a>
+## NIV-08 · Integra: término y clasificación
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Podemos reunir una sucesión y una decisión?
+
+**Antes de ejecutar:** ¿Desde qué término se supera 10?
+
+**Consigna:** Genera 2,5,8,11,14,17 y guarda índice, valor e indicador de superar 10.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-08
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+terminos <- numeric(6)
+terminos[1] <- 2
+for (i in 2:length(terminos)) terminos[i] <- terminos[i-1] + 3
+resultado <- matrix(0, nrow = 6, ncol = 3,
+                    dimnames = list(NULL, c("indice", "valor", "supera_10")))
+for (i in seq_along(terminos)) {
+  resultado[i,1] <- i
+  resultado[i,2] <- terminos[i]
+  if (terminos[i] > 10) resultado[i,3] <- 1
+}
+print(resultado)
+```
+
+
+**Lectura del resultado:** El indicador vale 1 desde el cuarto término. Esta es programación con objetos artificiales, no evidencia económica.
+
+**Error frecuente:** Asignar una cadena de texto a una matriz numérica y convertir toda la matriz a texto.
+
+**Comprueba:** ¿Qué cambia con umbral 14 y condición estricta >? Solo el último indicador vale 1.
+
+
+<a id="P1-01"></a>
+## P1-01 · ¿Qué podemos preguntar a los datos?
+
+**Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué sabemos de educación y salario de cada persona?
+
+**Antes de ejecutar:** ¿Cada fila representa una persona o un mes?
+
+**Consigna:** Carga la base e identifica wage y educ en seis filas.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-01
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+# La copia local permite trabajar sin conexión.
+if (file.exists("datos/wage1.csv")) {
+  original <- read.csv("datos/wage1.csv")
+  original$rownames <- NULL
+} else if (requireNamespace("wooldridge", quietly = TRUE)) {
+  original <- as.data.frame(wooldridge::wage1)
+} else {
+  stop("Abra el proyecto desde su carpeta raíz o instale wooldridge.")
+}
+variables <- c("wage", "educ", "exper", "tenure", "female", "married")
+stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
+print(colSums(is.na(original[variables])))
+datos <- original[complete.cases(original[variables]), variables]
+stopifnot(all(datos$wage > 0), all(datos$female %in% 0:1),
+          all(datos$married %in% 0:1), nrow(datos) > 100)
+str(datos)
+head(datos)
+```
+
+
+**Lectura del resultado:** wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.
+
+**Error frecuente:** Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.
+
+**Comprueba:** ¿526 filas equivalen a 526 períodos? No.
+
+
+<a id="P1-02"></a>
+## P1-02 · Tres preguntas distintas
+
+**Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Describir, explicar una causa o predecir?
+
+**Antes de ejecutar:** Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?
+
+**Consigna:** Asocia cada pregunta con una finalidad.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-02
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+preguntas <- data.frame(
+  pregunta = c("¿Cómo se relacionan educación y salario?",
+               "¿Más educación causa mayor salario?",
+               "¿Qué salario tendrá otra persona?"),
+  finalidad = c("Descripción", "Causalidad", "Predicción"))
+print(preguntas)
+```
+
+
+**Lectura del resultado:** Una misma tabla permite formular preguntas distintas, pero no garantiza resolverlas todas. Aquí no entrenamos predictores ni estimamos efectos.
+
+**Error frecuente:** Tratar una predicción acertada como identificación causal.
+
+**Comprueba:** ¿Una pregunta causal requiere supuestos adicionales? Sí.
+
+
+<a id="P1-03"></a>
+## P1-03 · De la pregunta a las columnas
+
+**Referencia:** Parte 1 · lámina 3 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué parte del modelo conceptual observamos?
+
+**Antes de ejecutar:** ¿Está la habilidad directamente medida en estas columnas?
+
+**Consigna:** Distingue salario, educación, experiencia y factores no observados.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-03
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+print(names(datos))
+print(head(datos[c("wage", "educ", "exper")]))
+```
+
+
+**Lectura del resultado:** Una formulación conceptual es salario = f(educación, experiencia, otros factores) + error. Habilidad y recursos familiares no se identifican en estas columnas. No estimamos f.
+
+**Error frecuente:** Interpretar el error como un simple error de digitación.
+
+**Comprueba:** ¿Que una variable no esté en la tabla significa que no importa? No.
+
+
+<a id="P1-04"></a>
+## P1-04 · Mirar una asociación
+
+**Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Una nube ascendente demuestra una causa?
+
+**Antes de ejecutar:** ¿Podrían existir personas con igual educación y salarios diferentes?
+
+**Consigna:** Dibuja salario frente a educación y propón dos factores adicionales.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-04
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
+     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)",
+     main = "Educación y salario: observar no es aislar una causa")
+```
+
+
+**Lectura del resultado:** Cada punto es una persona. La comparación no mantiene constantes habilidad, ocupación o experiencia. La temperatura en el caso de helados y tiburones de cátedra ilustra el mismo problema de un factor común.
+
+**Error frecuente:** Dibujar una flecha causal solo por observar una asociación.
+
+**Comprueba:** ¿El gráfico mantiene todo lo demás constante? No.
+
+
+<a id="P1-05"></a>
+## P1-05 · Educación: grupos con límites
+
+**Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Podemos llamar universitario a todo registro con educ >= 16?
+
+**Antes de ejecutar:** ¿Los dos grupos serán idénticos en sus otras características?
+
+**Consigna:** Crea una etiqueta de umbral educativo y examina filas, sin calcular todavía diferencias de medias.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-05
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+datos$educ16 <- datos$educ >= 16
+print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
+```
+
+
+**Lectura del resultado:** educ >= 16 es un umbral de años de educación, no una certificación de título. El ejemplo del 30% de Chile pertenece a cátedra; no se atribuye a esta base. La comparación de promedios se hará en su bloque.
+
+**Error frecuente:** Repetir el 30% como si se hubiese calculado con wage1.
+
+**Comprueba:** ¿Una diferencia entre grupos sería automáticamente efecto de estudiar? No.
+
+
+<a id="P1-06"></a>
+## P1-06 · La base correcta para cada pregunta
+
+**Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿wage1 permite medir el efecto de pastillas escolares o consultorías?
+
+**Antes de ejecutar:** ¿Qué columnas faltarían?
+
+**Consigna:** Escribe en R los datos que pedirías para cada estudio.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-06
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+necesidades <- list(
+  desparasitacion = c("asignación", "tratamiento", "asistencia", "escuela"),
+  consultoria = c("asignación", "consultoría", "productividad", "fábrica"))
+print(necesidades)
+```
+
+
+**Lectura del resultado:** Los casos de Kenia e India de cátedra muestran el papel del diseño. wage1 no contiene sus tratamientos ni resultados; no calculamos esos estudios con salarios.
+
+**Error frecuente:** Inventar una variable de tratamiento para atribuir resultados de otro estudio.
+
+**Comprueba:** ¿Basta una tabla grande para responder cualquier pregunta? No.
+
+
+<a id="P1-07"></a>
+## P1-07 · La forma de la tabla
+
+**Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué dimensiones definen nuestros datos?
+
+**Antes de ejecutar:** ¿Tenemos observaciones repetidas de cada persona en varios años?
+
+**Consigna:** Construye un esquema conceptual de las tres estructuras.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-07
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+estructuras <- data.frame(
+  tipo = c("Corte transversal", "Serie temporal", "Panel"),
+  unidades = c("Muchas", "Una", "Muchas"),
+  periodos = c("Uno", "Varios", "Varios por unidad"))
+print(estructuras)
+```
+
+
+**Lectura del resultado:** La base de aplicación es transversal y observacional. Lo experimental describe cómo se asigna una exposición; panel describe la estructura. Los esquemas no son nuevas bases empíricas.
+
+**Error frecuente:** Suponer que toda base transversal fue obtenida por muestreo aleatorio simple.
+
+**Comprueba:** ¿Experimental y transversal son categorías incompatibles? No.
+
+
+<a id="P1-08"></a>
+## P1-08 · Una población didáctica
+
+**Referencia:** Parte 1 · láminas 12–13 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿De qué conjunto seleccionaremos personas?
+
+**Antes de ejecutar:** ¿Una submuestra representa automáticamente a Estados Unidos?
+
+**Consigna:** Define el marco de filas de datos y extrae 12 registros sin reemplazo.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-08
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16201)
+N <- nrow(datos)
+marco <- seq_len(N)
+ids <- sample(marco, size = 12, replace = FALSE)
+print(datos[ids, c("wage", "educ")])
+```
+
+
+**Lectura del resultado:** Tratamos la tabla completa como población finita didáctica. Su encuesta original tiene otra población y diseño; nuestro submuestreo no los reproduce.
+
+**Error frecuente:** Llamar población real completa a las 526 observaciones.
+
+**Comprueba:** ¿Cuál es nuestra unidad de observación? La persona registrada.
+
+
+<a id="P1-09"></a>
+## P1-09 · ¿Por qué no observar a todos?
+
+**Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cómo limita el presupuesto el número de entrevistas?
+
+**Antes de ejecutar:** Si cada entrevista cuesta 5 unidades, ¿alcanzan 100 para toda la tabla?
+
+**Consigna:** Calcula cuántas entrevistas financia ese presupuesto.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-09
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+presupuesto <- 100
+costo <- 5
+capacidad <- floor(presupuesto/costo)
+print(capacidad)
+```
+
+
+**Lectura del resultado:** Son 20 entrevistas bajo costos hipotéticos, un ejercicio de planificación con el marco real. Un presupuesto no define por sí solo un buen diseño.
+
+**Error frecuente:** Confundir capacidad de entrevistar con representatividad.
+
+**Comprueba:** ¿Una muestra barata garantiza precisión? No.
+
+
+<a id="P1-10"></a>
+## P1-10 · ¿Qué queremos estimar?
+
+**Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Es lo mismo una variable que un parámetro?
+
+**Antes de ejecutar:** ¿El salario de una persona es un promedio poblacional?
+
+**Consigna:** Clasifica variable, parámetro objetivo y estadístico.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-10
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+print(data.frame(
+  concepto = c("Variable", "Parámetro", "Estadístico"),
+  ejemplo = c("Salario por hora individual",
+              "Media salarial de la población objetivo",
+              "Media salarial calculada en una muestra")))
+```
+
+
+**Lectura del resultado:** La variable se observa por persona; el parámetro resume una población; el estadístico depende de la muestra. Las fórmulas vienen después.
+
+**Error frecuente:** Llamar parámetro a cualquier número de una fila.
+
+**Comprueba:** ¿Un estadístico cambia al cambiar la muestra? Generalmente sí.
+
+
+<a id="P1-11"></a>
+## P1-11 · Cuatro formas de seleccionar
+
+**Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo cambia quién entra según el método?
+
+**Antes de ejecutar:** ¿Estratificar garantiza que ambos grupos definidos tengan participantes?
+
+**Consigna:** Selecciona por cuatro algoritmos y conserva sus índices.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-11
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16202)
+ids_simple <- sample(marco, 24)
+k <- 20L
+inicio <- sample.int(k, 1)
+ids_sistema <- seq.int(inicio, N, by = k)
+estratos <- split(marco, datos$educ16)
+stopifnot(all(lengths(estratos) >= 12))
+ids_estrato <- unlist(lapply(estratos, function(g) sample(g, 12)), use.names = FALSE)
+# Grupos artificiales: ilustración algorítmica, no barrios reales.
+grupo_artificial <- rep(seq_len(12), length.out = N)
+elegidos <- sample(unique(grupo_artificial), 2)
+ids_conglomerado <- which(grupo_artificial %in% elegidos)
+print(list(simple = ids_simple, sistematico = ids_sistema,
+           estratificado = ids_estrato, conglomerados = ids_conglomerado))
+```
+
+
+**Lectura del resultado:** El sistemático usa inicio aleatorio; su tamaño puede variar aquí. Los grupos artificiales no sustentan una comparación real de eficiencia. La afijación igual por estrato requeriría ponderar al estimar una media global si difieren los tamaños; aquí solo seleccionamos.
+
+**Error frecuente:** Comparar precisión de diseños con tamaños distintos o usar media estratificada no ponderada como estimador global.
+
+**Comprueba:** ¿El sistemático deja de ser probabilístico porque solo se sortea el inicio? No.
+
+
+<a id="P1-12"></a>
+## P1-12 · Dentro de todos o algunos grupos
+
+**Referencia:** Parte 1 · lámina 18 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿En qué se diferencian estratos y conglomerados?
+
+**Antes de ejecutar:** ¿En qué selección aparecen todos los estratos?
+
+**Consigna:** Inspecciona los grupos incluidos por cada selección.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-12
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+print(table(datos$educ16[ids_estrato]))
+print(table(grupo_artificial[ids_conglomerado]))
+```
+
+
+**Lectura del resultado:** Estratificar selecciona dentro de todos los estratos; conglomerados selecciona algunos grupos. Homogeneidad y heterogeneidad son criterios didácticos, no definiciones universales.
+
+**Error frecuente:** Presentar grupos artificiales como geografía de la encuesta.
+
+**Comprueba:** ¿Conglomerados puede tener una segunda etapa de muestreo? Sí.
+
+
+<a id="P1-13"></a>
+## P1-13 · Seleccionar por conveniencia
+
+**Referencia:** Parte 1 · lámina 19 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué sucede si solo invitamos a quienes tienen al menos 16 años de educación?
+
+**Antes de ejecutar:** ¿Quién queda sin oportunidad de selección?
+
+**Consigna:** Selecciona las primeras 12 filas que cumplen ese criterio.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-13
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+ids_conveniencia <- head(which(datos$educ16), 12)
+print(datos[ids_conveniencia, c("wage", "educ")])
+```
+
+
+**Lectura del resultado:** Es una selección por criterio y orden disponible, no una muestra probabilística del conjunto. Una muestra grande no elimina sesgos de cobertura o respuesta, como ilustra Literary Digest en la web.
+
+**Error frecuente:** Generalizar sin supuestos a quienes quedaron fuera.
+
+**Comprueba:** ¿Conocer el criterio equivale a conocer probabilidades de selección aleatoria? No.
+
+
+<a id="P1-14"></a>
+## P1-14 · La frontera entre resumir e inferir
+
+**Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Describimos la tabla o hablamos de una población?
+
+**Antes de ejecutar:** ¿Decir “en estas filas” cambia el alcance?
+
+**Consigna:** Redacta una frase descriptiva y otra inferencial, identificando qué supuesto falta.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-14
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+frases <- c("Describo los salarios de las filas observadas",
+            "Quiero estimar un promedio de una población definida")
+print(frases)
+```
+
+
+**Lectura del resultado:** La segunda frase exige definir población y mecanismo de muestreo. Continúa con la descripción antes de construir intervalos.
+
+**Error frecuente:** Generalizar sin identificar el universo.
+
+**Comprueba:** ¿La inferencia usa solo programación? No, también supuestos.
+
+
+<a id="P2-01"></a>
+## P2-01 · Primero describir
+
+**Referencia:** Parte 2 · lámina 1 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Qué puede decirnos una tabla antes de generalizar?
+
+**Antes de ejecutar:** ¿Un resumen de esta muestra es ya una ley general?
+
+**Consigna:** Selecciona la variable salarial y verifica su tamaño.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-01
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+x <- datos$wage
+print(length(x))
+```
+
+
+**Lectura del resultado:** Descriptiva resume x; inferencia requiere un marco adicional. Los datos conservan sus unidades históricas.
+
+**Error frecuente:** Cambiar de población sin avisar.
+
+**Comprueba:** ¿Un histograma es descriptivo? Sí.
+
+
+<a id="P2-02"></a>
+## P2-02 · Una función resume muchos datos
+
+**Referencia:** Parte 2 · lámina 2 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué entra y qué sale de un estadístico?
+
+**Antes de ejecutar:** ¿length devuelve un vector de 526 valores?
+
+**Consigna:** Construye un pequeño resumen de tamaño y rango observado.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-02
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+resumen_inicial <- c(n = length(x), minimo = min(x), maximo = max(x))
+print(resumen_inicial)
+```
+
+
+**Lectura del resultado:** Cada función transforma el vector en un resultado. Un estadístico es una función de la muestra.
+
+**Error frecuente:** Confundir el vector de datos con su resumen.
+
+**Comprueba:** ¿max(x) conserva todas las observaciones? No.
+
+
+<a id="P2-03"></a>
+## P2-03 · ¿El sueldo típico es el promedio?
+
+**Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Media y mediana reaccionan igual a un salario extremo?
+
+**Antes de ejecutar:** ¿Cuál cambiará más al añadir un valor enorme?
+
+**Consigna:** Calcula ambas y compara con una copia que añade un dato artificial.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-03
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+centro <- function(z) c(media = mean(z), mediana = median(z))
+print(centro(x))
+x_modificado <- c(x, 10*max(x))
+print(rbind(original = centro(x), copia_con_extremo = centro(x_modificado)))
+ordenados <- sort(x)
+n_x <- length(x)
+mediana_manual <- if (n_x %% 2 == 1) ordenados[(n_x+1)/2] else
+  (ordenados[n_x/2] + ordenados[n_x/2+1])/2
+stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
+```
+
+
+**Lectura del resultado:** La media es sensible a extremos. La mediana se obtiene de posiciones centrales; la copia modificada no es una nueva observación real.
+
+**Error frecuente:** Guardar el dato artificial sobre la base original.
+
+**Comprueba:** ¿La mediana exige ordenar conceptualmente los datos? Sí.
+
+
+<a id="P2-04"></a>
+## P2-04 · Ubicarse en la distribución
+
+**Referencia:** Parte 2 · lámina 5 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Dónde comienza el cuarto superior?
+
+**Antes de ejecutar:** ¿P50 coincide con la mediana?
+
+**Consigna:** Obtén cuartiles y el percentil 90 con interpolación tipo 7.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-04
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+cuartiles <- quantile(x, probs = c(.25, .5, .75), type = 7)
+print(cuartiles)
+print(quantile(x, .9, type = 7))
+```
+
+
+**Lectura del resultado:** Los cuartiles delimitan posiciones de la distribución; type=7 especifica la interpolación. Empates y convenciones pueden alterar recuentos exactos.
+
+**Error frecuente:** Interpretar P75 como el 75% del salario máximo.
+
+**Comprueba:** ¿P50 es la mitad del máximo? No.
+
+
+<a id="P2-05"></a>
+## P2-05 · Cuánto se dispersan los salarios
+
+**Referencia:** Parte 2 · láminas 6–7 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Dos muestras con la misma media pueden ser diferentes?
+
+**Antes de ejecutar:** ¿Varianza y salario tienen las mismas unidades?
+
+**Consigna:** Calcula RIQ, varianza muestral y desviación estándar; verifica manualmente.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-05
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+print(c(RIQ = IQR(x, type = 7), varianza = var(x), desviacion = sd(x)))
+s2_manual <- sum((x-mean(x))^2)/(length(x)-1)
+stopifnot(isTRUE(all.equal(s2_manual, var(x))))
+```
+
+
+**Lectura del resultado:** La varianza usa unidades al cuadrado y n-1; sd conserva USD por hora. RIQ mide la separación entre P75 y P25.
+
+**Error frecuente:** Confundir desviación estándar con error estándar de la media.
+
+**Comprueba:** ¿sd(x) disminuye necesariamente cuando aumenta n? No.
+
+
+<a id="P2-06"></a>
+## P2-06 · Un histograma, varias decisiones
+
+**Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cambian los datos cuando cambiamos los intervalos?
+
+**Antes de ejecutar:** ¿Esperas ver la misma apariencia con 5 y 20 cortes sugeridos?
+
+**Consigna:** Dibuja dos histogramas y compara forma y frecuencias.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-06
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+op <- par(mfrow = c(1,2))
+for (b in c(5,20)) hist(x, breaks = b, col = "#7DB4B5",
+  main = paste("Cortes sugeridos:", b),
+  xlab = "Salario por hora (USD de 1976)", ylab = "Frecuencia")
+par(op)
+```
+
+
+**Lectura del resultado:** breaks numérico es una sugerencia a R, que elige límites convenientes. La forma visual cambia aunque la muestra sea idéntica.
+
+**Error frecuente:** Confundir barras de frecuencia con la lista de valores individuales.
+
+**Comprueba:** ¿Un histograma con otra anchura prueba otra población? No.
+
+
+<a id="P2-07"></a>
+## P2-07 · Leer la caja y los bigotes
+
+**Referencia:** Parte 2 · láminas 9–10 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Un punto fuera de los bigotes es un error?
+
+**Antes de ejecutar:** ¿Cuántos posibles atípicos crees que aparecerán?
+
+**Consigna:** Dibuja la caja, extrae sus límites y contrasta bisagras con cuartiles tipo 7.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P2-07
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+boxplot(x, horizontal = TRUE, col = "#7DB4B5",
+  main = "Salarios: posición y dispersión", xlab = "USD por hora de 1976")
+bp <- boxplot.stats(x)
+print(bp$stats); print(bp$out)
+print(quantile(x, c(.25,.5,.75), type = 7))
+```
+
+
+**Lectura del resultado:** R usa bisagras para la caja, que no siempre coinciden con quantile(type=7). Los bigotes terminan en observaciones dentro de 1,5 veces el rango entre bisagras; las cercas no son necesariamente datos. Un atípico requiere investigar, no borrar.
+
+**Error frecuente:** Eliminar automáticamente puntos extremos.
+
+**Comprueba:** ¿El bigote siempre termina justo en q3+1,5*RIQ? No.
+
+
+<a id="P3-01"></a>
+## P3-01 · Conocer una población para aprender a inferir
+
+**Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo podemos evaluar un método si normalmente no conocemos la verdad?
+
+**Antes de ejecutar:** ¿Qué cambia si tratamos toda la tabla como una distribución conocida?
+
+**Consigna:** Define la distribución empírica de salarios y sus momentos poblacionales.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-01
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+poblacion <- datos$wage
+mu <- mean(poblacion)
+sigma2 <- mean((poblacion-mu)^2)
+sigma <- sqrt(sigma2)
+print(c(mu = mu, sigma = sigma, N = length(poblacion)))
+```
+
+
+**Lectura del resultado:** Cada fila tiene probabilidad 1/N en esta distribución didáctica. Usamos denominador N; no afirmamos conocer la varianza salarial de todo Estados Unidos.
+
+**Error frecuente:** Llamar sigma a sd de la muestra sin justificar una población conocida.
+
+**Comprueba:** ¿Esta media es un parámetro de nuestra distribución didáctica? Sí.
+
+
+<a id="P3-02"></a>
+## P3-02 · Un intervalo, una afirmación limitada
+
+**Referencia:** Parte 3 · lámina 2 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué aporta un intervalo frente a un valor único?
+
+**Antes de ejecutar:** ¿Un intervalo ya calculado tiene parámetro aleatorio?
+
+**Consigna:** Escribe qué cambia al repetir el muestreo.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-02
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+print(c("El parámetro didáctico permanece fijo",
+        "La muestra y sus límites cambian",
+        "La confianza describe el procedimiento"))
+```
+
+
+**Lectura del resultado:** Como en los aros y la estaca de cátedra, mu permanece fijo y los intervalos cambian. La cobertura es una propiedad de repetición.
+
+**Error frecuente:** Decir que el 95% de las observaciones está dentro del IC de la media.
+
+**Comprueba:** ¿Un IC de media es un intervalo de salarios individuales? No.
+
+
+<a id="P3-03"></a>
+## P3-03 · Muchas muestras, muchas medias
+
+**Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo se distribuye el promedio al repetir muestras?
+
+**Antes de ejecutar:** ¿Las medias de n=100 serán menos dispersas que las de n=5?
+
+**Consigna:** Extrae 1.000 muestras por tamaño, independientes y con reemplazo.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-03
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16203)
+B <- 1000L
+op <- par(mfrow = c(1,2))
+for (n in c(5,100)) {
+  medias <- replicate(B, mean(sample(poblacion, n, replace = TRUE)))
+  hist(medias, probability = TRUE, breaks = 25, col = "#7DB4B5",
+       main = paste("Medias con n =", n), xlab = "Media salarial (USD/h)")
+  curve(dnorm(x, mu, sigma/sqrt(n)), add = TRUE, col = "#BD4C45", lwd = 2)
+  print(c(n = n, media_medias = mean(medias),
+          sd_medias = sd(medias), error_teorico = sigma/sqrt(n)))
+}
+par(op)
+```
+
+
+**Lectura del resultado:** La comparación usa muestras de una población empírica conocida, no remuestreo de una muestra para estimar un parámetro desconocido. El TCL aproxima la forma de la distribución de medias.
+
+**Error frecuente:** Confundir salarios individuales con medias muestrales.
+
+**Comprueba:** ¿sigma/sqrt(n) es la desviación de salarios? No, de la media.
+
+
+<a id="P3-04"></a>
+## P3-04 · Cuándo confiar en la aproximación
+
+**Referencia:** Parte 3 · lámina 4 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿n=30 garantiza normalidad en cualquier caso?
+
+**Antes de ejecutar:** ¿La asimetría afecta la rapidez de aproximación?
+
+**Consigna:** Comprueba que los datos utilizados son finitos y revisa el mecanismo de muestreo.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-04
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+stopifnot(all(is.finite(poblacion)), sigma2 > 0)
+print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
+```
+
+
+**Lectura del resultado:** Con reemplazo cada extracción tiene la misma distribución y es independiente. Los umbrales de tamaño son orientativos. Si la población fuera normal, su media muestral sería normal para cualquier n.
+
+**Error frecuente:** Tratar 30, 50 o 100 como garantías universales.
+
+**Comprueba:** ¿El ciclo por sí solo demuestra independencia en la encuesta original? No.
+
+
+<a id="P3-05"></a>
+## P3-05 · El primer intervalo salarial
+
+**Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo estimamos mu con una muestra de 36 salarios?
+
+**Antes de ejecutar:** ¿El resultado quedará centrado en mu o en la media de la muestra?
+
+**Consigna:** Extrae 36 observaciones y calcula el intervalo normal de 95% con sigma conocida didáctica.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-05
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16204)
+n_ic <- 36L
+muestra_ic <- sample(poblacion, n_ic, replace = TRUE)
+xbarra <- mean(muestra_ic)
+z95 <- qnorm(.975)
+se <- sigma/sqrt(n_ic)
+ic95 <- xbarra + c(-1,1)*z95*se
+print(c(estimacion = xbarra, error_estandar = se,
+        inferior = ic95[1], superior = ic95[2], mu_didactica = mu))
+```
+
+
+**Lectura del resultado:** Es un ejercicio propio con wage1, análogo al ejemplo de ventas; no reproduce su media 200 ni su sigma 60. La cobertura normal aquí es aproximada.
+
+**Error frecuente:** Atribuir los números de ventas del sitio a la base salarial.
+
+**Comprueba:** ¿Cuál es el centro del intervalo? xbarra.
+
+
+<a id="P3-06"></a>
+## P3-06 · Desarmar el IC de 95%
+
+**Referencia:** Parte 3 · lámina 8 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Qué papel tiene cada pieza?
+
+**Antes de ejecutar:** ¿Qué ocurre al duplicar sigma y conservar lo demás?
+
+**Consigna:** Separa estimación, valor crítico, error estándar y margen.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-06
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+margen95 <- z95*se
+print(c(estimacion = xbarra, z = z95, se = se, margen = margen95))
+stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
+```
+
+
+**Lectura del resultado:** El margen es z por error estándar; la longitud total es el doble del margen.
+
+**Error frecuente:** Usar el margen como si fuera longitud total.
+
+**Comprueba:** ¿Duplicar sigma duplica el margen? Sí.
+
+
+<a id="P3-07"></a>
+## P3-07 · Cambiar solo la confianza
+
+**Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué cambia al pasar a 99%?
+
+**Antes de ejecutar:** ¿El centro debería moverse?
+
+**Consigna:** Calcula 90%, 95% y 99% para la misma muestra.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-07
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+niveles <- c(.90,.95,.99)
+z <- qnorm((1+niveles)/2)
+limites <- cbind(inferior = xbarra-z*se, superior = xbarra+z*se)
+rownames(limites) <- paste0(100*niveles, "%")
+print(limites)
+```
+
+
+**Lectura del resultado:** Se utiliza el cuantil superior positivo; el centro se conserva. qnorm evita inconsistencias por redondeo de 2,57 o 2,58.
+
+**Error frecuente:** Extraer otra muestra y atribuir todo cambio a la confianza.
+
+**Comprueba:** ¿Qué intervalo es más ancho? El de 99%.
+
+
+<a id="P3-08"></a>
+## P3-08 · Ver la anchura
+
+**Referencia:** Parte 3 · lámina 11 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Podemos comparar los intervalos de un vistazo?
+
+**Antes de ejecutar:** ¿Cuál abarcará a los otros?
+
+**Consigna:** Representa los límites en una misma recta salarial.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-08
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+plot(range(limites), c(1,3), type = "n", yaxt = "n",
+     xlab = "Media salarial (USD/h)", ylab = "Confianza",
+     main = "La misma muestra, distinta confianza")
+axis(2, at = 1:3, labels = rownames(limites))
+segments(limites[,1], 1:3, limites[,2], 1:3, lwd = 3, col = "#35618A")
+points(rep(xbarra,3), 1:3, pch = 19)
+```
+
+
+**Lectura del resultado:** El intervalo mayor ofrece más cobertura bajo el modelo a costa de anchura.
+
+**Error frecuente:** Confundir intervalo más ancho con mejor precisión.
+
+**Comprueba:** ¿El centro de los tres es idéntico? Sí.
+
+
+<a id="P3-09"></a>
+## P3-09 · ¿Qué significa 95% de confianza?
+
+**Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cuántos intervalos capturan la media conocida?
+
+**Antes de ejecutar:** ¿Se obtendrán exactamente 950 aciertos de 1.000?
+
+**Consigna:** Repite 1.000 veces y visualiza los primeros 100 intervalos.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-09
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16205)
+medias_ic <- replicate(1000, mean(sample(poblacion, n_ic, replace = TRUE)))
+L <- medias_ic-z95*se; U <- medias_ic+z95*se
+cubre <- L <= mu & mu <= U
+print(c(cobertura_observada = mean(cubre), confianza_nominal = .95,
+        margen_n36 = margen95, margen_n144 = z95*sigma/sqrt(144)))
+j <- seq_len(100)
+plot(range(c(L[j],U[j],mu)), range(j), type = "n",
+     xlab = "Media salarial (USD/h)", ylab = "Muestra", main = "100 intervalos")
+segments(L[j],j,U[j],j,col = ifelse(cubre[j],"#35618A","#BD4C45"))
+abline(v = mu, lty = 2)
+```
+
+
+**Lectura del resultado:** La proporción observada fluctúa y la aproximación normal puede afectar cobertura. Cuadruplicar n reduce el margen a la mitad manteniendo confianza y sigma.
+
+**Error frecuente:** Prometer exactamente 95 aciertos en cada 100 muestras.
+
+**Comprueba:** ¿Un intervalo fallido demuestra que el código está mal? No.
+
+
+<a id="P3-10"></a>
+## P3-10 · Planificar el tamaño para una media
+
+**Referencia:** Parte 3 · lámina 14 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cuántas observaciones para un margen de 0,5 USD/h?
+
+**Antes de ejecutar:** ¿Reducir el margen a la mitad duplicará n?
+
+**Consigna:** Despeja n y verifica el margen obtenido después de redondear.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-10
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+E_media <- .5
+n_necesario <- ceiling((qnorm(.975)*sigma/E_media)^2)
+print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
+```
+
+
+**Lectura del resultado:** n crece con el inverso del margen al cuadrado. El muestreo con reemplazo puede requerir más extracciones que filas únicas. No es un plan validado para una encuesta nacional.
+
+**Error frecuente:** Redondear hacia abajo.
+
+**Comprueba:** ¿Reducir E a la mitad multiplica n por cuatro antes del redondeo? Sí.
+
+
+<a id="P3-11"></a>
+## P3-11 · Una proporción educativa
+
+**Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Qué fracción tiene al menos 16 años de educación?
+
+**Antes de ejecutar:** ¿Puede una proporción ser mayor que 1?
+
+**Consigna:** Define el indicador, extrae n=200 y calcula el IC normal aproximado si se cumplen las condiciones.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-11
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+indicador <- as.integer(datos$educ >= 16)
+p_real <- mean(indicador)
+set.seed(16206)
+muestra_p <- sample(indicador, 200, replace = TRUE)
+n_p <- length(muestra_p)
+p_hat <- mean(muestra_p)
+exitos <- sum(muestra_p); fracasos <- n_p-exitos
+stopifnot(exitos > 5, fracasos > 5)
+se_p <- sqrt(p_hat*(1-p_hat)/n_p)
+ic_p <- p_hat+c(-1,1)*qnorm(.975)*se_p
+print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
+        inferior = ic_p[1], superior = ic_p[2], p_didactica = p_real))
+```
+
+
+**Lectura del resultado:** El indicador es derivado, con definición explícita. Para aproximación poblacional se consideran np y n(1-p); los conteos observados sirven de diagnóstico práctico. Este intervalo de Wald puede funcionar mal cerca de 0 o 1; aquí no se amplían métodos.
+
+**Error frecuente:** Confundir “éxito” estadístico con juicio de valor o título universitario.
+
+**Comprueba:** ¿Un 1 representa exactamente qué? educ >= 16.
+
+
+<a id="P3-12"></a>
+## P3-12 · ¿Es compatible una referencia?
+
+**Referencia:** Parte 3 · láminas 20–21 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿La proporción de referencia 0,20 queda en el intervalo?
+
+**Antes de ejecutar:** Predice mirando los límites anteriores.
+
+**Consigna:** Comprueba inclusión y escribe una conclusión bajo el modelo didáctico.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-12
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+referencia <- .20
+compatible <- ic_p[1] <= referencia && referencia <= ic_p[2]
+print(c(referencia = referencia, dentro_del_IC = compatible))
+```
+
+
+**Lectura del resultado:** Si queda fuera, hay evidencia de diferencia bajo los supuestos; si queda dentro, no se ha demostrado igualdad. La referencia es hipotética, no una afirmación publicada sobre Estados Unidos.
+
+**Error frecuente:** Convertir ausencia de evidencia en prueba de igualdad.
+
+**Comprueba:** ¿Que quede dentro prueba p=0,20? No.
+
+
+<a id="P3-13"></a>
+## P3-13 · Tamaño para una proporción
+
+**Referencia:** Parte 3 · lámina 22 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Qué pasa si no tenemos estimación previa?
+
+**Antes de ejecutar:** ¿p=0,5 maximiza p(1-p)?
+
+**Consigna:** Compara el plan con p piloto y el conservador para margen 0,03.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-13
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+E_p <- .03
+print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
+        conservador = ceiling(qnorm(.975)^2*.25/E_p^2)))
+```
+
+
+**Lectura del resultado:** Usar 0,5 maximiza la varianza Bernoulli. Una proporción piloto imprecisa puede producir un plan optimista.
+
+**Error frecuente:** Usar p_hat=0 como garantía de tamaño cero suficiente.
+
+**Comprueba:** ¿El plan conservador depende de observar éxitos en el piloto? No.
+
+
+<a id="P3-14"></a>
+## P3-14 · Longitud no es margen
+
+**Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cuántas extracciones para longitud total máxima 0,05?
+
+**Antes de ejecutar:** ¿El margen será 0,05 o 0,025?
+
+**Consigna:** Usa una muestra piloto de 30 indicadores educativos y compara con el caso conservador.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-14
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+set.seed(16207)
+piloto <- sample(indicador, 30, replace = TRUE)
+p_estrella <- mean(piloto)
+longitud_max <- .05
+E_plan <- longitud_max/2
+n_plan <- ceiling(qnorm(.975)^2*p_estrella*(1-p_estrella)/E_plan^2)
+n_conservador <- ceiling(qnorm(.975)^2*.25/E_plan^2)
+print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
+        n_conservador = n_conservador))
+```
+
+
+**Lectura del resultado:** Es un caso propio análogo a chips; el n del piloto es una planificación aproximada, no garantía de longitud real para toda muestra futura con varianza estimada.
+
+**Error frecuente:** Afirmar que el resultado debe ser 711 porque ese es el ejemplo de chips.
+
+**Comprueba:** ¿De dónde sale E=0,025? De dividir la longitud total por dos.
+
+
+<a id="P3-15"></a>
+## P3-15 · Comparar dos grupos educativos
+
+**Referencia:** Parte 3 · lámina 25 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cómo cambia el salario medio entre umbrales educativos?
+
+**Antes de ejecutar:** ¿Qué signo esperas para alta educación menos el resto?
+
+**Consigna:** Define las dos poblaciones empíricas sin mezclarlas.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-15
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+pob_alta <- datos$wage[datos$educ >= 16]
+pob_resto <- datos$wage[datos$educ < 16]
+stopifnot(length(pob_alta) > 1, length(pob_resto) > 1)
+print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
+```
+
+
+**Lectura del resultado:** Los grupos son dos distribuciones empíricas para una comparación didáctica. No son carreras universitarias ni grupos aleatorizados.
+
+**Error frecuente:** Cambiar la definición de los grupos a mitad del ejercicio.
+
+**Comprueba:** ¿Los grupos se superponen? No.
+
+
+<a id="P3-16"></a>
+## P3-16 · Definir el sentido de la diferencia
+
+**Referencia:** Parte 3 · láminas 26–27 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Qué significa que el intervalo incluya cero?
+
+**Antes de ejecutar:** ¿Qué pasa con el signo si invertimos el orden?
+
+**Consigna:** Define delta como media de alta educación menos media del resto.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-16
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+mu_alta <- mean(pob_alta); mu_resto <- mean(pob_resto)
+delta <- mu_alta-mu_resto
+print(c(delta_didactica = delta))
+```
+
+
+**Lectura del resultado:** Un intervalo que excluye cero aporta evidencia de diferencia bajo el procedimiento. Invertir el orden invierte el signo y los extremos correspondientes.
+
+**Error frecuente:** Interpretar incluir cero como demostrar igualdad.
+
+**Comprueba:** ¿Excluir cero prueba causalidad? No.
+
+
+<a id="P3-17"></a>
+## P3-17 · Sumar incertidumbre de dos medias
+
+**Referencia:** Parte 3 · láminas 28–31 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cómo se combina la incertidumbre de muestras independientes?
+
+**Antes de ejecutar:** ¿Se restan o se suman las varianzas?
+
+**Consigna:** Extrae 144 y 121 salarios con reemplazo de cada grupo; calcula el error estándar de la diferencia.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-17
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+var_alta <- mean((pob_alta-mu_alta)^2)
+var_resto <- mean((pob_resto-mu_resto)^2)
+set.seed(16208)
+n_a <- 144L; n_b <- 121L
+m_a <- sample(pob_alta, n_a, replace = TRUE)
+m_b <- sample(pob_resto, n_b, replace = TRUE)
+diferencia <- mean(m_a)-mean(m_b)
+se_diferencia <- sqrt(var_alta/n_a+var_resto/n_b)
+print(c(estimacion = diferencia, error_estandar = se_diferencia))
+```
+
+
+**Lectura del resultado:** Las varianzas se suman por independencia aunque las medias se resten. Los momentos conocidos son de las distribuciones didácticas con denominador N de cada grupo.
+
+**Error frecuente:** Usar var(m_a) y llamarla varianza poblacional conocida.
+
+**Comprueba:** ¿Usar una sola muestra compartida garantizaría independencia? No.
+
+
+<a id="P3-18"></a>
+## P3-18 · Cerrar con una conclusión honesta
+
+**Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿La diferencia es compatible con cero?
+
+**Antes de ejecutar:** ¿Tu conclusión cambia si hablas de causa?
+
+**Consigna:** Calcula límites y escribe dos frases: resultado e interpretación limitada.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P3-18
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+ic_d <- diferencia+c(-1,1)*qnorm(.975)*se_diferencia
+print(c(inferior = ic_d[1], superior = ic_d[2], delta_didactica = delta,
+        contiene_cero = ic_d[1] <= 0 && ic_d[2] >= 0))
+plot(range(c(ic_d,0)), c(0,1), type = "n", yaxt = "n", ylab = "",
+     xlab = "Diferencia de medias (USD/h de 1976)", main = "Alta educación menos resto")
+segments(ic_d[1],.5,ic_d[2],.5,lwd = 3,col = "#35618A")
+points(diferencia,.5,pch = 19); abline(v = 0,lty = 2)
+```
+
+
+**Lectura del resultado:** Redacta según la salida efectiva: el IC incluye o excluye cero. El resultado compara medias de las poblaciones didácticas bajo muestreo independiente; no estima el efecto causal de educarse ni una brecha actual chilena.
+
+**Error frecuente:** Copiar la conclusión sin mirar los límites obtenidos.
+
+**Comprueba:** ¿Controlamos habilidad y contexto familiar? No.
+
+
+## CIERRE · Autoevaluación
+
+Responde antes de leer las soluciones:
+
+1. ¿Qué evita un `while` infinito?
+2. Si una muestra selecciona solo educ >= 16, ¿describe automáticamente a toda la población?
+3. ¿Qué cambia más al añadir un salario extremo: media o mediana?
+4. ¿Un IC de 95% contiene el 95% de los salarios individuales?
+5. ¿Qué pasa con el margen al cuadruplicar n, con sigma y confianza constantes?
+6. ¿Una diferencia de salarios entre grupos educativos prueba el efecto causal de la educación?
+
+### Soluciones del cierre
+
+1. Actualizar el estado y fijar un máximo de iteraciones.
+2. No. Tiene un criterio de exclusión y carece de selección probabilística del conjunto.
+3. En general la media es más sensible; comprobar en la copia de la actividad.
+4. No. El 95% se refiere a la cobertura del procedimiento para el parámetro.
+5. Se reduce a la mitad porque depende de 1/sqrt(n).
+6. No. No se han aislado diferencias en habilidad, familia y otros factores.
+
+### Para continuar
+
+Revisar las ampliaciones en orden y volver al capítulo 1 y apéndice C de Wooldridge indicados por Sebastián. No se requieren regresiones para completar este taller.
+
+## Referencias y alcance
+
+- [Clase 1 de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/): secuencia de 20, 10 y 34 láminas, sin portadas. Revisada en esta conversación el 17 de octubre de 2026; la consulta web automática posterior falló, por lo que se usó también la lectura comparativa local ya verificada.
+- [Portada del curso](https://hizocar.github.io/econometria-usm/): roles y organización.
+- [Documentación oficial de wage1](https://justinmshea.github.io/wooldridge/reference/wage1.html): variables, procedencia y notas.
+- [Paquete wooldridge](https://justinmshea.github.io/wooldridge/): datos asociados al libro.
+- [Copia pública CSV utilizada](https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/wooldridge/wage1.csv): distribución Rdatasets del conjunto; se elimina solo la columna de índice `rownames` al cargar.
+
+No se ha estimado ninguna regresión. Los experimentos mencionados en cátedra se discuten conceptualmente; no se inventan sus bases. Los grupos artificiales se identifican como tales. La inferencia computacional utiliza muestreo independiente con reemplazo de distribuciones empíricas conocidas, no un análisis representativo de la encuesta nacional ni una estimación bootstrap.
+
+## Estado de validación
+
+Se verificaron la estructura JSON del notebook, IDs y orden de actividades, correspondencia literal con la guía, cobertura de las láminas, enlaces locales, filas y columnas del CSV y hash del archivo de datos. **No se ejecutó R ni el kernel del notebook:** no se encontró una instalación disponible en este entorno. Las celdas no contienen resultados inventados. Antes de usarlo en clase, ejecutar el script desde una sesión limpia o ejecutar todo el notebook con kernel R y revisar salidas y gráficos. La cobertura de contenido es completa; la validación de ejecución queda pendiente.
+
+
+## Matriz de correspondencia
+
+La guía y el notebook se generan desde el mismo contenido: todas las consignas, soluciones y celdas R de actividades coinciden. Los IDs son estables. Los enunciados son el código inicial de trabajo: cada pareja escribe su intento en una celda R nueva antes de consultar la celda de solución; no hay ejercicios deliberadamente rotos que impidan ejecutar el notebook completo.
+
+| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |
+|---|---|---|---|
+| NIV-01 | Nivelación | `niv-01-consigna` / `niv-01-r` | Presencial |
+| NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
+| NIV-03 | Nivelación | `niv-03-consigna` / `niv-03-r` | Presencial |
+| NIV-04 | Nivelación | `niv-04-consigna` / `niv-04-r` | Presencial |
+| NIV-05 | Nivelación | `niv-05-consigna` / `niv-05-r` | Presencial |
+| NIV-06 | Nivelación | `niv-06-consigna` / `niv-06-r` | Presencial |
+| NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
+| NIV-08 | Nivelación | `niv-08-consigna` / `niv-08-r` | Presencial |
+| P1-01 | Parte 1 · lámina 1 | `p1-01-consigna` / `p1-01-r` | Presencial |
+| P1-02 | Parte 1 · lámina 2 | `p1-02-consigna` / `p1-02-r` | Presencial |
+| P1-03 | Parte 1 · lámina 3 | `p1-03-consigna` / `p1-03-r` | Presencial |
+| P1-04 | Parte 1 · lámina 4 | `p1-04-consigna` / `p1-04-r` | Presencial |
+| P1-05 | Parte 1 · láminas 5–6 | `p1-05-consigna` / `p1-05-r` | Presencial |
+| P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
+| P1-07 | Parte 1 · láminas 8–11 | `p1-07-consigna` / `p1-07-r` | Presencial |
+| P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
+| P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` / `p1-09-r` | Ampliación autónoma |
+| P1-10 | Parte 1 · lámina 15 | `p1-10-consigna` / `p1-10-r` | Ampliación autónoma |
+| P1-11 | Parte 1 · láminas 16–17 | `p1-11-consigna` / `p1-11-r` | Presencial |
+| P1-12 | Parte 1 · lámina 18 | `p1-12-consigna` / `p1-12-r` | Ampliación autónoma |
+| P1-13 | Parte 1 · lámina 19 | `p1-13-consigna` / `p1-13-r` | Presencial |
+| P1-14 | Parte 1 · lámina 20 | `p1-14-consigna` / `p1-14-r` | Presencial |
+| P2-01 | Parte 2 · lámina 1 | `p2-01-consigna` / `p2-01-r` | Ampliación autónoma |
+| P2-02 | Parte 2 · lámina 2 | `p2-02-consigna` / `p2-02-r` | Presencial |
+| P2-03 | Parte 2 · láminas 3–4 | `p2-03-consigna` / `p2-03-r` | Presencial |
+| P2-04 | Parte 2 · lámina 5 | `p2-04-consigna` / `p2-04-r` | Presencial |
+| P2-05 | Parte 2 · láminas 6–7 | `p2-05-consigna` / `p2-05-r` | Presencial |
+| P2-06 | Parte 2 · lámina 8 | `p2-06-consigna` / `p2-06-r` | Presencial |
+| P2-07 | Parte 2 · láminas 9–10 | `p2-07-consigna` / `p2-07-r` | Presencial |
+| P3-01 | Parte 3 · lámina 1 | `p3-01-consigna` / `p3-01-r` | Presencial |
+| P3-02 | Parte 3 · lámina 2 | `p3-02-consigna` / `p3-02-r` | Presencial |
+| P3-03 | Parte 3 · lámina 3 | `p3-03-consigna` / `p3-03-r` | Presencial |
+| P3-04 | Parte 3 · lámina 4 | `p3-04-consigna` / `p3-04-r` | Ampliación autónoma |
+| P3-05 | Parte 3 · láminas 5–7 | `p3-05-consigna` / `p3-05-r` | Presencial |
+| P3-06 | Parte 3 · lámina 8 | `p3-06-consigna` / `p3-06-r` | Ampliación autónoma |
+| P3-07 | Parte 3 · láminas 9–10 | `p3-07-consigna` / `p3-07-r` | Presencial |
+| P3-08 | Parte 3 · lámina 11 | `p3-08-consigna` / `p3-08-r` | Ampliación autónoma |
+| P3-09 | Parte 3 · láminas 12–13 | `p3-09-consigna` / `p3-09-r` | Presencial |
+| P3-10 | Parte 3 · lámina 14 | `p3-10-consigna` / `p3-10-r` | Ampliación autónoma |
+| P3-11 | Parte 3 · láminas 15–19 | `p3-11-consigna` / `p3-11-r` | Presencial |
+| P3-12 | Parte 3 · láminas 20–21 | `p3-12-consigna` / `p3-12-r` | Ampliación autónoma |
+| P3-13 | Parte 3 · lámina 22 | `p3-13-consigna` / `p3-13-r` | Ampliación autónoma |
+| P3-14 | Parte 3 · láminas 23–24 | `p3-14-consigna` / `p3-14-r` | Ampliación autónoma |
+| P3-15 | Parte 3 · lámina 25 | `p3-15-consigna` / `p3-15-r` | Ampliación autónoma |
+| P3-16 | Parte 3 · láminas 26–27 | `p3-16-consigna` / `p3-16-r` | Ampliación autónoma |
+| P3-17 | Parte 3 · láminas 28–31 | `p3-17-consigna` / `p3-17-r` | Ampliación autónoma |
+| P3-18 | Parte 3 · láminas 32–34 | `p3-18-consigna` / `p3-18-r` | Presencial |
+
+| Requisito de las instrucciones | Ubicación en el notebook |
+|---|---|
+| Contexto, audiencia y rol docente | inicio |
+| Fuentes y enlaces bidireccionales | inicio, cierre |
+| R exclusivamente y alcance de clase 1 | Metadatos kernelspec, todas las celdas R, cierre |
+| Nivelación completa y anterior al curso | NIV-01 a NIV-08 |
+| Datos transversales, unidades, faltantes y copia local | inicio, P1-01 |
+| Parte 1: 20 láminas en orden | P1-01 a P1-14 |
+| Parte 2: 10 láminas en orden | P2-01 a P2-07 |
+| Parte 3: 34 láminas en orden | P3-01 a P3-18 |
+| Intuición, predicción, consigna, solución, interpretación y comprobación | Todas las actividades |
+| Dinámica presencial y tiempos | inicio; guía docente enlazada |
+| Muestras didácticas, sigma conocida y límites de inferencia | P1-08, P1-11, P3-01 a P3-18 |
+| Semillas, reproducción y verificación | Celdas de selección/simulación, cierre |
+| Autoevaluación y soluciones | cierre |
+| Preparación y alternativa sin conexión | inicio, P1-01 |
+| Trazabilidad y cobertura | matriz-correspondencia |
+
+**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
