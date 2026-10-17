@@ -1,0 +1,756 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Taller presencial de econometría en R: nivelación, datos, estadística descriptiva e intervalos de confianza."><title>Taller 1 · Econometría en R · UTFSM</title><style>
+:root{--ink:#202f62;--accent:#006c9f;--paper:#fff;--muted:#647084;--line:#dce2ea;--wash:#eaf0f6;--bg:#f8fafc}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:110px}body{margin:0;background:var(--bg);color:#242a32;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;line-height:1.7}a{color:var(--accent)}button,summary{cursor:pointer}button,a,summary{touch-action:manipulation}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #d79019;outline-offset:4px}.skip{position:absolute;left:10px;top:-100px}.skip:focus{top:5px;background:white;z-index:20}.topbar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1180px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:15px;letter-spacing:.03em;color:var(--ink);font-weight:750;text-decoration:none}.topbar button{border:1px solid var(--line);border-radius:8px;background:white;padding:10px 14px;color:var(--ink);font:inherit;font-size:14px}.hero,.content{max-width:1180px;margin:auto;padding:52px 28px}.hero{padding-bottom:26px}.eyebrow{color:var(--accent);font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px}h1,h2,h3{color:var(--ink);line-height:1.2}h1{font-size:clamp(36px,5vw,60px);letter-spacing:-.045em;max-width:850px;margin:0 0 22px}h2{font-size:34px;letter-spacing:-.025em}h3{font-size:clamp(23px,2.6vw,32px);margin:0;letter-spacing:-.02em}h4{font-size:16px;color:var(--ink);margin:24px 0 8px}.lead{font-size:21px;max-width:830px;color:#536074}.chips,.downloads,.toc{display:flex;flex-wrap:wrap;gap:10px}.chips span{font-size:13px;border:1px solid var(--line);padding:5px 12px;border-radius:30px;background:#fff;color:var(--ink)}.downloads{margin:24px 0}.downloads a{border-radius:8px;padding:10px 16px;font-size:14px;font-weight:700;border:1px solid var(--line);background:white;text-decoration:none}.downloads a:first-child{background:var(--ink);color:white;border-color:var(--ink)}.toc{padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:32px}.toc a{text-decoration:none;font-weight:650;font-size:14px;margin-right:14px}.content{padding-top:0}.brief{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 28px;margin:24px 0}.brief h2{font-size:23px}.brief p{margin:8px 0}.brief summary{font-weight:700;color:var(--ink)}.schedule{width:100%;border-collapse:collapse;font-size:15px}.schedule td,.schedule th{text-align:left;border-bottom:1px solid var(--line);padding:10px}.schedule th{color:var(--ink)}.chapter-intro{margin:64px 0 30px}.chapter-intro h2{margin:10px 0 16px}.chapter-intro p:last-child{color:var(--muted)}.slide{background:var(--paper);border:1px solid #e2e5e9;border-left:7px solid var(--accent);border-radius:18px;overflow:hidden;margin:0 0 36px;box-shadow:0 2px 4px #17264b08;scroll-margin-top:100px}.slide-head{background:var(--wash);border-bottom:1px solid #d6dee8;display:flex;align-items:flex-start;justify-content:space-between;gap:25px;padding:27px 34px}.number{color:#71767c;letter-spacing:.09em;font-size:13px;font-weight:800;white-space:nowrap;padding-top:7px}.slide-body{padding:28px 34px 24px}.meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted)}.meta span+span:before{content:"·";margin-right:8px}.question{font-size:24px;color:var(--ink);font-weight:650;line-height:1.4;margin:26px 0}.prompt{padding:14px 18px;background:#f4f8fb;border-radius:8px;border:1px solid #e3ecf2}.prompt strong{color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:.05em}.prompt p{margin:4px 0}.data-note,.execution-note{color:var(--muted);font-size:13px}.solution,.check{margin-top:22px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.solution summary,.check summary{padding:13px 18px;background:#f7f9fc;font-weight:700;color:var(--ink);font-size:15px}.solution summary span{float:right}.solution-body{padding:18px}.code-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.copy{background:white;border:1px solid var(--line);border-radius:5px;padding:6px 10px;color:var(--ink)}pre{overflow:auto;padding:20px;background:#15243a;color:#e4effa;border-radius:8px;line-height:1.65;font-size:14px;tab-size:2}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.notice{border-left:3px solid #ce983d;background:#fff9ec;padding:12px 18px}.notice p{margin:4px 0}.check p{padding:0 18px}.anchor{display:inline-block;margin-top:20px;font-size:12px;text-decoration:none;color:var(--muted)}.footer{border-top:1px solid var(--line);padding:35px 0;font-size:14px;color:var(--muted)}.footer a{margin-right:16px}.present-controls{display:none}.presenting .hero,.presenting .brief,.presenting .chapter-intro,.presenting .footer,.presenting .closure{display:none}.presenting .slide{display:none}.presenting .slide.active{display:block;min-height:65vh;margin-top:30px}.presenting .chapter{margin:0}.presenting .content{padding-bottom:90px}.presenting .present-controls{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;padding:14px 24px;border-top:1px solid var(--line);justify-content:center;align-items:center;gap:18px;z-index:10}.present-controls button{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:10px 16px}.counter{font-size:14px;color:var(--ink)}@media(max-width:700px){body{font-size:16px}.hero,.content{padding-left:16px;padding-right:16px}.slide-head{padding:20px;gap:14px;flex-direction:column}.slide-body{padding:20px}.question{font-size:21px}.brief{padding:18px}.number{padding-top:0}pre{font-size:12px}.topbar{padding:12px 16px}.schedule{font-size:13px}.lead{font-size:18px}}@media print{.topbar,.toc,.downloads,.copy,.present-controls,.anchor{display:none!important}.slide{break-inside:avoid;box-shadow:none}.hero,.content{max-width:none;padding:10px}.solution-body{display:block}body{background:white;font-size:12px}.slide-head h3{font-size:20px}}
+</style></head><body><a class="skip" href="#contenido">Saltar al contenido</a><header class="topbar"><a class="brand" href="#inicio">UTFSM · ECONOMETRÍA ICS-294</a><button id="present" type="button" aria-pressed="false">Modo presentación</button></header><main id="contenido"><div class="hero" id="inicio"><p class="eyebrow">Taller 1 · Iván · Presencial</p><h1>Del código a los datos.<br>Econometría en R.</h1><p class="lead">Una pregunta, una predicción y unas líneas de código. Aprende a describir salarios, seleccionar muestras y expresar incertidumbre sin confundir asociación con causalidad.</p><div class="chips"><span>18:50–21:25</span><span>Pausa de 15 minutos</span><span>8–10 estudiantes</span><span>47 láminas prácticas</span></div><div class="downloads"><a href="clase-taller-1.ipynb" download>Descargar notebook R ↓</a><a href="clase-taller-1.R" download>Script para RStudio ↓</a><a href="guia-docente-taller-1.md">Guía docente ↗</a></div><nav class="toc" aria-label="Bloques del taller"><a href="#NIV">Antes de comenzar</a><a href="#P1">Parte 1 · Econometría</a><a href="#P2">Parte 2 · Estadística descriptiva</a><a href="#P3">Parte 3 · Estadística inferencial</a><a href="#cierre">Autoevaluación</a></nav></div><div class="content"><section class="brief"><h2>Cómo trabajar esta clase</h2><p>Comienza con la nivelación. Luego sigue la materia de Sebastián en el mismo orden: introducción, descripción e inferencia. En parejas, alternen quién escribe y quién anticipa el resultado. Intenta la consigna antes de abrir la solución.</p><p>Las láminas señaladas como ampliación autónoma completan la práctica después del taller. El modo presentación muestra una lámina por vez; usa los botones, las flechas del teclado o Escape para volver a la lectura continua.</p><p class="data-note">La numeración de esta página se reinicia por bloque. La referencia dentro de cada lámina identifica su correspondencia con la cátedra.</p></section><details class="brief"><summary>Agenda · 140 minutos de trabajo</summary><table class="schedule"><thead><tr><th>Hora</th><th>Bloque</th></tr></thead><tbody><tr><td>18:50–18:55</td><td>Diagnóstico y apertura</td></tr><tr><td>18:55–19:35</td><td>Nivelación en R</td></tr><tr><td>19:35–20:00</td><td>Introducción a la econometría</td></tr><tr><td>20:00–20:15</td><td>Pausa</td></tr><tr><td>20:15–20:40</td><td>Estadística descriptiva</td></tr><tr><td>20:40–21:15</td><td>Estadística inferencial</td></tr><tr><td>21:15–21:25</td><td>Autoevaluación y cierre</td></tr></tbody></table></details><details class="brief"><summary>Preparación, datos y límites de interpretación</summary><p>Descarga el proyecto completo desde el repositorio para conservar <code>datos/wage1.csv</code> junto al notebook. Usa RStudio con el script o Jupyter con kernel R (IRkernel). Las instrucciones de instalación y el diccionario están en la <a href="guia-actividades-taller-1.md">guía completa</a>.</p><p>La base wage1 contiene 526 registros de la CPS estadounidense de 1976. Los salarios se expresan en USD por hora de ese período. No son sueldos chilenos actuales. Los ejemplos son actividades propias con datos asociados a Wooldridge; no ejercicios transcritos del libro.</p><p>Para practicar inferencia tratamos la distribución empírica completa como una población didáctica conocida. Los submuestreos no reproducen el diseño original de la encuesta. Las comparaciones no identifican efectos causales.</p><p><strong>Validación pendiente:</strong> no se ha ejecutado R en el entorno de elaboración. Ejecuta el notebook con kernel R antes de usarlo en clase. Esta página muestra código, no lo ejecuta.</p></details><section class="chapter" id="NIV" aria-labelledby="heading-NIV"><div class="chapter-intro"><p class="eyebrow">Antes de comenzar</p><h2 id="heading-NIV">Nivelación de computación en R</h2><p>Objetos, decisiones y ciclos para construir tus primeras instrucciones.</p></div><article class="slide" id="NIV-01" data-title="Entorno de R, objetos y asignación" aria-labelledby="title-NIV-01">
+<header class="slide-head"><h3 id="title-NIV-01">Entorno de R, objetos y asignación</h3><span class="number">LÁMINA 01</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-01</span></div>
+<p class="question">¿Cómo guardamos un valor para reutilizarlo?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuánto vale saldo después de sumar 3?</p></div>
+<h4>En R · Tu turno</h4><p>Cambia el saldo inicial a 20 y repite.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-01">Copiar código</button></div><pre><code>saldo &lt;- 10
+saldo &lt;- saldo + 3
+print(saldo)
+print(c(tipo = typeof(saldo), longitud = length(saldo)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>La asignación actualiza un objeto. Con 20 iniciales, el saldo final es 23. Ejecuta una línea desde un script y compárala con escribirla en consola.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir &lt;- con una comparación ==.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿saldo == 23 modifica el objeto? No.</p></details>
+<a class="anchor" href="#NIV-01">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-02" data-title="Vectores: creación, selección y modificación" aria-labelledby="title-NIV-02">
+<header class="slide-head"><h3 id="title-NIV-02">Vectores: creación, selección y modificación</h3><span class="number">LÁMINA 02</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-02</span></div>
+<p class="question">¿Cómo guardamos varios valores?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué posición contiene 6?</p></div>
+<h4>En R · Tu turno</h4><p>Crea tres valores, selecciona los mayores que 4 y modifica la segunda posición.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-02">Copiar código</button></div><pre><code>v &lt;- numeric(3)
+v[1] &lt;- 2; v[2] &lt;- 6; v[3] &lt;- 9
+print(v[v &gt; 4])
+v[2] &lt;- 7
+print(v); print(length(v))</code></pre>
+<h4>Cómo leer el resultado</h4><p>R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo.</p><aside class="notice"><strong>Un error frecuente</strong><p>Usar el índice 0 como primera posición.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿length(v) cambia al modificar v[2]? No.</p></details>
+<a class="anchor" href="#NIV-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-03" data-title="Condicionales: if, else y operadores lógicos" aria-labelledby="title-NIV-03">
+<header class="slide-head"><h3 id="title-NIV-03">Condicionales: if, else y operadores lógicos</h3><span class="number">LÁMINA 03</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-03</span></div>
+<p class="question">¿Cómo elegimos una acción según una condición?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué mensaje produce valor = 8?</p></div>
+<h4>En R · Tu turno</h4><p>Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector anterior.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-03">Copiar código</button></div><pre><code>valor &lt;- 8
+if (valor &gt; 4) {
+  mensaje &lt;- &quot;Supera el umbral&quot;
+} else {
+  mensaje &lt;- &quot;No supera el umbral&quot;
+}
+print(mensaje)
+print(v[v &gt; 4])</code></pre>
+<h4>Cómo leer el resultado</h4><p>if elige un camino con una condición única. La selección lógica trabaja con varias posiciones. Usa &amp; y | para condiciones por elemento, &amp;&amp; y || para condiciones escalares.</p><aside class="notice"><strong>Un error frecuente</strong><p>Escribir if(v &gt; 4), con una condición por cada elemento.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿valor &gt; 4 es una asignación? No, es una comparación.</p></details>
+<a class="anchor" href="#NIV-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-04" data-title="Ciclos for y llenado de vectores" aria-labelledby="title-NIV-04">
+<header class="slide-head"><h3 id="title-NIV-04">Ciclos for y llenado de vectores</h3><span class="number">LÁMINA 04</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-04</span></div>
+<p class="question">¿Cómo evitamos escribir cada asignación?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuáles serán el primer y último término?</p></div>
+<h4>En R · Tu turno</h4><p>Llena cinco posiciones con el doble de su índice; amplía a ocho.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-04">Copiar código</button></div><pre><code>dobles &lt;- numeric(5)
+for (i in seq_along(dobles)) {
+  dobles[i] &lt;- 2 * i
+}
+print(dobles)</code></pre>
+<h4>Cómo leer el resultado</h4><p>La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.</p><aside class="notice"><strong>Un error frecuente</strong><p>Llenar un objeto inexistente o recorrer más índices de los reservados.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.</p></details>
+<a class="anchor" href="#NIV-04">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-05" data-title="Sucesiones aritméticas, geométricas y recurrentes" aria-labelledby="title-NIV-05">
+<header class="slide-head"><h3 id="title-NIV-05">Sucesiones aritméticas, geométricas y recurrentes</h3><span class="number">LÁMINA 05</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-05</span></div>
+<p class="question">¿Cómo se calcula un término desde el anterior?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Predice los cuatro primeros términos de cada sucesión.</p></div>
+<h4>En R · Tu turno</h4><p>Construye seis términos: aritmética con inicio 2 y paso 3; geométrica con inicio 2 y razón 2; recurrencia con inicio 1 y a[i] = 2*a[i-1]+1.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-05">Copiar código</button></div><pre><code>a &lt;- g &lt;- r &lt;- numeric(6)
+a[1] &lt;- 2; g[1] &lt;- 2; r[1] &lt;- 1
+for (i in 2:length(a)) {
+  a[i] &lt;- a[i-1] + 3
+  g[i] &lt;- 2 * g[i-1]
+  r[i] &lt;- 2 * r[i-1] + 1
+}
+print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
+stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
+          all(g == 2 * 2^(seq_along(g)-1)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Las fórmulas vectorizadas comprueban las dos primeras sucesiones. La recurrencia exige inicializar el primer valor. Aquí se garantiza longitud 6 antes de usar 2:length(a).</p><aside class="notice"><strong>Un error frecuente</strong><p>Olvidar el primer término o aplicar 2:n cuando n podría ser menor que 2.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuál es el tercer término de la recurrencia? 7.</p></details>
+<a class="anchor" href="#NIV-05">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-06" data-title="Ciclos while y condiciones de término" aria-labelledby="title-NIV-06">
+<header class="slide-head"><h3 id="title-NIV-06">Ciclos while y condiciones de término</h3><span class="number">LÁMINA 06</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-06</span></div>
+<p class="question">¿Cuántas duplicaciones hacen falta para llegar a 100?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Se detendrá antes de 20 pasos?</p></div>
+<h4>En R · Tu turno</h4><p>Parte en 1, duplica hasta alcanzar 100 y conserva los términos.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-06">Copiar código</button></div><pre><code>valor &lt;- 1
+paso &lt;- 0L
+max_pasos &lt;- 20L
+trayectoria &lt;- numeric(max_pasos + 1L)
+trayectoria[1] &lt;- valor
+while (valor &lt; 100 &amp;&amp; paso &lt; max_pasos) {
+  valor &lt;- 2 * valor
+  paso &lt;- paso + 1L
+  trayectoria[paso + 1L] &lt;- valor
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.</p><aside class="notice"><strong>Un error frecuente</strong><p>No actualizar valor o paso.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.</p></details>
+<a class="anchor" href="#NIV-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-07" data-title="Matrices y ciclos anidados" aria-labelledby="title-NIV-07">
+<header class="slide-head"><h3 id="title-NIV-07">Matrices y ciclos anidados</h3><span class="number">LÁMINA 07</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-07</span></div>
+<p class="question">¿Cómo guardamos resultados por filas y columnas?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuánto valdrá la posición [2,3]?</p></div>
+<h4>En R · Tu turno</h4><p>Llena una matriz 2 por 3 con 10*fila + columna; luego modifica [1,1].</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-07">Copiar código</button></div><pre><code>m &lt;- matrix(0, nrow = 2, ncol = 3)
+for (i in seq_len(nrow(m))) {
+  for (j in seq_len(ncol(m))) {
+    m[i,j] &lt;- 10*i + j
+  }
+}
+print(m)
+m[1,1] &lt;- 99
+print(m); print(dim(m))</code></pre>
+<h4>Cómo leer el resultado</h4><p>La posición [2,3] vale 23 antes y después de modificar [1,1]. Una matriz tiene un tipo común; un data.frame permite columnas de distintos tipos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Intercambiar fila y columna.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.</p></details>
+<a class="anchor" href="#NIV-07">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-08" data-title="Actividad integradora: sucesiones y matrices" aria-labelledby="title-NIV-08">
+<header class="slide-head"><h3 id="title-NIV-08">Actividad integradora: sucesiones y matrices</h3><span class="number">LÁMINA 08</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-08</span></div>
+<p class="question">¿Podemos reunir una sucesión y una decisión?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Desde qué término se supera 10?</p></div>
+<h4>En R · Tu turno</h4><p>Genera 2,5,8,11,14,17 y guarda índice, valor e indicador de superar 10.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-08">Copiar código</button></div><pre><code>terminos &lt;- numeric(6)
+terminos[1] &lt;- 2
+for (i in 2:length(terminos)) terminos[i] &lt;- terminos[i-1] + 3
+resultado &lt;- matrix(0, nrow = 6, ncol = 3,
+                    dimnames = list(NULL, c(&quot;indice&quot;, &quot;valor&quot;, &quot;supera_10&quot;)))
+for (i in seq_along(terminos)) {
+  resultado[i,1] &lt;- i
+  resultado[i,2] &lt;- terminos[i]
+  if (terminos[i] &gt; 10) resultado[i,3] &lt;- 1
+}
+print(resultado)</code></pre>
+<h4>Cómo leer el resultado</h4><p>El indicador vale 1 desde el cuarto término. Esta es programación con objetos artificiales, no evidencia económica.</p><aside class="notice"><strong>Un error frecuente</strong><p>Asignar una cadena de texto a una matriz numérica y convertir toda la matriz a texto.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué cambia con umbral 14 y condición estricta &gt;? Solo el último indicador vale 1.</p></details>
+<a class="anchor" href="#NIV-08">Enlace a esta lámina ↗</a></div></article></section><section class="chapter" id="P1" aria-labelledby="heading-P1"><div class="chapter-intro"><p class="eyebrow">Parte 1 · Econometría</p><h2 id="heading-P1">Introducción a la econometría</h2><p>Preguntas económicas, estructura de los datos y selección de muestras.</p></div><article class="slide" id="P1-01" data-title="Introducción a la econometría y a los datos" aria-labelledby="title-P1-01">
+<header class="slide-head"><h3 id="title-P1-01">Introducción a la econometría y a los datos</h3><span class="number">LÁMINA 01</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 1</span><span>Presencial</span><span>P1-01</span></div>
+<p class="question">¿Qué sabemos de educación y salario de cada persona?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cada fila representa una persona o un mes?</p></div>
+<h4>En R · Tu turno</h4><p>Carga la base e identifica wage y educ en seis filas.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-01">Copiar código</button></div><pre><code># La copia local permite trabajar sin conexión.
+if (file.exists(&quot;datos/wage1.csv&quot;)) {
+  original &lt;- read.csv(&quot;datos/wage1.csv&quot;)
+  original$rownames &lt;- NULL
+} else if (requireNamespace(&quot;wooldridge&quot;, quietly = TRUE)) {
+  original &lt;- as.data.frame(wooldridge::wage1)
+} else {
+  stop(&quot;Abra el proyecto desde su carpeta raíz o instale wooldridge.&quot;)
+}
+variables &lt;- c(&quot;wage&quot;, &quot;educ&quot;, &quot;exper&quot;, &quot;tenure&quot;, &quot;female&quot;, &quot;married&quot;)
+stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
+print(colSums(is.na(original[variables])))
+datos &lt;- original[complete.cases(original[variables]), variables]
+stopifnot(all(datos$wage &gt; 0), all(datos$female %in% 0:1),
+          all(datos$married %in% 0:1), nrow(datos) &gt; 100)
+str(datos)
+head(datos)</code></pre>
+<h4>Cómo leer el resultado</h4><p>wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿526 filas equivalen a 526 períodos? No.</p></details>
+<a class="anchor" href="#P1-01">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-02" data-title="Econometría moderna: describir, explicar y predecir" aria-labelledby="title-P1-02">
+<header class="slide-head"><h3 id="title-P1-02">Econometría moderna: describir, explicar y predecir</h3><span class="number">LÁMINA 02</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 2</span><span>Presencial</span><span>P1-02</span></div>
+<p class="question">¿Describir, explicar una causa o predecir?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?</p></div>
+<h4>En R · Tu turno</h4><p>Asocia cada pregunta con una finalidad.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-02">Copiar código</button></div><pre><code>preguntas &lt;- data.frame(
+  pregunta = c(&quot;¿Cómo se relacionan educación y salario?&quot;,
+               &quot;¿Más educación causa mayor salario?&quot;,
+               &quot;¿Qué salario tendrá otra persona?&quot;),
+  finalidad = c(&quot;Descripción&quot;, &quot;Causalidad&quot;, &quot;Predicción&quot;))
+print(preguntas)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Una misma tabla permite formular preguntas distintas, pero no garantiza resolverlas todas. Aquí no entrenamos predictores ni estimamos efectos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Tratar una predicción acertada como identificación causal.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Una pregunta causal requiere supuestos adicionales? Sí.</p></details>
+<a class="anchor" href="#P1-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-03" data-title="Del modelo económico a las variables observadas" aria-labelledby="title-P1-03">
+<header class="slide-head"><h3 id="title-P1-03">Del modelo económico a las variables observadas</h3><span class="number">LÁMINA 03</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 3</span><span>Presencial</span><span>P1-03</span></div>
+<p class="question">¿Qué parte del modelo conceptual observamos?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Está la habilidad directamente medida en estas columnas?</p></div>
+<h4>En R · Tu turno</h4><p>Distingue salario, educación, experiencia y factores no observados.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-03">Copiar código</button></div><pre><code>print(names(datos))
+print(head(datos[c(&quot;wage&quot;, &quot;educ&quot;, &quot;exper&quot;)]))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Una formulación conceptual es salario = f(educación, experiencia, otros factores) + error. Habilidad y recursos familiares no se identifican en estas columnas. No estimamos f.</p><aside class="notice"><strong>Un error frecuente</strong><p>Interpretar el error como un simple error de digitación.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Que una variable no esté en la tabla significa que no importa? No.</p></details>
+<a class="anchor" href="#P1-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-04" data-title="Correlación, causalidad y factores no observados" aria-labelledby="title-P1-04">
+<header class="slide-head"><h3 id="title-P1-04">Correlación, causalidad y factores no observados</h3><span class="number">LÁMINA 04</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 4</span><span>Presencial</span><span>P1-04</span></div>
+<p class="question">¿Una nube ascendente demuestra una causa?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Podrían existir personas con igual educación y salarios diferentes?</p></div>
+<h4>En R · Tu turno</h4><p>Dibuja salario frente a educación y propón dos factores adicionales.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-04">Copiar código</button></div><pre><code>plot(datos$educ, datos$wage, pch = 19, col = &quot;#35618A80&quot;,
+     xlab = &quot;Educación (años)&quot;, ylab = &quot;Salario por hora (USD de 1976)&quot;,
+     main = &quot;Educación y salario: observar no es aislar una causa&quot;)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Cada punto es una persona. La comparación no mantiene constantes habilidad, ocupación o experiencia. La temperatura en el caso de helados y tiburones de cátedra ilustra el mismo problema de un factor común.</p><aside class="notice"><strong>Un error frecuente</strong><p>Dibujar una flecha causal solo por observar una asociación.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El gráfico mantiene todo lo demás constante? No.</p></details>
+<a class="anchor" href="#P1-04">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-05" data-title="Educación y salarios: alcances de la comparación" aria-labelledby="title-P1-05">
+<header class="slide-head"><h3 id="title-P1-05">Educación y salarios: alcances de la comparación</h3><span class="number">LÁMINA 05</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · láminas 5–6</span><span>Presencial</span><span>P1-05</span></div>
+<p class="question">¿Podemos llamar universitario a todo registro con educ &gt;= 16?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Los dos grupos serán idénticos en sus otras características?</p></div>
+<h4>En R · Tu turno</h4><p>Crea una etiqueta de umbral educativo y examina filas, sin calcular todavía diferencias de medias.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-05">Copiar código</button></div><pre><code>datos$educ16 &lt;- datos$educ &gt;= 16
+print(head(datos[c(&quot;educ&quot;, &quot;educ16&quot;, &quot;wage&quot;, &quot;exper&quot;)], 12))</code></pre>
+<h4>Cómo leer el resultado</h4><p>educ &gt;= 16 es un umbral de años de educación, no una certificación de título. El ejemplo del 30% de Chile pertenece a cátedra; no se atribuye a esta base. La comparación de promedios se hará en su bloque.</p><aside class="notice"><strong>Un error frecuente</strong><p>Repetir el 30% como si se hubiese calculado con wage1.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Una diferencia entre grupos sería automáticamente efecto de estudiar? No.</p></details>
+<a class="anchor" href="#P1-05">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-06" data-title="Econometría aplicada y diseño de estudios" aria-labelledby="title-P1-06">
+<header class="slide-head"><h3 id="title-P1-06">Econometría aplicada y diseño de estudios</h3><span class="number">LÁMINA 06</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 7</span><span>Ampliación autónoma</span><span>P1-06</span></div>
+<p class="question">¿wage1 permite medir el efecto de pastillas escolares o consultorías?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué columnas faltarían?</p></div>
+<h4>En R · Tu turno</h4><p>Escribe en R los datos que pedirías para cada estudio.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-06">Copiar código</button></div><pre><code>necesidades &lt;- list(
+  desparasitacion = c(&quot;asignación&quot;, &quot;tratamiento&quot;, &quot;asistencia&quot;, &quot;escuela&quot;),
+  consultoria = c(&quot;asignación&quot;, &quot;consultoría&quot;, &quot;productividad&quot;, &quot;fábrica&quot;))
+print(necesidades)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Los casos de Kenia e India de cátedra muestran el papel del diseño. wage1 no contiene sus tratamientos ni resultados; no calculamos esos estudios con salarios.</p><aside class="notice"><strong>Un error frecuente</strong><p>Inventar una variable de tratamiento para atribuir resultados de otro estudio.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Basta una tabla grande para responder cualquier pregunta? No.</p></details>
+<a class="anchor" href="#P1-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-07" data-title="Tipos y estructura de los datos económicos" aria-labelledby="title-P1-07">
+<header class="slide-head"><h3 id="title-P1-07">Tipos y estructura de los datos económicos</h3><span class="number">LÁMINA 07</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · láminas 8–11</span><span>Presencial</span><span>P1-07</span></div>
+<p class="question">¿Qué dimensiones definen nuestros datos?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Tenemos observaciones repetidas de cada persona en varios años?</p></div>
+<h4>En R · Tu turno</h4><p>Construye un esquema conceptual de las tres estructuras.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-07">Copiar código</button></div><pre><code>estructuras &lt;- data.frame(
+  tipo = c(&quot;Corte transversal&quot;, &quot;Serie temporal&quot;, &quot;Panel&quot;),
+  unidades = c(&quot;Muchas&quot;, &quot;Una&quot;, &quot;Muchas&quot;),
+  periodos = c(&quot;Uno&quot;, &quot;Varios&quot;, &quot;Varios por unidad&quot;))
+print(estructuras)</code></pre>
+<h4>Cómo leer el resultado</h4><p>La base de aplicación es transversal y observacional. Lo experimental describe cómo se asigna una exposición; panel describe la estructura. Los esquemas no son nuevas bases empíricas.</p><aside class="notice"><strong>Un error frecuente</strong><p>Suponer que toda base transversal fue obtenida por muestreo aleatorio simple.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Experimental y transversal son categorías incompatibles? No.</p></details>
+<a class="anchor" href="#P1-07">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-08" data-title="Población, muestra y unidad de observación" aria-labelledby="title-P1-08">
+<header class="slide-head"><h3 id="title-P1-08">Población, muestra y unidad de observación</h3><span class="number">LÁMINA 08</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · láminas 12–13</span><span>Presencial</span><span>P1-08</span></div>
+<p class="question">¿De qué conjunto seleccionaremos personas?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Una submuestra representa automáticamente a Estados Unidos?</p></div>
+<h4>En R · Tu turno</h4><p>Define el marco de filas de datos y extrae 12 registros sin reemplazo.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-08">Copiar código</button></div><pre><code>set.seed(16201)
+N &lt;- nrow(datos)
+marco &lt;- seq_len(N)
+ids &lt;- sample(marco, size = 12, replace = FALSE)
+print(datos[ids, c(&quot;wage&quot;, &quot;educ&quot;)])</code></pre>
+<h4>Cómo leer el resultado</h4><p>Tratamos la tabla completa como población finita didáctica. Su encuesta original tiene otra población y diseño; nuestro submuestreo no los reproduce.</p><aside class="notice"><strong>Un error frecuente</strong><p>Llamar población real completa a las 526 observaciones.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuál es nuestra unidad de observación? La persona registrada.</p></details>
+<a class="anchor" href="#P1-08">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-09" data-title="Razones para trabajar con muestras" aria-labelledby="title-P1-09">
+<header class="slide-head"><h3 id="title-P1-09">Razones para trabajar con muestras</h3><span class="number">LÁMINA 09</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 14</span><span>Ampliación autónoma</span><span>P1-09</span></div>
+<p class="question">¿Cómo limita el presupuesto el número de entrevistas?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Si cada entrevista cuesta 5 unidades, ¿alcanzan 100 para toda la tabla?</p></div>
+<h4>En R · Tu turno</h4><p>Calcula cuántas entrevistas financia ese presupuesto.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-09">Copiar código</button></div><pre><code>presupuesto &lt;- 100
+costo &lt;- 5
+capacidad &lt;- floor(presupuesto/costo)
+print(capacidad)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Son 20 entrevistas bajo costos hipotéticos, un ejercicio de planificación con el marco real. Un presupuesto no define por sí solo un buen diseño.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir capacidad de entrevistar con representatividad.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Una muestra barata garantiza precisión? No.</p></details>
+<a class="anchor" href="#P1-09">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-10" data-title="Variables, parámetros y estadísticos" aria-labelledby="title-P1-10">
+<header class="slide-head"><h3 id="title-P1-10">Variables, parámetros y estadísticos</h3><span class="number">LÁMINA 10</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 15</span><span>Ampliación autónoma</span><span>P1-10</span></div>
+<p class="question">¿Es lo mismo una variable que un parámetro?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿El salario de una persona es un promedio poblacional?</p></div>
+<h4>En R · Tu turno</h4><p>Clasifica variable, parámetro objetivo y estadístico.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-10">Copiar código</button></div><pre><code>print(data.frame(
+  concepto = c(&quot;Variable&quot;, &quot;Parámetro&quot;, &quot;Estadístico&quot;),
+  ejemplo = c(&quot;Salario por hora individual&quot;,
+              &quot;Media salarial de la población objetivo&quot;,
+              &quot;Media salarial calculada en una muestra&quot;)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>La variable se observa por persona; el parámetro resume una población; el estadístico depende de la muestra. Las fórmulas vienen después.</p><aside class="notice"><strong>Un error frecuente</strong><p>Llamar parámetro a cualquier número de una fila.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un estadístico cambia al cambiar la muestra? Generalmente sí.</p></details>
+<a class="anchor" href="#P1-10">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-11" data-title="Métodos de muestreo probabilístico en R" aria-labelledby="title-P1-11">
+<header class="slide-head"><h3 id="title-P1-11">Métodos de muestreo probabilístico en R</h3><span class="number">LÁMINA 11</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · láminas 16–17</span><span>Presencial</span><span>P1-11</span></div>
+<p class="question">¿Cómo cambia quién entra según el método?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Estratificar garantiza que ambos grupos definidos tengan participantes?</p></div>
+<h4>En R · Tu turno</h4><p>Selecciona por cuatro algoritmos y conserva sus índices.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-11">Copiar código</button></div><pre><code>set.seed(16202)
+ids_simple &lt;- sample(marco, 24)
+k &lt;- 20L
+inicio &lt;- sample.int(k, 1)
+ids_sistema &lt;- seq.int(inicio, N, by = k)
+estratos &lt;- split(marco, datos$educ16)
+stopifnot(all(lengths(estratos) &gt;= 12))
+ids_estrato &lt;- unlist(lapply(estratos, function(g) sample(g, 12)), use.names = FALSE)
+# Grupos artificiales: ilustración algorítmica, no barrios reales.
+grupo_artificial &lt;- rep(seq_len(12), length.out = N)
+elegidos &lt;- sample(unique(grupo_artificial), 2)
+ids_conglomerado &lt;- which(grupo_artificial %in% elegidos)
+print(list(simple = ids_simple, sistematico = ids_sistema,
+           estratificado = ids_estrato, conglomerados = ids_conglomerado))</code></pre>
+<h4>Cómo leer el resultado</h4><p>El sistemático usa inicio aleatorio; su tamaño puede variar aquí. Los grupos artificiales no sustentan una comparación real de eficiencia. La afijación igual por estrato requeriría ponderar al estimar una media global si difieren los tamaños; aquí solo seleccionamos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Comparar precisión de diseños con tamaños distintos o usar media estratificada no ponderada como estimador global.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El sistemático deja de ser probabilístico porque solo se sortea el inicio? No.</p></details>
+<a class="anchor" href="#P1-11">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-12" data-title="Muestreo estratificado y por conglomerados" aria-labelledby="title-P1-12">
+<header class="slide-head"><h3 id="title-P1-12">Muestreo estratificado y por conglomerados</h3><span class="number">LÁMINA 12</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 18</span><span>Ampliación autónoma</span><span>P1-12</span></div>
+<p class="question">¿En qué se diferencian estratos y conglomerados?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿En qué selección aparecen todos los estratos?</p></div>
+<h4>En R · Tu turno</h4><p>Inspecciona los grupos incluidos por cada selección.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-12">Copiar código</button></div><pre><code>print(table(datos$educ16[ids_estrato]))
+print(table(grupo_artificial[ids_conglomerado]))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Estratificar selecciona dentro de todos los estratos; conglomerados selecciona algunos grupos. Homogeneidad y heterogeneidad son criterios didácticos, no definiciones universales.</p><aside class="notice"><strong>Un error frecuente</strong><p>Presentar grupos artificiales como geografía de la encuesta.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Conglomerados puede tener una segunda etapa de muestreo? Sí.</p></details>
+<a class="anchor" href="#P1-12">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-13" data-title="Muestreo no probabilístico y selección" aria-labelledby="title-P1-13">
+<header class="slide-head"><h3 id="title-P1-13">Muestreo no probabilístico y selección</h3><span class="number">LÁMINA 13</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 19</span><span>Presencial</span><span>P1-13</span></div>
+<p class="question">¿Qué sucede si solo invitamos a quienes tienen al menos 16 años de educación?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Quién queda sin oportunidad de selección?</p></div>
+<h4>En R · Tu turno</h4><p>Selecciona las primeras 12 filas que cumplen ese criterio.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-13">Copiar código</button></div><pre><code>ids_conveniencia &lt;- head(which(datos$educ16), 12)
+print(datos[ids_conveniencia, c(&quot;wage&quot;, &quot;educ&quot;)])</code></pre>
+<h4>Cómo leer el resultado</h4><p>Es una selección por criterio y orden disponible, no una muestra probabilística del conjunto. Una muestra grande no elimina sesgos de cobertura o respuesta, como ilustra Literary Digest en la web.</p><aside class="notice"><strong>Un error frecuente</strong><p>Generalizar sin supuestos a quienes quedaron fuera.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Conocer el criterio equivale a conocer probabilidades de selección aleatoria? No.</p></details>
+<a class="anchor" href="#P1-13">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P1-14" data-title="Estadística descriptiva e inferencial" aria-labelledby="title-P1-14">
+<header class="slide-head"><h3 id="title-P1-14">Estadística descriptiva e inferencial</h3><span class="number">LÁMINA 14</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 1 · lámina 20</span><span>Presencial</span><span>P1-14</span></div>
+<p class="question">¿Describimos la tabla o hablamos de una población?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Decir “en estas filas” cambia el alcance?</p></div>
+<h4>En R · Tu turno</h4><p>Redacta una frase descriptiva y otra inferencial, identificando qué supuesto falta.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-14">Copiar código</button></div><pre><code>frases &lt;- c(&quot;Describo los salarios de las filas observadas&quot;,
+            &quot;Quiero estimar un promedio de una población definida&quot;)
+print(frases)</code></pre>
+<h4>Cómo leer el resultado</h4><p>La segunda frase exige definir población y mecanismo de muestreo. Continúa con la descripción antes de construir intervalos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Generalizar sin identificar el universo.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿La inferencia usa solo programación? No, también supuestos.</p></details>
+<a class="anchor" href="#P1-14">Enlace a esta lámina ↗</a></div></article></section><section class="chapter" id="P2" aria-labelledby="heading-P2"><div class="chapter-intro"><p class="eyebrow">Parte 2 · Estadística descriptiva</p><h2 id="heading-P2">Describir una distribución</h2><p>Medidas de centro, posición y dispersión; histogramas y gráficos de caja.</p></div><article class="slide" id="P2-01" data-title="Ramas de la estadística" aria-labelledby="title-P2-01">
+<header class="slide-head"><h3 id="title-P2-01">Ramas de la estadística</h3><span class="number">LÁMINA 01</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · lámina 1</span><span>Ampliación autónoma</span><span>P2-01</span></div>
+<p class="question">¿Qué puede decirnos una tabla antes de generalizar?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Un resumen de esta muestra es ya una ley general?</p></div>
+<h4>En R · Tu turno</h4><p>Selecciona la variable salarial y verifica su tamaño.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-01">Copiar código</button></div><pre><code>x &lt;- datos$wage
+print(length(x))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Descriptiva resume x; inferencia requiere un marco adicional. Los datos conservan sus unidades históricas.</p><aside class="notice"><strong>Un error frecuente</strong><p>Cambiar de población sin avisar.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un histograma es descriptivo? Sí.</p></details>
+<a class="anchor" href="#P2-01">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-02" data-title="Estadísticos como funciones de los datos" aria-labelledby="title-P2-02">
+<header class="slide-head"><h3 id="title-P2-02">Estadísticos como funciones de los datos</h3><span class="number">LÁMINA 02</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · lámina 2</span><span>Presencial</span><span>P2-02</span></div>
+<p class="question">¿Qué entra y qué sale de un estadístico?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿length devuelve un vector de 526 valores?</p></div>
+<h4>En R · Tu turno</h4><p>Construye un pequeño resumen de tamaño y rango observado.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-02">Copiar código</button></div><pre><code>resumen_inicial &lt;- c(n = length(x), minimo = min(x), maximo = max(x))
+print(resumen_inicial)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Cada función transforma el vector en un resultado. Un estadístico es una función de la muestra.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir el vector de datos con su resumen.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿max(x) conserva todas las observaciones? No.</p></details>
+<a class="anchor" href="#P2-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-03" data-title="Medidas de localización central: media y mediana" aria-labelledby="title-P2-03">
+<header class="slide-head"><h3 id="title-P2-03">Medidas de localización central: media y mediana</h3><span class="number">LÁMINA 03</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · láminas 3–4</span><span>Presencial</span><span>P2-03</span></div>
+<p class="question">¿Media y mediana reaccionan igual a un salario extremo?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuál cambiará más al añadir un valor enorme?</p></div>
+<h4>En R · Tu turno</h4><p>Calcula ambas y compara con una copia que añade un dato artificial.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-03">Copiar código</button></div><pre><code>centro &lt;- function(z) c(media = mean(z), mediana = median(z))
+print(centro(x))
+x_modificado &lt;- c(x, 10*max(x))
+print(rbind(original = centro(x), copia_con_extremo = centro(x_modificado)))
+ordenados &lt;- sort(x)
+n_x &lt;- length(x)
+mediana_manual &lt;- if (n_x %% 2 == 1) ordenados[(n_x+1)/2] else
+  (ordenados[n_x/2] + ordenados[n_x/2+1])/2
+stopifnot(isTRUE(all.equal(mediana_manual, median(x))))</code></pre>
+<h4>Cómo leer el resultado</h4><p>La media es sensible a extremos. La mediana se obtiene de posiciones centrales; la copia modificada no es una nueva observación real.</p><aside class="notice"><strong>Un error frecuente</strong><p>Guardar el dato artificial sobre la base original.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿La mediana exige ordenar conceptualmente los datos? Sí.</p></details>
+<a class="anchor" href="#P2-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-04" data-title="Percentiles y cuartiles" aria-labelledby="title-P2-04">
+<header class="slide-head"><h3 id="title-P2-04">Percentiles y cuartiles</h3><span class="number">LÁMINA 04</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · lámina 5</span><span>Presencial</span><span>P2-04</span></div>
+<p class="question">¿Dónde comienza el cuarto superior?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿P50 coincide con la mediana?</p></div>
+<h4>En R · Tu turno</h4><p>Obtén cuartiles y el percentil 90 con interpolación tipo 7.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-04">Copiar código</button></div><pre><code>cuartiles &lt;- quantile(x, probs = c(.25, .5, .75), type = 7)
+print(cuartiles)
+print(quantile(x, .9, type = 7))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Los cuartiles delimitan posiciones de la distribución; type=7 especifica la interpolación. Empates y convenciones pueden alterar recuentos exactos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Interpretar P75 como el 75% del salario máximo.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿P50 es la mitad del máximo? No.</p></details>
+<a class="anchor" href="#P2-04">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-05" data-title="Medidas de dispersión: RIQ, varianza y desviación" aria-labelledby="title-P2-05">
+<header class="slide-head"><h3 id="title-P2-05">Medidas de dispersión: RIQ, varianza y desviación</h3><span class="number">LÁMINA 05</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · láminas 6–7</span><span>Presencial</span><span>P2-05</span></div>
+<p class="question">¿Dos muestras con la misma media pueden ser diferentes?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Varianza y salario tienen las mismas unidades?</p></div>
+<h4>En R · Tu turno</h4><p>Calcula RIQ, varianza muestral y desviación estándar; verifica manualmente.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-05">Copiar código</button></div><pre><code>print(c(RIQ = IQR(x, type = 7), varianza = var(x), desviacion = sd(x)))
+s2_manual &lt;- sum((x-mean(x))^2)/(length(x)-1)
+stopifnot(isTRUE(all.equal(s2_manual, var(x))))</code></pre>
+<h4>Cómo leer el resultado</h4><p>La varianza usa unidades al cuadrado y n-1; sd conserva USD por hora. RIQ mide la separación entre P75 y P25.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir desviación estándar con error estándar de la media.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿sd(x) disminuye necesariamente cuando aumenta n? No.</p></details>
+<a class="anchor" href="#P2-05">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-06" data-title="Histogramas y elección de intervalos" aria-labelledby="title-P2-06">
+<header class="slide-head"><h3 id="title-P2-06">Histogramas y elección de intervalos</h3><span class="number">LÁMINA 06</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · lámina 8</span><span>Presencial</span><span>P2-06</span></div>
+<p class="question">¿Cambian los datos cuando cambiamos los intervalos?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Esperas ver la misma apariencia con 5 y 20 cortes sugeridos?</p></div>
+<h4>En R · Tu turno</h4><p>Dibuja dos histogramas y compara forma y frecuencias.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-06">Copiar código</button></div><pre><code>op &lt;- par(mfrow = c(1,2))
+for (b in c(5,20)) hist(x, breaks = b, col = &quot;#7DB4B5&quot;,
+  main = paste(&quot;Cortes sugeridos:&quot;, b),
+  xlab = &quot;Salario por hora (USD de 1976)&quot;, ylab = &quot;Frecuencia&quot;)
+par(op)</code></pre>
+<h4>Cómo leer el resultado</h4><p>breaks numérico es una sugerencia a R, que elige límites convenientes. La forma visual cambia aunque la muestra sea idéntica.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir barras de frecuencia con la lista de valores individuales.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un histograma con otra anchura prueba otra población? No.</p></details>
+<a class="anchor" href="#P2-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P2-07" data-title="Gráfico de caja, bigotes y valores atípicos" aria-labelledby="title-P2-07">
+<header class="slide-head"><h3 id="title-P2-07">Gráfico de caja, bigotes y valores atípicos</h3><span class="number">LÁMINA 07</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 2 · láminas 9–10</span><span>Presencial</span><span>P2-07</span></div>
+<p class="question">¿Un punto fuera de los bigotes es un error?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuántos posibles atípicos crees que aparecerán?</p></div>
+<h4>En R · Tu turno</h4><p>Dibuja la caja, extrae sus límites y contrasta bisagras con cuartiles tipo 7.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P2-07">Copiar código</button></div><pre><code>boxplot(x, horizontal = TRUE, col = &quot;#7DB4B5&quot;,
+  main = &quot;Salarios: posición y dispersión&quot;, xlab = &quot;USD por hora de 1976&quot;)
+bp &lt;- boxplot.stats(x)
+print(bp$stats); print(bp$out)
+print(quantile(x, c(.25,.5,.75), type = 7))</code></pre>
+<h4>Cómo leer el resultado</h4><p>R usa bisagras para la caja, que no siempre coinciden con quantile(type=7). Los bigotes terminan en observaciones dentro de 1,5 veces el rango entre bisagras; las cercas no son necesariamente datos. Un atípico requiere investigar, no borrar.</p><aside class="notice"><strong>Un error frecuente</strong><p>Eliminar automáticamente puntos extremos.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El bigote siempre termina justo en q3+1,5*RIQ? No.</p></details>
+<a class="anchor" href="#P2-07">Enlace a esta lámina ↗</a></div></article></section><section class="chapter" id="P3" aria-labelledby="heading-P3"><div class="chapter-intro"><p class="eyebrow">Parte 3 · Estadística inferencial</p><h2 id="heading-P3">Estimar y expresar incertidumbre</h2><p>Muestreo repetido, teorema central del límite e intervalos de confianza.</p></div><article class="slide" id="P3-01" data-title="Inferencia y población empírica de referencia" aria-labelledby="title-P3-01">
+<header class="slide-head"><h3 id="title-P3-01">Inferencia y población empírica de referencia</h3><span class="number">LÁMINA 01</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 1</span><span>Presencial</span><span>P3-01</span></div>
+<p class="question">¿Cómo podemos evaluar un método si normalmente no conocemos la verdad?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué cambia si tratamos toda la tabla como una distribución conocida?</p></div>
+<h4>En R · Tu turno</h4><p>Define la distribución empírica de salarios y sus momentos poblacionales.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-01">Copiar código</button></div><pre><code>poblacion &lt;- datos$wage
+mu &lt;- mean(poblacion)
+sigma2 &lt;- mean((poblacion-mu)^2)
+sigma &lt;- sqrt(sigma2)
+print(c(mu = mu, sigma = sigma, N = length(poblacion)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Cada fila tiene probabilidad 1/N en esta distribución didáctica. Usamos denominador N; no afirmamos conocer la varianza salarial de todo Estados Unidos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Llamar sigma a sd de la muestra sin justificar una población conocida.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Esta media es un parámetro de nuestra distribución didáctica? Sí.</p></details>
+<a class="anchor" href="#P3-01">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-02" data-title="Intervalos de confianza e incertidumbre" aria-labelledby="title-P3-02">
+<header class="slide-head"><h3 id="title-P3-02">Intervalos de confianza e incertidumbre</h3><span class="number">LÁMINA 02</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 2</span><span>Presencial</span><span>P3-02</span></div>
+<p class="question">¿Qué aporta un intervalo frente a un valor único?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Un intervalo ya calculado tiene parámetro aleatorio?</p></div>
+<h4>En R · Tu turno</h4><p>Escribe qué cambia al repetir el muestreo.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-02">Copiar código</button></div><pre><code>print(c(&quot;El parámetro didáctico permanece fijo&quot;,
+        &quot;La muestra y sus límites cambian&quot;,
+        &quot;La confianza describe el procedimiento&quot;))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Como en los aros y la estaca de cátedra, mu permanece fijo y los intervalos cambian. La cobertura es una propiedad de repetición.</p><aside class="notice"><strong>Un error frecuente</strong><p>Decir que el 95% de las observaciones está dentro del IC de la media.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un IC de media es un intervalo de salarios individuales? No.</p></details>
+<a class="anchor" href="#P3-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-03" data-title="Teorema central del límite: simulación en R" aria-labelledby="title-P3-03">
+<header class="slide-head"><h3 id="title-P3-03">Teorema central del límite: simulación en R</h3><span class="number">LÁMINA 03</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 3</span><span>Presencial</span><span>P3-03</span></div>
+<p class="question">¿Cómo se distribuye el promedio al repetir muestras?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Las medias de n=100 serán menos dispersas que las de n=5?</p></div>
+<h4>En R · Tu turno</h4><p>Extrae 1.000 muestras por tamaño, independientes y con reemplazo.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-03">Copiar código</button></div><pre><code>set.seed(16203)
+B &lt;- 1000L
+op &lt;- par(mfrow = c(1,2))
+for (n in c(5,100)) {
+  medias &lt;- replicate(B, mean(sample(poblacion, n, replace = TRUE)))
+  hist(medias, probability = TRUE, breaks = 25, col = &quot;#7DB4B5&quot;,
+       main = paste(&quot;Medias con n =&quot;, n), xlab = &quot;Media salarial (USD/h)&quot;)
+  curve(dnorm(x, mu, sigma/sqrt(n)), add = TRUE, col = &quot;#BD4C45&quot;, lwd = 2)
+  print(c(n = n, media_medias = mean(medias),
+          sd_medias = sd(medias), error_teorico = sigma/sqrt(n)))
+}
+par(op)</code></pre>
+<h4>Cómo leer el resultado</h4><p>La comparación usa muestras de una población empírica conocida, no remuestreo de una muestra para estimar un parámetro desconocido. El TCL aproxima la forma de la distribución de medias.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir salarios individuales con medias muestrales.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿sigma/sqrt(n) es la desviación de salarios? No, de la media.</p></details>
+<a class="anchor" href="#P3-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-04" data-title="Supuestos del teorema central del límite" aria-labelledby="title-P3-04">
+<header class="slide-head"><h3 id="title-P3-04">Supuestos del teorema central del límite</h3><span class="number">LÁMINA 04</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 4</span><span>Ampliación autónoma</span><span>P3-04</span></div>
+<p class="question">¿n=30 garantiza normalidad en cualquier caso?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿La asimetría afecta la rapidez de aproximación?</p></div>
+<h4>En R · Tu turno</h4><p>Comprueba que los datos utilizados son finitos y revisa el mecanismo de muestreo.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-04">Copiar código</button></div><pre><code>stopifnot(all(is.finite(poblacion)), sigma2 &gt; 0)
+print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Con reemplazo cada extracción tiene la misma distribución y es independiente. Los umbrales de tamaño son orientativos. Si la población fuera normal, su media muestral sería normal para cualquier n.</p><aside class="notice"><strong>Un error frecuente</strong><p>Tratar 30, 50 o 100 como garantías universales.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El ciclo por sí solo demuestra independencia en la encuesta original? No.</p></details>
+<a class="anchor" href="#P3-04">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-05" data-title="Intervalo para una media: ejemplo salarial" aria-labelledby="title-P3-05">
+<header class="slide-head"><h3 id="title-P3-05">Intervalo para una media: ejemplo salarial</h3><span class="number">LÁMINA 05</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 5–7</span><span>Presencial</span><span>P3-05</span></div>
+<p class="question">¿Cómo estimamos mu con una muestra de 36 salarios?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿El resultado quedará centrado en mu o en la media de la muestra?</p></div>
+<h4>En R · Tu turno</h4><p>Extrae 36 observaciones y calcula el intervalo normal de 95% con sigma conocida didáctica.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-05">Copiar código</button></div><pre><code>set.seed(16204)
+n_ic &lt;- 36L
+muestra_ic &lt;- sample(poblacion, n_ic, replace = TRUE)
+xbarra &lt;- mean(muestra_ic)
+z95 &lt;- qnorm(.975)
+se &lt;- sigma/sqrt(n_ic)
+ic95 &lt;- xbarra + c(-1,1)*z95*se
+print(c(estimacion = xbarra, error_estandar = se,
+        inferior = ic95[1], superior = ic95[2], mu_didactica = mu))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Es un ejercicio propio con wage1, análogo al ejemplo de ventas; no reproduce su media 200 ni su sigma 60. La cobertura normal aquí es aproximada.</p><aside class="notice"><strong>Un error frecuente</strong><p>Atribuir los números de ventas del sitio a la base salarial.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuál es el centro del intervalo? xbarra.</p></details>
+<a class="anchor" href="#P3-05">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-06" data-title="Componentes del intervalo de confianza de 95%" aria-labelledby="title-P3-06">
+<header class="slide-head"><h3 id="title-P3-06">Componentes del intervalo de confianza de 95%</h3><span class="number">LÁMINA 06</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 8</span><span>Ampliación autónoma</span><span>P3-06</span></div>
+<p class="question">¿Qué papel tiene cada pieza?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué ocurre al duplicar sigma y conservar lo demás?</p></div>
+<h4>En R · Tu turno</h4><p>Separa estimación, valor crítico, error estándar y margen.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-06">Copiar código</button></div><pre><code>margen95 &lt;- z95*se
+print(c(estimacion = xbarra, z = z95, se = se, margen = margen95))
+stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>El margen es z por error estándar; la longitud total es el doble del margen.</p><aside class="notice"><strong>Un error frecuente</strong><p>Usar el margen como si fuera longitud total.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Duplicar sigma duplica el margen? Sí.</p></details>
+<a class="anchor" href="#P3-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-07" data-title="Intervalos con distintos niveles de confianza" aria-labelledby="title-P3-07">
+<header class="slide-head"><h3 id="title-P3-07">Intervalos con distintos niveles de confianza</h3><span class="number">LÁMINA 07</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 9–10</span><span>Presencial</span><span>P3-07</span></div>
+<p class="question">¿Qué cambia al pasar a 99%?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿El centro debería moverse?</p></div>
+<h4>En R · Tu turno</h4><p>Calcula 90%, 95% y 99% para la misma muestra.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-07">Copiar código</button></div><pre><code>niveles &lt;- c(.90,.95,.99)
+z &lt;- qnorm((1+niveles)/2)
+limites &lt;- cbind(inferior = xbarra-z*se, superior = xbarra+z*se)
+rownames(limites) &lt;- paste0(100*niveles, &quot;%&quot;)
+print(limites)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Se utiliza el cuantil superior positivo; el centro se conserva. qnorm evita inconsistencias por redondeo de 2,57 o 2,58.</p><aside class="notice"><strong>Un error frecuente</strong><p>Extraer otra muestra y atribuir todo cambio a la confianza.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué intervalo es más ancho? El de 99%.</p></details>
+<a class="anchor" href="#P3-07">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-08" data-title="Comparación gráfica de intervalos de confianza" aria-labelledby="title-P3-08">
+<header class="slide-head"><h3 id="title-P3-08">Comparación gráfica de intervalos de confianza</h3><span class="number">LÁMINA 08</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 11</span><span>Ampliación autónoma</span><span>P3-08</span></div>
+<p class="question">¿Podemos comparar los intervalos de un vistazo?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuál abarcará a los otros?</p></div>
+<h4>En R · Tu turno</h4><p>Representa los límites en una misma recta salarial.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-08">Copiar código</button></div><pre><code>plot(range(limites), c(1,3), type = &quot;n&quot;, yaxt = &quot;n&quot;,
+     xlab = &quot;Media salarial (USD/h)&quot;, ylab = &quot;Confianza&quot;,
+     main = &quot;La misma muestra, distinta confianza&quot;)
+axis(2, at = 1:3, labels = rownames(limites))
+segments(limites[,1], 1:3, limites[,2], 1:3, lwd = 3, col = &quot;#35618A&quot;)
+points(rep(xbarra,3), 1:3, pch = 19)</code></pre>
+<h4>Cómo leer el resultado</h4><p>El intervalo mayor ofrece más cobertura bajo el modelo a costa de anchura.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir intervalo más ancho con mejor precisión.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El centro de los tres es idéntico? Sí.</p></details>
+<a class="anchor" href="#P3-08">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-09" data-title="Cobertura, confianza y precisión" aria-labelledby="title-P3-09">
+<header class="slide-head"><h3 id="title-P3-09">Cobertura, confianza y precisión</h3><span class="number">LÁMINA 09</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 12–13</span><span>Presencial</span><span>P3-09</span></div>
+<p class="question">¿Cuántos intervalos capturan la media conocida?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Se obtendrán exactamente 950 aciertos de 1.000?</p></div>
+<h4>En R · Tu turno</h4><p>Repite 1.000 veces y visualiza los primeros 100 intervalos.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-09">Copiar código</button></div><pre><code>set.seed(16205)
+medias_ic &lt;- replicate(1000, mean(sample(poblacion, n_ic, replace = TRUE)))
+L &lt;- medias_ic-z95*se; U &lt;- medias_ic+z95*se
+cubre &lt;- L &lt;= mu &amp; mu &lt;= U
+print(c(cobertura_observada = mean(cubre), confianza_nominal = .95,
+        margen_n36 = margen95, margen_n144 = z95*sigma/sqrt(144)))
+j &lt;- seq_len(100)
+plot(range(c(L[j],U[j],mu)), range(j), type = &quot;n&quot;,
+     xlab = &quot;Media salarial (USD/h)&quot;, ylab = &quot;Muestra&quot;, main = &quot;100 intervalos&quot;)
+segments(L[j],j,U[j],j,col = ifelse(cubre[j],&quot;#35618A&quot;,&quot;#BD4C45&quot;))
+abline(v = mu, lty = 2)</code></pre>
+<h4>Cómo leer el resultado</h4><p>La proporción observada fluctúa y la aproximación normal puede afectar cobertura. Cuadruplicar n reduce el margen a la mitad manteniendo confianza y sigma.</p><aside class="notice"><strong>Un error frecuente</strong><p>Prometer exactamente 95 aciertos en cada 100 muestras.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un intervalo fallido demuestra que el código está mal? No.</p></details>
+<a class="anchor" href="#P3-09">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-10" data-title="Tamaño muestral para estimar una media" aria-labelledby="title-P3-10">
+<header class="slide-head"><h3 id="title-P3-10">Tamaño muestral para estimar una media</h3><span class="number">LÁMINA 10</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 14</span><span>Ampliación autónoma</span><span>P3-10</span></div>
+<p class="question">¿Cuántas observaciones para un margen de 0,5 USD/h?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Reducir el margen a la mitad duplicará n?</p></div>
+<h4>En R · Tu turno</h4><p>Despeja n y verifica el margen obtenido después de redondear.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-10">Copiar código</button></div><pre><code>E_media &lt;- .5
+n_necesario &lt;- ceiling((qnorm(.975)*sigma/E_media)^2)
+print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>n crece con el inverso del margen al cuadrado. El muestreo con reemplazo puede requerir más extracciones que filas únicas. No es un plan validado para una encuesta nacional.</p><aside class="notice"><strong>Un error frecuente</strong><p>Redondear hacia abajo.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Reducir E a la mitad multiplica n por cuatro antes del redondeo? Sí.</p></details>
+<a class="anchor" href="#P3-10">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-11" data-title="Intervalos de confianza para proporciones" aria-labelledby="title-P3-11">
+<header class="slide-head"><h3 id="title-P3-11">Intervalos de confianza para proporciones</h3><span class="number">LÁMINA 11</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 15–19</span><span>Presencial</span><span>P3-11</span></div>
+<p class="question">¿Qué fracción tiene al menos 16 años de educación?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Puede una proporción ser mayor que 1?</p></div>
+<h4>En R · Tu turno</h4><p>Define el indicador, extrae n=200 y calcula el IC normal aproximado si se cumplen las condiciones.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-11">Copiar código</button></div><pre><code>indicador &lt;- as.integer(datos$educ &gt;= 16)
+p_real &lt;- mean(indicador)
+set.seed(16206)
+muestra_p &lt;- sample(indicador, 200, replace = TRUE)
+n_p &lt;- length(muestra_p)
+p_hat &lt;- mean(muestra_p)
+exitos &lt;- sum(muestra_p); fracasos &lt;- n_p-exitos
+stopifnot(exitos &gt; 5, fracasos &gt; 5)
+se_p &lt;- sqrt(p_hat*(1-p_hat)/n_p)
+ic_p &lt;- p_hat+c(-1,1)*qnorm(.975)*se_p
+print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
+        inferior = ic_p[1], superior = ic_p[2], p_didactica = p_real))</code></pre>
+<h4>Cómo leer el resultado</h4><p>El indicador es derivado, con definición explícita. Para aproximación poblacional se consideran np y n(1-p); los conteos observados sirven de diagnóstico práctico. Este intervalo de Wald puede funcionar mal cerca de 0 o 1; aquí no se amplían métodos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir “éxito” estadístico con juicio de valor o título universitario.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Un 1 representa exactamente qué? educ &gt;= 16.</p></details>
+<a class="anchor" href="#P3-11">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-12" data-title="Proporciones: comparación con una referencia" aria-labelledby="title-P3-12">
+<header class="slide-head"><h3 id="title-P3-12">Proporciones: comparación con una referencia</h3><span class="number">LÁMINA 12</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 20–21</span><span>Ampliación autónoma</span><span>P3-12</span></div>
+<p class="question">¿La proporción de referencia 0,20 queda en el intervalo?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Predice mirando los límites anteriores.</p></div>
+<h4>En R · Tu turno</h4><p>Comprueba inclusión y escribe una conclusión bajo el modelo didáctico.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-12">Copiar código</button></div><pre><code>referencia &lt;- .20
+compatible &lt;- ic_p[1] &lt;= referencia &amp;&amp; referencia &lt;= ic_p[2]
+print(c(referencia = referencia, dentro_del_IC = compatible))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Si queda fuera, hay evidencia de diferencia bajo los supuestos; si queda dentro, no se ha demostrado igualdad. La referencia es hipotética, no una afirmación publicada sobre Estados Unidos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Convertir ausencia de evidencia en prueba de igualdad.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Que quede dentro prueba p=0,20? No.</p></details>
+<a class="anchor" href="#P3-12">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-13" data-title="Tamaño muestral para estimar una proporción" aria-labelledby="title-P3-13">
+<header class="slide-head"><h3 id="title-P3-13">Tamaño muestral para estimar una proporción</h3><span class="number">LÁMINA 13</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 22</span><span>Ampliación autónoma</span><span>P3-13</span></div>
+<p class="question">¿Qué pasa si no tenemos estimación previa?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿p=0,5 maximiza p(1-p)?</p></div>
+<h4>En R · Tu turno</h4><p>Compara el plan con p piloto y el conservador para margen 0,03.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-13">Copiar código</button></div><pre><code>E_p &lt;- .03
+print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
+        conservador = ceiling(qnorm(.975)^2*.25/E_p^2)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Usar 0,5 maximiza la varianza Bernoulli. Una proporción piloto imprecisa puede producir un plan optimista.</p><aside class="notice"><strong>Un error frecuente</strong><p>Usar p_hat=0 como garantía de tamaño cero suficiente.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿El plan conservador depende de observar éxitos en el piloto? No.</p></details>
+<a class="anchor" href="#P3-13">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-14" data-title="Aplicación: longitud y margen de error" aria-labelledby="title-P3-14">
+<header class="slide-head"><h3 id="title-P3-14">Aplicación: longitud y margen de error</h3><span class="number">LÁMINA 14</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 23–24</span><span>Ampliación autónoma</span><span>P3-14</span></div>
+<p class="question">¿Cuántas extracciones para longitud total máxima 0,05?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿El margen será 0,05 o 0,025?</p></div>
+<h4>En R · Tu turno</h4><p>Usa una muestra piloto de 30 indicadores educativos y compara con el caso conservador.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-14">Copiar código</button></div><pre><code>set.seed(16207)
+piloto &lt;- sample(indicador, 30, replace = TRUE)
+p_estrella &lt;- mean(piloto)
+longitud_max &lt;- .05
+E_plan &lt;- longitud_max/2
+n_plan &lt;- ceiling(qnorm(.975)^2*p_estrella*(1-p_estrella)/E_plan^2)
+n_conservador &lt;- ceiling(qnorm(.975)^2*.25/E_plan^2)
+print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
+        n_conservador = n_conservador))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Es un caso propio análogo a chips; el n del piloto es una planificación aproximada, no garantía de longitud real para toda muestra futura con varianza estimada.</p><aside class="notice"><strong>Un error frecuente</strong><p>Afirmar que el resultado debe ser 711 porque ese es el ejemplo de chips.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿De dónde sale E=0,025? De dividir la longitud total por dos.</p></details>
+<a class="anchor" href="#P3-14">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-15" data-title="Comparación de medias entre dos poblaciones" aria-labelledby="title-P3-15">
+<header class="slide-head"><h3 id="title-P3-15">Comparación de medias entre dos poblaciones</h3><span class="number">LÁMINA 15</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · lámina 25</span><span>Ampliación autónoma</span><span>P3-15</span></div>
+<p class="question">¿Cómo cambia el salario medio entre umbrales educativos?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué signo esperas para alta educación menos el resto?</p></div>
+<h4>En R · Tu turno</h4><p>Define las dos poblaciones empíricas sin mezclarlas.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-15">Copiar código</button></div><pre><code>pob_alta &lt;- datos$wage[datos$educ &gt;= 16]
+pob_resto &lt;- datos$wage[datos$educ &lt; 16]
+stopifnot(length(pob_alta) &gt; 1, length(pob_resto) &gt; 1)
+print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Los grupos son dos distribuciones empíricas para una comparación didáctica. No son carreras universitarias ni grupos aleatorizados.</p><aside class="notice"><strong>Un error frecuente</strong><p>Cambiar la definición de los grupos a mitad del ejercicio.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Los grupos se superponen? No.</p></details>
+<a class="anchor" href="#P3-15">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-16" data-title="Diferencia de medias: parámetro e interpretación" aria-labelledby="title-P3-16">
+<header class="slide-head"><h3 id="title-P3-16">Diferencia de medias: parámetro e interpretación</h3><span class="number">LÁMINA 16</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 26–27</span><span>Ampliación autónoma</span><span>P3-16</span></div>
+<p class="question">¿Qué significa que el intervalo incluya cero?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué pasa con el signo si invertimos el orden?</p></div>
+<h4>En R · Tu turno</h4><p>Define delta como media de alta educación menos media del resto.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-16">Copiar código</button></div><pre><code>mu_alta &lt;- mean(pob_alta); mu_resto &lt;- mean(pob_resto)
+delta &lt;- mu_alta-mu_resto
+print(c(delta_didactica = delta))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Un intervalo que excluye cero aporta evidencia de diferencia bajo el procedimiento. Invertir el orden invierte el signo y los extremos correspondientes.</p><aside class="notice"><strong>Un error frecuente</strong><p>Interpretar incluir cero como demostrar igualdad.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Excluir cero prueba causalidad? No.</p></details>
+<a class="anchor" href="#P3-16">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-17" data-title="Diferencia de medias con varianzas conocidas" aria-labelledby="title-P3-17">
+<header class="slide-head"><h3 id="title-P3-17">Diferencia de medias con varianzas conocidas</h3><span class="number">LÁMINA 17</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 28–31</span><span>Ampliación autónoma</span><span>P3-17</span></div>
+<p class="question">¿Cómo se combina la incertidumbre de muestras independientes?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Se restan o se suman las varianzas?</p></div>
+<h4>En R · Tu turno</h4><p>Extrae 144 y 121 salarios con reemplazo de cada grupo; calcula el error estándar de la diferencia.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-17">Copiar código</button></div><pre><code>var_alta &lt;- mean((pob_alta-mu_alta)^2)
+var_resto &lt;- mean((pob_resto-mu_resto)^2)
+set.seed(16208)
+n_a &lt;- 144L; n_b &lt;- 121L
+m_a &lt;- sample(pob_alta, n_a, replace = TRUE)
+m_b &lt;- sample(pob_resto, n_b, replace = TRUE)
+diferencia &lt;- mean(m_a)-mean(m_b)
+se_diferencia &lt;- sqrt(var_alta/n_a+var_resto/n_b)
+print(c(estimacion = diferencia, error_estandar = se_diferencia))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Las varianzas se suman por independencia aunque las medias se resten. Los momentos conocidos son de las distribuciones didácticas con denominador N de cada grupo.</p><aside class="notice"><strong>Un error frecuente</strong><p>Usar var(m_a) y llamarla varianza poblacional conocida.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Usar una sola muestra compartida garantizaría independencia? No.</p></details>
+<a class="anchor" href="#P3-17">Enlace a esta lámina ↗</a></div></article><article class="slide" id="P3-18" data-title="Diferencia de medias: intervalo y conclusión" aria-labelledby="title-P3-18">
+<header class="slide-head"><h3 id="title-P3-18">Diferencia de medias: intervalo y conclusión</h3><span class="number">LÁMINA 18</span></header>
+<div class="slide-body"><div class="meta"><span>Parte 3 · láminas 32–34</span><span>Presencial</span><span>P3-18</span></div>
+<p class="question">¿La diferencia es compatible con cero?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Tu conclusión cambia si hablas de causa?</p></div>
+<h4>En R · Tu turno</h4><p>Calcula límites y escribe dos frases: resultado e interpretación limitada.</p>
+<p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P3-18">Copiar código</button></div><pre><code>ic_d &lt;- diferencia+c(-1,1)*qnorm(.975)*se_diferencia
+print(c(inferior = ic_d[1], superior = ic_d[2], delta_didactica = delta,
+        contiene_cero = ic_d[1] &lt;= 0 &amp;&amp; ic_d[2] &gt;= 0))
+plot(range(c(ic_d,0)), c(0,1), type = &quot;n&quot;, yaxt = &quot;n&quot;, ylab = &quot;&quot;,
+     xlab = &quot;Diferencia de medias (USD/h de 1976)&quot;, main = &quot;Alta educación menos resto&quot;)
+segments(ic_d[1],.5,ic_d[2],.5,lwd = 3,col = &quot;#35618A&quot;)
+points(diferencia,.5,pch = 19); abline(v = 0,lty = 2)</code></pre>
+<h4>Cómo leer el resultado</h4><p>Redacta según la salida efectiva: el IC incluye o excluye cero. El resultado compara medias de las poblaciones didácticas bajo muestreo independiente; no estima el efecto causal de educarse ni una brecha actual chilena.</p><aside class="notice"><strong>Un error frecuente</strong><p>Copiar la conclusión sin mirar los límites obtenidos.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Controlamos habilidad y contexto familiar? No.</p></details>
+<a class="anchor" href="#P3-18">Enlace a esta lámina ↗</a></div></article></section><section class="closure brief" id="cierre"><p class="eyebrow">Cierre</p><h2>Antes de salir: explica lo que hiciste</h2><ol><li>¿Qué evita que un while sea infinito?</li><li>¿Una muestra por conveniencia representa a todos?</li><li>¿Qué medida reacciona más ante un extremo?</li><li>¿Un IC de 95% contiene el 95% de los salarios?</li><li>¿Qué pasa con el margen al cuadruplicar n?</li><li>¿Una diferencia salarial prueba un efecto causal?</li></ol><details class="check"><summary>Revisar respuestas</summary><div class="solution-body"><ol><li>Actualizar el estado y establecer un máximo de iteraciones.</li><li>No; hay exclusiones y probabilidades de selección no justificadas.</li><li>En general, la media.</li><li>No; la confianza describe la cobertura del procedimiento para un parámetro.</li><li>Se reduce a la mitad con sigma y confianza constantes.</li><li>No; no se han aislado los otros factores.</li></ol></div></details><p>Para continuar: capítulo 1 y apéndice C de Wooldridge, según la lectura indicada por Sebastián.</p></section><footer class="footer"><p>Iván · Taller de Econometría ICS-294 · Universidad Técnica Federico Santa María</p><p><a href="https://hizocar.github.io/econometria-usm/clases/clase1/">Cátedra de Sebastián ↗</a><a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">Fuente de datos ↗</a><a href="guia-actividades-taller-1.md">Guía y trazabilidad ↗</a><a href="https://github.com/IvanRenatoC/UTFSM-econometria">Repositorio ↗</a></p><p>Actividades propias para complementar la cátedra. Todo el código del curso está en R. Las soluciones se conservan en el notebook y la guía.</p></footer></div></main><nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>
+const slides=[...document.querySelectorAll('.slide')];let current=0;const toggle=document.querySelector('#present');const count=document.querySelector('.counter');
+function show(i){current=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===current));count.textContent=`${current+1} / ${slides.length}`;document.querySelector('#prev').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;if(document.body.classList.contains('presenting'))window.scrollTo(0,0);}
+toggle.addEventListener('click',()=>{const on=document.body.classList.toggle('presenting');toggle.textContent=on?'Salir de presentación':'Modo presentación';toggle.setAttribute('aria-pressed',String(on));if(on){const h=location.hash.slice(1);const index=slides.findIndex(s=>s.id===h);show(index>=0?index:current);}});
+document.querySelector('#prev').addEventListener('click',()=>show(current-1));document.querySelector('#next').addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',ev=>{if(!document.body.classList.contains('presenting')||['INPUT','TEXTAREA','SELECT'].includes(ev.target.tagName))return;if(ev.key==='ArrowRight'){show(current+1);ev.preventDefault();}if(ev.key==='ArrowLeft'){show(current-1);ev.preventDefault();}if(ev.key==='Escape')toggle.click();});
+document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{const code=button.closest('.solution-body').querySelector('code').textContent;try{await navigator.clipboard.writeText(code);button.textContent='Copiado';setTimeout(()=>button.textContent='Copiar código',1500);}catch{button.textContent='Selecciona y copia el código';}}));show(0);
+</script></body></html>

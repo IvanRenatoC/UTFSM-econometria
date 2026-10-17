@@ -2,6 +2,7 @@
 
 Material presencial de Iván para complementar la cátedra de Sebastián Azócar en ICS-294. Horario: 18:50–21:25, con pausa de 15 minutos y 140 minutos efectivos.
 
+- [Versión web con láminas](index.html) — abrir en un navegador; GitHub muestra el código hasta habilitar Pages.
 - [Guía de actividades](guia-actividades-taller-1.md)
 - [Notebook con kernel R](clase-taller-1.ipynb)
 - [Script equivalente para RStudio](clase-taller-1.R)
@@ -17,3 +18,9 @@ Descargar o clonar el repositorio completo y abrirlo desde su carpeta raíz. Par
 **Validación pendiente:** no se ejecutó R en el entorno de elaboración. Antes de usar en clase, ejecutar el script en una sesión limpia o todas las celdas del notebook y revisar salidas y gráficos. No hay resultados de ejecución inventados.
 
 `clase-1-pasado/` conserva el material de referencia atribuido a Jocelyn Tapia Stefanoni. Las actividades nuevas se elaboraron con datos asociados al libro de Jeffrey M. Wooldridge; no son transcripciones de sus ejercicios.
+
+## Versión web
+
+`index.html` contiene las 47 láminas enmarcadas, soluciones desplegables, copia de código y modo presentación. Los títulos se sincronizan con la guía, el script y el notebook al ejecutar `python3 herramientas/generar_web.py`.
+
+**Publicación pendiente:** GitHub Pages solicita actualizar el plan o convertir el repositorio en público. Se mantiene privado según lo solicitado. Publicar una web implica decidir por separado quién puede verla; no se cambió la visibilidad.

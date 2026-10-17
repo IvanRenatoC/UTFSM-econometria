@@ -65,7 +65,7 @@ Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación s
 
 
 <a id="NIV-01"></a>
-## NIV-01 · Tu primera instrucción
+## NIV-01 · Entorno de R, objetos y asignación
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -99,7 +99,7 @@ print(c(tipo = typeof(saldo), longitud = length(saldo)))
 
 
 <a id="NIV-02"></a>
-## NIV-02 · Reserva y llena un vector
+## NIV-02 · Vectores: creación, selección y modificación
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -134,7 +134,7 @@ print(v); print(length(v))
 
 
 <a id="NIV-03"></a>
-## NIV-03 · Tomar una decisión
+## NIV-03 · Condicionales: if, else y operadores lógicos
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -172,7 +172,7 @@ print(v[v > 4])
 
 
 <a id="NIV-04"></a>
-## NIV-04 · Repetir con for
+## NIV-04 · Ciclos for y llenado de vectores
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -207,7 +207,7 @@ print(dobles)
 
 
 <a id="NIV-05"></a>
-## NIV-05 · Tres sucesiones
+## NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -247,7 +247,7 @@ stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
 
 
 <a id="NIV-06"></a>
-## NIV-06 · Un while que termina
+## NIV-06 · Ciclos while y condiciones de término
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -289,7 +289,7 @@ print(c(pasos = paso, valor = valor))
 
 
 <a id="NIV-07"></a>
-## NIV-07 · Una matriz, dos índices
+## NIV-07 · Matrices y ciclos anidados
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -328,7 +328,7 @@ print(m); print(dim(m))
 
 
 <a id="NIV-08"></a>
-## NIV-08 · Integra: término y clasificación
+## NIV-08 · Actividad integradora: sucesiones y matrices
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -369,7 +369,7 @@ print(resultado)
 
 
 <a id="P1-01"></a>
-## P1-01 · ¿Qué podemos preguntar a los datos?
+## P1-01 · Introducción a la econometría y a los datos
 
 **Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
 
@@ -416,7 +416,7 @@ head(datos)
 
 
 <a id="P1-02"></a>
-## P1-02 · Tres preguntas distintas
+## P1-02 · Econometría moderna: describir, explicar y predecir
 
 **Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
 
@@ -452,7 +452,7 @@ print(preguntas)
 
 
 <a id="P1-03"></a>
-## P1-03 · De la pregunta a las columnas
+## P1-03 · Del modelo económico a las variables observadas
 
 **Referencia:** Parte 1 · lámina 3 · **Modalidad:** Presencial.
 
@@ -484,7 +484,7 @@ print(head(datos[c("wage", "educ", "exper")]))
 
 
 <a id="P1-04"></a>
-## P1-04 · Mirar una asociación
+## P1-04 · Correlación, causalidad y factores no observados
 
 **Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
 
@@ -517,7 +517,7 @@ plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
 
 
 <a id="P1-05"></a>
-## P1-05 · Educación: grupos con límites
+## P1-05 · Educación y salarios: alcances de la comparación
 
 **Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
 
@@ -549,7 +549,7 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 <a id="P1-06"></a>
-## P1-06 · La base correcta para cada pregunta
+## P1-06 · Econometría aplicada y diseño de estudios
 
 **Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
 
@@ -583,7 +583,7 @@ print(necesidades)
 
 
 <a id="P1-07"></a>
-## P1-07 · La forma de la tabla
+## P1-07 · Tipos y estructura de los datos económicos
 
 **Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
 
@@ -618,7 +618,7 @@ print(estructuras)
 
 
 <a id="P1-08"></a>
-## P1-08 · Una población didáctica
+## P1-08 · Población, muestra y unidad de observación
 
 **Referencia:** Parte 1 · láminas 12–13 · **Modalidad:** Presencial.
 
@@ -653,7 +653,7 @@ print(datos[ids, c("wage", "educ")])
 
 
 <a id="P1-09"></a>
-## P1-09 · ¿Por qué no observar a todos?
+## P1-09 · Razones para trabajar con muestras
 
 **Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
 
@@ -687,7 +687,7 @@ print(capacidad)
 
 
 <a id="P1-10"></a>
-## P1-10 · ¿Qué queremos estimar?
+## P1-10 · Variables, parámetros y estadísticos
 
 **Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
 
@@ -722,7 +722,7 @@ print(data.frame(
 
 
 <a id="P1-11"></a>
-## P1-11 · Cuatro formas de seleccionar
+## P1-11 · Métodos de muestreo probabilístico en R
 
 **Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
 
@@ -766,7 +766,7 @@ print(list(simple = ids_simple, sistematico = ids_sistema,
 
 
 <a id="P1-12"></a>
-## P1-12 · Dentro de todos o algunos grupos
+## P1-12 · Muestreo estratificado y por conglomerados
 
 **Referencia:** Parte 1 · lámina 18 · **Modalidad:** Ampliación autónoma.
 
@@ -798,7 +798,7 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 
 <a id="P1-13"></a>
-## P1-13 · Seleccionar por conveniencia
+## P1-13 · Muestreo no probabilístico y selección
 
 **Referencia:** Parte 1 · lámina 19 · **Modalidad:** Presencial.
 
@@ -830,7 +830,7 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 
 
 <a id="P1-14"></a>
-## P1-14 · La frontera entre resumir e inferir
+## P1-14 · Estadística descriptiva e inferencial
 
 **Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
 
@@ -863,7 +863,7 @@ print(frases)
 
 
 <a id="P2-01"></a>
-## P2-01 · Primero describir
+## P2-01 · Ramas de la estadística
 
 **Referencia:** Parte 2 · lámina 1 · **Modalidad:** Ampliación autónoma.
 
@@ -895,7 +895,7 @@ print(length(x))
 
 
 <a id="P2-02"></a>
-## P2-02 · Una función resume muchos datos
+## P2-02 · Estadísticos como funciones de los datos
 
 **Referencia:** Parte 2 · lámina 2 · **Modalidad:** Presencial.
 
@@ -927,7 +927,7 @@ print(resumen_inicial)
 
 
 <a id="P2-03"></a>
-## P2-03 · ¿El sueldo típico es el promedio?
+## P2-03 · Medidas de localización central: media y mediana
 
 **Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
 
@@ -966,7 +966,7 @@ stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
 
 
 <a id="P2-04"></a>
-## P2-04 · Ubicarse en la distribución
+## P2-04 · Percentiles y cuartiles
 
 **Referencia:** Parte 2 · lámina 5 · **Modalidad:** Presencial.
 
@@ -999,7 +999,7 @@ print(quantile(x, .9, type = 7))
 
 
 <a id="P2-05"></a>
-## P2-05 · Cuánto se dispersan los salarios
+## P2-05 · Medidas de dispersión: RIQ, varianza y desviación
 
 **Referencia:** Parte 2 · láminas 6–7 · **Modalidad:** Presencial.
 
@@ -1032,7 +1032,7 @@ stopifnot(isTRUE(all.equal(s2_manual, var(x))))
 
 
 <a id="P2-06"></a>
-## P2-06 · Un histograma, varias decisiones
+## P2-06 · Histogramas y elección de intervalos
 
 **Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
 
@@ -1067,7 +1067,7 @@ par(op)
 
 
 <a id="P2-07"></a>
-## P2-07 · Leer la caja y los bigotes
+## P2-07 · Gráfico de caja, bigotes y valores atípicos
 
 **Referencia:** Parte 2 · láminas 9–10 · **Modalidad:** Presencial.
 
@@ -1102,7 +1102,7 @@ print(quantile(x, c(.25,.5,.75), type = 7))
 
 
 <a id="P3-01"></a>
-## P3-01 · Conocer una población para aprender a inferir
+## P3-01 · Inferencia y población empírica de referencia
 
 **Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
 
@@ -1137,7 +1137,7 @@ print(c(mu = mu, sigma = sigma, N = length(poblacion)))
 
 
 <a id="P3-02"></a>
-## P3-02 · Un intervalo, una afirmación limitada
+## P3-02 · Intervalos de confianza e incertidumbre
 
 **Referencia:** Parte 3 · lámina 2 · **Modalidad:** Presencial.
 
@@ -1170,7 +1170,7 @@ print(c("El parámetro didáctico permanece fijo",
 
 
 <a id="P3-03"></a>
-## P3-03 · Muchas muestras, muchas medias
+## P3-03 · Teorema central del límite: simulación en R
 
 **Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
 
@@ -1212,7 +1212,7 @@ par(op)
 
 
 <a id="P3-04"></a>
-## P3-04 · Cuándo confiar en la aproximación
+## P3-04 · Supuestos del teorema central del límite
 
 **Referencia:** Parte 3 · lámina 4 · **Modalidad:** Ampliación autónoma.
 
@@ -1244,7 +1244,7 @@ print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
 
 
 <a id="P3-05"></a>
-## P3-05 · El primer intervalo salarial
+## P3-05 · Intervalo para una media: ejemplo salarial
 
 **Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
 
@@ -1283,7 +1283,7 @@ print(c(estimacion = xbarra, error_estandar = se,
 
 
 <a id="P3-06"></a>
-## P3-06 · Desarmar el IC de 95%
+## P3-06 · Componentes del intervalo de confianza de 95%
 
 **Referencia:** Parte 3 · lámina 8 · **Modalidad:** Ampliación autónoma.
 
@@ -1316,7 +1316,7 @@ stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
 
 
 <a id="P3-07"></a>
-## P3-07 · Cambiar solo la confianza
+## P3-07 · Intervalos con distintos niveles de confianza
 
 **Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
 
@@ -1351,7 +1351,7 @@ print(limites)
 
 
 <a id="P3-08"></a>
-## P3-08 · Ver la anchura
+## P3-08 · Comparación gráfica de intervalos de confianza
 
 **Referencia:** Parte 3 · lámina 11 · **Modalidad:** Ampliación autónoma.
 
@@ -1387,7 +1387,7 @@ points(rep(xbarra,3), 1:3, pch = 19)
 
 
 <a id="P3-09"></a>
-## P3-09 · ¿Qué significa 95% de confianza?
+## P3-09 · Cobertura, confianza y precisión
 
 **Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
 
@@ -1428,7 +1428,7 @@ abline(v = mu, lty = 2)
 
 
 <a id="P3-10"></a>
-## P3-10 · Planificar el tamaño para una media
+## P3-10 · Tamaño muestral para estimar una media
 
 **Referencia:** Parte 3 · lámina 14 · **Modalidad:** Ampliación autónoma.
 
@@ -1461,7 +1461,7 @@ print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
 
 
 <a id="P3-11"></a>
-## P3-11 · Una proporción educativa
+## P3-11 · Intervalos de confianza para proporciones
 
 **Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
 
@@ -1503,7 +1503,7 @@ print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
 
 
 <a id="P3-12"></a>
-## P3-12 · ¿Es compatible una referencia?
+## P3-12 · Proporciones: comparación con una referencia
 
 **Referencia:** Parte 3 · láminas 20–21 · **Modalidad:** Ampliación autónoma.
 
@@ -1536,7 +1536,7 @@ print(c(referencia = referencia, dentro_del_IC = compatible))
 
 
 <a id="P3-13"></a>
-## P3-13 · Tamaño para una proporción
+## P3-13 · Tamaño muestral para estimar una proporción
 
 **Referencia:** Parte 3 · lámina 22 · **Modalidad:** Ampliación autónoma.
 
@@ -1569,7 +1569,7 @@ print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
 
 
 <a id="P3-14"></a>
-## P3-14 · Longitud no es margen
+## P3-14 · Aplicación: longitud y margen de error
 
 **Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
 
@@ -1608,7 +1608,7 @@ print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
 
 
 <a id="P3-15"></a>
-## P3-15 · Comparar dos grupos educativos
+## P3-15 · Comparación de medias entre dos poblaciones
 
 **Referencia:** Parte 3 · lámina 25 · **Modalidad:** Ampliación autónoma.
 
@@ -1642,7 +1642,7 @@ print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
 
 
 <a id="P3-16"></a>
-## P3-16 · Definir el sentido de la diferencia
+## P3-16 · Diferencia de medias: parámetro e interpretación
 
 **Referencia:** Parte 3 · láminas 26–27 · **Modalidad:** Ampliación autónoma.
 
@@ -1675,7 +1675,7 @@ print(c(delta_didactica = delta))
 
 
 <a id="P3-17"></a>
-## P3-17 · Sumar incertidumbre de dos medias
+## P3-17 · Diferencia de medias con varianzas conocidas
 
 **Referencia:** Parte 3 · láminas 28–31 · **Modalidad:** Ampliación autónoma.
 
@@ -1714,7 +1714,7 @@ print(c(estimacion = diferencia, error_estandar = se_diferencia))
 
 
 <a id="P3-18"></a>
-## P3-18 · Cerrar con una conclusión honesta
+## P3-18 · Diferencia de medias: intervalo y conclusión
 
 **Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
 
