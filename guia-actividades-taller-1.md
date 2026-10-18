@@ -576,8 +576,6 @@ head(datos)
 
 **Lectura del resultado:** wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.
 
-**Error frecuente:** Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.
-
 **Comprueba:** ¿526 filas equivalen a 526 períodos? No.
 
 
