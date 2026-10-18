@@ -12,22 +12,8 @@ w <- abs(x - y)
 print(x)
 print(y)
 
-# NIV-02 · Vectores: creación, selección, modificación y llenado con for
-# 1. Crear, seleccionar y modificar
-v <- numeric(3)
-v[1] <- 2; v[2] <- 6; v[3] <- 9
-print(v[v > 4])
-v[2] <- 7
-print(v); print(length(v))
-
-# 2. Reservar y llenar con for
-dobles <- numeric(5)
-for (i in seq_along(dobles)) {
-  dobles[i] <- 2 * i
-}
-print(dobles)
-
 # NIV-03 · Condicionales: if, else y operadores lógicos
+v <- c(2, 7, 9)  # Valores del ejemplo, definidos antes de usarlos.
 valor <- 8
 if (valor > 4) {
   mensaje <- "Supera el umbral"
@@ -36,18 +22,6 @@ if (valor > 4) {
 }
 print(mensaje)
 print(v[v > 4])
-
-# NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
-a <- g <- r <- numeric(6)
-a[1] <- 2; g[1] <- 2; r[1] <- 1
-for (i in 2:length(a)) {
-  a[i] <- a[i-1] + 3
-  g[i] <- 2 * g[i-1]
-  r[i] <- 2 * r[i-1] + 1
-}
-print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
-stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
-          all(g == 2 * 2^(seq_along(g)-1)))
 
 # NIV-06 · Ciclos while y condiciones de término
 valor <- 1
@@ -62,6 +36,33 @@ while (valor < 100 && paso < max_pasos) {
 }
 print(trayectoria[seq_len(paso + 1L)])
 print(c(pasos = paso, valor = valor))
+
+# NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
+a <- g <- r <- numeric(6)
+a[1] <- 2; g[1] <- 2; r[1] <- 1
+for (i in 2:length(a)) {
+  a[i] <- a[i-1] + 3
+  g[i] <- 2 * g[i-1]
+  r[i] <- 2 * r[i-1] + 1
+}
+print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
+stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
+          all(g == 2 * 2^(seq_along(g)-1)))
+
+# NIV-02 · Vectores: creación, selección, modificación y llenado con for
+# 1. Crear, seleccionar y modificar
+v <- numeric(3)
+v[1] <- 2; v[2] <- 6; v[3] <- 9
+print(v[v > 4])
+v[2] <- 7
+print(v); print(length(v))
+
+# 2. Reservar y llenar con for
+dobles <- numeric(5)
+for (i in seq_along(dobles)) {
+  dobles[i] <- 2 * i
+}
+print(dobles)
 
 # NIV-07 · Matrices y ciclos anidados
 m <- matrix(0, nrow = 2, ncol = 3)
