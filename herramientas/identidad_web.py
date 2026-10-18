@@ -1,6 +1,8 @@
 """Aplica la identidad visual del taller a la página generada, sin alterar actividades."""
 from html import escape
 import re
+from pathlib import Path
+from hashlib import sha256
 
 def animacion_vector():
     cells = ''.join(f'<span class="vector-cell"><span class="vector-dot" aria-hidden="true"></span></span>' for i in range(1, 7))
@@ -56,4 +58,9 @@ def aplicar_identidad(html, activities):
     html = re.sub(r'(<article class="slide" id="NIV-07".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_matriz(), html, count=1, flags=re.S)
     if not any(a['id'] == 'NIV-04' for a in activities):
         html = html.replace('<article class="slide" id="NIV-02"', '<span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02"', 1)
+    # Cambia la URL cuando cambia el recurso para evitar estilos o controles antiguos en caché.
+    root = Path(__file__).resolve().parent.parent
+    for asset in ('identidad-utfsm.css', 'navegacion-utfsm.js'):
+        version = sha256((root / asset).read_bytes()).hexdigest()[:12]
+        html = html.replace(f'"{asset}"', f'"{asset}?v={version}"')
     return html
