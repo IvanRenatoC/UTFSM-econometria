@@ -1,69 +1,90 @@
-"""Genera el video local con voz española del sistema y gráficos de las tablas.
-Requiere macOS (say), Pillow y ffmpeg. --prepare crea los guiones en /tmp;
---render reutiliza las narraciones allí guardadas. Sin opciones hace todo.
+"""Genera 45 segundos de puntos animados, sin pista de audio.
+Requiere Pillow y ffmpeg. Ejecutar: python3 herramientas/generar_video_datasets.py
 """
 from pathlib import Path
-import sys,subprocess,json,math,textwrap
+import subprocess,json,math,random
 from PIL import Image,ImageDraw,ImageFont
 from video_datasets import CHAPTERS
 ROOT=Path(__file__).resolve().parent.parent
-TEMP=Path('/tmp/utfsm-video-datasets');TEMP.mkdir(exist_ok=True)
 MEDIA=ROOT/'media';MEDIA.mkdir(exist_ok=True)
-for i,c in enumerate(CHAPTERS): (TEMP/f'{i}.txt').write_text(c['narration'])
-if '--prepare' in sys.argv: sys.exit()
-if '--render' not in sys.argv:
- for i in range(len(CHAPTERS)):
-  subprocess.run(['say','-v','Paulina','-r','165','-f',str(TEMP/f'{i}.txt'),'-o',str(TEMP/f'{i}.aiff')],check=True)
-font='/System/Library/Fonts/Supplemental/Arial.ttf'
-bold='/System/Library/Fonts/Supplemental/Arial Bold.ttf'
-def f(size,weight=False):return ImageFont.truetype(bold if weight else font,size)
-navy='#1b2a5e';blue='#0160a0';gold='#f8c751'
-durations=[];timing=[];start=0
-for i,c in enumerate(CHAPTERS):
- raw=float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',str(TEMP/f'{i}.aiff')]))
- duration=math.ceil(raw+2);durations.append(duration);timing.append(dict(start=start,duration=duration));start+=duration
-
-def frame(i,t):
- c=CHAPTERS[i];im=Image.new('RGB',(1280,720),'white');d=ImageDraw.Draw(im)
- d.rectangle((0,0,1280,76),fill=navy);d.rectangle((0,76,1280,81),fill=gold)
- d.text((40,23),'ECONOMETRÍA · TIPOS DE DATASETS',font=f(26,True),fill='white')
- d.text((1050,25),f'{i+1} / 4',font=f(25,True),fill=gold)
- d.text((45,108),c['title'],font=f(43,True),fill=navy)
- d.text((45,164),c['subtitle'],font=f(27),fill=blue)
- widths=[220,145,200,185];left=45;top=230;rh=58
- active=min(3,int(t/max(1,durations[i]-4)*4))
- for r, row in enumerate([c['headers']]+c['rows']):
-  y=top+r*rh;x=left
-  for j,text in enumerate(row):
-   bg=navy if r==0 else ('#fff0bb' if r-1==active else '#edf2f7')
-   d.rectangle((x,y,x+widths[j],y+rh),fill=bg,outline='white',width=3)
-   d.text((x+14,y+16),text,font=f(25,r==0),fill='white' if r==0 else navy);x+=widths[j]
- d.rounded_rectangle((840,230,1230,520),radius=18,fill='#edf2f7')
- for k,line in enumerate(textwrap.wrap(c['key'],24)):d.text((862,255+k*35),line,font=f(27,True),fill=navy)
- d.text((860,435),'Modelo ilustrativo',font=f(22),fill=blue)
- d.text((860,475),c['formula'],font=f(24),fill=navy)
- d.text((45,548),'Ejemplos ficticios · Las tablas no son nuevas bases empíricas.',font=f(23),fill=blue)
- d.rounded_rectangle((45,595,1230,670),radius=12,fill=navy)
- d.text((67,615),c['key'],font=f(29,True),fill='white')
- d.rectangle((45,694,1230,701),fill='#dce2ea');d.rectangle((45,694,45+int(1185*t/durations[i]),701),fill=gold)
+FONT='/System/Library/Fonts/Supplemental/Arial.ttf'
+BOLD='/System/Library/Fonts/Supplemental/Arial Bold.ttf'
+def f(size,weight=False):return ImageFont.truetype(BOLD if weight else FONT,size)
+NAVY='#1b2a5e';BLUE='#0160a0';GOLD='#f8c751';GREEN='#00875a'
+YEARS=list(range(2020,2026))
+VALUES=[[4,6,5,8,7,10],[10,9,12,11,14,13],[16,15,18,17,19,20]]
+COLORS=[BLUE,GOLD,GREEN]
+STARTS=[]
+for chapter in range(3):
+ rng=random.Random(320+chapter)
+ STARTS.append([(rng.uniform(200,1100),rng.uniform(245,505)) for _ in range(18 if chapter==2 else 6)])
+def smooth(value):
+ value=max(0,min(1,value));return value*value*(3-2*value)
+def frame(chapter,time):
+ c=CHAPTERS[chapter];im=Image.new('RGB',(1280,720),'white');d=ImageDraw.Draw(im)
+ d.text((48,25),'ECONOMETRÍA · TIPOS DE DATASETS',font=f(23,True),fill=NAVY)
+ d.text((1070,25),f'{chapter+1} / 3 · 15 s',font=f(23,True),fill=BLUE)
+ d.line((48,69,1232,69),fill=GOLD,width=4)
+ d.text((48,91),c['title'],font=f(42,True),fill=NAVY)
+ d.text((48,146),c['subtitle'],font=f(26),fill=BLUE)
+ # Axes are introduced as the cloud orders itself.
+ reveal=smooth((time-2)/2)
+ axiscolor=tuple(round(255+(v-255)*reveal) for v in (160,175,191))
+ d.line((150,530,1180,530),fill=axiscolor,width=2)
+ d.line((150,220,150,530),fill=axiscolor,width=2)
+ if time>=3:
+  d.text((55,205),'Valor',font=f(23),fill=NAVY)
+  for value in (0,5,10,15,20):
+   y=530-value/22*280
+   d.text((106,y-12),str(value),font=f(20),fill=NAVY)
+  for j in range(6):
+   x=230+j*170
+   label=chr(65+j) if chapter==0 else str(YEARS[j])
+   d.text((x,547),label,font=f(22),fill=NAVY,anchor='mt')
+  d.text((670,580),'Unidad (todas en 2020)' if chapter==0 else 'Tiempo (año)',font=f(22,True),fill=NAVY,anchor='mt')
+ positions=[]
+ n=18 if chapter==2 else 6
+ for index in range(n):
+  group=index//6 if chapter==2 else 0;j=index%6
+  value=([5,12,8,16,10,19][j] if chapter==0 else VALUES[group][j])
+  target=(230+j*170,530-value/22*280)
+  progress=smooth((time-2-index*.12)/5)
+  start=STARTS[chapter][index]
+  positions.append((start[0]+(target[0]-start[0])*progress,start[1]+(target[1]-start[1])*progress))
+ if chapter>0 and time>9:
+  fraction=smooth((time-9)/3)
+  for group in range(3 if chapter==2 else 1):
+   for j in range(5):
+    a=positions[group*6+j];b=positions[group*6+j+1]
+    segment=max(0,min(1,fraction*5-j))
+    if segment>0:d.line((a[0],a[1],a[0]+(b[0]-a[0])*segment,a[1]+(b[1]-a[1])*segment),fill=COLORS[group],width=3)
+ for index,(x,y) in enumerate(positions):
+  group=index//6 if chapter==2 else 0;color=COLORS[group]
+  d.ellipse((x-10,y-10,x+10,y+10),fill=color,outline=NAVY,width=2)
+  if chapter==0 and time<3:d.text((x+14,y-12),chr(65+index),font=f(21),fill=NAVY)
+ if chapter==1:d.text((900,190),'Azul: unidad A',font=f(22,True),fill=BLUE)
+ if chapter==2:
+  for group in range(3):
+   x=755+group*155;d.ellipse((x,193,x+15,208),fill=COLORS[group],outline=NAVY)
+   d.text((x+24,186),f'Unidad {chr(65+group)}',font=f(21),fill=NAVY)
+ cue=c['cues'][0 if time<4 else 1 if time<10 else 2]
+ d.text((640,635),cue,font=f(26,True),fill=NAVY,anchor='mt')
+ d.text((48,687),'Ejemplo ficticio · Cada punto representa una observación.',font=f(18),fill=BLUE)
+ d.text((1230,687),f'{int(chapter*15+time):02d} / 45 s',font=f(18),fill=BLUE,anchor='rt')
  return im
-
-for i,c in enumerate(CHAPTERS):
- proc=subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pix_fmt','rgb24','-s','1280x720','-r','5','-i','pipe:0','-i',str(TEMP/f'{i}.aiff'),'-af','apad','-t',str(durations[i]),'-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-r','25','-c:a','aac','-b:a','96k','-movflags','+faststart',str(TEMP/f'{i}.mp4')],stdin=subprocess.PIPE)
- for tick in range(durations[i]*5):proc.stdin.write(frame(i,tick/5).tobytes())
- proc.stdin.close()
- if proc.wait():raise RuntimeError('Falló ffmpeg')
-frame(0,0).save(MEDIA/'tipos-datasets-portada.png')
-(TEMP/'concat.txt').write_text('\n'.join(f"file '{TEMP}/{i}.mp4'" for i in range(len(CHAPTERS))))
-subprocess.run(['ffmpeg','-v','error','-y','-f','concat','-safe','0','-i',str(TEMP/'concat.txt'),'-c','copy','-movflags','+faststart',str(MEDIA/'tipos-datasets.mp4')],check=True)
-(MEDIA/'tipos-datasets-capitulos.json').write_text(json.dumps(timing,indent=2))
-def stamp(seconds):
- ms=round(seconds*1000);return f'{ms//3600000:02}:{ms//60000%60:02}:{ms//1000%60:02}.{ms%1000:03}'
+fps=20
+proc=subprocess.Popen(['ffmpeg','-v','error','-y','-f','rawvideo','-pix_fmt','rgb24','-s','1280x720','-r',str(fps),'-i','pipe:0','-an','-t','45','-c:v','libx264','-preset','fast','-crf','23','-pix_fmt','yuv420p','-movflags','+faststart',str(MEDIA/'tipos-datasets.mp4')],stdin=subprocess.PIPE)
+for tick in range(45*fps):
+ chapter=tick//(15*fps);time=(tick%(15*fps))/fps
+ proc.stdin.write(frame(chapter,time).tobytes())
+proc.stdin.close()
+if proc.wait():raise RuntimeError('Falló la generación del video')
+frame(0,11).save(MEDIA/'tipos-datasets-portada.png')
+for chapter in range(3):frame(chapter,12).save(Path('/tmp')/f'datasets32-{chapter}.png')
+(MEDIA/'tipos-datasets-capitulos.json').write_text(json.dumps([dict(start=i*15,duration=15) for i in range(3)],indent=2))
+def stamp(seconds):return f'00:00:{seconds:02d}.000'
 vtt=['WEBVTT','']
-for c,entry in zip(CHAPTERS,timing):
- sentences=[s.strip()+'.' for s in c['narration'].split('.') if s.strip()];total=sum(len(s) for s in sentences);position=entry['start']
- for sentence in sentences:
-  end=position+(entry['duration']-2)*len(sentence)/total
-  vtt += [f'{stamp(position)} --> {stamp(end)}',sentence,''];position=end
+for i,c in enumerate(CHAPTERS):
+ for start,end,cue in zip((0,4,10),(4,10,15),c['cues']):vtt += [f'{stamp(i*15+start)} --> {stamp(i*15+end)}',cue,'']
 (MEDIA/'tipos-datasets-es.vtt').write_text('\n'.join(vtt))
-print(f'Video: {start} segundos; {len(CHAPTERS)} capítulos. '+str(MEDIA/'tipos-datasets.mp4'))
+print('Video silencioso: 45 segundos, 3 capítulos, 900 fotogramas.')
