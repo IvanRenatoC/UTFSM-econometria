@@ -14,11 +14,12 @@ for prefix,label,title,desc in groups:
   practice_html=''
   if 'practice' in a:
    practice=a['practice']
-   practice_html=f'<h4>Ejercicio para comprobar lo aprendido</h4><p>{e(practice["task"])}</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
+   practice_heading='' if practice.get('hide_heading') else '<h4>Ejercicio para comprobar lo aprendido</h4>'
+   practice_html=f'{practice_heading}<p>{e(practice["task"])}</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
-  check_html=a.get('check_html', '<p>'+e(a['check'])+'</p>')
+  check_html=a.get('check_html', '<p>'+e(a['check'])+'</p>' if a['check'] else '')
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
 <header class="slide-head"><h3 id="title-{a['id']}">{e(a['title'])}</h3><span class="number">LÁMINA {n:02d}</span></header>
 <div class="slide-body"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>

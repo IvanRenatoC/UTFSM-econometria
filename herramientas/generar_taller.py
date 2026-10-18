@@ -159,8 +159,9 @@ vector.update(
  code='v <- numeric(20)\nfor (i in 1:20) {\n  if (i %% 2 != 0) {\n    v[i] <- -1\n  }\n}\nprint(v)',
  answer='El vector alterna −1, 0, −1, 0 hasta completar 20 posiciones. numeric(20) reserva un vector de veinte ceros. El ciclo recorre sus posiciones y la condición i %% 2 != 0 identifica los índices impares. Solo esas posiciones cambian a −1: quedan diez valores −1 y diez ceros.',
  error='Confundir el valor guardado con su posición. La condición se aplica al índice i, no al contenido v[i].',
- check='Ahora inserta el número de la posición en todos los valores que sean 0.')
+ check='')
 vector['practice'] = dict(
+ hide_heading=True,
  task='Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.',
  code='for (i in seq_along(v)) {\n  if (v[i] == 0) {\n    v[i] <- i\n  }\n}\nprint(v)',
  answer='El resultado alterna −1, 2, −1, 4, −1, 6 y continúa hasta −1, 20. Las posiciones impares conservan −1; cada posición par contiene su propio índice.')
@@ -329,7 +330,8 @@ for a in activities:
  discussion=f"**Lectura del resultado:** {a['answer']}\n"
  if a.get('note'): discussion += '\n**' + a['note'] + '**\n'
  if a.get('comparison'): discussion += '\n**Diferencia entre while y for:** ' + a['comparison'] + '\n'
- discussion += f"\n**Error frecuente:** {a['error']}\n\n**Comprueba:** {a.get('check_markdown', a['check'])}\n"
+ discussion += f"\n**Error frecuente:** {a['error']}\n"
+ if a['check']: discussion += f"\n**Comprueba:** {a.get('check_markdown', a['check'])}\n"
  md(discussion,id.lower()+'-lectura')
  sections.extend([intro,solution,'```r\n'+a['code']+'\n```\n',discussion])
  if 'practice' in a:
