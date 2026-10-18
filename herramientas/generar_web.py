@@ -26,6 +26,7 @@ for prefix,label,title,desc in groups:
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
+  error_html=f'<aside class="notice"><strong>Un error frecuente</strong><p>{e(a["error"])}</p></aside>' if a['error'] else ''
   check_html=a.get('check_html', '<p>'+e(a['check'])+'</p>' if a['check'] else '')
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
 <header class="slide-head"><h3 id="title-{a['id']}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a['id']}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['title'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header>
@@ -35,7 +36,7 @@ for prefix,label,title,desc in groups:
 <p class="data-note">{'Ejercicio de programación con objetos artificiales.' if prefix=='NIV' else 'Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.'}</p>
 <details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
 <div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de {a['id']}">Copiar código</button></div><pre><code>{e(a['code'])}</code></pre>
-<h4>Cómo leer el resultado</h4><p>{e(a['answer'])}</p>{note_html}{comparison_html}<aside class="notice"><strong>Un error frecuente</strong><p>{e(a['error'])}</p></aside>
+<h4>Cómo leer el resultado</h4><p>{e(a['answer'])}</p>{note_html}{comparison_html}{error_html}
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
 <details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body">{check_html}{practice_html}</div></details>
 <a class="anchor" href="#{a['id']}">Enlace a esta lámina ↗</a></div></article>''')
