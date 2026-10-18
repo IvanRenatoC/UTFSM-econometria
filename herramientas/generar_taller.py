@@ -263,6 +263,33 @@ umbral.update(
  explanation='educ mide años de educación, no la edad. Usamos 16 como un umbral didáctico: la referencia habitual es 12 años escolares más unos 4 años de estudios universitarios en Estados Unidos. Esto no permite afirmar que cada persona tenga un título universitario. Exigir 18 años de educación seleccionaría una trayectoria educativa más larga y dejaría fuera a quienes registran 16 o 17 años. En esta base, educ ≥ 16 reúne 99 personas, mientras que educ ≥ 18 reúne solo 19. Para la comparación siguiente mantendremos dos grupos: menos de 16 años y 16 años o más. Es una decisión de agrupación para este ejercicio, no una frontera universal ni una prueba de causalidad.',
  explanation_source='https://nces.ed.gov/surveys/ctes/tables/glossary_college.asp')
 
+comparacion = next(a for a in activities if a['id'] == 'P1-06')
+comparacion.update(
+ title='Comparar salarios con boxplots', boxplots=True,
+ question='¿Cómo cambia la distribución salarial entre grupos?', predict='',
+ task='Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.',
+ code='''# Elige: "educ", "female" o "married".
+variable <- "educ"
+colores <- c("#0160A0", "#F8C751")
+
+if (variable == "educ") {
+  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
+                  labels = c("Menos de 16 años", "16 años o más"))
+} else if (variable == "female") {
+  grupo <- factor(datos$female, levels = c(0, 1),
+                  labels = c("Hombre (0)", "Mujer (1)"))
+} else if (variable == "married") {
+  grupo <- factor(datos$married, levels = c(0, 1),
+                  labels = c("No casado/a (0)", "Casado/a (1)"))
+}
+
+boxplot(datos$wage ~ grupo,
+        col = colores,
+        main = paste("Salario según", variable),
+        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")''',
+ answer='La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.',
+ error='', check='')
+
 activities = [a for a in activities if a['id'] != 'P1-03']
 
 header='''# Taller 1 · Del código a los datos
