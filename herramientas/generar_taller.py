@@ -235,6 +235,8 @@ if (variable == "wage") {
  answer='Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.',
  error='', check='')
 
+activities = [a for a in activities if a['id'] != 'P1-03']
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -430,7 +432,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 49/49 láminas (10 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 49 láminas resueltas en clase.
+**Cobertura documental:** 48/48 láminas (10 de nivelación, 13 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -506,7 +508,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==49
+assert len(activities)==48
 assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') for a in activities)+sum('practice' in a for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:

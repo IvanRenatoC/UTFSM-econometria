@@ -633,48 +633,8 @@ if (variable == "wage") {
 **Lectura del resultado:** Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.
 
 
-<a id="P1-03"></a>
-## Lámina 03 · Del modelo económico a las variables observadas
-
-**Identificador de enlace:** `P1-03`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 3 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Qué parte del modelo conceptual observamos?
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Está la habilidad directamente medida en estas columnas?
-
-**Consigna:** Distingue salario, educación, experiencia y factores no observados.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-03
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-print(names(datos))
-print(head(datos[c("wage", "educ", "exper")]))
-```
-
-
-**Lectura del resultado:** Una formulación conceptual es salario = f(educación, experiencia, otros factores) + error. Habilidad y recursos familiares no se identifican en estas columnas. No estimamos f.
-
-**Error frecuente:** Interpretar el error como un simple error de digitación.
-
-**Comprueba:** ¿Que una variable no esté en la tabla significa que no importa? No.
-
-
 <a id="P1-04"></a>
-## Lámina 04 · Correlación, causalidad y factores no observados
+## Lámina 03 · Correlación, causalidad y factores no observados
 
 **Identificador de enlace:** `P1-04`. La numeración se reinicia por bloque, como en la web.
 
@@ -715,7 +675,7 @@ plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
 
 
 <a id="P1-05"></a>
-## Lámina 05 · Educación y salarios: alcances de la comparación
+## Lámina 04 · Educación y salarios: alcances de la comparación
 
 **Identificador de enlace:** `P1-05`. La numeración se reinicia por bloque, como en la web.
 
@@ -755,7 +715,7 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 <a id="P1-06"></a>
-## Lámina 06 · Econometría aplicada y diseño de estudios
+## Lámina 05 · Econometría aplicada y diseño de estudios
 
 **Identificador de enlace:** `P1-06`. La numeración se reinicia por bloque, como en la web.
 
@@ -797,7 +757,7 @@ print(necesidades)
 
 
 <a id="P1-07"></a>
-## Lámina 07 · Tipos y estructura de los datos económicos
+## Lámina 06 · Tipos y estructura de los datos económicos
 
 **Identificador de enlace:** `P1-07`. La numeración se reinicia por bloque, como en la web.
 
@@ -840,7 +800,7 @@ print(estructuras)
 
 
 <a id="P1-08"></a>
-## Lámina 08 · Población, muestra y unidad de observación
+## Lámina 07 · Población, muestra y unidad de observación
 
 **Identificador de enlace:** `P1-08`. La numeración se reinicia por bloque, como en la web.
 
@@ -883,7 +843,7 @@ print(datos[ids, c("wage", "educ")])
 
 
 <a id="P1-09"></a>
-## Lámina 09 · Razones para trabajar con muestras
+## Lámina 08 · Razones para trabajar con muestras
 
 **Identificador de enlace:** `P1-09`. La numeración se reinicia por bloque, como en la web.
 
@@ -925,7 +885,7 @@ print(capacidad)
 
 
 <a id="P1-10"></a>
-## Lámina 10 · Variables, parámetros y estadísticos
+## Lámina 09 · Variables, parámetros y estadísticos
 
 **Identificador de enlace:** `P1-10`. La numeración se reinicia por bloque, como en la web.
 
@@ -968,7 +928,7 @@ print(data.frame(
 
 
 <a id="P1-11"></a>
-## Lámina 11 · Métodos de muestreo probabilístico en R
+## Lámina 10 · Métodos de muestreo probabilístico en R
 
 **Identificador de enlace:** `P1-11`. La numeración se reinicia por bloque, como en la web.
 
@@ -1020,7 +980,7 @@ print(list(simple = ids_simple, sistematico = ids_sistema,
 
 
 <a id="P1-12"></a>
-## Lámina 12 · Muestreo estratificado y por conglomerados
+## Lámina 11 · Muestreo estratificado y por conglomerados
 
 **Identificador de enlace:** `P1-12`. La numeración se reinicia por bloque, como en la web.
 
@@ -1060,7 +1020,7 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 
 <a id="P1-13"></a>
-## Lámina 13 · Muestreo no probabilístico y selección
+## Lámina 12 · Muestreo no probabilístico y selección
 
 **Identificador de enlace:** `P1-13`. La numeración se reinicia por bloque, como en la web.
 
@@ -1100,7 +1060,7 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 
 
 <a id="P1-14"></a>
-## Lámina 14 · Estadística descriptiva e inferencial
+## Lámina 13 · Estadística descriptiva e inferencial
 
 **Identificador de enlace:** `P1-14`. La numeración se reinicia por bloque, como en la web.
 
@@ -2285,7 +2245,6 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-NOTEBOOK | Nivelación | `niv-notebook-consigna` | Presencial |
 | P1-01 | Parte 1 · lámina 1 | `p1-01-consigna` / `p1-01-r` | Presencial |
 | P1-02 | Parte 1 · lámina 2 | `p1-02-consigna` / `p1-02-r` | Presencial |
-| P1-03 | Parte 1 · lámina 3 | `p1-03-consigna` / `p1-03-r` | Presencial |
 | P1-04 | Parte 1 · lámina 4 | `p1-04-consigna` / `p1-04-r` | Presencial |
 | P1-05 | Parte 1 · láminas 5–6 | `p1-05-consigna` / `p1-05-r` | Presencial |
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
@@ -2341,4 +2300,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 49/49 láminas (10 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 49 láminas resueltas en clase.
+**Cobertura documental:** 48/48 láminas (10 de nivelación, 13 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 láminas resueltas en clase.
