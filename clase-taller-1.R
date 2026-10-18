@@ -99,6 +99,27 @@ print(A)
 # NIV-NOTEBOOK · Vista general de un notebook
 # Librerías -> adecuación de datos -> EDA -> modelamiento -> resultados
 
+# P1-07 · Tipos y estructura de los datos económicos
+# Ejemplos ficticios: los mismos puntos que aparecen en el video.
+transversal <- data.frame(
+  unidad = LETTERS[1:6], anio = rep(2020, 6),
+  valor = c(5, 12, 8, 16, 10, 19))
+
+serie_tiempo <- data.frame(
+  unidad = rep("A", 6), anio = 2020:2025,
+  valor = c(4, 6, 5, 8, 7, 10))
+
+panel <- data.frame(
+  unidad = rep(c("A", "B", "C"), each = 6),
+  anio = rep(2020:2025, 3),
+  valor = c(4, 6, 5, 8, 7, 10,
+            10, 9, 12, 11, 14, 13,
+            16, 15, 18, 17, 19, 20))
+
+print(transversal)
+print(serie_tiempo)
+print(panel)
+
 # P1-01 · Introducción a la econometría y a los datos
 # Usa la copia local; si no está, carga la base del paquete.
 if (file.exists("datos/wage1.csv")) {
@@ -176,27 +197,6 @@ boxplot(datos$wage ~ grupo,
         col = colores,
         main = paste("Salario según", variable),
         xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
-
-# P1-07 · Tipos y estructura de los datos económicos
-# Ejemplos ficticios: los mismos puntos que aparecen en el video.
-transversal <- data.frame(
-  unidad = LETTERS[1:6], anio = rep(2020, 6),
-  valor = c(5, 12, 8, 16, 10, 19))
-
-serie_tiempo <- data.frame(
-  unidad = rep("A", 6), anio = 2020:2025,
-  valor = c(4, 6, 5, 8, 7, 10))
-
-panel <- data.frame(
-  unidad = rep(c("A", "B", "C"), each = 6),
-  anio = rep(2020:2025, 3),
-  valor = c(4, 6, 5, 8, 7, 10,
-            10, 9, 12, 11, 14, 13,
-            16, 15, 18, 17, 19, 20))
-
-print(transversal)
-print(serie_tiempo)
-print(panel)
 
 # P1-09 · Razones para trabajar con muestras
 presupuesto <- 100
