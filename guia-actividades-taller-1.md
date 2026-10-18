@@ -177,7 +177,7 @@ print(v[v > 4])
 
 
 <a id="NIV-06"></a>
-## Lámina 04 · Ciclos while/for y condiciones de término
+## Lámina 04 · Ciclos while y condiciones de término
 
 **Identificador de enlace:** `NIV-06`. La numeración se reinicia por bloque, como en la web.
 
@@ -221,7 +221,7 @@ print(c(pasos = paso, valor = valor))
 
 
 <a id="NIV-FOR"></a>
-## Lámina 05 · Ciclos while/for y condiciones de término · for
+## Lámina 05 · Ciclos for y condiciones de término
 
 **Identificador de enlace:** `NIV-FOR`. La numeración se reinicia por bloque, como en la web.
 
