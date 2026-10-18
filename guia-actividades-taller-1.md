@@ -65,7 +65,9 @@ Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación s
 
 
 <a id="NIV-01"></a>
-## NIV-01 · Escribe tu nombre
+## Lámina 01 · Escribe tu nombre
+
+**Identificador de enlace:** `NIV-01`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -96,7 +98,9 @@ print("tu nombre")
 
 
 <a id="NIV-ASIG"></a>
-## NIV-ASIG · Asignación de valores: nombres y flecha <-
+## Lámina 02 · Asignación de valores: nombres y flecha <-
+
+**Identificador de enlace:** `NIV-ASIG`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -132,7 +136,9 @@ print(y)
 
 
 <a id="NIV-03"></a>
-## NIV-03 · Condicionales: if, else y operadores lógicos
+## Lámina 03 · Condicionales: if, else y operadores lógicos
+
+**Identificador de enlace:** `NIV-03`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -171,11 +177,13 @@ print(v[v > 4])
 
 
 <a id="NIV-06"></a>
-## NIV-06 · Ciclos while y condiciones de término
+## Lámina 04 · Ciclos while/for y condiciones de término
+
+**Identificador de enlace:** `NIV-06`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cuántas duplicaciones hacen falta para llegar a 100?
+**Pregunta:** Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?
 
 **Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
 
@@ -205,15 +213,62 @@ print(c(pasos = paso, valor = valor))
 ```
 
 
-**Lectura del resultado:** Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.
+**Lectura del resultado:** while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor < 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.
 
 **Error frecuente:** No actualizar valor o paso.
 
 **Comprueba:** ¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.
 
 
+<a id="NIV-FOR"></a>
+## Lámina 05 · Ciclos while/for y condiciones de término · for
+
+**Identificador de enlace:** `NIV-FOR`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?
+
+**Antes de ejecutar:** ¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?
+
+**Consigna:** Ejecuta la versión con for. Compara su trayectoria con la del while y prueba max_pasos <- 3.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-FOR
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+valor <- 1
+max_pasos <- 20L
+trayectoria <- numeric(max_pasos + 1L)
+trayectoria[1] <- valor
+for (paso in seq_len(max_pasos)) {
+  valor <- 2 * valor
+  trayectoria[paso + 1L] <- valor
+  if (valor >= 100) {
+    break
+  }
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))
+```
+
+
+**Lectura del resultado:** for recorre los pasos de seq_len(max_pasos). Termina al agotar esa secuencia o antes si ejecuta break. Aquí el if detecta valor >= 100 y break sale del ciclo en el paso 7, con valor 128; la trayectoria coincide con la del while. Si max_pasos es 3, se agota la secuencia con valor 8. En este ejemplo max_pasos debe ser un entero positivo; paso recibe automáticamente cada índice, sin escribir paso <- paso + 1.
+
+**Error frecuente:** Confundir el recorrido de for con una prueba automática de valor < 100: esa condición de salida anticipada se expresa con if y break. No usar paso después de un ciclo vacío sin inicializarlo.
+
+**Comprueba:** ¿Qué ocurre si eliminas if y break? Se ejecutan los 20 pasos. ¿Qué ocurre con max_pasos <- 3? Termina por agotar los pasos, sin alcanzar 100.
+
+
 <a id="NIV-05"></a>
-## NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
+## Lámina 06 · Sucesiones aritméticas, geométricas y recurrentes
+
+**Identificador de enlace:** `NIV-05`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -253,7 +308,9 @@ stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
 
 
 <a id="NIV-02"></a>
-## NIV-02 · Vectores: creación, selección, modificación y llenado con for
+## Lámina 07 · Vectores: creación, selección, modificación y llenado con for
+
+**Identificador de enlace:** `NIV-02`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -296,7 +353,9 @@ print(dobles)
 
 
 <a id="NIV-07"></a>
-## NIV-07 · Matrices y ciclos anidados
+## Lámina 08 · Matrices y ciclos anidados
+
+**Identificador de enlace:** `NIV-07`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -335,7 +394,9 @@ print(m); print(dim(m))
 
 
 <a id="NIV-08"></a>
-## NIV-08 · Actividad integradora: sucesiones y matrices
+## Lámina 09 · Actividad integradora: sucesiones y matrices
+
+**Identificador de enlace:** `NIV-08`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
@@ -376,7 +437,9 @@ print(resultado)
 
 
 <a id="P1-01"></a>
-## P1-01 · Introducción a la econometría y a los datos
+## Lámina 01 · Introducción a la econometría y a los datos
+
+**Identificador de enlace:** `P1-01`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
 
@@ -423,7 +486,9 @@ head(datos)
 
 
 <a id="P1-02"></a>
-## P1-02 · Econometría moderna: describir, explicar y predecir
+## Lámina 02 · Econometría moderna: describir, explicar y predecir
+
+**Identificador de enlace:** `P1-02`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
 
@@ -459,7 +524,9 @@ print(preguntas)
 
 
 <a id="P1-03"></a>
-## P1-03 · Del modelo económico a las variables observadas
+## Lámina 03 · Del modelo económico a las variables observadas
+
+**Identificador de enlace:** `P1-03`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 3 · **Modalidad:** Presencial.
 
@@ -491,7 +558,9 @@ print(head(datos[c("wage", "educ", "exper")]))
 
 
 <a id="P1-04"></a>
-## P1-04 · Correlación, causalidad y factores no observados
+## Lámina 04 · Correlación, causalidad y factores no observados
+
+**Identificador de enlace:** `P1-04`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
 
@@ -524,7 +593,9 @@ plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
 
 
 <a id="P1-05"></a>
-## P1-05 · Educación y salarios: alcances de la comparación
+## Lámina 05 · Educación y salarios: alcances de la comparación
+
+**Identificador de enlace:** `P1-05`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
 
@@ -556,7 +627,9 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 <a id="P1-06"></a>
-## P1-06 · Econometría aplicada y diseño de estudios
+## Lámina 06 · Econometría aplicada y diseño de estudios
+
+**Identificador de enlace:** `P1-06`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
 
@@ -590,7 +663,9 @@ print(necesidades)
 
 
 <a id="P1-07"></a>
-## P1-07 · Tipos y estructura de los datos económicos
+## Lámina 07 · Tipos y estructura de los datos económicos
+
+**Identificador de enlace:** `P1-07`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
 
@@ -625,7 +700,9 @@ print(estructuras)
 
 
 <a id="P1-08"></a>
-## P1-08 · Población, muestra y unidad de observación
+## Lámina 08 · Población, muestra y unidad de observación
+
+**Identificador de enlace:** `P1-08`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · láminas 12–13 · **Modalidad:** Presencial.
 
@@ -660,7 +737,9 @@ print(datos[ids, c("wage", "educ")])
 
 
 <a id="P1-09"></a>
-## P1-09 · Razones para trabajar con muestras
+## Lámina 09 · Razones para trabajar con muestras
+
+**Identificador de enlace:** `P1-09`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
 
@@ -694,7 +773,9 @@ print(capacidad)
 
 
 <a id="P1-10"></a>
-## P1-10 · Variables, parámetros y estadísticos
+## Lámina 10 · Variables, parámetros y estadísticos
+
+**Identificador de enlace:** `P1-10`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
 
@@ -729,7 +810,9 @@ print(data.frame(
 
 
 <a id="P1-11"></a>
-## P1-11 · Métodos de muestreo probabilístico en R
+## Lámina 11 · Métodos de muestreo probabilístico en R
+
+**Identificador de enlace:** `P1-11`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
 
@@ -773,7 +856,9 @@ print(list(simple = ids_simple, sistematico = ids_sistema,
 
 
 <a id="P1-12"></a>
-## P1-12 · Muestreo estratificado y por conglomerados
+## Lámina 12 · Muestreo estratificado y por conglomerados
+
+**Identificador de enlace:** `P1-12`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 18 · **Modalidad:** Ampliación autónoma.
 
@@ -805,7 +890,9 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 
 <a id="P1-13"></a>
-## P1-13 · Muestreo no probabilístico y selección
+## Lámina 13 · Muestreo no probabilístico y selección
+
+**Identificador de enlace:** `P1-13`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 19 · **Modalidad:** Presencial.
 
@@ -837,7 +924,9 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 
 
 <a id="P1-14"></a>
-## P1-14 · Estadística descriptiva e inferencial
+## Lámina 14 · Estadística descriptiva e inferencial
+
+**Identificador de enlace:** `P1-14`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
 
@@ -870,7 +959,9 @@ print(frases)
 
 
 <a id="P2-01"></a>
-## P2-01 · Ramas de la estadística
+## Lámina 01 · Ramas de la estadística
+
+**Identificador de enlace:** `P2-01`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · lámina 1 · **Modalidad:** Ampliación autónoma.
 
@@ -902,7 +993,9 @@ print(length(x))
 
 
 <a id="P2-02"></a>
-## P2-02 · Estadísticos como funciones de los datos
+## Lámina 02 · Estadísticos como funciones de los datos
+
+**Identificador de enlace:** `P2-02`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · lámina 2 · **Modalidad:** Presencial.
 
@@ -934,7 +1027,9 @@ print(resumen_inicial)
 
 
 <a id="P2-03"></a>
-## P2-03 · Medidas de localización central: media y mediana
+## Lámina 03 · Medidas de localización central: media y mediana
+
+**Identificador de enlace:** `P2-03`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
 
@@ -973,7 +1068,9 @@ stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
 
 
 <a id="P2-04"></a>
-## P2-04 · Percentiles y cuartiles
+## Lámina 04 · Percentiles y cuartiles
+
+**Identificador de enlace:** `P2-04`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · lámina 5 · **Modalidad:** Presencial.
 
@@ -1006,7 +1103,9 @@ print(quantile(x, .9, type = 7))
 
 
 <a id="P2-05"></a>
-## P2-05 · Medidas de dispersión: RIQ, varianza y desviación
+## Lámina 05 · Medidas de dispersión: RIQ, varianza y desviación
+
+**Identificador de enlace:** `P2-05`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · láminas 6–7 · **Modalidad:** Presencial.
 
@@ -1039,7 +1138,9 @@ stopifnot(isTRUE(all.equal(s2_manual, var(x))))
 
 
 <a id="P2-06"></a>
-## P2-06 · Histogramas y elección de intervalos
+## Lámina 06 · Histogramas y elección de intervalos
+
+**Identificador de enlace:** `P2-06`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
 
@@ -1074,7 +1175,9 @@ par(op)
 
 
 <a id="P2-07"></a>
-## P2-07 · Gráfico de caja, bigotes y valores atípicos
+## Lámina 07 · Gráfico de caja, bigotes y valores atípicos
+
+**Identificador de enlace:** `P2-07`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 2 · láminas 9–10 · **Modalidad:** Presencial.
 
@@ -1109,7 +1212,9 @@ print(quantile(x, c(.25,.5,.75), type = 7))
 
 
 <a id="P3-01"></a>
-## P3-01 · Inferencia y población empírica de referencia
+## Lámina 01 · Inferencia y población empírica de referencia
+
+**Identificador de enlace:** `P3-01`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
 
@@ -1144,7 +1249,9 @@ print(c(mu = mu, sigma = sigma, N = length(poblacion)))
 
 
 <a id="P3-02"></a>
-## P3-02 · Intervalos de confianza e incertidumbre
+## Lámina 02 · Intervalos de confianza e incertidumbre
+
+**Identificador de enlace:** `P3-02`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 2 · **Modalidad:** Presencial.
 
@@ -1177,7 +1284,9 @@ print(c("El parámetro didáctico permanece fijo",
 
 
 <a id="P3-03"></a>
-## P3-03 · Teorema central del límite: simulación en R
+## Lámina 03 · Teorema central del límite: simulación en R
+
+**Identificador de enlace:** `P3-03`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
 
@@ -1219,7 +1328,9 @@ par(op)
 
 
 <a id="P3-04"></a>
-## P3-04 · Supuestos del teorema central del límite
+## Lámina 04 · Supuestos del teorema central del límite
+
+**Identificador de enlace:** `P3-04`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 4 · **Modalidad:** Ampliación autónoma.
 
@@ -1251,7 +1362,9 @@ print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
 
 
 <a id="P3-05"></a>
-## P3-05 · Intervalo para una media: ejemplo salarial
+## Lámina 05 · Intervalo para una media: ejemplo salarial
+
+**Identificador de enlace:** `P3-05`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
 
@@ -1290,7 +1403,9 @@ print(c(estimacion = xbarra, error_estandar = se,
 
 
 <a id="P3-06"></a>
-## P3-06 · Componentes del intervalo de confianza de 95%
+## Lámina 06 · Componentes del intervalo de confianza de 95%
+
+**Identificador de enlace:** `P3-06`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 8 · **Modalidad:** Ampliación autónoma.
 
@@ -1323,7 +1438,9 @@ stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
 
 
 <a id="P3-07"></a>
-## P3-07 · Intervalos con distintos niveles de confianza
+## Lámina 07 · Intervalos con distintos niveles de confianza
+
+**Identificador de enlace:** `P3-07`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
 
@@ -1358,7 +1475,9 @@ print(limites)
 
 
 <a id="P3-08"></a>
-## P3-08 · Comparación gráfica de intervalos de confianza
+## Lámina 08 · Comparación gráfica de intervalos de confianza
+
+**Identificador de enlace:** `P3-08`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 11 · **Modalidad:** Ampliación autónoma.
 
@@ -1394,7 +1513,9 @@ points(rep(xbarra,3), 1:3, pch = 19)
 
 
 <a id="P3-09"></a>
-## P3-09 · Cobertura, confianza y precisión
+## Lámina 09 · Cobertura, confianza y precisión
+
+**Identificador de enlace:** `P3-09`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
 
@@ -1435,7 +1556,9 @@ abline(v = mu, lty = 2)
 
 
 <a id="P3-10"></a>
-## P3-10 · Tamaño muestral para estimar una media
+## Lámina 10 · Tamaño muestral para estimar una media
+
+**Identificador de enlace:** `P3-10`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 14 · **Modalidad:** Ampliación autónoma.
 
@@ -1468,7 +1591,9 @@ print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
 
 
 <a id="P3-11"></a>
-## P3-11 · Intervalos de confianza para proporciones
+## Lámina 11 · Intervalos de confianza para proporciones
+
+**Identificador de enlace:** `P3-11`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
 
@@ -1510,7 +1635,9 @@ print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
 
 
 <a id="P3-12"></a>
-## P3-12 · Proporciones: comparación con una referencia
+## Lámina 12 · Proporciones: comparación con una referencia
+
+**Identificador de enlace:** `P3-12`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 20–21 · **Modalidad:** Ampliación autónoma.
 
@@ -1543,7 +1670,9 @@ print(c(referencia = referencia, dentro_del_IC = compatible))
 
 
 <a id="P3-13"></a>
-## P3-13 · Tamaño muestral para estimar una proporción
+## Lámina 13 · Tamaño muestral para estimar una proporción
+
+**Identificador de enlace:** `P3-13`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 22 · **Modalidad:** Ampliación autónoma.
 
@@ -1576,7 +1705,9 @@ print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
 
 
 <a id="P3-14"></a>
-## P3-14 · Aplicación: longitud y margen de error
+## Lámina 14 · Aplicación: longitud y margen de error
+
+**Identificador de enlace:** `P3-14`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
 
@@ -1615,7 +1746,9 @@ print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
 
 
 <a id="P3-15"></a>
-## P3-15 · Comparación de medias entre dos poblaciones
+## Lámina 15 · Comparación de medias entre dos poblaciones
+
+**Identificador de enlace:** `P3-15`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · lámina 25 · **Modalidad:** Ampliación autónoma.
 
@@ -1649,7 +1782,9 @@ print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
 
 
 <a id="P3-16"></a>
-## P3-16 · Diferencia de medias: parámetro e interpretación
+## Lámina 16 · Diferencia de medias: parámetro e interpretación
+
+**Identificador de enlace:** `P3-16`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 26–27 · **Modalidad:** Ampliación autónoma.
 
@@ -1682,7 +1817,9 @@ print(c(delta_didactica = delta))
 
 
 <a id="P3-17"></a>
-## P3-17 · Diferencia de medias con varianzas conocidas
+## Lámina 17 · Diferencia de medias con varianzas conocidas
+
+**Identificador de enlace:** `P3-17`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 28–31 · **Modalidad:** Ampliación autónoma.
 
@@ -1721,7 +1858,9 @@ print(c(estimacion = diferencia, error_estandar = se_diferencia))
 
 
 <a id="P3-18"></a>
-## P3-18 · Diferencia de medias: intervalo y conclusión
+## Lámina 18 · Diferencia de medias: intervalo y conclusión
+
+**Identificador de enlace:** `P3-18`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
 
@@ -1806,6 +1945,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-ASIG | Nivelación | `niv-asig-consigna` / `niv-asig-r` | Presencial |
 | NIV-03 | Nivelación | `niv-03-consigna` / `niv-03-r` | Presencial |
 | NIV-06 | Nivelación | `niv-06-consigna` / `niv-06-r` | Presencial |
+| NIV-FOR | Nivelación | `niv-for-consigna` / `niv-for-r` | Presencial |
 | NIV-05 | Nivelación | `niv-05-consigna` / `niv-05-r` | Presencial |
 | NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
 | NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
@@ -1868,4 +2008,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
+**Cobertura documental:** 48/48 actividades (9 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 actividades resueltas en clase.

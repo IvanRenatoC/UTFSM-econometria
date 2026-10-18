@@ -20,9 +20,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
 | 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
 | 19:00–19:04 | NIV-03 (lámina 03). Anticipar el mensaje con valores 3 y 8; el ejemplo define sus propios valores. |
-| 19:04–19:09 | NIV-06 (lámina 04). Preguntar qué permite terminar el while. |
-| 19:09–19:14 | NIV-05 (lámina 05). Parejas completan una sucesión y revisan las otras. |
-| 19:14–19:20 | NIV-02 (lámina 06). Crear, seleccionar, modificar y llenar un vector con for. |
+| 19:04–19:07 | NIV-06 (lámina 04). while: condición previa, actualización y límite de seguridad. |
+| 19:07–19:09 | NIV-FOR (lámina 05). for: recorrido de pasos y salida anticipada con break. |
+| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan una sucesión y revisan las otras. |
+| 19:14–19:20 | NIV-02 (lámina 07). Crear, seleccionar, modificar y llenar un vector con for. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
 | 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |

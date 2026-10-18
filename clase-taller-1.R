@@ -23,7 +23,7 @@ if (valor > 4) {
 print(mensaje)
 print(v[v > 4])
 
-# NIV-06 · Ciclos while y condiciones de término
+# NIV-06 · Ciclos while/for y condiciones de término
 valor <- 1
 paso <- 0L
 max_pasos <- 20L
@@ -33,6 +33,21 @@ while (valor < 100 && paso < max_pasos) {
   valor <- 2 * valor
   paso <- paso + 1L
   trayectoria[paso + 1L] <- valor
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))
+
+# NIV-FOR · Ciclos while/for y condiciones de término · for
+valor <- 1
+max_pasos <- 20L
+trayectoria <- numeric(max_pasos + 1L)
+trayectoria[1] <- valor
+for (paso in seq_len(max_pasos)) {
+  valor <- 2 * valor
+  trayectoria[paso + 1L] <- valor
+  if (valor >= 100) {
+    break
+  }
 }
 print(trayectoria[seq_len(paso + 1L)])
 print(c(pasos = paso, valor = valor))

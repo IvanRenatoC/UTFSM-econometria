@@ -18,7 +18,7 @@ Referencia: [Clase 1 de Sebastián Azócar](https://hizocar.github.io/econometri
 
 El logo utilizado es el archivo `Logo_UTFSM.png` entregado por el profesor, sin alterar su imagen. La fuente se carga desde Google Fonts, como en la referencia; sin conexión se utiliza la alternativa del sistema.
 
-El temario izquierdo contiene las clases 1 y 2 solicitadas. La clase 2 lleva al aviso de próxima clase, sin presentar contenido que todavía no se ha preparado. La columna derecha enlaza objetivos, agenda, los cuatro bloques y sus 47 actividades, autoevaluación y siguiente clase.
+El temario izquierdo contiene las clases 1 y 2 solicitadas. La clase 2 lleva al aviso de próxima clase, sin presentar contenido que todavía no se ha preparado. La columna derecha enlaza objetivos, agenda, los cuatro bloques y sus 48 actividades, autoevaluación y siguiente clase.
 
 La fecha exacta del taller no fue especificada: la etiqueta muestra «Lunes · Taller presencial», manteniendo 18:50–21:25. No se reutiliza la fecha del viernes de cátedra.
 
@@ -28,4 +28,4 @@ Ejecutar `python3 herramientas/generar_web.py`. Este generador conserva las acti
 
 ## Verificación
 
-Se comprobaron logo, 47 actividades, IDs y enlaces locales, estilos calculados, búsqueda por «matrices», navegación de presentación y apertura de soluciones. Se revisó el diseño de escritorio y en un ancho móvil de 390 px, sin desbordamiento horizontal. Este cambio de presentación no valida la ejecución de los ejercicios en R, que sigue pendiente según la guía.
+Se comprobaron logo, 48 actividades, IDs y enlaces locales, estilos calculados, búsqueda por «matrices», navegación de presentación y apertura de soluciones. Se revisó el diseño de escritorio y en un ancho móvil de 390 px, sin desbordamiento horizontal. Este cambio de presentación no valida la ejecución de los ejercicios en R, que sigue pendiente según la guía.
