@@ -1,11 +1,8 @@
 # Taller 1: ejecutar desde la raíz del proyecto en una sesión limpia.
 # Equivalente a todas las celdas R del notebook; no instala paquetes.
 
-# NIV-01 · Entorno de R, objetos y asignación
-saldo <- 10
-saldo <- saldo + 3
-print(saldo)
-print(c(tipo = typeof(saldo), longitud = length(saldo)))
+# NIV-01 · Escribe tu nombre
+print("tu nombre")
 
 # NIV-02 · Vectores: creación, selección, modificación y llenado con for
 # 1. Crear, seleccionar y modificar
