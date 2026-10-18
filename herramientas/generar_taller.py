@@ -171,11 +171,12 @@ por_id['NIV-07'].update(
  code='A <- matrix(0, nrow = 3, ncol = 3)\nfor (i in 1:3) {\n  A[i, i] <- 1\n}\nprint(A)',
  answer='Esta es la matriz identidad: cumple en la multiplicación de matrices un papel similar al 1 en los escalares. Tiene unos en la diagonal principal y ceros en las otras posiciones.',
  error='Confundir la diagonal principal con una fila completa. En la diagonal principal coinciden el índice de fila y el de columna.',
- check='Si A es una matriz de 2 × 4, ¿se cumple A[2,3] = t(A)[3,2]? t(A) es la transpuesta de A.',
- check_markdown='Si $A$ es una matriz de $2 \\times 4$, ¿se cumple $A_{2,3} = (A^{\\mathsf{T}})_{3,2}$? $A^{\\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.',
- check_html='<p>Si <var>A</var> es una matriz de 2 × 4, ¿se cumple <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>A</mi><mrow><mn>2</mn><mo>,</mo><mn>3</mn></mrow></msub><mo>=</mo><msub><mrow><mo>(</mo><msup><mi>A</mi><mi>T</mi></msup><mo>)</mo></mrow><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></math>? <var>A</var><sup>T</sup> es la transpuesta de <var>A</var> y en R se obtiene con <code>t(A)</code>.</p>')
+ check='Si A es una matriz de 2 × 4, ¿se cumple A(2,3) = Aᵀ(3,2)? Aᵀ es la transpuesta de A.',
+ check_markdown='Si $A$ es una matriz de $2 \\times 4$, ¿se cumple $A(2,3) = A^{\\mathsf{T}}(3,2)$? $A^{\\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.',
+ check_html='<p>Si <var>A</var> es una matriz de 2 × 4, ¿se cumple <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>(</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>)</mo><mo>=</mo><msup><mi>A</mi><mi>T</mi></msup><mo>(</mo><mn>3</mn><mo>,</mo><mn>2</mn><mo>)</mo></math>? <var>A</var><sup>T</sup> es la transpuesta de <var>A</var> y en R se obtiene con <code>t(A)</code>.</p>')
 por_id['NIV-07']['practice'] = dict(
- task='Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.',
+ hide_heading=True,
+ task='',
  code='A <- matrix(1:8, nrow = 2, ncol = 4)\nprint(A[2, 3])\nprint(t(A)[3, 2])\nprint(A[2, 3] == t(A)[3, 2])',
  answer='Sí. La transposición intercambia filas y columnas: A[2,3] y t(A)[3,2] contienen el mismo elemento. En este ejemplo ambos valen 6 y la comparación devuelve TRUE.')
 por_id['NIV-08'].update(
