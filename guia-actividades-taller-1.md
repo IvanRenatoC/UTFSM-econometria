@@ -65,15 +65,15 @@ Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación s
 
 
 <a id="NIV-01"></a>
-## NIV-01 · Entorno de R, objetos y asignación
+## NIV-01 · Escribe tu nombre
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo guardamos un valor para reutilizarlo?
+**Pregunta:** Vamos a hacer un ejercicio muy elemental, para que vayamos partiendo desde el inicio para terminar en algo mucho más avanzado.
 
-**Antes de ejecutar:** ¿Cuánto vale saldo después de sumar 3?
+**Antes de ejecutar:** ¿Qué crees que aparecerá en la consola al ejecutar print("tu nombre")?
 
-**Consigna:** Cambia el saldo inicial a 20 y repite.
+**Consigna:** Reemplaza tu nombre por tu propio nombre, conservando las comillas, y ejecuta la instrucción.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -84,18 +84,15 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-saldo <- 10
-saldo <- saldo + 3
-print(saldo)
-print(c(tipo = typeof(saldo), longitud = length(saldo)))
+print("tu nombre")
 ```
 
 
-**Lectura del resultado:** La asignación actualiza un objeto. Con 20 iniciales, el saldo final es 23. Ejecuta una línea desde un script y compárala con escribirla en consola.
+**Lectura del resultado:** print() muestra el texto entre comillas en la consola. Al reemplazarlo por tu nombre, R imprimirá ese nombre.
 
-**Error frecuente:** Confundir <- con una comparación ==.
+**Error frecuente:** Escribir el nombre sin comillas: R intentará interpretarlo como un objeto.
 
-**Comprueba:** ¿saldo == 23 modifica el objeto? No.
+**Comprueba:** ¿Qué debes cambiar para mostrar otro nombre? El texto que está dentro de las comillas.
 
 
 <a id="NIV-02"></a>
