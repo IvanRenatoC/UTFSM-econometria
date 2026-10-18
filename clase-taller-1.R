@@ -178,11 +178,30 @@ boxplot(datos$wage ~ grupo,
         xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
 
 # P1-07 · Tipos y estructura de los datos económicos
-estructuras <- data.frame(
-  tipo = c("Corte transversal", "Serie temporal", "Panel"),
-  unidades = c("Muchas", "Una", "Muchas"),
-  periodos = c("Uno", "Varios", "Varios por unidad"))
-print(estructuras)
+# Ejemplos ficticios para reconocer la estructura de las filas.
+transversal <- data.frame(
+  persona = c("Ana", "Bruno", "Carla", "Diego"),
+  anio = c(2020, 2020, 2020, 2020),
+  educ = c(12, 16, 14, 10), salario = c(4, 8, 6, 3))
+
+serie_temporal <- data.frame(
+  empresa = rep("Empresa A", 4), anio = 2020:2023,
+  publicidad = c(10, 12, 11, 15), ventas = c(42, 45, 44, 52))
+
+cortes_repetidos <- data.frame(
+  persona = c("Ana", "Bruno", "Elena", "Felipe"),
+  anio = c(2020, 2020, 2023, 2023),
+  educ = c(12, 16, 12, 16), salario = c(4, 8, 5, 9))
+
+panel <- data.frame(
+  persona = c("Ana", "Ana", "Bruno", "Bruno"),
+  anio = c(2020, 2023, 2020, 2023),
+  educ = c(12, 13, 16, 16), salario = c(4, 5, 8, 9))
+
+print(transversal)
+print(serie_temporal)
+print(cortes_repetidos)
+print(panel)
 
 # P1-08 · Población, muestra y unidad de observación
 set.seed(16201)

@@ -86,3 +86,32 @@ for(const explorer of document.querySelectorAll('.wage-explorer')){
     });
   }
 }
+
+// Video de datasets: capítulos, respuesta razonada y pausa al plegar.
+for(const lesson of document.querySelectorAll('.dataset-lesson')){
+  const video=lesson.querySelector('video');
+  const chapters=[...lesson.querySelectorAll('.dataset-chapter')];
+  for(const chapter of chapters){
+    chapter.addEventListener('click',()=>{
+      video.currentTime=Number(chapter.dataset.start);
+      video.play().catch(()=>{lesson.querySelector('.dataset-status').textContent='Pulsa reproducir en los controles del video.';});
+    });
+  }
+  video.addEventListener('timeupdate',()=>{
+    const current=chapters.filter(button=>Number(button.dataset.start)<=video.currentTime).at(-1);
+    for(const button of chapters)button.setAttribute('aria-pressed',String(button===current));
+  });
+  lesson.closest('.slide').querySelector('.slide-toggle').addEventListener('click',()=>{
+    if(lesson.closest('.slide-body').hidden)video.pause();
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause();});
+  const slide=lesson.closest('.slide');
+  new MutationObserver(()=>{if(document.body.classList.contains('presenting')&&!slide.classList.contains('active'))video.pause();}).observe(slide,{attributes:true,attributeFilter:['class']});
+  for(const answer of lesson.querySelectorAll('[data-answer]')){
+    answer.addEventListener('click',()=>{
+      const correct=answer.dataset.answer==='repetidos';
+      lesson.querySelector('.dataset-feedback').textContent=correct?'Correcto: son cortes transversales repetidos. Cambia la muestra de personas entre los dos períodos.':'Revisa los nombres: no seguimos a las mismas personas. Es una muestra diferente en cada período; son cortes transversales repetidos.';
+      for(const button of lesson.querySelectorAll('[data-answer]'))button.setAttribute('aria-pressed',String(button===answer));
+    });
+  }
+}

@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape as e
 import runpy, re
 from graficos_wage1 import explorer, scatter, boxplots
+from video_datasets import interactive_video
 root=Path(__file__).resolve().parent.parent
 content=runpy.run_path(str(root/'herramientas/generar_taller.py'))
 activities=content['activities']
@@ -12,6 +13,9 @@ sections=[]
 for prefix,label,title,desc in groups:
  cards=[]
  for n,a in enumerate([a for a in activities if a['id'].split('-')[0]==prefix],1):
+  if a.get('dataset_video'):
+   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}">{interactive_video(root)}</div></article>')
+   continue
   if a.get('boxplots'):
    cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}">{boxplots(root)}</div></article>')
    continue

@@ -1,0 +1,91 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.791
+Primero, los datos de corte transversal.
+
+00:00:02.791 --> 00:00:08.512
+Observamos varias unidades, como personas, empresas o países, en un mismo período.
+
+00:00:08.512 --> 00:00:14.930
+En esta tabla ficticia cada fila es una persona, y todas corresponden al año dos mil veinte.
+
+00:00:14.930 --> 00:00:19.884
+Podemos estudiar cómo se relacionan educación y salario entre personas.
+
+00:00:19.884 --> 00:00:24.628
+En la expresión del modelo, el subíndice i identifica a cada unidad.
+
+00:00:24.628 --> 00:00:32.442
+La base wage uno de nuestro taller tiene esta estructura: personas observadas en mil novecientos setenta y seis.
+
+00:00:32.442 --> 00:00:36.000
+El número de fila no representa el paso del tiempo.
+
+00:00:38.000 --> 00:00:39.733
+Ahora, una serie temporal.
+
+00:00:39.733 --> 00:00:43.733
+Seguimos una misma unidad durante varios períodos ordenados.
+
+00:00:43.733 --> 00:00:48.133
+En este ejemplo ficticio, cada fila es un año de la misma empresa.
+
+00:00:48.133 --> 00:00:53.000
+Relacionamos sus ventas con su gasto en publicidad a lo largo del tiempo.
+
+00:00:53.000 --> 00:00:55.467
+El subíndice t identifica el período.
+
+00:00:55.467 --> 00:01:03.067
+Aquí importa conservar el orden temporal: los resultados de un año pueden estar relacionados con los del anterior.
+
+00:01:03.067 --> 00:01:10.133
+Por eso debemos revisar tendencias y dependencia temporal antes de aplicar e interpretar un modelo lineal.
+
+00:01:10.133 --> 00:01:15.000
+No son cuatro empresas diferentes: es una empresa observada cuatro veces.
+
+00:01:17.000 --> 00:01:20.579
+También podemos reunir cortes transversales repetidos.
+
+00:01:20.579 --> 00:01:25.417
+Tomamos una muestra en un período y otra muestra en un período posterior.
+
+00:01:25.417 --> 00:01:32.045
+Observa los nombres: las personas de dos mil veinte no son las mismas que las de dos mil veintitrés.
+
+00:01:32.045 --> 00:01:40.064
+Podemos comparar distribuciones y asociaciones entre períodos, y un modelo lineal puede incluir un indicador del período.
+
+00:01:40.064 --> 00:01:46.096
+Pero no podemos calcular cuánto cambió el salario de Ana, porque no la volvimos a observar.
+
+00:01:46.096 --> 00:01:51.000
+Tener una columna con años no convierte por sí solo a la base en un panel.
+
+00:01:53.000 --> 00:01:55.138
+Por último, los datos de panel.
+
+00:01:55.138 --> 00:01:58.724
+Observamos a las mismas unidades en varios períodos.
+
+00:01:58.724 --> 00:02:01.345
+Ana aparece dos veces y Bruno también.
+
+00:02:01.345 --> 00:02:05.207
+Ahora cada fila es una combinación de persona y período.
+
+00:02:05.207 --> 00:02:08.724
+Los subíndices i y t identifican ambas dimensiones.
+
+00:02:08.724 --> 00:02:13.759
+Podemos comparar personas y estudiar cambios dentro de una misma persona.
+
+00:02:13.759 --> 00:02:27.483
+La expresión que ves solo ilustra los índices: analizar un panel requiere considerar la dependencia entre observaciones de la misma unidad y, según el modelo, diferencias persistentes entre personas.
+
+00:02:27.483 --> 00:02:34.586
+Recuerda la distinción: en cortes repetidos cambia la muestra; en panel seguimos a las mismas unidades.
+
+00:02:34.586 --> 00:02:39.000
+Ninguna de estas estructuras, por sí sola, demuestra causalidad.

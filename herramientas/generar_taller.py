@@ -290,6 +290,39 @@ boxplot(datos$wage ~ grupo,
  answer='La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.',
  error='', check='')
 
+from video_datasets import CHAPTERS
+estructuras = next(a for a in activities if a['id'] == 'P1-07')
+estructuras.update(
+ dataset_video=True, question='¿A quién observamos y en qué períodos?', predict='',
+ task='Reproduce el video o elige un capítulo: corte transversal, serie temporal, cortes transversales repetidos o panel. Después responde la pregunta interactiva. Los ejemplos de las tablas son ficticios.',
+ lesson_transcript=chr(10).join('### ' + c['title'] + chr(10) + chr(10) + c['narration'] + chr(10) for c in CHAPTERS),
+ code='''# Ejemplos ficticios para reconocer la estructura de las filas.
+transversal <- data.frame(
+  persona = c("Ana", "Bruno", "Carla", "Diego"),
+  anio = c(2020, 2020, 2020, 2020),
+  educ = c(12, 16, 14, 10), salario = c(4, 8, 6, 3))
+
+serie_temporal <- data.frame(
+  empresa = rep("Empresa A", 4), anio = 2020:2023,
+  publicidad = c(10, 12, 11, 15), ventas = c(42, 45, 44, 52))
+
+cortes_repetidos <- data.frame(
+  persona = c("Ana", "Bruno", "Elena", "Felipe"),
+  anio = c(2020, 2020, 2023, 2023),
+  educ = c(12, 16, 12, 16), salario = c(4, 8, 5, 9))
+
+panel <- data.frame(
+  persona = c("Ana", "Ana", "Bruno", "Bruno"),
+  anio = c(2020, 2023, 2020, 2023),
+  educ = c(12, 13, 16, 16), salario = c(4, 5, 8, 9))
+
+print(transversal)
+print(serie_temporal)
+print(cortes_repetidos)
+print(panel)''',
+ answer='Corte transversal: una fila por unidad en un período. Serie temporal: una fila por período de una unidad. Cortes repetidos: muestras distintas en períodos diferentes. Panel: una fila por combinación de unidad y período, siguiendo a las mismas unidades. wage1 es transversal. Las ecuaciones del video ilustran índices, no modelos estimados.',
+ error='', check='Ana y Bruno en 2020, Elena y Felipe en 2023: son cortes transversales repetidos, porque no se sigue a las mismas personas.')
+
 activities = [a for a in activities if a['id'] != 'P1-03']
 
 header='''# Taller 1 · Del código a los datos
@@ -428,6 +461,8 @@ for a in activities:
 {('**Pregunta:** ' + a['question']) if a['question'] else ''}
 
 {a.get('description', '')}
+
+{('[Video interactivo en la web](https://ivanrenatoc.github.io/UTFSM-econometria/#P1-07)' + chr(10) + chr(10) + a['lesson_transcript']) if a.get('lesson_transcript') else ''}
 
 {('### ' + a['explanation_title'] + chr(10) + chr(10) + a['explanation'] + chr(10) + chr(10) + '[Referencia: duración habitual de estudios universitarios, NCES](' + a['explanation_source'] + '). Los tamaños de grupo se calcularon con el CSV del taller.') if a.get('explanation') else ''}
 
