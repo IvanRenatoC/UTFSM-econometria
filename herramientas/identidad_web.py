@@ -12,6 +12,22 @@ def animacion_vector():
 </div><div class="vector-controls"><button type="button" class="vector-pause" aria-pressed="false">Pausar animación</button><button type="button" class="vector-replay">Reiniciar</button></div>
 <p class="vector-note">Cada casilla representa una posición. La transposición cambia la orientación y conserva el orden de los elementos. En R, un vector simple no tiene dimensión de fila o columna; aquí usamos ambas orientaciones como representación visual.</p></figure>'''
 
+def animacion_matriz():
+    def grid(rows, columns, transpose=False):
+        cells = []
+        for i in range(1, rows + 1):
+            for j in range(1, columns + 1):
+                step = (j - 1) * 4 + i if transpose else (i - 1) * 4 + j
+                cells.append(f'<span class="matrix-cell" title="Fila {i}, columna {j}"><span class="matrix-dot matrix-step-{step}" data-step="{step}" aria-hidden="true"></span></span>')
+        return f'<div class="matrix-grid" style="--matrix-columns:{columns}">{"".join(cells)}</div>'
+    return f'''<figure class="vector-demo matrix-demo" aria-labelledby="matrix-caption">
+<figcaption id="matrix-caption"><strong>Una matriz y su transpuesta, posición a posición</strong><span>A tiene 6 filas y 4 columnas; A<sup>T</sup> tiene 4 filas y 6 columnas.</span></figcaption>
+<div class="matrix-figures" role="img" aria-label="Matriz A de seis filas por cuatro columnas y su transpuesta de cuatro filas por seis columnas. Cada punto de A en la fila i, columna j aparece al mismo tiempo en la fila j, columna i de la transpuesta.">
+<div class="matrix-equation"><span class="vector-symbol">A =</span><div>{grid(6, 4)}<p class="matrix-dim">6 × 4</p></div></div>
+<div class="matrix-equation"><span class="vector-symbol">A<sup>T</sup> =</span><div>{grid(4, 6, True)}<p class="matrix-dim">4 × 6</p></div></div>
+</div><div class="vector-controls"><button type="button" class="vector-pause" aria-pressed="false">Pausar animación</button><button type="button" class="vector-replay">Reiniciar</button></div>
+<p class="vector-note">Llenamos A por filas, de izquierda a derecha. Cada posición A[i, j] se refleja en A<sup>T</sup>[j, i]: las filas se convierten en columnas. Ambas matrices contienen 24 posiciones. Este recorrido ilustra un llenado por filas con ciclos anidados; la función matrix() de R llena por columnas de forma predeterminada.</p></figure>'''
+
 def aplicar_identidad(html, activities):
     nav_left='''<aside class="class-sidebar" aria-label="Temario de talleres"><nav><p class="sidebar-title">Clases</p><a class="classes-home" href="#inicio">🏫 Clases</a><a class="current" href="#inicio" aria-current="page">Clase 1: Introducción a la computación estadística usando R</a><a href="#clase-2">Clase 2: Regresión lineal simple en R</a></nav></aside>'''
     toc=['<aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a>']
@@ -37,6 +53,7 @@ def aplicar_identidad(html, activities):
     html=html.replace('</head>','<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="identidad-utfsm.css"></head>')
     html=html.replace('</body>','<script src="navegacion-utfsm.js"></script></body>')
     html = re.sub(r'(<article class="slide" id="NIV-02".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_vector(), html, count=1, flags=re.S)
+    html = re.sub(r'(<article class="slide" id="NIV-07".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_matriz(), html, count=1, flags=re.S)
     if not any(a['id'] == 'NIV-04' for a in activities):
         html = html.replace('<article class="slide" id="NIV-02"', '<span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02"', 1)
     return html
