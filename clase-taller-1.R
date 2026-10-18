@@ -201,8 +201,8 @@ boxplot(datos$wage ~ grupo,
 # P1-09 · Razones para trabajar con muestras
 
 
-# P1-08 · Tipos de muestreo en R con wage1
-# Ejecuta esta preparación una vez antes de los cinco ejemplos.
+# P1-08 · Cuatro técnicas de muestreo en R con wage1
+# Ejecuta esta preparación una vez antes de los cuatro ejemplos.
 if (!requireNamespace("wooldridge", quietly = TRUE)) {
   install.packages("wooldridge", repos = "https://cloud.r-project.org/")
 }
@@ -233,27 +233,19 @@ muestra_estratificada <- datos[ids_estrato, ]
 print(table(muestra_estratificada$educ16))
 print(muestra_estratificada[c("wage", "educ")])
 
-# Muestreo por conglomerados
+# Muestreo por conglomerados (cluster)
 grupo_artificial <- rep(1:12, length.out = N)
 elegidos <- sample(unique(grupo_artificial), size = 2)
-ids_conglomerado <- which(grupo_artificial %in% elegidos)
+
+# Segunda etapa: seleccionar personas dentro de los grupos elegidos.
+personas_grupo1 <- which(grupo_artificial == elegidos[1])
+personas_grupo2 <- which(grupo_artificial == elegidos[2])
+ids_conglomerado <- c(sample(personas_grupo1, size = 12),
+                     sample(personas_grupo2, size = 12))
 muestra_conglomerados <- datos[ids_conglomerado, ]
 print(elegidos)
 print(table(grupo_artificial[ids_conglomerado]))
 print(muestra_conglomerados[c("wage", "educ", "female")])
-
-# Muestreo no probabilístico
-ids_conveniencia <- head(which(datos$educ16), 12)
-muestra_no_probabilistica <- datos[ids_conveniencia, ]
-print(muestra_no_probabilistica[c("wage", "educ", "female")])
-
-# P1-12 · Muestreo estratificado y por conglomerados
-print(table(datos$educ16[ids_estrato]))
-print(table(grupo_artificial[ids_conglomerado]))
-
-# P1-13 · Muestreo no probabilístico y selección
-ids_conveniencia <- head(which(datos$educ16), 12)
-print(datos[ids_conveniencia, c("wage", "educ")])
 
 # P1-14 · Estadística descriptiva e inferencial
 frases <- c("Describo los salarios de las filas observadas",

@@ -989,9 +989,9 @@ Referencias: [tidymodels](https://www.tidymodels.org/start/recipes/) y [Banco Mu
 
 
 <a id="P1-08"></a>
-## Lámina 08 · Tipos de muestreo en R con wage1
+## Lámina 08 · Cuatro técnicas de muestreo en R con wage1
 
-Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y luego cada ejemplo en el orden de la clase de Sebastián. Para practicar, las 526 filas forman nuestro marco didáctico; no reproducimos el diseño original de la CPS ni afirmamos representatividad nacional.
+Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y después los cuatro ejemplos en orden. Las 526 personas de la base forman nuestro marco didáctico; estas selecciones no reproducen el diseño original de la CPS ni permiten afirmar representatividad nacional.
 
 [Tipos de muestreo en la clase de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/#muestreo-aleatorio).
 
@@ -999,7 +999,7 @@ Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez
 
 
 ```r
-# Ejecuta esta preparación una vez antes de los cinco ejemplos.
+# Ejecuta esta preparación una vez antes de los cuatro ejemplos.
 if (!requireNamespace("wooldridge", quietly = TRUE)) {
   install.packages("wooldridge", repos = "https://cloud.r-project.org/")
 }
@@ -1040,7 +1040,7 @@ print(muestra_sistematica[c("wage", "educ", "female")])
 ```
 
 
-El tamaño será 26 o 27 personas. Es un diseño probabilístico con inicio aleatorio, aunque no permite todas las combinaciones posibles de una muestra aleatoria simple. El orden de la lista y posibles patrones periódicos importan.
+El tamaño será 26 o 27 personas. Con este inicio aleatorio, cada fila tiene probabilidad 1/20 de entrar antes de realizar el sorteo. Por eso es un diseño probabilístico, aunque no permite todas las combinaciones de una muestra aleatoria simple. Una vez fijado el inicio, las demás posiciones quedan determinadas. El orden de la lista y posibles patrones periódicos importan.
 
 
 ### 3. Muestreo aleatorio estratificado
@@ -1062,15 +1062,20 @@ print(muestra_estratificada[c("wage", "educ")])
 Participan ambos estratos: 12 personas de cada uno. Como sus tamaños en la base son distintos (427 y 99), seleccionar la misma cantidad no conserva sus proporciones. Para estimar una media global con este diseño habría que ponderar por el tamaño de cada estrato.
 
 
-### 4. Muestreo por conglomerados
+### 4. Muestreo por conglomerados (cluster)
 
-Creamos 12 grupos artificiales, sorteamos dos y conservamos todas las personas de los grupos elegidos. Es una ilustración de conglomerados de una etapa; los grupos no representan geografía real de la encuesta.
+Creamos 12 grupos artificiales y realizamos un muestreo de dos etapas: primero sorteamos dos grupos y luego sorteamos 12 personas dentro de cada grupo elegido. Los grupos son didácticos y no representan barrios o escuelas reales de la CPS.
 
 
 ```r
 grupo_artificial <- rep(1:12, length.out = N)
 elegidos <- sample(unique(grupo_artificial), size = 2)
-ids_conglomerado <- which(grupo_artificial %in% elegidos)
+
+# Segunda etapa: seleccionar personas dentro de los grupos elegidos.
+personas_grupo1 <- which(grupo_artificial == elegidos[1])
+personas_grupo2 <- which(grupo_artificial == elegidos[2])
+ids_conglomerado <- c(sample(personas_grupo1, size = 12),
+                     sample(personas_grupo2, size = 12))
 muestra_conglomerados <- datos[ids_conglomerado, ]
 print(elegidos)
 print(table(grupo_artificial[ids_conglomerado]))
@@ -1078,122 +1083,11 @@ print(muestra_conglomerados[c("wage", "educ", "female")])
 ```
 
 
-Solo entran dos grupos, pero entran completos. La diferencia con estratificar es que no seleccionamos personas dentro de todos los grupos. En un diseño de dos etapas podríamos sortear personas dentro de los conglomerados elegidos.
-
-
-### 5. Muestreo no probabilístico
-
-Elegimos por criterio y orden disponible: las primeras 12 personas con al menos 16 años de educación. Aquí no se realiza un sorteo.
-
-
-```r
-ids_conveniencia <- head(which(datos$educ16), 12)
-muestra_no_probabilistica <- datos[ids_conveniencia, ]
-print(muestra_no_probabilistica[c("wage", "educ", "female")])
-```
-
-
-La selección depende del criterio y del orden de la base. Las personas con menos de 16 años quedan fuera, de modo que no podemos tratar esta selección como una muestra aleatoria de las 526 personas.
-
-
-<a id="P1-12"></a>
-## Lámina 09 · Muestreo estratificado y por conglomerados
-
-**Identificador de enlace:** `P1-12`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 18 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿En qué se diferencian estratos y conglomerados?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿En qué selección aparecen todos los estratos?
-
-**Consigna:** Inspecciona los grupos incluidos por cada selección.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-12
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-print(table(datos$educ16[ids_estrato]))
-print(table(grupo_artificial[ids_conglomerado]))
-```
-
-
-**Lectura del resultado:** Estratificar selecciona dentro de todos los estratos; conglomerados selecciona algunos grupos. Homogeneidad y heterogeneidad son criterios didácticos, no definiciones universales.
-
-**Error frecuente:** Presentar grupos artificiales como geografía de la encuesta.
-
-**Comprueba:** ¿Conglomerados puede tener una segunda etapa de muestreo? Sí.
-
-
-<a id="P1-13"></a>
-## Lámina 10 · Muestreo no probabilístico y selección
-
-**Identificador de enlace:** `P1-13`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 19 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Qué sucede si solo invitamos a quienes tienen al menos 16 años de educación?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Quién queda sin oportunidad de selección?
-
-**Consigna:** Selecciona las primeras 12 filas que cumplen ese criterio.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-13
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-ids_conveniencia <- head(which(datos$educ16), 12)
-print(datos[ids_conveniencia, c("wage", "educ")])
-```
-
-
-**Lectura del resultado:** Es una selección por criterio y orden disponible, no una muestra probabilística del conjunto. Una muestra grande no elimina sesgos de cobertura o respuesta, como ilustra Literary Digest en la web.
-
-**Error frecuente:** Generalizar sin supuestos a quienes quedaron fuera.
-
-**Comprueba:** ¿Conocer el criterio equivale a conocer probabilidades de selección aleatoria? No.
+La muestra tiene 24 personas: 12 de cada uno de los dos grupos sorteados. En el estratificado entran personas de todos los estratos; aquí solo de los conglomerados elegidos. Si incluyéramos a todas las personas de esos grupos, sería un diseño de una etapa. Los grupos artificiales permiten ilustrar el algoritmo, no evaluar la eficiencia de un diseño geográfico real.
 
 
 <a id="P1-14"></a>
-## Lámina 11 · Estadística descriptiva e inferencial
+## Lámina 09 · Estadística descriptiva e inferencial
 
 **Identificador de enlace:** `P1-14`. La numeración se reinicia por bloque, como en la web.
 
@@ -2592,8 +2486,6 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
-| P1-12 | Parte 1 · lámina 18 | `p1-12-consigna` / `p1-12-r` | Ampliación autónoma |
-| P1-13 | Parte 1 · lámina 19 | `p1-13-consigna` / `p1-13-r` | Presencial |
 | P1-14 | Parte 1 · lámina 20 | `p1-14-consigna` / `p1-14-r` | Presencial |
 | P2-01 | Parte 2 · lámina 1 | `p2-01-consigna` / `p2-01-r` | Ampliación autónoma |
 | P2-02 | Parte 2 · lámina 2 | `p2-02-consigna` / `p2-02-r` | Presencial |
@@ -2639,4 +2531,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 46 láminas (10 de nivelación, 11 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 46 láminas resueltas en clase.
+**Organización actual:** 44 láminas (10 de nivelación, 9 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 44 láminas resueltas en clase.
