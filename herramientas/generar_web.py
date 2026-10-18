@@ -2,7 +2,7 @@
 from pathlib import Path
 from html import escape as e
 import runpy, re
-from graficos_wage1 import explorer, scatter
+from graficos_wage1 import explorer, scatter, boxplots
 root=Path(__file__).resolve().parent.parent
 content=runpy.run_path(str(root/'herramientas/generar_taller.py'))
 activities=content['activities']
@@ -12,6 +12,9 @@ sections=[]
 for prefix,label,title,desc in groups:
  cards=[]
  for n,a in enumerate([a for a in activities if a['id'].split('-')[0]==prefix],1):
+  if a.get('boxplots'):
+   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}">{boxplots(root)}</div></article>')
+   continue
   if a.get('scatter'):
    cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}"><header class="slide-head"><h3 id="title-{a['id']}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a['id']}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['title'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a['id']}"><h4 class="question">{e(a['question'])}</h4><p>{e(a['task'])}</p>{scatter(root)}<h4>Cómo leer el gráfico</h4><p>{e(a['answer'])}</p><details class="solution"><summary>Ver código en R</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de {a['id']}">Copiar código</button></div><pre><code>{e(a['code'])}</code></pre><p>female toma los valores 0 y 1. Al sumar 1 obtenemos las posiciones 1 y 2 del vector de colores. pch = 19 dibuja puntos sólidos y el sufijo 80 añade transparencia a los colores.</p></div></details><a class="anchor" href="#{a['id']}">Enlace a esta lámina ↗</a></div></article>''')
    continue
