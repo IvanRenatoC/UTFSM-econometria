@@ -84,7 +84,7 @@ for (i in 1:3) {
 }
 print(A)
 
-# Comprueba lo aprendido: Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.
+# Comprueba lo aprendido: 
 A <- matrix(1:8, nrow = 2, ncol = 4)
 print(A[2, 3])
 print(t(A)[3, 2])

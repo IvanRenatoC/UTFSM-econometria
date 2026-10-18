@@ -15,7 +15,8 @@ for prefix,label,title,desc in groups:
   if 'practice' in a:
    practice=a['practice']
    practice_heading='' if practice.get('hide_heading') else '<h4>Ejercicio para comprobar lo aprendido</h4>'
-   practice_html=f'{practice_heading}<p>{e(practice["task"])}</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
+   practice_task='<p>'+e(practice['task'])+'</p>' if practice['task'] else ''
+   practice_html=f'{practice_heading}{practice_task}<p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
