@@ -39,6 +39,10 @@ for prefix,label,title,desc in groups:
    introduction_html += '<h4>Conoce la base de datos</h4><p>'+e(a['description'])+'</p><ul>'+''.join('<li><code>'+e(name)+'</code>: '+e(meaning)+'</li>' for name,meaning in a['variable_definitions'])+'</ul><p class="data-note">Fuente: <a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">documentación de wage1</a>. El paquete se instala desde CRAN con <code>repos = &quot;https://cloud.r-project.org/&quot;</code>.</p>'
   if a.get('explanation'):
    introduction_html += '<h4>'+e(a['explanation_title'])+'</h4><p>'+e(a['explanation'])+'</p><p class="data-note">Referencia: <a href="'+e(a['explanation_source'])+'">duración habitual de estudios universitarios, NCES</a>. Los tamaños de grupo se calcularon con el CSV del taller.</p>'
+  if a.get('reason_panels'):
+   choices=''.join(f'<button class="chart-choice" type="button" data-variable="{e(title)}" aria-pressed="{str(i==0).lower()}" aria-controls="reason-{key}">{e(title)}</button>' for i,(key,title,text) in enumerate(a['reason_panels']))
+   panels=''.join(f'<section class="chart-panel" id="reason-{key}" aria-labelledby="reason-title-{key}"'+(' hidden' if i else '')+f'><h4 id="reason-title-{key}">{e(title)}</h4><p>{e(text)}</p></section>' for i,(key,title,text) in enumerate(a['reason_panels']))
+   introduction_html += '<div class="reason-explorer"><div class="chart-choices" role="group" aria-label="Razones para trabajar con muestras">'+choices+'</div><p class="chart-status" role="status">Mostrando Presupuesto.</p>'+panels+'<p class="data-note">Referencias: <a href="https://www.tidymodels.org/start/recipes/">evaluación predictiva, tidymodels</a> y <a href="https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters">diseño de encuestas, Banco Mundial</a>.</p></div>'
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''

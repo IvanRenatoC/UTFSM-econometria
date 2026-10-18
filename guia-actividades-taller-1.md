@@ -87,6 +87,10 @@ Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación s
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Qué crees que aparecerá en la consola al ejecutar print("tu nombre")?
 
 **Consigna:** Reemplaza tu nombre por tu propio nombre, conservando las comillas, y ejecuta la instrucción.
@@ -119,6 +123,10 @@ print("tu nombre")
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo damos un nombre a un valor y lo usamos en un cálculo?
+
+
+
+
 
 
 
@@ -169,6 +177,10 @@ print(w)
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo elegimos una acción según una condición?
+
+
+
+
 
 
 
@@ -231,6 +243,10 @@ print(v[v > 4])
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
 
 **Consigna:** Parte en 1 y multiplica el valor por 2 en cada iteración, hasta alcanzar 100. Conserva los valores de cada paso.
@@ -274,6 +290,10 @@ print(c(pasos = paso, valor = valor))
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?
+
+
+
+
 
 
 
@@ -342,6 +362,10 @@ print(c(pasos = paso, valor = valor))
 
 
 
+
+
+
+
 **Antes de ejecutar:** Observa la sucesión 1, 2, 4, 8, 16… ¿Cuál es el siguiente número?
 
 **Consigna:** Genera los seis primeros términos de la sucesión 1, 2, 4, 8, 16… Multiplica cada término por 2 para obtener el siguiente.
@@ -379,6 +403,10 @@ print(sucesion)
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo reservamos un vector y modificamos solo algunas posiciones?
+
+
+
+
 
 
 
@@ -459,6 +487,10 @@ El resultado alterna −1, 2, −1, 4, −1, 6 y continúa hasta −1, 20. Las p
 
 
 
+
+
+
+
 **Antes de ejecutar:** Indica cuáles son las posiciones (2, 3) y (3, 2).
 
 **Consigna:** Llena una matriz de 3 × 3 solo con valores 0; luego haz que su diagonal principal contenga únicamente valores 1.
@@ -528,6 +560,10 @@ Sí. La transposición intercambia filas y columnas: A[2,3] y t(A)[3,2] contiene
 
 
 
+
+
+
+
 **Consigna:** Genera la sucesión 3, 9, 27, 81, 243 y 729, es decir, 3 elevado a 1, 2, 3, 4, 5 y 6. Con esos números crea una matriz de 3 × 2.
 
 **Datos:** Objetos artificiales de programación.
@@ -571,6 +607,10 @@ EDA significa análisis exploratorio de datos.
 
 
 datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.
+
+
+
+
 
 
 
@@ -627,6 +667,10 @@ head(datos)
 **Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
 
 **Pregunta:** Selecciona una variable para explorar su distribución.
+
+
+
+
 
 
 
@@ -698,6 +742,10 @@ if (variable == "wage") {
 
 
 
+
+
+
+
 **Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el amarillo a las mujeres.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
@@ -737,6 +785,10 @@ legend("topleft",
 **Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Podemos llamar universitario a todo registro con educ >= 16?
+
+
+
+
 
 
 
@@ -798,6 +850,10 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 
+
+
+
+
 **Consigna:** Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
@@ -842,6 +898,10 @@ boxplot(datos$wage ~ grupo,
 **Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué representa cada punto y cómo se ordena?
+
+
+
+
 
 
 
@@ -906,14 +966,79 @@ print(panel)
 **Comprueba:** Si seguimos a las mismas personas A, B y C en 2020, 2021 y 2022, tenemos datos de panel.
 
 
+<a id="P1-09"></a>
+## Lámina 07 · Razones para trabajar con muestras
+
+**Identificador de enlace:** `P1-09`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Para qué trabajar con una parte de los datos?
+
+
+
+### Presupuesto
+
+Observar a toda la población puede exigir más dinero, tiempo y personal de los disponibles. Una muestra permite planificar la recolección y concentrar recursos en mediciones de calidad. Por ejemplo, con un presupuesto de 100 unidades y un costo de 5 por entrevista, podemos financiar 20 entrevistas. El tamaño y la selección deben responder al objetivo del estudio: ahorrar no garantiza representatividad ni precisión.
+
+### Validaciones (train / test)
+
+Para evaluar un modelo predictivo, dividimos los datos disponibles: train se utiliza para ajustar el modelo y test para medir su desempeño con observaciones que no participaron en el ajuste. Si evaluamos con los mismos datos de entrenamiento, podemos obtener una impresión demasiado optimista. El conjunto test se reserva para la evaluación final; la elección y el ajuste del modelo se realizan dentro de train, por ejemplo con validación cruzada. Esta partición evalúa predicción: no prueba causalidad ni corrige una muestra sesgada. En series de tiempo debemos respetar el orden temporal.
+
+### Estudios en terreno
+
+Visitar hogares, empresas o localidades requiere coordinar rutas, encuestadores, horarios y permisos. Una muestra hace viable ese trabajo y permite supervisar las entrevistas y revisar la calidad de las respuestas. Antes de salir se define a quién se quiere estudiar, el marco de selección y cómo se elegirán las unidades; luego se registran los rechazos y las ausencias. Entrevistar únicamente a quienes resulta más fácil contactar puede dejar fuera a grupos importantes y sesgar las conclusiones.
+
+
+[Referencias: evaluación predictiva, tidymodels](https://www.tidymodels.org/start/recipes/) y [diseño de encuestas, Banco Mundial](https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters).
+
+
+
+
+
+
+
+
+
+
+
+**Consigna:** Calcula cuántas entrevistas financia ese presupuesto.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-09
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+presupuesto <- 100
+costo <- 5
+capacidad <- floor(presupuesto/costo)
+print(capacidad)
+```
+
+
+**Lectura del resultado:** Son 20 entrevistas bajo costos hipotéticos, un ejercicio de planificación con el marco real. Un presupuesto no define por sí solo un buen diseño.
+
+**Error frecuente:** Confundir capacidad de entrevistar con representatividad.
+
+**Comprueba:** ¿Una muestra barata garantiza precisión? No.
+
+
 <a id="P1-08"></a>
-## Lámina 07 · Población, muestra y unidad de observación
+## Lámina 08 · Población, muestra y unidad de observación
 
 **Identificador de enlace:** `P1-08`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · láminas 12–13 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿De qué conjunto seleccionaremos personas?
+
+
+
+
 
 
 
@@ -953,52 +1078,6 @@ print(datos[ids, c("wage", "educ")])
 **Comprueba:** ¿Cuál es nuestra unidad de observación? La persona registrada.
 
 
-<a id="P1-09"></a>
-## Lámina 08 · Razones para trabajar con muestras
-
-**Identificador de enlace:** `P1-09`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Cómo limita el presupuesto el número de entrevistas?
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** Si cada entrevista cuesta 5 unidades, ¿alcanzan 100 para toda la tabla?
-
-**Consigna:** Calcula cuántas entrevistas financia ese presupuesto.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-09
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-presupuesto <- 100
-costo <- 5
-capacidad <- floor(presupuesto/costo)
-print(capacidad)
-```
-
-
-**Lectura del resultado:** Son 20 entrevistas bajo costos hipotéticos, un ejercicio de planificación con el marco real. Un presupuesto no define por sí solo un buen diseño.
-
-**Error frecuente:** Confundir capacidad de entrevistar con representatividad.
-
-**Comprueba:** ¿Una muestra barata garantiza precisión? No.
-
-
 <a id="P1-10"></a>
 ## Lámina 09 · Variables, parámetros y estadísticos
 
@@ -1007,6 +1086,10 @@ print(capacidad)
 **Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Es lo mismo una variable que un parámetro?
+
+
+
+
 
 
 
@@ -1054,6 +1137,10 @@ print(data.frame(
 **Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo cambia quién entra según el método?
+
+
+
+
 
 
 
@@ -1121,6 +1208,10 @@ print(list(simple = ids_simple, sistematico = ids_sistema,
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿En qué selección aparecen todos los estratos?
 
 **Consigna:** Inspecciona los grupos incluidos por cada selección.
@@ -1165,6 +1256,10 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Quién queda sin oportunidad de selección?
 
 **Consigna:** Selecciona las primeras 12 filas que cumplen ese criterio.
@@ -1198,6 +1293,10 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 **Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Describimos la tabla o hablamos de una población?
+
+
+
+
 
 
 
@@ -1254,6 +1353,10 @@ print(frases)
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Un resumen de esta muestra es ya una ley general?
 
 **Consigna:** Selecciona la variable salarial y verifica su tamaño.
@@ -1298,6 +1401,10 @@ print(length(x))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿length devuelve un vector de 526 valores?
 
 **Consigna:** Construye un pequeño resumen de tamaño y rango observado.
@@ -1331,6 +1438,10 @@ print(resumen_inicial)
 **Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Media y mediana reaccionan igual a un salario extremo?
+
+
+
+
 
 
 
@@ -1393,6 +1504,10 @@ stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿P50 coincide con la mediana?
 
 **Consigna:** Obtén cuartiles y el percentil 90 con interpolación tipo 7.
@@ -1438,6 +1553,10 @@ print(quantile(x, .9, type = 7))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Varianza y salario tienen las mismas unidades?
 
 **Consigna:** Calcula RIQ, varianza muestral y desviación estándar; verifica manualmente.
@@ -1472,6 +1591,10 @@ stopifnot(isTRUE(all.equal(s2_manual, var(x))))
 **Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cambian los datos cuando cambiamos los intervalos?
+
+
+
+
 
 
 
@@ -1530,6 +1653,10 @@ par(op)
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Cuántos posibles atípicos crees que aparecerán?
 
 **Consigna:** Dibuja la caja, extrae sus límites y contrasta bisagras con cuartiles tipo 7.
@@ -1566,6 +1693,10 @@ print(quantile(x, c(.25,.5,.75), type = 7))
 **Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo podemos evaluar un método si normalmente no conocemos la verdad?
+
+
+
+
 
 
 
@@ -1624,6 +1755,10 @@ print(c(mu = mu, sigma = sigma, N = length(poblacion)))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Un intervalo ya calculado tiene parámetro aleatorio?
 
 **Consigna:** Escribe qué cambia al repetir el muestreo.
@@ -1658,6 +1793,10 @@ print(c("El parámetro didáctico permanece fijo",
 **Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo se distribuye el promedio al repetir muestras?
+
+
+
+
 
 
 
@@ -1723,6 +1862,10 @@ par(op)
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿La asimetría afecta la rapidez de aproximación?
 
 **Consigna:** Comprueba que los datos utilizados son finitos y revisa el mecanismo de muestreo.
@@ -1756,6 +1899,10 @@ print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
 **Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo estimamos mu con una muestra de 36 salarios?
+
+
+
+
 
 
 
@@ -1818,6 +1965,10 @@ print(c(estimacion = xbarra, error_estandar = se,
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Qué ocurre al duplicar sigma y conservar lo demás?
 
 **Consigna:** Separa estimación, valor crítico, error estándar y margen.
@@ -1852,6 +2003,10 @@ stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
 **Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué cambia al pasar a 99%?
+
+
+
+
 
 
 
@@ -1910,6 +2065,10 @@ print(limites)
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Cuál abarcará a los otros?
 
 **Consigna:** Representa los límites en una misma recta salarial.
@@ -1947,6 +2106,10 @@ points(rep(xbarra,3), 1:3, pch = 19)
 **Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cuántos intervalos capturan la media conocida?
+
+
+
+
 
 
 
@@ -2011,6 +2174,10 @@ abline(v = mu, lty = 2)
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Reducir el margen a la mitad duplicará n?
 
 **Consigna:** Despeja n y verifica el margen obtenido después de redondear.
@@ -2045,6 +2212,10 @@ print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
 **Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué fracción tiene al menos 16 años de educación?
+
+
+
+
 
 
 
@@ -2110,6 +2281,10 @@ print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
 
 
 
+
+
+
+
 **Antes de ejecutar:** Predice mirando los límites anteriores.
 
 **Consigna:** Comprueba inclusión y escribe una conclusión bajo el modelo didáctico.
@@ -2155,6 +2330,10 @@ print(c(referencia = referencia, dentro_del_IC = compatible))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿p=0,5 maximiza p(1-p)?
 
 **Consigna:** Compara el plan con p piloto y el conservador para margen 0,03.
@@ -2189,6 +2368,10 @@ print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
 **Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Cuántas extracciones para longitud total máxima 0,05?
+
+
+
+
 
 
 
@@ -2251,6 +2434,10 @@ print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Qué signo esperas para alta educación menos el resto?
 
 **Consigna:** Define las dos poblaciones empíricas sin mezclarlas.
@@ -2286,6 +2473,10 @@ print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
 **Referencia:** Parte 3 · láminas 26–27 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Qué significa que el intervalo incluya cero?
+
+
+
+
 
 
 
@@ -2342,6 +2533,10 @@ print(c(delta_didactica = delta))
 
 
 
+
+
+
+
 **Antes de ejecutar:** ¿Se restan o se suman las varianzas?
 
 **Consigna:** Extrae 144 y 121 salarios con reemplazo de cada grupo; calcula el error estándar de la diferencia.
@@ -2382,6 +2577,10 @@ print(c(estimacion = diferencia, error_estandar = se_diferencia))
 **Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿La diferencia es compatible con cero?
+
+
+
+
 
 
 
@@ -2484,8 +2683,8 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-05 | Parte 1 · láminas 5–6 | `p1-05-consigna` / `p1-05-r` | Presencial |
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
 | P1-07 | Parte 1 · láminas 8–11 | `p1-07-consigna` / `p1-07-r` | Presencial |
-| P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` / `p1-09-r` | Ampliación autónoma |
+| P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P1-10 | Parte 1 · lámina 15 | `p1-10-consigna` / `p1-10-r` | Ampliación autónoma |
 | P1-11 | Parte 1 · láminas 16–17 | `p1-11-consigna` / `p1-11-r` | Presencial |
 | P1-12 | Parte 1 · lámina 18 | `p1-12-consigna` / `p1-12-r` | Ampliación autónoma |

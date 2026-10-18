@@ -320,6 +320,21 @@ print(panel)''',
 
 activities = [a for a in activities if a['id'] != 'P1-03']
 
+# Primero las razones para muestrear y luego población, muestra y unidad.
+indice_poblacion = next(i for i,a in enumerate(activities) if a['id'] == 'P1-08')
+indice_razones = next(i for i,a in enumerate(activities) if a['id'] == 'P1-09')
+activities[indice_poblacion], activities[indice_razones] = activities[indice_razones], activities[indice_poblacion]
+razones = next(a for a in activities if a['id'] == 'P1-09')
+razones.update(
+ question='¿Para qué trabajar con una parte de los datos?', predict='',
+ reason_panels=[
+  ('presupuesto', 'Presupuesto',
+   'Observar a toda la población puede exigir más dinero, tiempo y personal de los disponibles. Una muestra permite planificar la recolección y concentrar recursos en mediciones de calidad. Por ejemplo, con un presupuesto de 100 unidades y un costo de 5 por entrevista, podemos financiar 20 entrevistas. El tamaño y la selección deben responder al objetivo del estudio: ahorrar no garantiza representatividad ni precisión.'),
+  ('validaciones', 'Validaciones (train / test)',
+   'Para evaluar un modelo predictivo, dividimos los datos disponibles: train se utiliza para ajustar el modelo y test para medir su desempeño con observaciones que no participaron en el ajuste. Si evaluamos con los mismos datos de entrenamiento, podemos obtener una impresión demasiado optimista. El conjunto test se reserva para la evaluación final; la elección y el ajuste del modelo se realizan dentro de train, por ejemplo con validación cruzada. Esta partición evalúa predicción: no prueba causalidad ni corrige una muestra sesgada. En series de tiempo debemos respetar el orden temporal.'),
+  ('terreno', 'Estudios en terreno',
+   'Visitar hogares, empresas o localidades requiere coordinar rutas, encuestadores, horarios y permisos. Una muestra hace viable ese trabajo y permite supervisar las entrevistas y revisar la calidad de las respuestas. Antes de salir se define a quién se quiere estudiar, el marco de selección y cómo se elegirán las unidades; luego se registran los rechazos y las ausencias. Entrevistar únicamente a quienes resulta más fácil contactar puede dejar fuera a grupos importantes y sesgar las conclusiones.')])
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -456,6 +471,10 @@ for a in activities:
 {('**Pregunta:** ' + a['question']) if a['question'] else ''}
 
 {a.get('description', '')}
+
+{chr(10).join('### ' + title + chr(10) + chr(10) + text + chr(10) for _,title,text in a.get('reason_panels', []))}
+
+{('[Referencias: evaluación predictiva, tidymodels](https://www.tidymodels.org/start/recipes/) y [diseño de encuestas, Banco Mundial](https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters).') if a.get('reason_panels') else ''}
 
 {('[Video interactivo en la web](https://ivanrenatoc.github.io/UTFSM-econometria/#P1-07)' + chr(10) + chr(10) + a['lesson_transcript']) if a.get('lesson_transcript') else ''}
 
