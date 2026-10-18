@@ -969,13 +969,7 @@ boxplot(datos$wage ~ grupo,
 <a id="P1-09"></a>
 ## Lámina 07 · Razones para trabajar con muestras
 
-**Identificador de enlace:** `P1-09`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 14 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Para qué trabajar con una parte de los datos?
-
-
+¿Para qué trabajar con una parte de los datos?
 
 ### Presupuesto
 
@@ -989,40 +983,7 @@ Para evaluar un modelo predictivo, dividimos los datos disponibles: train se uti
 
 Visitar hogares, empresas o localidades requiere coordinar rutas, encuestadores, horarios y permisos. Una muestra hace viable ese trabajo y permite supervisar las entrevistas y revisar la calidad de las respuestas. Antes de salir se define a quién se quiere estudiar, el marco de selección y cómo se elegirán las unidades; luego se registran los rechazos y las ausencias. Entrevistar únicamente a quienes resulta más fácil contactar puede dejar fuera a grupos importantes y sesgar las conclusiones.
 
-
-[Referencias: evaluación predictiva, tidymodels](https://www.tidymodels.org/start/recipes/) y [diseño de encuestas, Banco Mundial](https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters).
-
-
-
-
-
-
-
-
-
-
-
-**Consigna:** Calcula cuántas entrevistas financia ese presupuesto.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-09
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-presupuesto <- 100
-costo <- 5
-capacidad <- floor(presupuesto/costo)
-print(capacidad)
-```
-
-
-**Lectura del resultado:** Son 20 entrevistas bajo costos hipotéticos, un ejercicio de planificación con el marco real. Un presupuesto no define por sí solo un buen diseño.
-
-**Error frecuente:** Confundir capacidad de entrevistar con representatividad.
+Referencias: [tidymodels](https://www.tidymodels.org/start/recipes/) y [Banco Mundial](https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters).
 
 **Comprueba:** ¿Una muestra barata garantiza precisión? No.
 
@@ -2683,7 +2644,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-04 | Parte 1 · lámina 4 | `p1-04-consigna` / `p1-04-r` | Presencial |
 | P1-05 | Parte 1 · láminas 5–6 | `p1-05-consigna` / `p1-05-r` | Presencial |
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
-| P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` / `p1-09-r` | Ampliación autónoma |
+| P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P1-10 | Parte 1 · lámina 15 | `p1-10-consigna` / `p1-10-r` | Ampliación autónoma |
 | P1-11 | Parte 1 · láminas 16–17 | `p1-11-consigna` / `p1-11-r` | Presencial |

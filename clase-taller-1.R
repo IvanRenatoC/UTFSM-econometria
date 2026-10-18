@@ -199,10 +199,7 @@ boxplot(datos$wage ~ grupo,
         xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
 
 # P1-09 · Razones para trabajar con muestras
-presupuesto <- 100
-costo <- 5
-capacidad <- floor(presupuesto/costo)
-print(capacidad)
+
 
 # P1-08 · Población, muestra y unidad de observación
 set.seed(16201)
