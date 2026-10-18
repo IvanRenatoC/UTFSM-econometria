@@ -29,7 +29,7 @@ head(datos)
 
 add('P1-01','¿Qué podemos preguntar a los datos?','Parte 1 · lámina 1','¿Qué sabemos de educación y salario de cada persona?','¿Cada fila representa una persona o un mes?','Carga la base e identifica wage y educ en seis filas.',load,'wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.','Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.','¿526 filas equivalen a 526 períodos? No.','Presencial')
 activities[-1].update(
- question='', predict='',
+ question='', predict='', error='',
  description='datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.',
  variable_definitions=[
   ('wage', 'Salario promedio por hora, en dólares estadounidenses de 1976.'),
@@ -359,7 +359,7 @@ for a in activities:
  discussion=f"**Lectura del resultado:** {a['answer']}\n"
  if a.get('note'): discussion += '\n**' + a['note'] + '**\n'
  if a.get('comparison'): discussion += '\n**Diferencia entre while y for:** ' + a['comparison'] + '\n'
- discussion += f"\n**Error frecuente:** {a['error']}\n"
+ if a['error']: discussion += f"\n**Error frecuente:** {a['error']}\n"
  if a['check']: discussion += f"\n**Comprueba:** {a.get('check_markdown', a['check'])}\n"
  md(discussion,id.lower()+'-lectura')
  sections.extend([intro,solution,'```r\n'+a['code']+'\n```\n',discussion])
