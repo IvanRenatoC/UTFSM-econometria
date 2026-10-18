@@ -347,8 +347,6 @@ print(v)
 
 **Error frecuente:** Confundir el valor guardado con su posición. La condición se aplica al índice i, no al contenido v[i].
 
-**Comprueba:** Ahora inserta el número de la posición en todos los valores que sean 0.
-
 
 ### Comprueba lo aprendido · Lámina 07
 
