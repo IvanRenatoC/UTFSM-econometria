@@ -1,18 +1,14 @@
 [
   {
     "start": 0,
-    "duration": 38
+    "duration": 15
   },
   {
-    "start": 38,
-    "duration": 39
+    "start": 15,
+    "duration": 15
   },
   {
-    "start": 77,
-    "duration": 36
-  },
-  {
-    "start": 113,
-    "duration": 48
+    "start": 30,
+    "duration": 15
   }
 ]
