@@ -74,3 +74,15 @@ document.addEventListener('click',event=>{
 document.querySelector('#present').addEventListener('click',()=>{
   if(document.body.classList.contains('presenting'))document.querySelectorAll('.slide').forEach(expandSlide);
 });
+
+// Cada botón muestra una distribución del mismo conjunto de 526 personas.
+for(const explorer of document.querySelectorAll('.wage-explorer')){
+  const choices=[...explorer.querySelectorAll('.chart-choice')];
+  for(const choice of choices){
+    choice.addEventListener('click',()=>{
+      for(const button of choices)button.setAttribute('aria-pressed',String(button===choice));
+      for(const panel of explorer.querySelectorAll('.chart-panel'))panel.hidden=panel.id!==choice.getAttribute('aria-controls');
+      explorer.querySelector('.chart-status').textContent=`Mostrando ${choice.dataset.variable}.`;
+    });
+  }
+}

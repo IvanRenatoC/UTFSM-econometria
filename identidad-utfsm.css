@@ -106,3 +106,19 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 .slide-body[hidden]{display:none}
 @media print{.slide-body[hidden]{display:block!important}.slide-chevron{display:none}}
 @media(prefers-reduced-motion:reduce){.slide-chevron{transition:none}}
+
+.chart-choices{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.chart-choice{font:inherit;font-weight:700;padding:8px 15px;border:2px solid #0160a0;border-radius:7px;background:var(--paper);color:var(--ink)}
+.chart-choice[aria-pressed="true"]{background:#0160a0;color:white}
+.chart-status{font-size:13px;color:var(--muted)}
+.chart-panel[hidden]{display:none}
+.wage-chart{display:block;width:100%;height:auto;background:white;border-radius:8px}
+.wage-chart text{font:12px Roboto,sans-serif;fill:#10193b}
+.wage-chart .pie-label{font-size:18px;font-weight:700}
+.wage-chart .pie-label[fill="white"]{fill:white}
+.chart-grid{stroke:#dce2ea;stroke-width:1}
+.wage-chart rect:focus,.wage-chart path:focus{outline:3px solid #10193b;opacity:.8}
+.chart-legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:13px;margin:12px 0}
+.chart-legend i{display:inline-block;width:12px;height:12px;margin-right:6px}
+.chart-table-wrap{overflow:auto;padding:12px}
+@media print{.chart-panel[hidden]{display:block!important}.chart-choices,.chart-status{display:none}.chart-panel{break-inside:avoid}}

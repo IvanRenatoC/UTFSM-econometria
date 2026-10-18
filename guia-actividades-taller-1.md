@@ -580,13 +580,13 @@ head(datos)
 
 
 <a id="P1-02"></a>
-## Lámina 02 · Econometría moderna: describir, explicar y predecir
+## Lámina 02 · Exploración gráfica de los datos
 
 **Identificador de enlace:** `P1-02`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Describir, explicar una causa o predecir?
+**Pregunta:** Selecciona una variable para explorar su distribución.
 
 
 
@@ -594,9 +594,9 @@ head(datos)
 
 
 
-**Antes de ejecutar:** Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?
 
-**Consigna:** Asocia cada pregunta con una finalidad.
+
+**Consigna:** En la web, pulsa wage, educ, exper, tenure, female o married. En R, cambia el nombre de variable y ejecuta la celda para reproducir el gráfico.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -607,20 +607,30 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-preguntas <- data.frame(
-  pregunta = c("¿Cómo se relacionan educación y salario?",
-               "¿Más educación causa mayor salario?",
-               "¿Qué salario tendrá otra persona?"),
-  finalidad = c("Descripción", "Causalidad", "Predicción"))
-print(preguntas)
+# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
+variable <- "wage"
+if (variable == "wage") {
+  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
+       col = "#0160a0", border = "white", main = "Salario por hora",
+       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("educ", "exper", "tenure")) {
+  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
+  frecuencias <- table(factor(datos[[variable]], levels = anios))
+  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
+  barplot(frecuencias, col = colores[variable], border = "white",
+          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("female", "married")) {
+  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
+  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
+    c("No casado/a (0)", "Casado/a (1)")
+  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+      col = c("#0160a0", "#f8c751"), main = variable)
+}
 ```
 
 
-**Lectura del resultado:** Una misma tabla permite formular preguntas distintas, pero no garantiza resolverlas todas. Aquí no entrenamos predictores ni estimamos efectos.
-
-**Error frecuente:** Tratar una predicción acertada como identificación causal.
-
-**Comprueba:** ¿Una pregunta causal requiere supuestos adicionales? Sí.
+**Lectura del resultado:** Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.
 
 
 <a id="P1-03"></a>
