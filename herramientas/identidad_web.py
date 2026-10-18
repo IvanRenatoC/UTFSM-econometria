@@ -30,6 +30,26 @@ def animacion_matriz():
 </div><div class="vector-controls"><button type="button" class="vector-pause" aria-pressed="false">Pausar animación</button><button type="button" class="vector-replay">Reiniciar</button></div>
 <p class="vector-note">Llenamos A por filas, de izquierda a derecha. Cada posición A[i, j] se refleja en A<sup>T</sup>[j, i]: las filas se convierten en columnas. Ambas matrices contienen 24 posiciones. Este recorrido ilustra un llenado por filas con ciclos anidados; la función matrix() de R llena por columnas de forma predeterminada.</p></figure>'''
 
+def animacion_escalera():
+    return '''<figure class="vector-demo staircase-demo" aria-labelledby="stair-caption">
+<figcaption id="stair-caption"><strong>Repetir el recorrido hasta encontrar la salida</strong><span>La persona baja dos veces: al terminar la primera vuelve arriba; al terminar la segunda aparece la salida.</span></figcaption>
+<svg class="stair-scene" viewBox="0 0 560 370" role="img" aria-labelledby="stair-title stair-description">
+<title id="stair-title">Dos descensos por una escalera</title><desc id="stair-description">Una persona baja seis escalones, desaparece al llegar abajo y reaparece arriba. Baja una segunda vez y se detiene junto a un letrero que dice salida.</desc>
+<rect x="1" y="1" width="558" height="368" rx="12" fill="#f5f7fc"/>
+<path d="M60 100 H130 V135 H175 V170 H220 V205 H265 V240 H310 V275 H355 V310 H510 V335 H60 Z" fill="#e7ecf5"/>
+<path d="M60 100 H130 V135 H175 V170 H220 V205 H265 V240 H310 V275 H355 V310 H510" fill="none" stroke="#1b2a5e" stroke-width="3" stroke-linejoin="round"/>
+<text x="24" y="35" class="stair-label-first stair-animated">Recorrido 1 de 2</text><text x="24" y="35" class="stair-label-second stair-animated">Recorrido 2 de 2</text>
+<g class="stair-person stair-animated" aria-hidden="true">
+<circle cx="0" cy="-56" r="11" fill="#e9b48c"/><path d="M-11 -58 Q-8 -75 4 -68 Q13 -67 11 -56 L5 -61 L-8 -58 Z" fill="#10193b"/>
+<path d="M-7 -42 L8 -42 L12 -23 L-6 -23 Z" fill="#1b2a5e"/>
+<path d="M-4 -38 L-13 -26 L-19 -22 M6 -38 L16 -29 L24 -29" fill="none" stroke="#e9b48c" stroke-width="6" stroke-linecap="round"/>
+<path d="M-3 -23 L-8 -12 L-14 -1 M7 -23 L16 -13 L25 -8" fill="none" stroke="#005f96" stroke-width="7" stroke-linecap="round"/>
+<path d="M-16 0 H-7 M23 -7 H31" stroke="#10193b" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g class="stair-exit stair-animated"><rect x="416" y="242" width="112" height="45" rx="6" fill="#1b2a5e"/><text x="472" y="271" text-anchor="middle" fill="white" font-size="23" font-weight="700">salida</text><path d="M472 287 V310" stroke="#1b2a5e" stroke-width="4"/></g>
+</svg><div class="vector-controls"><button type="button" class="vector-pause" aria-pressed="false">Pausar animación</button><button type="button" class="vector-replay">Reiniciar</button></div>
+<p class="vector-note">Cada recorrido representa una repetición. Al finalizar el segundo se alcanza la condición de salida y la escena se detiene. Reinicia para observar los dos descensos otra vez.</p></figure>'''
+
 def aplicar_identidad(html, activities):
     nav_left='''<aside class="class-sidebar" aria-label="Temario de talleres"><nav><p class="sidebar-title">Clases</p><a class="classes-home" href="#inicio">🏫 Clases</a><a class="current" href="#inicio" aria-current="page">Clase 1: Introducción a la computación estadística usando R</a><a href="#clase-2">Clase 2: Regresión lineal simple en R</a></nav></aside>'''
     toc=['<aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a>']
@@ -56,6 +76,7 @@ def aplicar_identidad(html, activities):
     html=html.replace('</body>','<script src="navegacion-utfsm.js"></script></body>')
     html = re.sub(r'(<article class="slide" id="NIV-02".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_vector(), html, count=1, flags=re.S)
     html = re.sub(r'(<article class="slide" id="NIV-07".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_matriz(), html, count=1, flags=re.S)
+    html = re.sub(r'(<article class="slide" id="NIV-06".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_escalera(), html, count=1, flags=re.S)
     if not any(a['id'] == 'NIV-04' for a in activities):
         html = html.replace('<article class="slide" id="NIV-02"', '<span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02"', 1)
     # Cambia la URL cuando cambia el recurso para evitar estilos o controles antiguos en caché.
