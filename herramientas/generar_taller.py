@@ -108,6 +108,23 @@ activities = [por_id[id] for id in orden_nivelacion] + [a for a in activities if
 por_id['NIV-03']['code'] = 'v <- c(2, 7, 9)  # Valores del ejemplo, definidos antes de usarlos.\n' + por_id['NIV-03']['code']
 por_id['NIV-03']['task'] = 'Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector de ejemplo.'
 
+# Dos láminas consecutivas para comparar las condiciones de término.
+while_activity = por_id['NIV-06']
+while_activity['title'] = 'Ciclos while/for y condiciones de término'
+while_activity['question'] = 'Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?'
+while_activity['answer'] = 'while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor < 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.'
+add('NIV-FOR', 'Ciclos while/for y condiciones de término · for', 'Nivelación',
+    'Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?',
+    '¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?',
+    'Ejecuta la versión con for. Compara su trayectoria con la del while y prueba max_pasos <- 3.',
+    'valor <- 1\nmax_pasos <- 20L\ntrayectoria <- numeric(max_pasos + 1L)\ntrayectoria[1] <- valor\nfor (paso in seq_len(max_pasos)) {\n  valor <- 2 * valor\n  trayectoria[paso + 1L] <- valor\n  if (valor >= 100) {\n    break\n  }\n}\nprint(trayectoria[seq_len(paso + 1L)])\nprint(c(pasos = paso, valor = valor))',
+    'for recorre los pasos de seq_len(max_pasos). Termina al agotar esa secuencia o antes si ejecuta break. Aquí el if detecta valor >= 100 y break sale del ciclo en el paso 7, con valor 128; la trayectoria coincide con la del while. Si max_pasos es 3, se agota la secuencia con valor 8. En este ejemplo max_pasos debe ser un entero positivo; paso recibe automáticamente cada índice, sin escribir paso <- paso + 1.',
+    'Confundir el recorrido de for con una prueba automática de valor < 100: esa condición de salida anticipada se expresa con if y break. No usar paso después de un ciclo vacío sin inicializarlo.',
+    '¿Qué ocurre si eliminas if y break? Se ejecutan los 20 pasos. ¿Qué ocurre con max_pasos <- 3? Termina por agotar los pasos, sin alcanzar 100.',
+    'Presencial')
+activities.insert(activities.index(while_activity) + 1, activities.pop())
+
+
 
 
 header='''# Taller 1 · Del código a los datos
@@ -270,7 +287,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
+**Cobertura documental:** 48/48 actividades (9 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 actividades resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -302,9 +319,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
 | 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
 | 19:00–19:04 | NIV-03 (lámina 03). Anticipar el mensaje con valores 3 y 8; el ejemplo define sus propios valores. |
-| 19:04–19:09 | NIV-06 (lámina 04). Preguntar qué permite terminar el while. |
-| 19:09–19:14 | NIV-05 (lámina 05). Parejas completan una sucesión y revisan las otras. |
-| 19:14–19:20 | NIV-02 (lámina 06). Crear, seleccionar, modificar y llenar un vector con for. |
+| 19:04–19:07 | NIV-06 (lámina 04). while: condición previa, actualización y límite de seguridad. |
+| 19:07–19:09 | NIV-FOR (lámina 05). for: recorrido de pasos y salida anticipada con break. |
+| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan una sucesión y revisan las otras. |
+| 19:14–19:20 | NIV-02 (lámina 07). Crear, seleccionar, modificar y llenar un vector con for. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
 | 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
@@ -341,8 +359,8 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==47
-assert sum(c['cell_type']=='code' for c in cells)==47
+assert len(activities)==48
+assert sum(c['cell_type']=='code' for c in cells)==48
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
