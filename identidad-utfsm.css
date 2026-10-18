@@ -21,3 +21,10 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 @media(max-width:1050px){.vector-figures{flex-direction:column;gap:24px}.vector-demo{padding:16px}.vector-cell{width:30px;height:30px}}
 @media(prefers-reduced-motion:reduce){.vector-demo .vector-dot{animation:none;opacity:1}.vector-controls{display:none}}
 @media print{.vector-demo .vector-dot{animation:none;opacity:1}.vector-controls{display:none}}
+
+.vector-cell:nth-child(1) .vector-dot{animation-name:vector-fill-1}
+.vector-cell:nth-child(2) .vector-dot{animation-name:vector-fill-2}
+.vector-cell:nth-child(3) .vector-dot{animation-name:vector-fill-3}
+.vector-cell:nth-child(4) .vector-dot{animation-name:vector-fill-4}
+.vector-cell:nth-child(5) .vector-dot{animation-name:vector-fill-5}
+.vector-cell:nth-child(6) .vector-dot{animation-name:vector-fill-6}
