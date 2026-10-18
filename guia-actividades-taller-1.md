@@ -99,15 +99,15 @@ print(c(tipo = typeof(saldo), longitud = length(saldo)))
 
 
 <a id="NIV-02"></a>
-## NIV-02 · Vectores: creación, selección y modificación
+## NIV-02 · Vectores: creación, selección, modificación y llenado con for
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo guardamos varios valores?
+**Pregunta:** ¿Cómo guardamos varios valores y los llenamos con un ciclo for?
 
-**Antes de ejecutar:** ¿Qué posición contiene 6?
+**Antes de ejecutar:** ¿Qué posición contiene 6? En el vector de dobles, ¿cuáles serán el primer y último término?
 
-**Consigna:** Crea tres valores, selecciona los mayores que 4 y modifica la segunda posición.
+**Consigna:** Crea tres valores, selecciona los mayores que 4 y modifica la segunda posición. Después, llena cinco posiciones con el doble de su índice; amplía a ocho.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -118,19 +118,27 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
+# 1. Crear, seleccionar y modificar
 v <- numeric(3)
 v[1] <- 2; v[2] <- 6; v[3] <- 9
 print(v[v > 4])
 v[2] <- 7
 print(v); print(length(v))
+
+# 2. Reservar y llenar con for
+dobles <- numeric(5)
+for (i in seq_along(dobles)) {
+  dobles[i] <- 2 * i
+}
+print(dobles)
 ```
 
 
-**Lectura del resultado:** R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo.
+**Lectura del resultado:** R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo. La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.
 
-**Error frecuente:** Usar el índice 0 como primera posición.
+**Error frecuente:** Usar el índice 0 como primera posición. Llenar un objeto inexistente o recorrer más índices de los reservados.
 
-**Comprueba:** ¿length(v) cambia al modificar v[2]? No.
+**Comprueba:** ¿length(v) cambia al modificar v[2]? No. ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.
 
 
 <a id="NIV-03"></a>
@@ -169,41 +177,6 @@ print(v[v > 4])
 **Error frecuente:** Escribir if(v > 4), con una condición por cada elemento.
 
 **Comprueba:** ¿valor > 4 es una asignación? No, es una comparación.
-
-
-<a id="NIV-04"></a>
-## NIV-04 · Ciclos for y llenado de vectores
-
-**Referencia:** Nivelación · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Cómo evitamos escribir cada asignación?
-
-**Antes de ejecutar:** ¿Cuáles serán el primer y último término?
-
-**Consigna:** Llena cinco posiciones con el doble de su índice; amplía a ocho.
-
-**Datos:** Objetos artificiales de programación.
-
-
-### Solución · NIV-04
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-dobles <- numeric(5)
-for (i in seq_along(dobles)) {
-  dobles[i] <- 2 * i
-}
-print(dobles)
-```
-
-
-**Lectura del resultado:** La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.
-
-**Error frecuente:** Llenar un objeto inexistente o recorrer más índices de los reservados.
-
-**Comprueba:** ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.
 
 
 <a id="NIV-05"></a>
@@ -1798,7 +1771,6 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-01 | Nivelación | `niv-01-consigna` / `niv-01-r` | Presencial |
 | NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
 | NIV-03 | Nivelación | `niv-03-consigna` / `niv-03-r` | Presencial |
-| NIV-04 | Nivelación | `niv-04-consigna` / `niv-04-r` | Presencial |
 | NIV-05 | Nivelación | `niv-05-consigna` / `niv-05-r` | Presencial |
 | NIV-06 | Nivelación | `niv-06-consigna` / `niv-06-r` | Presencial |
 | NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
@@ -1861,4 +1833,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
+**Cobertura documental:** 46/46 actividades (7 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 46 actividades resueltas en clase.

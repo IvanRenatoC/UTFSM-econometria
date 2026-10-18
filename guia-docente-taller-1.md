@@ -17,9 +17,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | Hora | Ruta y conducción |
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
-| 18:55–19:00 | NIV-01 y NIV-02. Asignación e índices: ejecutar y preguntar qué cambia al modificar una posición. |
-| 19:00–19:05 | NIV-03. Pedir que anticipen el mensaje con valores 3 y 8. |
-| 19:05–19:15 | NIV-04 y NIV-05. Modelar un for; parejas completan una sucesión y revisan las otras. |
+| 18:55–19:00 | NIV-01. Asignación: ejecutar y preguntar qué cambia al modificar un objeto. |
+| 19:00–19:10 | NIV-02 (fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
+| 19:10–19:12 | NIV-03. Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
+| 19:12–19:15 | NIV-05. Parejas completan una sucesión y revisan las otras. |
 | 19:15–19:20 | NIV-06. Preguntar qué permite terminar el while. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
 | 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
