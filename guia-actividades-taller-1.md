@@ -650,7 +650,7 @@ if (variable == "wage") {
 
 
 
-**Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el rojo a las mujeres.
+**Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el amarillo a las mujeres.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -661,7 +661,7 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+colores <- c("#0160A080", "#F8C75180")  # Azul para hombres (0), amarillo para mujeres (1)
 
 plot(datos$educ, datos$wage,
      pch = 19,
