@@ -341,6 +341,8 @@ activities.remove(video_inicial)
 inicio_econometria = next(i for i,a in enumerate(activities) if a['id'].startswith('P1-'))
 activities.insert(inicio_econometria, video_inicial)
 
+next(a for a in activities if a['id'] == 'P1-09').update(reason_only=True, code='', task='', answer='')
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -462,6 +464,12 @@ for a in activities:
  bloque=id.split('-')[0]
  numeros_por_bloque[bloque] = numeros_por_bloque.get(bloque, 0) + 1
  numero = numeros_por_bloque[bloque]
+ if a.get('reason_only'):
+  reasons=f'<a id="{id}"></a>\n## Lámina {numero:02d} · {a["title"]}\n\n{a["question"]}\n\n'
+  reasons += '\n'.join('### '+title+'\n\n'+text+'\n' for _,title,text in a['reason_panels'])
+  reasons += '\nReferencias: [tidymodels](https://www.tidymodels.org/start/recipes/) y [Banco Mundial](https://www.worldbank.org/en/programs/lsms/publication/capturing-what-matters).\n\n**Comprueba:** '+a['check']+'\n'
+  md(reasons,id.lower()+'-consigna');sections.append(reasons)
+  continue
  if a.get('overview'):
   overview=f"<a id=\"{id}\"></a>\n## Lámina {numero:02d} · {a['title']}\n\n### {a['question']}\n\n{a['task']}\n"
   md(overview,id.lower()+'-consigna')
@@ -518,7 +526,7 @@ for a in activities:
 md(closing,'cierre'); sections.append(closing)
 rows=['| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |','|---|---|---|---|']
 for a in activities:
- cells_ref=f"`{a['id'].lower()}-consigna`" if a.get('overview') else f"`{a['id'].lower()}-consigna` / `{a['id'].lower()}-r`"
+ cells_ref=f"`{a['id'].lower()}-consigna`" if a.get('overview') or a.get('reason_only') else f"`{a['id'].lower()}-consigna` / `{a['id'].lower()}-r`"
  rows.append(f"| {a['id']} | {a['slides']} | {cells_ref} | {a['mode']} |")
 trace='''## Matriz de correspondencia
 
@@ -621,7 +629,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
 assert len(activities)==48
-assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') for a in activities)+sum('practice' in a for a in activities)
+assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))

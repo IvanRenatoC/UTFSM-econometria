@@ -48,6 +48,9 @@ for prefix,label,title,desc in groups:
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
   error_html=f'<aside class="notice"><strong>Un error frecuente</strong><p>{e(a["error"])}</p></aside>' if a['error'] else ''
   check_html=a.get('check_html', '<p>'+e(a['check'])+'</p>' if a['check'] else '')
+  if a.get('reason_only'):
+   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}">{introduction_html}<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body">{check_html}</div></details><a class="anchor" href="#{a["id"]}">Enlace a esta lámina ↗</a></div></article>')
+   continue
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
 <header class="slide-head"><h3 id="title-{a['id']}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a['id']}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['title'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header>
 <div class="slide-body" hidden id="body-{a['id']}"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>
