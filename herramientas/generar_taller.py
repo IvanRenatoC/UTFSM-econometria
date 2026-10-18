@@ -235,6 +235,28 @@ if (variable == "wage") {
  answer='Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.',
  error='', check='')
 
+# Se conserva el título exterior de P1-04 y se reemplaza su contenido.
+relacion = next(a for a in activities if a['id'] == 'P1-04')
+relacion.update(
+ scatter=True, question='Relación lineal de dos variables', predict='',
+ task='Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el rojo a las mujeres.',
+ code='''colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+
+plot(datos$educ, datos$wage,
+     pch = 19,
+     col = colores[datos$female + 1],
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     main = "Educación y salario por género")
+
+# Añadir una leyenda para identificar los colores.
+legend("topleft",
+       legend = c("Hombre", "Mujer"),
+       col = colores,
+       pch = 19)''',
+ answer='La nube de puntos sugiere una asociación positiva: a más años de educación, los salarios tienden a ser mayores, aunque hay mucha dispersión. Las columnas de puntos aparecen porque varias personas tienen los mismos años de educación. A igual educación se observan salarios distintos y los colores permiten comparar ambos grupos. No se ha dibujado ni estimado una recta: el gráfico es una primera aproximación para estudiar una posible relación lineal. Esta asociación, por sí sola, no demuestra que estudiar cause un aumento salarial ni que las diferencias entre grupos se deban únicamente al género.',
+ error='', check='')
+
 activities = [a for a in activities if a['id'] != 'P1-03']
 
 header='''# Taller 1 · Del código a los datos
