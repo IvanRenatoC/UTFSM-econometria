@@ -34,7 +34,7 @@ for(const demo of document.querySelectorAll('.vector-demo')){
   });
   demo.querySelector('.vector-replay').addEventListener('click',()=>{
     demo.classList.remove('is-paused');pause.setAttribute('aria-pressed','false');pause.textContent='Pausar animación';
-    const dots=demo.querySelectorAll('.vector-dot');
+    const dots=demo.querySelectorAll('.vector-dot, .matrix-dot');
     for(const dot of dots)dot.style.animation='none';
     void demo.offsetWidth;
     for(const dot of dots)dot.style.animation='';
