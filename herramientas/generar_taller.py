@@ -238,10 +238,16 @@ def rc(code,id,tags=None):
 md(header,'inicio')
 # Installation is documentation, not an executable runtime cell.
 sections=[header]
+numeros_por_bloque = {}
 for a in activities:
  id=a['id']
+ bloque=id.split('-')[0]
+ numeros_por_bloque[bloque] = numeros_por_bloque.get(bloque, 0) + 1
+ numero = numeros_por_bloque[bloque]
  intro=f'''<a id="{id}"></a>
-## {id} · {a['title']}
+## Lámina {numero:02d} · {a['title']}
+
+**Identificador de enlace:** `{id}`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** {a['slides']} · **Modalidad:** {a['mode']}.
 
