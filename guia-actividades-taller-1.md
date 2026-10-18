@@ -171,11 +171,11 @@ print(v[v > 4])
 
 
 <a id="NIV-06"></a>
-## NIV-06 · Ciclos while y condiciones de término
+## NIV-06 · Ciclos while/for y condiciones de término
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cuántas duplicaciones hacen falta para llegar a 100?
+**Pregunta:** Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?
 
 **Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
 
@@ -205,11 +205,54 @@ print(c(pasos = paso, valor = valor))
 ```
 
 
-**Lectura del resultado:** Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.
+**Lectura del resultado:** while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor < 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.
 
 **Error frecuente:** No actualizar valor o paso.
 
 **Comprueba:** ¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.
+
+
+<a id="NIV-FOR"></a>
+## NIV-FOR · Ciclos while/for y condiciones de término · for
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?
+
+**Antes de ejecutar:** ¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?
+
+**Consigna:** Ejecuta la versión con for. Compara su trayectoria con la del while y prueba max_pasos <- 3.
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-FOR
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+valor <- 1
+max_pasos <- 20L
+trayectoria <- numeric(max_pasos + 1L)
+trayectoria[1] <- valor
+for (paso in seq_len(max_pasos)) {
+  valor <- 2 * valor
+  trayectoria[paso + 1L] <- valor
+  if (valor >= 100) {
+    break
+  }
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))
+```
+
+
+**Lectura del resultado:** for recorre los pasos de seq_len(max_pasos). Termina al agotar esa secuencia o antes si ejecuta break. Aquí el if detecta valor >= 100 y break sale del ciclo en el paso 7, con valor 128; la trayectoria coincide con la del while. Si max_pasos es 3, se agota la secuencia con valor 8. En este ejemplo max_pasos debe ser un entero positivo; paso recibe automáticamente cada índice, sin escribir paso <- paso + 1.
+
+**Error frecuente:** Confundir el recorrido de for con una prueba automática de valor < 100: esa condición de salida anticipada se expresa con if y break. No usar paso después de un ciclo vacío sin inicializarlo.
+
+**Comprueba:** ¿Qué ocurre si eliminas if y break? Se ejecutan los 20 pasos. ¿Qué ocurre con max_pasos <- 3? Termina por agotar los pasos, sin alcanzar 100.
 
 
 <a id="NIV-05"></a>
@@ -1806,6 +1849,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-ASIG | Nivelación | `niv-asig-consigna` / `niv-asig-r` | Presencial |
 | NIV-03 | Nivelación | `niv-03-consigna` / `niv-03-r` | Presencial |
 | NIV-06 | Nivelación | `niv-06-consigna` / `niv-06-r` | Presencial |
+| NIV-FOR | Nivelación | `niv-for-consigna` / `niv-for-r` | Presencial |
 | NIV-05 | Nivelación | `niv-05-consigna` / `niv-05-r` | Presencial |
 | NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
 | NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
@@ -1868,4 +1912,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
+**Cobertura documental:** 48/48 actividades (9 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 actividades resueltas en clase.
