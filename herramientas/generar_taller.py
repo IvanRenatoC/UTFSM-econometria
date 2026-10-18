@@ -127,6 +127,13 @@ activities.insert(activities.index(while_activity) + 1, activities.pop())
 
 
 
+
+# Ejercicio de comprobación adicional de vectores.
+vector['practice'] = dict(
+ task='Haz un vector de largo 20, solo con ceros; luego deja un 1 solo en las celdas de posiciones pares.',
+ code='pares <- numeric(20)\nfor (i in seq_along(pares)) {\n  if (i %% 2 == 0) {\n    pares[i] <- 1\n  }\n}\nprint(pares)',
+ answer='El vector debe alternar 0, 1, 0, 1 hasta completar 20 posiciones: diez ceros y diez unos. En R los índices comienzan en 1; i %% 2 == 0 identifica posiciones pares, no valores pares.')
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -266,6 +273,14 @@ for a in activities:
  discussion=f"**Lectura del resultado:** {a['answer']}\n\n**Error frecuente:** {a['error']}\n\n**Comprueba:** {a['check']}\n"
  md(discussion,id.lower()+'-lectura')
  sections.extend([intro,solution,'```r\n'+a['code']+'\n```\n',discussion])
+ if 'practice' in a:
+  practice=a['practice']
+  exercise=f"### Comprueba lo aprendido · Lámina {numero:02d}\n\n{practice['task']}\n\nIntenta resolverlo antes de continuar a la solución.\n"
+  md(exercise,id.lower()+'-practica-consigna')
+  md('### Solución del ejercicio de comprobación\n',id.lower()+'-practica-solucion')
+  rc(practice['code'],id.lower()+'-practica-r',['solucion','comprobacion'])
+  md(practice['answer'],id.lower()+'-practica-lectura')
+  sections.extend([exercise,'### Solución del ejercicio de comprobación\n','```r\n'+practice['code']+'\n```\n',practice['answer']])
 md(closing,'cierre'); sections.append(closing)
 rows=['| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |','|---|---|---|---|']
 for a in activities: rows.append(f"| {a['id']} | {a['slides']} | `{a['id'].lower()}-consigna` / `{a['id'].lower()}-r` | {a['mode']} |")
@@ -300,7 +315,10 @@ notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_
 (root/'clase-taller-1.ipynb').write_text(json.dumps(notebook,ensure_ascii=False,indent=1)+'\n')
 (root/'guia-actividades-taller-1.md').write_text('\n\n'.join(sections))
 script=['# Taller 1: ejecutar desde la raíz del proyecto en una sesión limpia.\n# Equivalente a todas las celdas R del notebook; no instala paquetes.\n']
-for a in activities: script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
+for a in activities:
+ script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
+ if 'practice' in a:
+  script.extend(['\n# Comprueba lo aprendido: '+a['practice']['task']+'\n',a['practice']['code']+'\n'])
 script.append('\ncat("Todas las actividades finalizaron. Revise también gráficos e interpretaciones.\\n")\nsessionInfo()\n')
 (root/'clase-taller-1.R').write_text(''.join(script))
 (root/'guia-docente-taller-1.md').write_text('''# Guía docente · Taller 1
@@ -366,7 +384,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
 assert len(activities)==48
-assert sum(c['cell_type']=='code' for c in cells)==48
+assert sum(c['cell_type']=='code' for c in cells)==len(activities)+sum('practice' in a for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))

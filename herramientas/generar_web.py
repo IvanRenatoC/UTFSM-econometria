@@ -11,6 +11,10 @@ sections=[]
 for prefix,label,title,desc in groups:
  cards=[]
  for n,a in enumerate([a for a in activities if a['id'].split('-')[0]==prefix],1):
+  practice_html=''
+  if 'practice' in a:
+   practice=a['practice']
+   practice_html=f'<h4>Ejercicio para comprobar lo aprendido</h4><p>{e(practice["task"])}</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
 <header class="slide-head"><h3 id="title-{a['id']}">{e(a['title'])}</h3><span class="number">LÁMINA {n:02d}</span></header>
 <div class="slide-body"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>
@@ -21,7 +25,7 @@ for prefix,label,title,desc in groups:
 <div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de {a['id']}">Copiar código</button></div><pre><code>{e(a['code'])}</code></pre>
 <h4>Cómo leer el resultado</h4><p>{e(a['answer'])}</p><aside class="notice"><strong>Un error frecuente</strong><p>{e(a['error'])}</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><p>{e(a['check'])}</p></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>{e(a['check'])}</p>{practice_html}</div></details>
 <a class="anchor" href="#{a['id']}">Enlace a esta lámina ↗</a></div></article>''')
  sections.append(f'<section class="chapter" id="{prefix}" aria-labelledby="heading-{prefix}"><div class="chapter-intro"><p class="eyebrow">{label}</p><h2 id="heading-{prefix}">{title}</h2><p>{desc}</p></div>'+''.join(cards)+'</section>')
 css='''
