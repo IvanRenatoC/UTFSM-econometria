@@ -7,12 +7,20 @@ saldo <- saldo + 3
 print(saldo)
 print(c(tipo = typeof(saldo), longitud = length(saldo)))
 
-# NIV-02 · Vectores: creación, selección y modificación
+# NIV-02 · Vectores: creación, selección, modificación y llenado con for
+# 1. Crear, seleccionar y modificar
 v <- numeric(3)
 v[1] <- 2; v[2] <- 6; v[3] <- 9
 print(v[v > 4])
 v[2] <- 7
 print(v); print(length(v))
+
+# 2. Reservar y llenar con for
+dobles <- numeric(5)
+for (i in seq_along(dobles)) {
+  dobles[i] <- 2 * i
+}
+print(dobles)
 
 # NIV-03 · Condicionales: if, else y operadores lógicos
 valor <- 8
@@ -23,13 +31,6 @@ if (valor > 4) {
 }
 print(mensaje)
 print(v[v > 4])
-
-# NIV-04 · Ciclos for y llenado de vectores
-dobles <- numeric(5)
-for (i in seq_along(dobles)) {
-  dobles[i] <- 2 * i
-}
-print(dobles)
 
 # NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
 a <- g <- r <- numeric(6)
