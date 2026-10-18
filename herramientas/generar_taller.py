@@ -100,6 +100,15 @@ add('NIV-ASIG', 'Asignación de valores: nombres y flecha <-', 'Nivelación',
     'Presencial')
 activities.insert(1, activities.pop())
 
+# Orden solicitado, referido a la numeración anterior: 1, 2, 4, 6, 5, 3, 7, 8.
+orden_nivelacion = ['NIV-01', 'NIV-ASIG', 'NIV-03', 'NIV-06', 'NIV-05', 'NIV-02', 'NIV-07', 'NIV-08']
+por_id = {a['id']: a for a in activities}
+activities = [por_id[id] for id in orden_nivelacion] + [a for a in activities if not a['id'].startswith('NIV-')]
+# Condicionales ahora precede a vectores: su ejemplo debe ser autónomo.
+por_id['NIV-03']['code'] = 'v <- c(2, 7, 9)  # Valores del ejemplo, definidos antes de usarlos.\n' + por_id['NIV-03']['code']
+por_id['NIV-03']['task'] = 'Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector de ejemplo.'
+
+
 
 header='''# Taller 1 · Del código a los datos
 
@@ -292,10 +301,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
 | 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
 | 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
-| 19:00–19:10 | NIV-02 (lámina 03; fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
-| 19:10–19:12 | NIV-03 (lámina 04). Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
-| 19:12–19:15 | NIV-05. Parejas completan una sucesión y revisan las otras. |
-| 19:15–19:20 | NIV-06. Preguntar qué permite terminar el while. |
+| 19:00–19:04 | NIV-03 (lámina 03). Anticipar el mensaje con valores 3 y 8; el ejemplo define sus propios valores. |
+| 19:04–19:09 | NIV-06 (lámina 04). Preguntar qué permite terminar el while. |
+| 19:09–19:14 | NIV-05 (lámina 05). Parejas completan una sucesión y revisan las otras. |
+| 19:14–19:20 | NIV-02 (lámina 06). Crear, seleccionar, modificar y llenar un vector con for. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
 | 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
