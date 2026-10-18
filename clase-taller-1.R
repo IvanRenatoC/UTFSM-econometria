@@ -156,11 +156,26 @@ legend("topleft",
 datos$educ16 <- datos$educ >= 16
 print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
-# P1-06 · Econometría aplicada y diseño de estudios
-necesidades <- list(
-  desparasitacion = c("asignación", "tratamiento", "asistencia", "escuela"),
-  consultoria = c("asignación", "consultoría", "productividad", "fábrica"))
-print(necesidades)
+# P1-06 · Comparar salarios con boxplots
+# Elige: "educ", "female" o "married".
+variable <- "educ"
+colores <- c("#0160A0", "#F8C751")
+
+if (variable == "educ") {
+  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
+                  labels = c("Menos de 16 años", "16 años o más"))
+} else if (variable == "female") {
+  grupo <- factor(datos$female, levels = c(0, 1),
+                  labels = c("Hombre (0)", "Mujer (1)"))
+} else if (variable == "married") {
+  grupo <- factor(datos$married, levels = c(0, 1),
+                  labels = c("No casado/a (0)", "Casado/a (1)"))
+}
+
+boxplot(datos$wage ~ grupo,
+        col = colores,
+        main = paste("Salario según", variable),
+        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
 
 # P1-07 · Tipos y estructura de los datos económicos
 estructuras <- data.frame(

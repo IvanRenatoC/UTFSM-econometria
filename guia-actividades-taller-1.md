@@ -752,13 +752,13 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 <a id="P1-06"></a>
-## Lámina 05 · Econometría aplicada y diseño de estudios
+## Lámina 05 · Comparar salarios con boxplots
 
 **Identificador de enlace:** `P1-06`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
 
-**Pregunta:** ¿wage1 permite medir el efecto de pastillas escolares o consultorías?
+**Pregunta:** ¿Cómo cambia la distribución salarial entre grupos?
 
 
 
@@ -768,9 +768,9 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 
-**Antes de ejecutar:** ¿Qué columnas faltarían?
 
-**Consigna:** Escribe en R los datos que pedirías para cada estudio.
+
+**Consigna:** Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -781,18 +781,29 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-necesidades <- list(
-  desparasitacion = c("asignación", "tratamiento", "asistencia", "escuela"),
-  consultoria = c("asignación", "consultoría", "productividad", "fábrica"))
-print(necesidades)
+# Elige: "educ", "female" o "married".
+variable <- "educ"
+colores <- c("#0160A0", "#F8C751")
+
+if (variable == "educ") {
+  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
+                  labels = c("Menos de 16 años", "16 años o más"))
+} else if (variable == "female") {
+  grupo <- factor(datos$female, levels = c(0, 1),
+                  labels = c("Hombre (0)", "Mujer (1)"))
+} else if (variable == "married") {
+  grupo <- factor(datos$married, levels = c(0, 1),
+                  labels = c("No casado/a (0)", "Casado/a (1)"))
+}
+
+boxplot(datos$wage ~ grupo,
+        col = colores,
+        main = paste("Salario según", variable),
+        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
 ```
 
 
-**Lectura del resultado:** Los casos de Kenia e India de cátedra muestran el papel del diseño. wage1 no contiene sus tratamientos ni resultados; no calculamos esos estudios con salarios.
-
-**Error frecuente:** Inventar una variable de tratamiento para atribuir resultados de otro estudio.
-
-**Comprueba:** ¿Basta una tabla grande para responder cualquier pregunta? No.
+**Lectura del resultado:** La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.
 
 
 <a id="P1-07"></a>
