@@ -239,8 +239,8 @@ if (variable == "wage") {
 relacion = next(a for a in activities if a['id'] == 'P1-04')
 relacion.update(
  scatter=True, question='Relación lineal de dos variables', predict='',
- task='Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el rojo a las mujeres.',
- code='''colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+ task='Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el amarillo a las mujeres.',
+ code='''colores <- c("#0160A080", "#F8C75180")  # Azul para hombres (0), amarillo para mujeres (1)
 
 plot(datos$educ, datos$wage,
      pch = 19,

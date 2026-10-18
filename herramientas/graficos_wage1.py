@@ -66,7 +66,7 @@ def explorer(root: Path):
 
 def scatter(root: Path):
     rows=list(csv.DictReader((root/'datos/wage1.csv').open()))
-    svg=['<svg class="wage-chart scatter-chart" viewBox="0 0 720 430" role="img" aria-labelledby="scatter-title scatter-description"><title id="scatter-title">Educación y salario por género</title><desc id="scatter-description">526 personas: educación en el eje horizontal y salario por hora en el vertical. Azul para hombres y rojo para mujeres. La nube tiende a subir, con dispersión y superposición entre los grupos.</desc>']
+    svg=['<svg class="wage-chart scatter-chart" viewBox="0 0 720 430" role="img" aria-labelledby="scatter-title scatter-description"><title id="scatter-title">Educación y salario por género</title><desc id="scatter-description">526 personas: educación en el eje horizontal y salario por hora en el vertical. Azul para hombres y amarillo para mujeres. La nube tiende a subir, con dispersión y superposición entre los grupos.</desc>']
     for y in range(0,26,5):
         py=360-y/26*310
         svg.append(f'<line class="chart-grid" x1="65" y1="{py}" x2="690" y2="{py}"/><text x="53" y="{py+4}" text-anchor="end">{y}</text>')
@@ -76,6 +76,6 @@ def scatter(root: Path):
     for row in rows:
         educ,wage=float(row['educ']),float(row['wage']); female=int(row['female'])
         label=f'{"Mujer" if female else "Hombre"}: {educ:g} años de educación; {wage:.2f} USD por hora'
-        svg.append(f'<circle cx="{65+educ/20*625:.2f}" cy="{360-wage/26*310:.2f}" r="4" fill="{PALETTE[female]}" fill-opacity="0.5"><title>{label}</title></circle>')
+        svg.append(f'<circle cx="{65+educ/20*625:.2f}" cy="{360-wage/26*310:.2f}" r="4" fill="{PALETTE[0 if female == 0 else 2]}" fill-opacity="0.5"><title>{label}</title></circle>')
     svg.append('<text x="377" y="418" text-anchor="middle">Educación (años)</text><text x="18" y="205" text-anchor="middle" transform="rotate(-90 18 205)">Salario por hora (USD de 1976)</text></svg>')
-    return '<h4>Educación y salario por género</h4>'+''.join(svg)+'<div class="chart-legend"><span><i style="background:#0160a0"></i>Hombre (female = 0)</span><span><i style="background:#e12523"></i>Mujer (female = 1)</span></div><p class="data-note">526 personas · wage1 · CPS de Estados Unidos, 1976. Los puntos semitransparentes permiten apreciar su superposición.</p>'
+    return '<h4>Educación y salario por género</h4>'+''.join(svg)+'<div class="chart-legend"><span><i style="background:#0160a0"></i>Hombre (female = 0)</span><span><i style="background:#f8c751"></i>Mujer (female = 1)</span></div><p class="data-note">526 personas · wage1 · CPS de Estados Unidos, 1976. Los puntos semitransparentes permiten apreciar su superposición.</p>'
