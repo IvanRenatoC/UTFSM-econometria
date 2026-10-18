@@ -841,7 +841,7 @@ boxplot(datos$wage ~ grupo,
 
 **Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿A quién observamos y en qué períodos?
+**Pregunta:** ¿Qué representa cada punto y cómo se ordena?
 
 
 
@@ -849,19 +849,15 @@ boxplot(datos$wage ~ grupo,
 
 ### Corte transversal
 
-Primero, los datos de corte transversal. Observamos varias unidades, como personas, empresas o países, en un mismo período. En esta tabla ficticia cada fila es una persona, y todas corresponden al año dos mil veinte. Podemos estudiar cómo se relacionan educación y salario entre personas. En la expresión del modelo, el subíndice i identifica a cada unidad. La base wage uno de nuestro taller tiene esta estructura: personas observadas en mil novecientos setenta y seis. El número de fila no representa el paso del tiempo.
+Los puntos se ordenan por unidad: A, B, C, D, E y F. Todos pertenecen a 2020. El eje vertical muestra el valor observado. Comparamos unidades en un mismo período; el orden horizontal no representa tiempo. wage1, la base del taller, es de corte transversal.
 
-### Serie temporal
+### Serie de tiempo
 
-Ahora, una serie temporal. Seguimos una misma unidad durante varios períodos ordenados. En este ejemplo ficticio, cada fila es un año de la misma empresa. Relacionamos sus ventas con su gasto en publicidad a lo largo del tiempo. El subíndice t identifica el período. Aquí importa conservar el orden temporal: los resultados de un año pueden estar relacionados con los del anterior. Por eso debemos revisar tendencias y dependencia temporal antes de aplicar e interpretar un modelo lineal. No son cuatro empresas diferentes: es una empresa observada cuatro veces.
-
-### Cortes transversales repetidos
-
-También podemos reunir cortes transversales repetidos. Tomamos una muestra en un período y otra muestra en un período posterior. Observa los nombres: las personas de dos mil veinte no son las mismas que las de dos mil veintitrés. Podemos comparar distribuciones y asociaciones entre períodos, y un modelo lineal puede incluir un indicador del período. Pero no podemos calcular cuánto cambió el salario de Ana, porque no la volvimos a observar. Tener una columna con años no convierte por sí solo a la base en un panel.
+Los puntos de la unidad A se ordenan de 2020 a 2025. El eje horizontal ahora representa tiempo y el vertical, el valor observado en cada período. La línea ayuda a seguir el orden temporal: no es una recta de regresión. Estudiamos cómo cambia una unidad a través del tiempo.
 
 ### Datos de panel
 
-Por último, los datos de panel. Observamos a las mismas unidades en varios períodos. Ana aparece dos veces y Bruno también. Ahora cada fila es una combinación de persona y período. Los subíndices i y t identifican ambas dimensiones. Podemos comparar personas y estudiar cambios dentro de una misma persona. La expresión que ves solo ilustra los índices: analizar un panel requiere considerar la dependencia entre observaciones de la misma unidad y, según el modelo, diferencias persistentes entre personas. Recuerda la distinción: en cortes repetidos cambia la muestra; en panel seguimos a las mismas unidades. Ninguna de estas estructuras, por sí sola, demuestra causalidad.
+Seguimos a A, B y C de 2020 a 2025. Cada color identifica siempre a la misma unidad. Los puntos se ordenan por período y forman tres trayectorias. Podemos comparar unidades y observar cambios dentro de cada una. Las líneas conectan observaciones de una misma unidad; no son regresiones estimadas.
 
 
 
@@ -872,7 +868,7 @@ Por último, los datos de panel. Observamos a las mismas unidades en varios per�
 
 
 
-**Consigna:** Reproduce el video o elige un capítulo: corte transversal, serie temporal, cortes transversales repetidos o panel. Después responde la pregunta interactiva. Los ejemplos de las tablas son ficticios.
+**Consigna:** Observa el video silencioso de 45 segundos: corte transversal, serie de tiempo y datos de panel. Los puntos se ordenan por unidad, por período o por ambos. Los ejemplos son ficticios.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -883,36 +879,31 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-# Ejemplos ficticios para reconocer la estructura de las filas.
+# Ejemplos ficticios: los mismos puntos que aparecen en el video.
 transversal <- data.frame(
-  persona = c("Ana", "Bruno", "Carla", "Diego"),
-  anio = c(2020, 2020, 2020, 2020),
-  educ = c(12, 16, 14, 10), salario = c(4, 8, 6, 3))
+  unidad = LETTERS[1:6], anio = rep(2020, 6),
+  valor = c(5, 12, 8, 16, 10, 19))
 
-serie_temporal <- data.frame(
-  empresa = rep("Empresa A", 4), anio = 2020:2023,
-  publicidad = c(10, 12, 11, 15), ventas = c(42, 45, 44, 52))
-
-cortes_repetidos <- data.frame(
-  persona = c("Ana", "Bruno", "Elena", "Felipe"),
-  anio = c(2020, 2020, 2023, 2023),
-  educ = c(12, 16, 12, 16), salario = c(4, 8, 5, 9))
+serie_tiempo <- data.frame(
+  unidad = rep("A", 6), anio = 2020:2025,
+  valor = c(4, 6, 5, 8, 7, 10))
 
 panel <- data.frame(
-  persona = c("Ana", "Ana", "Bruno", "Bruno"),
-  anio = c(2020, 2023, 2020, 2023),
-  educ = c(12, 13, 16, 16), salario = c(4, 5, 8, 9))
+  unidad = rep(c("A", "B", "C"), each = 6),
+  anio = rep(2020:2025, 3),
+  valor = c(4, 6, 5, 8, 7, 10,
+            10, 9, 12, 11, 14, 13,
+            16, 15, 18, 17, 19, 20))
 
 print(transversal)
-print(serie_temporal)
-print(cortes_repetidos)
+print(serie_tiempo)
 print(panel)
 ```
 
 
-**Lectura del resultado:** Corte transversal: una fila por unidad en un período. Serie temporal: una fila por período de una unidad. Cortes repetidos: muestras distintas en períodos diferentes. Panel: una fila por combinación de unidad y período, siguiendo a las mismas unidades. wage1 es transversal. Las ecuaciones del video ilustran índices, no modelos estimados.
+**Lectura del resultado:** En el corte transversal cada punto es una unidad distinta en 2020. En la serie de tiempo cada punto es un período de la unidad A. En el panel cada punto combina una de las unidades A, B o C con un período. Los colores conservan la identidad de la unidad y las líneas solo conectan observaciones; no son regresiones estimadas. wage1 es transversal.
 
-**Comprueba:** Ana y Bruno en 2020, Elena y Felipe en 2023: son cortes transversales repetidos, porque no se sigue a las mismas personas.
+**Comprueba:** Si seguimos a las mismas personas A, B y C en 2020, 2021 y 2022, tenemos datos de panel.
 
 
 <a id="P1-08"></a>
