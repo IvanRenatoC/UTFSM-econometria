@@ -137,7 +137,7 @@ if (variable == "wage") {
 }
 
 # P1-04 · Correlación, causalidad y factores no observados
-colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+colores <- c("#0160A080", "#F8C75180")  # Azul para hombres (0), amarillo para mujeres (1)
 
 plot(datos$educ, datos$wage,
      pch = 19,
