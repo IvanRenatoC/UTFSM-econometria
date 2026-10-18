@@ -77,6 +77,12 @@ Si dos respuestas no están claras, ejecutar todos los ejemplos de nivelación s
 
 **Pregunta:** Vamos a hacer un ejercicio muy elemental, para que vayamos partiendo desde el inicio para terminar en algo mucho más avanzado.
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Qué crees que aparecerá en la consola al ejecutar print("tu nombre")?
 
 **Consigna:** Reemplaza tu nombre por tu propio nombre, conservando las comillas, y ejecuta la instrucción.
@@ -109,6 +115,12 @@ print("tu nombre")
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo damos un nombre a un valor y lo usamos en un cálculo?
+
+
+
+
+
+
 
 **Antes de ejecutar:** Con x = 2 e y = 5, ¿cuánto valdrán z y w? ¿Qué mostrará cada print?
 
@@ -150,6 +162,12 @@ print(w)
 
 **Pregunta:** ¿Cómo elegimos una acción según una condición?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Qué mensaje produce valor = 8?
 
 **Consigna:** Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector de ejemplo.
@@ -190,6 +208,12 @@ print(v[v > 4])
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** Primera parte: while. Iteraciones y loops
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
 
@@ -234,6 +258,12 @@ print(c(pasos = paso, valor = valor))
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?
 
@@ -282,6 +312,12 @@ print(c(pasos = paso, valor = valor))
 
 **Pregunta:** ¿Cómo construimos la sucesión 1, 2, 4, 8, 16…?
 
+
+
+
+
+
+
 **Antes de ejecutar:** Observa la sucesión 1, 2, 4, 8, 16… ¿Cuál es el siguiente número?
 
 **Consigna:** Genera los seis primeros términos de la sucesión 1, 2, 4, 8, 16… Multiplica cada término por 2 para obtener el siguiente.
@@ -319,6 +355,12 @@ print(sucesion)
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo reservamos un vector y modificamos solo algunas posiciones?
+
+
+
+
+
+
 
 
 
@@ -379,6 +421,12 @@ El resultado alterna −1, 2, −1, 4, −1, 6 y continúa hasta −1, 20. Las p
 
 **Pregunta:** ¿Cómo guardamos resultados por filas y columnas?
 
+
+
+
+
+
+
 **Antes de ejecutar:** Indica cuáles son las posiciones (2, 3) y (3, 2).
 
 **Consigna:** Llena una matriz de 3 × 3 solo con valores 0; luego haz que su diagonal principal contenga únicamente valores 1.
@@ -438,6 +486,12 @@ Sí. La transposición intercambia filas y columnas: A[2,3] y t(A)[3,2] contiene
 
 
 
+
+
+
+
+
+
 **Consigna:** Genera la sucesión 3, 9, 27, 81, 243 y 729, es decir, 3 elevado a 1, 2, 3, 4, 5 y 6. Con esos números crea una matriz de 3 × 2.
 
 **Datos:** Objetos artificiales de programación.
@@ -478,9 +532,20 @@ EDA significa análisis exploratorio de datos.
 
 **Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Qué sabemos de educación y salario de cada persona?
 
-**Antes de ejecutar:** ¿Cada fila representa una persona o un mes?
+
+datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.
+
+- `wage`: Salario promedio por hora, en dólares estadounidenses de 1976.
+- `educ`: Años de educación.
+- `exper`: Años de experiencia laboral potencial.
+- `tenure`: Años de antigüedad con el empleador actual.
+- `female`: Indicador: 1 si la persona está registrada como mujer; 0 en caso contrario.
+- `married`: Indicador: 1 si la persona está registrada como casada; 0 en caso contrario.
+
+[Documentación de wage1](https://justinmshea.github.io/wooldridge/reference/wage1.html). El paquete se instala desde CRAN: `repos = "https://cloud.r-project.org/"`.
+
+
 
 **Consigna:** Carga la base e identifica wage y educ en seis filas.
 
@@ -525,6 +590,12 @@ head(datos)
 
 **Pregunta:** ¿Describir, explicar una causa o predecir?
 
+
+
+
+
+
+
 **Antes de ejecutar:** Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?
 
 **Consigna:** Asocia cada pregunta con una finalidad.
@@ -563,6 +634,12 @@ print(preguntas)
 
 **Pregunta:** ¿Qué parte del modelo conceptual observamos?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Está la habilidad directamente medida en estas columnas?
 
 **Consigna:** Distingue salario, educación, experiencia y factores no observados.
@@ -596,6 +673,12 @@ print(head(datos[c("wage", "educ", "exper")]))
 **Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Una nube ascendente demuestra una causa?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Podrían existir personas con igual educación y salarios diferentes?
 
@@ -632,6 +715,12 @@ plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
 
 **Pregunta:** ¿Podemos llamar universitario a todo registro con educ >= 16?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Los dos grupos serán idénticos en sus otras características?
 
 **Consigna:** Crea una etiqueta de umbral educativo y examina filas, sin calcular todavía diferencias de medias.
@@ -665,6 +754,12 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 **Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿wage1 permite medir el efecto de pastillas escolares o consultorías?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Qué columnas faltarían?
 
@@ -701,6 +796,12 @@ print(necesidades)
 **Referencia:** Parte 1 · láminas 8–11 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué dimensiones definen nuestros datos?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Tenemos observaciones repetidas de cada persona en varios años?
 
@@ -739,6 +840,12 @@ print(estructuras)
 
 **Pregunta:** ¿De qué conjunto seleccionaremos personas?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Una submuestra representa automáticamente a Estados Unidos?
 
 **Consigna:** Define el marco de filas de datos y extrae 12 registros sin reemplazo.
@@ -776,6 +883,12 @@ print(datos[ids, c("wage", "educ")])
 
 **Pregunta:** ¿Cómo limita el presupuesto el número de entrevistas?
 
+
+
+
+
+
+
 **Antes de ejecutar:** Si cada entrevista cuesta 5 unidades, ¿alcanzan 100 para toda la tabla?
 
 **Consigna:** Calcula cuántas entrevistas financia ese presupuesto.
@@ -811,6 +924,12 @@ print(capacidad)
 **Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Es lo mismo una variable que un parámetro?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿El salario de una persona es un promedio poblacional?
 
@@ -848,6 +967,12 @@ print(data.frame(
 **Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo cambia quién entra según el método?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Estratificar garantiza que ambos grupos definidos tengan participantes?
 
@@ -895,6 +1020,12 @@ print(list(simple = ids_simple, sistematico = ids_sistema,
 
 **Pregunta:** ¿En qué se diferencian estratos y conglomerados?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿En qué selección aparecen todos los estratos?
 
 **Consigna:** Inspecciona los grupos incluidos por cada selección.
@@ -929,6 +1060,12 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 **Pregunta:** ¿Qué sucede si solo invitamos a quienes tienen al menos 16 años de educación?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Quién queda sin oportunidad de selección?
 
 **Consigna:** Selecciona las primeras 12 filas que cumplen ese criterio.
@@ -962,6 +1099,12 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 **Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Describimos la tabla o hablamos de una población?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Decir “en estas filas” cambia el alcance?
 
@@ -998,6 +1141,12 @@ print(frases)
 
 **Pregunta:** ¿Qué puede decirnos una tabla antes de generalizar?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Un resumen de esta muestra es ya una ley general?
 
 **Consigna:** Selecciona la variable salarial y verifica su tamaño.
@@ -1032,6 +1181,12 @@ print(length(x))
 
 **Pregunta:** ¿Qué entra y qué sale de un estadístico?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿length devuelve un vector de 526 valores?
 
 **Consigna:** Construye un pequeño resumen de tamaño y rango observado.
@@ -1065,6 +1220,12 @@ print(resumen_inicial)
 **Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Media y mediana reaccionan igual a un salario extremo?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Cuál cambiará más al añadir un valor enorme?
 
@@ -1107,6 +1268,12 @@ stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
 
 **Pregunta:** ¿Dónde comienza el cuarto superior?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿P50 coincide con la mediana?
 
 **Consigna:** Obtén cuartiles y el percentil 90 con interpolación tipo 7.
@@ -1142,6 +1309,12 @@ print(quantile(x, .9, type = 7))
 
 **Pregunta:** ¿Dos muestras con la misma media pueden ser diferentes?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Varianza y salario tienen las mismas unidades?
 
 **Consigna:** Calcula RIQ, varianza muestral y desviación estándar; verifica manualmente.
@@ -1176,6 +1349,12 @@ stopifnot(isTRUE(all.equal(s2_manual, var(x))))
 **Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cambian los datos cuando cambiamos los intervalos?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Esperas ver la misma apariencia con 5 y 20 cortes sugeridos?
 
@@ -1214,6 +1393,12 @@ par(op)
 
 **Pregunta:** ¿Un punto fuera de los bigotes es un error?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Cuántos posibles atípicos crees que aparecerán?
 
 **Consigna:** Dibuja la caja, extrae sus límites y contrasta bisagras con cuartiles tipo 7.
@@ -1250,6 +1435,12 @@ print(quantile(x, c(.25,.5,.75), type = 7))
 **Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo podemos evaluar un método si normalmente no conocemos la verdad?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Qué cambia si tratamos toda la tabla como una distribución conocida?
 
@@ -1288,6 +1479,12 @@ print(c(mu = mu, sigma = sigma, N = length(poblacion)))
 
 **Pregunta:** ¿Qué aporta un intervalo frente a un valor único?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Un intervalo ya calculado tiene parámetro aleatorio?
 
 **Consigna:** Escribe qué cambia al repetir el muestreo.
@@ -1322,6 +1519,12 @@ print(c("El parámetro didáctico permanece fijo",
 **Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo se distribuye el promedio al repetir muestras?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Las medias de n=100 serán menos dispersas que las de n=5?
 
@@ -1367,6 +1570,12 @@ par(op)
 
 **Pregunta:** ¿n=30 garantiza normalidad en cualquier caso?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿La asimetría afecta la rapidez de aproximación?
 
 **Consigna:** Comprueba que los datos utilizados son finitos y revisa el mecanismo de muestreo.
@@ -1400,6 +1609,12 @@ print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
 **Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cómo estimamos mu con una muestra de 36 salarios?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿El resultado quedará centrado en mu o en la media de la muestra?
 
@@ -1442,6 +1657,12 @@ print(c(estimacion = xbarra, error_estandar = se,
 
 **Pregunta:** ¿Qué papel tiene cada pieza?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Qué ocurre al duplicar sigma y conservar lo demás?
 
 **Consigna:** Separa estimación, valor crítico, error estándar y margen.
@@ -1476,6 +1697,12 @@ stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
 **Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué cambia al pasar a 99%?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿El centro debería moverse?
 
@@ -1514,6 +1741,12 @@ print(limites)
 
 **Pregunta:** ¿Podemos comparar los intervalos de un vistazo?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Cuál abarcará a los otros?
 
 **Consigna:** Representa los límites en una misma recta salarial.
@@ -1551,6 +1784,12 @@ points(rep(xbarra,3), 1:3, pch = 19)
 **Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Cuántos intervalos capturan la media conocida?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Se obtendrán exactamente 950 aciertos de 1.000?
 
@@ -1595,6 +1834,12 @@ abline(v = mu, lty = 2)
 
 **Pregunta:** ¿Cuántas observaciones para un margen de 0,5 USD/h?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Reducir el margen a la mitad duplicará n?
 
 **Consigna:** Despeja n y verifica el margen obtenido después de redondear.
@@ -1629,6 +1874,12 @@ print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
 **Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿Qué fracción tiene al menos 16 años de educación?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Puede una proporción ser mayor que 1?
 
@@ -1674,6 +1925,12 @@ print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
 
 **Pregunta:** ¿La proporción de referencia 0,20 queda en el intervalo?
 
+
+
+
+
+
+
 **Antes de ejecutar:** Predice mirando los límites anteriores.
 
 **Consigna:** Comprueba inclusión y escribe una conclusión bajo el modelo didáctico.
@@ -1709,6 +1966,12 @@ print(c(referencia = referencia, dentro_del_IC = compatible))
 
 **Pregunta:** ¿Qué pasa si no tenemos estimación previa?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿p=0,5 maximiza p(1-p)?
 
 **Consigna:** Compara el plan con p piloto y el conservador para margen 0,03.
@@ -1743,6 +2006,12 @@ print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
 **Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Cuántas extracciones para longitud total máxima 0,05?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿El margen será 0,05 o 0,025?
 
@@ -1785,6 +2054,12 @@ print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
 
 **Pregunta:** ¿Cómo cambia el salario medio entre umbrales educativos?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Qué signo esperas para alta educación menos el resto?
 
 **Consigna:** Define las dos poblaciones empíricas sin mezclarlas.
@@ -1821,6 +2096,12 @@ print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
 
 **Pregunta:** ¿Qué significa que el intervalo incluya cero?
 
+
+
+
+
+
+
 **Antes de ejecutar:** ¿Qué pasa con el signo si invertimos el orden?
 
 **Consigna:** Define delta como media de alta educación menos media del resto.
@@ -1855,6 +2136,12 @@ print(c(delta_didactica = delta))
 **Referencia:** Parte 3 · láminas 28–31 · **Modalidad:** Ampliación autónoma.
 
 **Pregunta:** ¿Cómo se combina la incertidumbre de muestras independientes?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Se restan o se suman las varianzas?
 
@@ -1896,6 +2183,12 @@ print(c(estimacion = diferencia, error_estandar = se_diferencia))
 **Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
 
 **Pregunta:** ¿La diferencia es compatible con cero?
+
+
+
+
+
+
 
 **Antes de ejecutar:** ¿Tu conclusión cambia si hablas de causa?
 
