@@ -136,10 +136,6 @@ if (variable == "wage") {
       col = c("#0160a0", "#f8c751"), main = variable)
 }
 
-# P1-03 · Del modelo económico a las variables observadas
-print(names(datos))
-print(head(datos[c("wage", "educ", "exper")]))
-
 # P1-04 · Correlación, causalidad y factores no observados
 plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
      xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)",
