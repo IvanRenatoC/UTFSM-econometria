@@ -343,6 +343,19 @@ activities.insert(inicio_econometria, video_inicial)
 
 next(a for a in activities if a['id'] == 'P1-09').update(reason_only=True, code='', task='', answer='')
 
+from muestreos_taller import PREPARACION, EJEMPLOS
+muestreo = next(a for a in activities if a['id'] == 'P1-08')
+muestreo.update(
+ title='Tipos de muestreo en R con wage1', sampling_examples=EJEMPLOS,
+ preparation_code=PREPARACION,
+ question='¿Cómo seleccionamos personas con cada tipo de muestreo?', predict='',
+ task='Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y luego cada ejemplo en el orden de la clase de Sebastián. Para practicar, las 526 filas forman nuestro marco didáctico; no reproducimos el diseño original de la CPS ni afirmamos representatividad nacional.',
+ code=PREPARACION+'\n\n'+'\n\n'.join('# '+example['title']+'\n'+example['code'] for example in EJEMPLOS),
+ answer='Los ejemplos seleccionan filas de wage1. Los cuatro primeros usan un mecanismo aleatorio; el último depende de un criterio y del orden disponible. Los diseños tienen tamaños y probabilidades de inclusión diferentes: aquí aprendemos a seleccionar, no comparamos su precisión.',
+ error='', check='¿En qué método aparecen todos los estratos? En el estratificado. ¿En cuál seleccionamos grupos completos? En el ejemplo de conglomerados.')
+# Se eliminan las que eran las láminas 09 y 10 antes de esta revisión.
+activities = [a for a in activities if a['id'] not in ('P1-10', 'P1-11')]
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -464,6 +477,16 @@ for a in activities:
  bloque=id.split('-')[0]
  numeros_por_bloque[bloque] = numeros_por_bloque.get(bloque, 0) + 1
  numero = numeros_por_bloque[bloque]
+ if a.get('sampling_examples'):
+  intro=f'<a id="{id}"></a>\n## Lámina {numero:02d} · {a["title"]}\n\n{a["task"]}\n\n[Tipos de muestreo en la clase de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/#muestreo-aleatorio).\n\n### Preparación\n'
+  md(intro,id.lower()+'-consigna');rc(a['preparation_code'],id.lower()+'-r')
+  sections.extend([intro,'```r\n'+a['preparation_code']+'\n```\n'])
+  for j,example in enumerate(a['sampling_examples'],1):
+   explanation='### '+str(j)+'. '+example['title']+'\n\n'+example['description']+'\n'
+   md(explanation,id.lower()+f'-metodo-{j}');rc(example['code'],id.lower()+f'-metodo-{j}-r')
+   md(example['reading'],id.lower()+f'-metodo-{j}-lectura')
+   sections.extend([explanation,'```r\n'+example['code']+'\n```\n',example['reading']+'\n'])
+  continue
  if a.get('reason_only'):
   reasons=f'<a id="{id}"></a>\n## Lámina {numero:02d} · {a["title"]}\n\n{a["question"]}\n\n'
   reasons += '\n'.join('### '+title+'\n\n'+text+'\n' for _,title,text in a['reason_panels'])
@@ -546,13 +569,13 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Parte 3: 34 láminas en orden | P3-01 a P3-18 |
 | Intuición, predicción, consigna, solución, interpretación y comprobación | Todas las actividades |
 | Dinámica presencial y tiempos | inicio; guía docente enlazada |
-| Muestras didácticas, sigma conocida y límites de inferencia | P1-08, P1-11, P3-01 a P3-18 |
+| Muestras didácticas, sigma conocida y límites de inferencia | P1-08, P3-01 a P3-18 |
 | Semillas, reproducción y verificación | Celdas de selección/simulación, cierre |
 | Autoevaluación y soluciones | cierre |
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 48/48 láminas (10 de nivelación, 13 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 láminas resueltas en clase.
+**Organización actual:** 46 láminas (10 de nivelación, 11 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 46 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -595,8 +618,8 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 19:27–19:33 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
 | 19:33–19:35 | NIV-NOTEBOOK (lámina 10). Vista general: librerías, adecuación de datos, EDA, modelamiento y resultados. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
-| 19:42–19:47 | P1-06 a P1-10 en orden. Recorrido conceptual breve y selección de 12 filas. |
-| 19:47–20:00 | P1-11 a P1-14. Ejecutar selección simple y estratificada, mostrar los otros algoritmos y límites. No comparar eficiencia de grupos artificiales. |
+| 19:42–19:47 | Recorrer video, gráficos y razones para muestrear. Preparar wage1 para P1-08. |
+| 19:47–20:00 | P1-08: ejecutar preparación y cinco muestreos en orden. Continuar con P1-12 a P1-14. No comparar eficiencia de grupos artificiales. |
 | 20:00–20:15 | Pausa de 15 minutos. |
 | 20:15–20:18 | P2-01 y P2-02. Qué entra y sale de una función. |
 | 20:18–20:27 | P2-03 a P2-05. Cada pareja anticipa qué hace un extremo y calcula medidas de centro y dispersión. |
@@ -613,7 +636,7 @@ El tiempo para todas las láminas es una revisión computacional selectiva, no u
 
 - NIV-03: ¿por qué no usar if con todo el vector? Esperar que distingan una decisión de una selección por elemento.
 - P1-04: ¿qué no mantiene constante este gráfico? Esperar habilidad, experiencia o contexto familiar.
-- P1-11: ¿qué representa cada selección? Aclarar inicio aleatorio del sistemático, pesos por estrato y grupos artificiales.
+- P1-08: ¿qué representa cada selección? Aclarar inicio aleatorio del sistemático, pesos por estrato y grupos artificiales.
 - P2-03: ¿el dato extremo es real? No: es una copia alterada con propósito explícito.
 - P3-01: ¿de qué población conocemos sigma? Solo de nuestra distribución empírica didáctica.
 - P3-09: ¿el 95% tiene que cumplirse exactamente en 100 repeticiones? No; fluctúa y depende de aproximación.
@@ -628,8 +651,8 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==48
-assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)
+assert len(activities)==46
+assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
