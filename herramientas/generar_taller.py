@@ -110,10 +110,10 @@ por_id['NIV-03']['task'] = 'Prueba con 3 y con 8; selecciona además todos los v
 
 # Dos láminas consecutivas para comparar las condiciones de término.
 while_activity = por_id['NIV-06']
-while_activity['title'] = 'Ciclos while/for y condiciones de término'
+while_activity['title'] = 'Ciclos while y condiciones de término'
 while_activity['question'] = 'Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?'
 while_activity['answer'] = 'while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor < 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.'
-add('NIV-FOR', 'Ciclos while/for y condiciones de término · for', 'Nivelación',
+add('NIV-FOR', 'Ciclos for y condiciones de término', 'Nivelación',
     'Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?',
     '¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?',
     'Ejecuta la versión con for. Compara su trayectoria con la del while y prueba max_pasos <- 3.',
