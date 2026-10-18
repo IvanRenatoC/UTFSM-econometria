@@ -201,35 +201,51 @@ boxplot(datos$wage ~ grupo,
 # P1-09 · Razones para trabajar con muestras
 
 
-# P1-08 · Población, muestra y unidad de observación
-set.seed(16201)
+# P1-08 · Tipos de muestreo en R con wage1
+# Ejecuta esta preparación una vez antes de los cinco ejemplos.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+}
+datos <- as.data.frame(wooldridge::wage1)
+datos$educ16 <- datos$educ >= 16
 N <- nrow(datos)
-marco <- seq_len(N)
-ids <- sample(marco, size = 12, replace = FALSE)
-print(datos[ids, c("wage", "educ")])
+marco <- 1:N
+set.seed(36)
 
-# P1-10 · Variables, parámetros y estadísticos
-print(data.frame(
-  concepto = c("Variable", "Parámetro", "Estadístico"),
-  ejemplo = c("Salario por hora individual",
-              "Media salarial de la población objetivo",
-              "Media salarial calculada en una muestra")))
+# Muestreo aleatorio simple
+ids_simple <- sample(marco, size = 24, replace = FALSE)
+muestra_simple <- datos[ids_simple, ]
+print(muestra_simple[c("wage", "educ", "female")])
 
-# P1-11 · Métodos de muestreo probabilístico en R
-set.seed(16202)
-ids_simple <- sample(marco, 24)
-k <- 20L
-inicio <- sample.int(k, 1)
-ids_sistema <- seq.int(inicio, N, by = k)
-estratos <- split(marco, datos$educ16)
-stopifnot(all(lengths(estratos) >= 12))
-ids_estrato <- unlist(lapply(estratos, function(g) sample(g, 12)), use.names = FALSE)
-# Grupos artificiales: ilustración algorítmica, no barrios reales.
-grupo_artificial <- rep(seq_len(12), length.out = N)
-elegidos <- sample(unique(grupo_artificial), 2)
+# Muestreo aleatorio sistemático
+k <- 20
+inicio <- sample(1:k, size = 1)
+ids_sistema <- seq(inicio, N, by = k)
+muestra_sistematica <- datos[ids_sistema, ]
+print(muestra_sistematica[c("wage", "educ", "female")])
+
+# Muestreo aleatorio estratificado
+estrato_menos16 <- which(!datos$educ16)
+estrato_16omas <- which(datos$educ16)
+ids_estrato <- c(sample(estrato_menos16, size = 12),
+                 sample(estrato_16omas, size = 12))
+muestra_estratificada <- datos[ids_estrato, ]
+print(table(muestra_estratificada$educ16))
+print(muestra_estratificada[c("wage", "educ")])
+
+# Muestreo por conglomerados
+grupo_artificial <- rep(1:12, length.out = N)
+elegidos <- sample(unique(grupo_artificial), size = 2)
 ids_conglomerado <- which(grupo_artificial %in% elegidos)
-print(list(simple = ids_simple, sistematico = ids_sistema,
-           estratificado = ids_estrato, conglomerados = ids_conglomerado))
+muestra_conglomerados <- datos[ids_conglomerado, ]
+print(elegidos)
+print(table(grupo_artificial[ids_conglomerado]))
+print(muestra_conglomerados[c("wage", "educ", "female")])
+
+# Muestreo no probabilístico
+ids_conveniencia <- head(which(datos$educ16), 12)
+muestra_no_probabilistica <- datos[ids_conveniencia, ]
+print(muestra_no_probabilistica[c("wage", "educ", "female")])
 
 # P1-12 · Muestreo estratificado y por conglomerados
 print(table(datos$educ16[ids_estrato]))
