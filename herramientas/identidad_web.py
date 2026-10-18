@@ -37,4 +37,6 @@ def aplicar_identidad(html, activities):
     html=html.replace('</head>','<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="identidad-utfsm.css"></head>')
     html=html.replace('</body>','<script src="navegacion-utfsm.js"></script></body>')
     html = re.sub(r'(<article class="slide" id="NIV-02".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_vector(), html, count=1, flags=re.S)
+    if not any(a['id'] == 'NIV-04' for a in activities):
+        html = html.replace('<article class="slide" id="NIV-02"', '<span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02"', 1)
     return html

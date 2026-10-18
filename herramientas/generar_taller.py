@@ -73,6 +73,21 @@ titulos_editoriales = {'NIV-01': 'Entorno de R, objetos y asignación', 'NIV-02'
 for actividad in activities:
  actividad["title"] = titulos_editoriales[actividad["id"]]
 
+
+# La antigua NIV-04 se integra en NIV-02; NIV-03 queda inmediatamente después.
+vector = next(a for a in activities if a['id'] == 'NIV-02')
+loop = next(a for a in activities if a['id'] == 'NIV-04')
+vector.update(
+ title='Vectores: creación, selección, modificación y llenado con for',
+ question='¿Cómo guardamos varios valores y los llenamos con un ciclo for?',
+ predict=vector['predict'] + ' En el vector de dobles, ' + loop['predict'].lower(),
+ task=vector['task'] + ' Después, ' + loop['task'].lower(),
+ code='# 1. Crear, seleccionar y modificar\n' + vector['code'] + '\n\n# 2. Reservar y llenar con for\n' + loop['code'],
+ answer=vector['answer'] + ' ' + loop['answer'],
+ error=vector['error'] + ' ' + loop['error'],
+ check=vector['check'] + ' ' + loop['check'])
+activities = [a for a in activities if a['id'] != 'NIV-04']
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -233,7 +248,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
+**Cobertura documental:** 46/46 actividades (7 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 46 actividades resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -262,9 +277,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | Hora | Ruta y conducción |
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
-| 18:55–19:00 | NIV-01 y NIV-02. Asignación e índices: ejecutar y preguntar qué cambia al modificar una posición. |
-| 19:00–19:05 | NIV-03. Pedir que anticipen el mensaje con valores 3 y 8. |
-| 19:05–19:15 | NIV-04 y NIV-05. Modelar un for; parejas completan una sucesión y revisan las otras. |
+| 18:55–19:00 | NIV-01. Asignación: ejecutar y preguntar qué cambia al modificar un objeto. |
+| 19:00–19:10 | NIV-02 (fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
+| 19:10–19:12 | NIV-03. Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
+| 19:12–19:15 | NIV-05. Parejas completan una sucesión y revisan las otras. |
 | 19:15–19:20 | NIV-06. Preguntar qué permite terminar el while. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
 | 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
@@ -302,8 +318,8 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==47
-assert sum(c['cell_type']=='code' for c in cells)==47
+assert len(activities)==46
+assert sum(c['cell_type']=='code' for c in cells)==46
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
