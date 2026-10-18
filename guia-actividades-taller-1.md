@@ -404,12 +404,12 @@ print(A)
 
 **Error frecuente:** Confundir la diagonal principal con una fila completa. En la diagonal principal coinciden el índice de fila y el de columna.
 
-**Comprueba:** Si $A$ es una matriz de $2 \times 4$, ¿se cumple $A_{2,3} = (A^{\mathsf{T}})_{3,2}$? $A^{\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.
+**Comprueba:** Si $A$ es una matriz de $2 \times 4$, ¿se cumple $A(2,3) = A^{\mathsf{T}}(3,2)$? $A^{\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.
 
 
 ### Comprueba lo aprendido · Lámina 08
 
-Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.
+
 
 Intenta resolverlo antes de continuar a la solución.
 
