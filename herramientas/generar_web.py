@@ -20,6 +20,9 @@ for prefix,label,title,desc in groups:
    practice_heading='' if practice.get('hide_heading') else '<h4>Ejercicio para comprobar lo aprendido</h4>'
    practice_task='<p>'+e(practice['task'])+'</p>' if practice['task'] else ''
    practice_html=f'{practice_heading}{practice_task}<p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>{e(practice["code"])}</code></pre><p>{e(practice["answer"])}</p></div></details>'
+  introduction_html=f'<p class="question">{e(a["question"])}</p>' if a['question'] else ''
+  if a.get('description'):
+   introduction_html += '<h4>Conoce la base de datos</h4><p>'+e(a['description'])+'</p><ul>'+''.join('<li><code>'+e(name)+'</code>: '+e(meaning)+'</li>' for name,meaning in a['variable_definitions'])+'</ul><p class="data-note">Fuente: <a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">documentación de wage1</a>. El paquete se instala desde CRAN con <code>repos = &quot;https://cloud.r-project.org/&quot;</code>.</p>'
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
@@ -27,7 +30,7 @@ for prefix,label,title,desc in groups:
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
 <header class="slide-head"><h3 id="title-{a['id']}"><button class="slide-toggle" type="button" aria-expanded="true" aria-controls="body-{a['id']}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['title'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header>
 <div class="slide-body" id="body-{a['id']}"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>
-<p class="question">{e(a['question'])}</p>{anticipation}
+{introduction_html}{anticipation}
 <h4>En R · Tu turno</h4><p>{e(a['task'])}</p>
 <p class="data-note">{'Ejercicio de programación con objetos artificiales.' if prefix=='NIV' else 'Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.'}</p>
 <details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>

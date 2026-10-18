@@ -28,6 +28,16 @@ head(datos)
 '''
 
 add('P1-01','¿Qué podemos preguntar a los datos?','Parte 1 · lámina 1','¿Qué sabemos de educación y salario de cada persona?','¿Cada fila representa una persona o un mes?','Carga la base e identifica wage y educ en seis filas.',load,'wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.','Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.','¿526 filas equivalen a 526 períodos? No.','Presencial')
+activities[-1].update(
+ question='', predict='',
+ description='datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.',
+ variable_definitions=[
+  ('wage', 'Salario promedio por hora, en dólares estadounidenses de 1976.'),
+  ('educ', 'Años de educación.'),
+  ('exper', 'Años de experiencia laboral potencial.'),
+  ('tenure', 'Años de antigüedad con el empleador actual.'),
+  ('female', 'Indicador: 1 si la persona está registrada como mujer; 0 en caso contrario.'),
+  ('married', 'Indicador: 1 si la persona está registrada como casada; 0 en caso contrario.')])
 add('P1-02','Tres preguntas distintas','Parte 1 · lámina 2','¿Describir, explicar una causa o predecir?','Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?','Asocia cada pregunta con una finalidad.','preguntas <- data.frame(\n  pregunta = c("¿Cómo se relacionan educación y salario?",\n               "¿Más educación causa mayor salario?",\n               "¿Qué salario tendrá otra persona?"),\n  finalidad = c("Descripción", "Causalidad", "Predicción"))\nprint(preguntas)','Una misma tabla permite formular preguntas distintas, pero no garantiza resolverlas todas. Aquí no entrenamos predictores ni estimamos efectos.','Tratar una predicción acertada como identificación causal.','¿Una pregunta causal requiere supuestos adicionales? Sí.','Presencial')
 add('P1-03','De la pregunta a las columnas','Parte 1 · lámina 3','¿Qué parte del modelo conceptual observamos?','¿Está la habilidad directamente medida en estas columnas?','Distingue salario, educación, experiencia y factores no observados.','print(names(datos))\nprint(head(datos[c("wage", "educ", "exper")]))','Una formulación conceptual es salario = f(educación, experiencia, otros factores) + error. Habilidad y recursos familiares no se identifican en estas columnas. No estimamos f.','Interpretar el error como un simple error de digitación.','¿Que una variable no esté en la tabla significa que no importa? No.','Presencial')
 add('P1-04','Mirar una asociación','Parte 1 · lámina 4','¿Una nube ascendente demuestra una causa?','¿Podrían existir personas con igual educación y salarios diferentes?','Dibuja salario frente a educación y propón dos factores adicionales.','plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",\n     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)",\n     main = "Educación y salario: observar no es aislar una causa")','Cada punto es una persona. La comparación no mantiene constantes habilidad, ocupación o experiencia. La temperatura en el caso de helados y tiburones de cátedra ilustra el mismo problema de un factor común.','Dibujar una flecha causal solo por observar una asociación.','¿El gráfico mantiene todo lo demás constante? No.','Presencial')
@@ -328,7 +338,13 @@ for a in activities:
 
 **Referencia:** {a['slides']} · **Modalidad:** {a['mode']}.
 
-**Pregunta:** {a['question']}
+{('**Pregunta:** ' + a['question']) if a['question'] else ''}
+
+{a.get('description', '')}
+
+{chr(10).join('- `' + name + '`: ' + meaning for name, meaning in a.get('variable_definitions', []))}
+
+{('[Documentación de wage1](https://justinmshea.github.io/wooldridge/reference/wage1.html). El paquete se instala desde CRAN: `repos = "https://cloud.r-project.org/"`.') if a.get('description') else ''}
 
 {('**Antes de ejecutar:** ' + a['predict']) if a['predict'] else ''}
 
