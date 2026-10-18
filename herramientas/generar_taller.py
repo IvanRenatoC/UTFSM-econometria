@@ -134,6 +134,13 @@ vector['practice'] = dict(
  code='pares <- numeric(20)\nfor (i in seq_along(pares)) {\n  if (i %% 2 == 0) {\n    pares[i] <- 1\n  }\n}\nprint(pares)',
  answer='El vector debe alternar 0, 1, 0, 1 hasta completar 20 posiciones: diez ceros y diez unos. En R los índices comienzan en 1; i %% 2 == 0 identifica posiciones pares, no valores pares.')
 
+
+# Ejercicio de comprobación adicional de matrices.
+por_id['NIV-07']['practice'] = dict(
+ task='Haz una matriz de 4 × 4 que contenga solo ceros; luego inserta números 1 en su diagonal principal.',
+ code='identidad <- matrix(0, nrow = 4, ncol = 4)\nfor (i in seq_len(nrow(identidad))) {\n  identidad[i, i] <- 1\n}\nprint(identidad)',
+ answer='Las posiciones [1,1], [2,2], [3,3] y [4,4] deben valer 1; las otras doce quedan en 0. En la diagonal principal coinciden el índice de fila y el de columna. El resultado es la matriz identidad de orden 4.')
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
