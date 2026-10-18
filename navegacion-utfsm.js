@@ -48,3 +48,30 @@ const stairStartObserver=new IntersectionObserver(entries=>{
   }
 },{threshold:0.25});
 document.querySelectorAll('.staircase-demo').forEach(demo=>stairStartObserver.observe(demo));
+
+// Plegar cada lámina conserva el estado de sus ejercicios interiores.
+function expandSlide(slide){
+  if(!slide)return;
+  slide.querySelector('.slide-toggle').setAttribute('aria-expanded','true');
+  slide.querySelector('.slide-body').hidden=false;
+}
+for(const button of document.querySelectorAll('.slide-toggle')){
+  button.addEventListener('click',()=>{
+    const expanded=button.getAttribute('aria-expanded')==='true';
+    button.setAttribute('aria-expanded',String(!expanded));
+    document.getElementById(button.getAttribute('aria-controls')).hidden=expanded;
+  });
+}
+function expandLinkedSlide(){
+  const target=document.getElementById(location.hash.slice(1));
+  expandSlide(target?.closest('.slide'));
+}
+window.addEventListener('hashchange',expandLinkedSlide);
+document.addEventListener('click',event=>{
+  const link=event.target.closest('a[href^="#"]');
+  if(link)expandSlide(document.getElementById(link.getAttribute('href').slice(1))?.closest('.slide'));
+});
+expandLinkedSlide();
+document.querySelector('#present').addEventListener('click',()=>{
+  if(document.body.classList.contains('presenting'))document.querySelectorAll('.slide').forEach(expandSlide);
+});

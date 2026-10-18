@@ -97,3 +97,12 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 @media print{.staircase-demo .stair-animated{animation:none}.stair-person{transform:translate(370px,310px)}.staircase-demo .stair-exit,.staircase-demo .stair-label-second{opacity:1}.stair-label-first{opacity:0}}
 
 .staircase-demo:not(.is-started) .stair-animated{animation-play-state:paused}
+
+/* Control de plegado, junto al título de cada lámina. */
+.slide-head h3{flex:1;min-width:0}
+.slide-toggle{display:flex;align-items:baseline;gap:10px;border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;text-align:left;padding:0;width:100%;line-height:inherit}
+.slide-chevron{display:inline-block;flex:none;font-size:.65em;transform:rotate(90deg);transition:transform .15s ease}
+.slide-toggle[aria-expanded="false"] .slide-chevron{transform:rotate(0)}
+.slide-body[hidden]{display:none}
+@media print{.slide-body[hidden]{display:block!important}.slide-chevron{display:none}}
+@media(prefers-reduced-motion:reduce){.slide-chevron{transition:none}}

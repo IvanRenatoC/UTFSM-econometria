@@ -12,7 +12,7 @@ for prefix,label,title,desc in groups:
  cards=[]
  for n,a in enumerate([a for a in activities if a['id'].split('-')[0]==prefix],1):
   if a.get('overview'):
-   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}">{e(a["title"])}</h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body"><h4 class="question">{e(a["question"])}</h4><p>{e(a["task"])}</p></div></article>')
+   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="true" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{a["id"]}"><h4 class="question">{e(a["question"])}</h4><p>{e(a["task"])}</p></div></article>')
    continue
   practice_html=''
   if 'practice' in a:
@@ -25,8 +25,8 @@ for prefix,label,title,desc in groups:
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
   check_html=a.get('check_html', '<p>'+e(a['check'])+'</p>' if a['check'] else '')
   cards.append(f'''<article class="slide" id="{a['id']}" data-title="{e(a['title'])}" aria-labelledby="title-{a['id']}">
-<header class="slide-head"><h3 id="title-{a['id']}">{e(a['title'])}</h3><span class="number">LÁMINA {n:02d}</span></header>
-<div class="slide-body"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>
+<header class="slide-head"><h3 id="title-{a['id']}"><button class="slide-toggle" type="button" aria-expanded="true" aria-controls="body-{a['id']}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['title'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header>
+<div class="slide-body" id="body-{a['id']}"><div class="meta"><span>{e(a['slides'])}</span><span>{e(a['mode'])}</span><span>{a['id']}</span></div>
 <p class="question">{e(a['question'])}</p>{anticipation}
 <h4>En R · Tu turno</h4><p>{e(a['task'])}</p>
 <p class="data-note">{'Ejercicio de programación con objetos artificiales.' if prefix=='NIV' else 'Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.'}</p>
