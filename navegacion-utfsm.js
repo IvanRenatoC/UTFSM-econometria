@@ -33,10 +33,18 @@ for(const demo of document.querySelectorAll('.vector-demo')){
     pause.textContent=paused?'Continuar animación':'Pausar animación';
   });
   demo.querySelector('.vector-replay').addEventListener('click',()=>{
-    demo.classList.remove('is-paused');pause.setAttribute('aria-pressed','false');pause.textContent='Pausar animación';
-    const dots=demo.querySelectorAll('.vector-dot, .matrix-dot');
+    demo.classList.add('is-started');demo.classList.remove('is-paused');pause.setAttribute('aria-pressed','false');pause.textContent='Pausar animación';
+    const dots=demo.querySelectorAll('.vector-dot, .matrix-dot, .stair-animated');
     for(const dot of dots)dot.style.animation='none';
     void demo.offsetWidth;
     for(const dot of dots)dot.style.animation='';
   });
 }
+
+// La escena de dos recorridos empieza cuando el alumno llega a ella.
+const stairStartObserver=new IntersectionObserver(entries=>{
+  for(const entry of entries){
+    if(entry.isIntersecting){entry.target.classList.add('is-started');stairStartObserver.unobserve(entry.target);}
+  }
+},{threshold:0.25});
+document.querySelectorAll('.staircase-demo').forEach(demo=>stairStartObserver.observe(demo));
