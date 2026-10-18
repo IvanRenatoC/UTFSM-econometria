@@ -1,5 +1,5 @@
 from pathlib import Path
-import json, csv, hashlib
+import json, csv, hashlib, re
 root=Path(__file__).resolve().parent.parent
 activities=[]
 def add(id,title,slides,question,predict,task,code,answer,error,check,mode='Ampliación autónoma',starter=''):
@@ -127,6 +127,65 @@ activities.insert(activities.index(while_activity) + 1, activities.pop())
 
 
 
+
+# Contenido definitivo de la revisión docente, compartido por todos los formatos.
+por_id['NIV-ASIG'].update(
+ title='Asignación de valores',
+ task='Ejecuta las instrucciones una a una. Después consulta z con print(z).',
+ code='x <- 2\ny <- 5\nz <- x - y\nw <- abs(x - y)\nprint(x)\nprint(w)',
+ answer='La flecha <- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(w) muestra 3. z queda guardado, aunque no se imprime en estas instrucciones. Si cambias x o y, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.',
+ note='Los valores quedan asignados mientras la sesión siga activa. En R de escritorio se conservan hasta que los reasignes, los elimines o cierres o reinicies la sesión. En Google Colab ocurre lo mismo mientras el entorno de ejecución permanezca activo: se pierden al reiniciarlo o eliminarlo, no necesariamente por una desconexión temporal.')
+while_activity.update(
+ question='Primera parte: while. Iteraciones y loops',
+ task='Parte en 1 y multiplica el valor por 2 en cada iteración, hasta alcanzar 100. Conserva los valores de cada paso.',
+ answer='while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. En cada iteración se multiplica el valor por 2 y se actualiza el contador paso. Se llega a 128 después de siete iteraciones y la condición valor < 100 deja de cumplirse. El límite de 20 pasos evita que el ciclo continúe indefinidamente si la condición se plantea mal. Si la condición inicial es falsa, el cuerpo no se ejecuta.')
+while_activity['code'] = re.sub(r'(\d+)L\b', r'\1', while_activity['code'])
+for_activity = next(a for a in activities if a['id'] == 'NIV-FOR')
+for_activity['code'] = re.sub(r'(\d+)L\b', r'\1', for_activity['code'])
+for_activity['comparison'] = 'while repite instrucciones mientras una condición sea verdadera; el número de repeticiones depende de cuándo deje de cumplirse. for recorre una secuencia de valores, uno por iteración. En este ejemplo, for puede terminar antes de agotar la secuencia porque if detecta que se alcanzó 100 y break sale del ciclo. Ambos producen la misma trayectoria, pero expresan el control de la repetición de distinta forma.'
+por_id['NIV-05'].update(
+ title='Sucesión geométrica: 1, 2, 4, 8, 16…',
+ question='¿Cómo construimos la sucesión 1, 2, 4, 8, 16…?',
+ predict='Observa la sucesión 1, 2, 4, 8, 16… ¿Cuál es el siguiente número?',
+ task='Genera los seis primeros términos de la sucesión 1, 2, 4, 8, 16… Multiplica cada término por 2 para obtener el siguiente.',
+ code='sucesion <- numeric(6)\nsucesion[1] <- 1\nfor (i in 2:6) {\n  sucesion[i] <- 2 * sucesion[i - 1]\n}\nprint(sucesion)',
+ answer='El resultado es 1, 2, 4, 8, 16, 32. Cada término es el anterior multiplicado por 2: por eso es una sucesión geométrica de razón 2. Primero asignamos el valor 1 a la primera posición; el ciclo calcula las cinco posiciones restantes.',
+ error='Empezar el ciclo en la posición 1 y tratar de leer la posición 0. En R los índices comienzan en 1.',
+ check='¿Qué número sigue después de 32? 64, porque 32 × 2 = 64.')
+vector.update(
+ question='¿Cómo reservamos un vector y modificamos solo algunas posiciones?',
+ predict='',
+ task='Crea un vector de largo 20, solo con valores 0, pero con un −1 en las posiciones impares.',
+ code='v <- numeric(20)\nfor (i in 1:20) {\n  if (i %% 2 != 0) {\n    v[i] <- -1\n  }\n}\nprint(v)',
+ answer='El vector alterna −1, 0, −1, 0 hasta completar 20 posiciones. numeric(20) reserva un vector de veinte ceros. El ciclo recorre sus posiciones y la condición i %% 2 != 0 identifica los índices impares. Solo esas posiciones cambian a −1: quedan diez valores −1 y diez ceros.',
+ error='Confundir el valor guardado con su posición. La condición se aplica al índice i, no al contenido v[i].',
+ check='Ahora inserta el número de la posición en todos los valores que sean 0.')
+vector['practice'] = dict(
+ task='Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.',
+ code='for (i in seq_along(v)) {\n  if (v[i] == 0) {\n    v[i] <- i\n  }\n}\nprint(v)',
+ answer='El resultado alterna −1, 2, −1, 4, −1, 6 y continúa hasta −1, 20. Las posiciones impares conservan −1; cada posición par contiene su propio índice.')
+por_id['NIV-07'].update(
+ predict='Indica cuáles son las posiciones (2, 3) y (3, 2).',
+ task='Llena una matriz de 3 × 3 solo con valores 0; luego haz que su diagonal principal contenga únicamente valores 1.',
+ code='A <- matrix(0, nrow = 3, ncol = 3)\nfor (i in 1:3) {\n  A[i, i] <- 1\n}\nprint(A)',
+ answer='Esta es la matriz identidad: cumple en la multiplicación de matrices un papel similar al 1 en los escalares. Tiene unos en la diagonal principal y ceros en las otras posiciones.',
+ error='Confundir la diagonal principal con una fila completa. En la diagonal principal coinciden el índice de fila y el de columna.',
+ check='Si A es una matriz de 2 × 4, ¿se cumple A[2,3] = t(A)[3,2]? t(A) es la transpuesta de A.',
+ check_markdown='Si $A$ es una matriz de $2 \\times 4$, ¿se cumple $A_{2,3} = (A^{\\mathsf{T}})_{3,2}$? $A^{\\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.',
+ check_html='<p>Si <var>A</var> es una matriz de 2 × 4, ¿se cumple <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>A</mi><mrow><mn>2</mn><mo>,</mo><mn>3</mn></mrow></msub><mo>=</mo><msub><mrow><mo>(</mo><msup><mi>A</mi><mi>T</mi></msup><mo>)</mo></mrow><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></math>? <var>A</var><sup>T</sup> es la transpuesta de <var>A</var> y en R se obtiene con <code>t(A)</code>.</p>')
+por_id['NIV-07']['practice'] = dict(
+ task='Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.',
+ code='A <- matrix(1:8, nrow = 2, ncol = 4)\nprint(A[2, 3])\nprint(t(A)[3, 2])\nprint(A[2, 3] == t(A)[3, 2])',
+ answer='Sí. La transposición intercambia filas y columnas: A[2,3] y t(A)[3,2] contienen el mismo elemento. En este ejemplo ambos valen 6 y la comparación devuelve TRUE.')
+por_id['NIV-08'].update(
+ question='¿Cómo organizamos una sucesión de números en una matriz?',
+ predict='',
+ task='Genera la sucesión 3, 9, 27, 81, 243 y 729, es decir, 3 elevado a 1, 2, 3, 4, 5 y 6. Con esos números crea una matriz de 3 × 2.',
+ code='sucesion <- 3^(1:6)\nA <- matrix(sucesion, nrow = 3, ncol = 2)\nprint(sucesion)\nprint(A)',
+ answer='La sucesión contiene las seis primeras potencias de 3. matrix() distribuye estos valores por columnas: la primera contiene 3, 9 y 27; la segunda, 81, 243 y 729. Una matriz puede entenderse como varios vectores columna organizados juntos. En estadística siempre vemos matrices.',
+ error='Leer los valores por filas cuando matrix() los ha organizado por columnas de forma predeterminada.',
+ check='¿Cuáles son los valores de la segunda columna? 81, 243 y 729.')
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -137,7 +196,11 @@ header='''# Taller 1 · Del código a los datos
 
 ## Objetivos
 
-Al terminar la ruta presencial podrás llenar vectores y matrices con ciclos y condiciones, reconocer una base transversal, resumir salarios con gráficos y estadísticos y explicar la interpretación de un intervalo de confianza. Las ampliaciones permiten completar la práctica de todos los apartados.
+Al terminar la ruta presencial podrás:
+
+- Usar sentencias clave como if, else, while y for, para hacer rutinas.
+- Crear y modificar **vectores y matrices**, utilizando índices y preasignación.
+- Reconocer una base transversal, resumir salarios con gráficos y estadísticos y explicar la interpretación de un intervalo de confianza. Las ampliaciones permiten completar la práctica de todos los apartados.
 
 ## Agenda presencial · 140 minutos efectivos
 
@@ -253,7 +316,7 @@ for a in activities:
 
 **Pregunta:** {a['question']}
 
-**Antes de ejecutar:** {a['predict']}
+{('**Antes de ejecutar:** ' + a['predict']) if a['predict'] else ''}
 
 **Consigna:** {a['task']}
 
@@ -263,9 +326,20 @@ for a in activities:
  solution=f"### Solución · {id}\n\nEjecutar después de intentar la consigna.\n"
  md(solution,id.lower()+'-solucion')
  rc(a['code'],id.lower()+'-r',['solucion'])
- discussion=f"**Lectura del resultado:** {a['answer']}\n\n**Error frecuente:** {a['error']}\n\n**Comprueba:** {a['check']}\n"
+ discussion=f"**Lectura del resultado:** {a['answer']}\n"
+ if a.get('note'): discussion += '\n**' + a['note'] + '**\n'
+ if a.get('comparison'): discussion += '\n**Diferencia entre while y for:** ' + a['comparison'] + '\n'
+ discussion += f"\n**Error frecuente:** {a['error']}\n\n**Comprueba:** {a.get('check_markdown', a['check'])}\n"
  md(discussion,id.lower()+'-lectura')
  sections.extend([intro,solution,'```r\n'+a['code']+'\n```\n',discussion])
+ if 'practice' in a:
+  practice=a['practice']
+  exercise=f"### Comprueba lo aprendido · Lámina {numero:02d}\n\n{practice['task']}\n\nIntenta resolverlo antes de continuar a la solución.\n"
+  md(exercise,id.lower()+'-practica-consigna')
+  md('### Solución del ejercicio de comprobación\n',id.lower()+'-practica-solucion')
+  rc(practice['code'],id.lower()+'-practica-r',['solucion','comprobacion'])
+  md(practice['answer'],id.lower()+'-practica-lectura')
+  sections.extend([exercise,'### Solución del ejercicio de comprobación\n','```r\n'+practice['code']+'\n```\n',practice['answer']])
 md(closing,'cierre'); sections.append(closing)
 rows=['| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |','|---|---|---|---|']
 for a in activities: rows.append(f"| {a['id']} | {a['slides']} | `{a['id'].lower()}-consigna` / `{a['id'].lower()}-r` | {a['mode']} |")
@@ -300,7 +374,10 @@ notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_
 (root/'clase-taller-1.ipynb').write_text(json.dumps(notebook,ensure_ascii=False,indent=1)+'\n')
 (root/'guia-actividades-taller-1.md').write_text('\n\n'.join(sections))
 script=['# Taller 1: ejecutar desde la raíz del proyecto en una sesión limpia.\n# Equivalente a todas las celdas R del notebook; no instala paquetes.\n']
-for a in activities: script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
+for a in activities:
+ script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
+ if 'practice' in a:
+  script.extend(['\n# Comprueba lo aprendido: '+a['practice']['task']+'\n',a['practice']['code']+'\n'])
 script.append('\ncat("Todas las actividades finalizaron. Revise también gráficos e interpretaciones.\\n")\nsessionInfo()\n')
 (root/'clase-taller-1.R').write_text(''.join(script))
 (root/'guia-docente-taller-1.md').write_text('''# Guía docente · Taller 1
@@ -323,14 +400,14 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
 | 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
-| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
+| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, calcula z y w; print(x) y print(w) muestran 2 y 3. |
 | 19:00–19:04 | NIV-03 (lámina 03). Anticipar el mensaje con valores 3 y 8; el ejemplo define sus propios valores. |
 | 19:04–19:07 | NIV-06 (lámina 04). while: condición previa, actualización y límite de seguridad. |
 | 19:07–19:09 | NIV-FOR (lámina 05). for: recorrido de pasos y salida anticipada con break. |
-| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan una sucesión y revisan las otras. |
-| 19:14–19:20 | NIV-02 (lámina 07). Crear, seleccionar, modificar y llenar un vector con for. |
-| 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
-| 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
+| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan 1, 2, 4, 8, 16 y 32. |
+| 19:14–19:20 | NIV-02 (lámina 07). Reservar 20 ceros; asignar −1 en posiciones impares y luego reemplazar cada cero por su índice. |
+| 19:20–19:27 | NIV-07. Crear la identidad de 3 × 3; reconocer filas, columnas y la transposición. |
+| 19:27–19:35 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | P1-06 a P1-10 en orden. Recorrido conceptual breve y selección de 12 filas. |
 | 19:47–20:00 | P1-11 a P1-14. Ejecutar selección simple y estratificada, mostrar los otros algoritmos y límites. No comparar eficiencia de grupos artificiales. |
@@ -366,7 +443,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
 assert len(activities)==48
-assert sum(c['cell_type']=='code' for c in cells)==48
+assert sum(c['cell_type']=='code' for c in cells)==len(activities)+sum('practice' in a for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
