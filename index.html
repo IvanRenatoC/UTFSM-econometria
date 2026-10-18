@@ -146,7 +146,7 @@ for (i in 1:20) {
 print(v)</code></pre>
 <h4>Cómo leer el resultado</h4><p>El vector alterna −1, 0, −1, 0 hasta completar 20 posiciones. numeric(20) reserva un vector de veinte ceros. El ciclo recorre sus posiciones y la condición i %% 2 != 0 identifica los índices impares. Solo esas posiciones cambian a −1: quedan diez valores −1 y diez ceros.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir el valor guardado con su posición. La condición se aplica al índice i, no al contenido v[i].</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>Ahora inserta el número de la posición en todos los valores que sean 0.</p><h4>Ejercicio para comprobar lo aprendido</h4><p>Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>for (i in seq_along(v)) {
+<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>for (i in seq_along(v)) {
   if (v[i] == 0) {
     v[i] &lt;- i
   }
