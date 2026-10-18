@@ -206,6 +206,35 @@ add('NIV-NOTEBOOK', 'Vista general de un notebook', 'Nivelación',
 activities[-1]['overview'] = True
 activities.insert(next(i for i, a in enumerate(activities) if not a['id'].startswith('NIV-')), activities.pop())
 
+# La exploración gráfica sustituye el contenido de la segunda lámina de econometría.
+exploracion = next(a for a in activities if a['id'] == 'P1-02')
+exploracion.update(
+ title='Exploración gráfica de los datos', data_explorer=True,
+ question='Selecciona una variable para explorar su distribución.', predict='',
+ task='En la web, pulsa wage, educ, exper, tenure, female o married. En R, cambia el nombre de variable y ejecuta la celda para reproducir el gráfico.',
+ code='''# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
+variable <- "wage"
+if (variable == "wage") {
+  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
+       col = "#0160a0", border = "white", main = "Salario por hora",
+       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("educ", "exper", "tenure")) {
+  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
+  frecuencias <- table(factor(datos[[variable]], levels = anios))
+  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
+  barplot(frecuencias, col = colores[variable], border = "white",
+          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("female", "married")) {
+  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
+  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
+    c("No casado/a (0)", "Casado/a (1)")
+  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+      col = c("#0160a0", "#f8c751"), main = variable)
+}''',
+ answer='Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.',
+ error='', check='')
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
