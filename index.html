@@ -27,8 +27,92 @@ print(y)</code></pre>
 <h4>Cómo leer el resultado</h4><p>La flecha &lt;- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(y) muestra 5; z y w quedan guardados, pero esas dos instrucciones no los imprimen. Los nombres permiten recuperar los valores asociados. La flecha se lee como asignación, no como un puntero de memoria: no se guardan direcciones ni una fórmula que se actualice sola. Si luego cambias x, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Invertir la flecha o creer que z se recalcula automáticamente al cambiar x. En la expresión de la derecha, x e y deben estar definidos previamente.</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
 <details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuánto valen z y w? -3 y 3. Si ejecutas solo x &lt;- 10, ¿cambia z? No; debes volver a ejecutar z &lt;- x - y.</p></details>
-<a class="anchor" href="#NIV-ASIG">Enlace a esta lámina ↗</a></div></article><span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02" data-title="Vectores: creación, selección, modificación y llenado con for" aria-labelledby="title-NIV-02">
-<header class="slide-head"><h3 id="title-NIV-02">Vectores: creación, selección, modificación y llenado con for</h3><span class="number">LÁMINA 03</span></header>
+<a class="anchor" href="#NIV-ASIG">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-03" data-title="Condicionales: if, else y operadores lógicos" aria-labelledby="title-NIV-03">
+<header class="slide-head"><h3 id="title-NIV-03">Condicionales: if, else y operadores lógicos</h3><span class="number">LÁMINA 03</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-03</span></div>
+<p class="question">¿Cómo elegimos una acción según una condición?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué mensaje produce valor = 8?</p></div>
+<h4>En R · Tu turno</h4><p>Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector de ejemplo.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-03">Copiar código</button></div><pre><code>v &lt;- c(2, 7, 9)  # Valores del ejemplo, definidos antes de usarlos.
+valor &lt;- 8
+if (valor &gt; 4) {
+  mensaje &lt;- &quot;Supera el umbral&quot;
+} else {
+  mensaje &lt;- &quot;No supera el umbral&quot;
+}
+print(mensaje)
+print(v[v &gt; 4])</code></pre>
+<h4>Cómo leer el resultado</h4><p>if elige un camino con una condición única. La selección lógica trabaja con varias posiciones. Usa &amp; y | para condiciones por elemento, &amp;&amp; y || para condiciones escalares.</p><aside class="notice"><strong>Un error frecuente</strong><p>Escribir if(v &gt; 4), con una condición por cada elemento.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿valor &gt; 4 es una asignación? No, es una comparación.</p></details>
+<a class="anchor" href="#NIV-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-06" data-title="Ciclos while y condiciones de término" aria-labelledby="title-NIV-06">
+<header class="slide-head"><h3 id="title-NIV-06">Ciclos while y condiciones de término</h3><span class="number">LÁMINA 04</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-06</span></div>
+<p class="question">Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Se detendrá antes de 20 pasos?</p></div>
+<h4>En R · Tu turno</h4><p>Parte en 1, duplica hasta alcanzar 100 y conserva los términos.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-06">Copiar código</button></div><pre><code>valor &lt;- 1
+paso &lt;- 0L
+max_pasos &lt;- 20L
+trayectoria &lt;- numeric(max_pasos + 1L)
+trayectoria[1] &lt;- valor
+while (valor &lt; 100 &amp;&amp; paso &lt; max_pasos) {
+  valor &lt;- 2 * valor
+  paso &lt;- paso + 1L
+  trayectoria[paso + 1L] &lt;- valor
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))</code></pre>
+<h4>Cómo leer el resultado</h4><p>while evalúa su condición antes de cada repetición: seguimos si valor &lt; 100 y paso &lt; max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor &lt; 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.</p><aside class="notice"><strong>Un error frecuente</strong><p>No actualizar valor o paso.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.</p></details>
+<a class="anchor" href="#NIV-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-FOR" data-title="Ciclos for y condiciones de término" aria-labelledby="title-NIV-FOR">
+<header class="slide-head"><h3 id="title-NIV-FOR">Ciclos for y condiciones de término</h3><span class="number">LÁMINA 05</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-FOR</span></div>
+<p class="question">Segunda parte: for. ¿Cómo repetimos el cálculo con un límite de pasos?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuándo terminará: al agotar los 20 pasos o al alcanzar 100?</p></div>
+<h4>En R · Tu turno</h4><p>Ejecuta la versión con for. Compara su trayectoria con la del while y prueba max_pasos &lt;- 3.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-FOR">Copiar código</button></div><pre><code>valor &lt;- 1
+max_pasos &lt;- 20L
+trayectoria &lt;- numeric(max_pasos + 1L)
+trayectoria[1] &lt;- valor
+for (paso in seq_len(max_pasos)) {
+  valor &lt;- 2 * valor
+  trayectoria[paso + 1L] &lt;- valor
+  if (valor &gt;= 100) {
+    break
+  }
+}
+print(trayectoria[seq_len(paso + 1L)])
+print(c(pasos = paso, valor = valor))</code></pre>
+<h4>Cómo leer el resultado</h4><p>for recorre los pasos de seq_len(max_pasos). Termina al agotar esa secuencia o antes si ejecuta break. Aquí el if detecta valor &gt;= 100 y break sale del ciclo en el paso 7, con valor 128; la trayectoria coincide con la del while. Si max_pasos es 3, se agota la secuencia con valor 8. En este ejemplo max_pasos debe ser un entero positivo; paso recibe automáticamente cada índice, sin escribir paso &lt;- paso + 1.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir el recorrido de for con una prueba automática de valor &lt; 100: esa condición de salida anticipada se expresa con if y break. No usar paso después de un ciclo vacío sin inicializarlo.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué ocurre si eliminas if y break? Se ejecutan los 20 pasos. ¿Qué ocurre con max_pasos &lt;- 3? Termina por agotar los pasos, sin alcanzar 100.</p></details>
+<a class="anchor" href="#NIV-FOR">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-05" data-title="Sucesiones aritméticas, geométricas y recurrentes" aria-labelledby="title-NIV-05">
+<header class="slide-head"><h3 id="title-NIV-05">Sucesiones aritméticas, geométricas y recurrentes</h3><span class="number">LÁMINA 06</span></header>
+<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-05</span></div>
+<p class="question">¿Cómo se calcula un término desde el anterior?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Predice los cuatro primeros términos de cada sucesión.</p></div>
+<h4>En R · Tu turno</h4><p>Construye seis términos: aritmética con inicio 2 y paso 3; geométrica con inicio 2 y razón 2; recurrencia con inicio 1 y a[i] = 2*a[i-1]+1.</p>
+<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
+<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-05">Copiar código</button></div><pre><code>a &lt;- g &lt;- r &lt;- numeric(6)
+a[1] &lt;- 2; g[1] &lt;- 2; r[1] &lt;- 1
+for (i in 2:length(a)) {
+  a[i] &lt;- a[i-1] + 3
+  g[i] &lt;- 2 * g[i-1]
+  r[i] &lt;- 2 * r[i-1] + 1
+}
+print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
+stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
+          all(g == 2 * 2^(seq_along(g)-1)))</code></pre>
+<h4>Cómo leer el resultado</h4><p>Las fórmulas vectorizadas comprueban las dos primeras sucesiones. La recurrencia exige inicializar el primer valor. Aquí se garantiza longitud 6 antes de usar 2:length(a).</p><aside class="notice"><strong>Un error frecuente</strong><p>Olvidar el primer término o aplicar 2:n cuando n podría ser menor que 2.</p></aside>
+<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuál es el tercer término de la recurrencia? 7.</p></details>
+<a class="anchor" href="#NIV-05">Enlace a esta lámina ↗</a></div></article><span id="NIV-04" aria-hidden="true"></span><article class="slide" id="NIV-02" data-title="Vectores: creación, selección, modificación y llenado con for" aria-labelledby="title-NIV-02">
+<header class="slide-head"><h3 id="title-NIV-02">Vectores: creación, selección, modificación y llenado con for</h3><span class="number">LÁMINA 07</span></header>
 <div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-02</span></div>
 <p class="question">¿Cómo guardamos varios valores y los llenamos con un ciclo for?</p><figure class="vector-demo" aria-labelledby="vector-caption">
 <figcaption id="vector-caption"><strong>Un vector, posición a posición</strong><span>Los puntos aparecen en orden: de izquierda a derecha y de arriba abajo.</span></figcaption>
@@ -56,68 +140,8 @@ print(dobles)</code></pre>
 <h4>Cómo leer el resultado</h4><p>R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo. La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.</p><aside class="notice"><strong>Un error frecuente</strong><p>Usar el índice 0 como primera posición. Llenar un objeto inexistente o recorrer más índices de los reservados.</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
 <details class="check"><summary>Comprueba lo aprendido</summary><p>¿length(v) cambia al modificar v[2]? No. ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.</p></details>
-<a class="anchor" href="#NIV-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-03" data-title="Condicionales: if, else y operadores lógicos" aria-labelledby="title-NIV-03">
-<header class="slide-head"><h3 id="title-NIV-03">Condicionales: if, else y operadores lógicos</h3><span class="number">LÁMINA 04</span></header>
-<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-03</span></div>
-<p class="question">¿Cómo elegimos una acción según una condición?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Qué mensaje produce valor = 8?</p></div>
-<h4>En R · Tu turno</h4><p>Prueba con 3 y con 8; selecciona además todos los valores mayores que 4 del vector anterior.</p>
-<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
-<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
-<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-03">Copiar código</button></div><pre><code>valor &lt;- 8
-if (valor &gt; 4) {
-  mensaje &lt;- &quot;Supera el umbral&quot;
-} else {
-  mensaje &lt;- &quot;No supera el umbral&quot;
-}
-print(mensaje)
-print(v[v &gt; 4])</code></pre>
-<h4>Cómo leer el resultado</h4><p>if elige un camino con una condición única. La selección lógica trabaja con varias posiciones. Usa &amp; y | para condiciones por elemento, &amp;&amp; y || para condiciones escalares.</p><aside class="notice"><strong>Un error frecuente</strong><p>Escribir if(v &gt; 4), con una condición por cada elemento.</p></aside>
-<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><p>¿valor &gt; 4 es una asignación? No, es una comparación.</p></details>
-<a class="anchor" href="#NIV-03">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-05" data-title="Sucesiones aritméticas, geométricas y recurrentes" aria-labelledby="title-NIV-05">
-<header class="slide-head"><h3 id="title-NIV-05">Sucesiones aritméticas, geométricas y recurrentes</h3><span class="number">LÁMINA 05</span></header>
-<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-05</span></div>
-<p class="question">¿Cómo se calcula un término desde el anterior?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>Predice los cuatro primeros términos de cada sucesión.</p></div>
-<h4>En R · Tu turno</h4><p>Construye seis términos: aritmética con inicio 2 y paso 3; geométrica con inicio 2 y razón 2; recurrencia con inicio 1 y a[i] = 2*a[i-1]+1.</p>
-<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
-<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
-<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-05">Copiar código</button></div><pre><code>a &lt;- g &lt;- r &lt;- numeric(6)
-a[1] &lt;- 2; g[1] &lt;- 2; r[1] &lt;- 1
-for (i in 2:length(a)) {
-  a[i] &lt;- a[i-1] + 3
-  g[i] &lt;- 2 * g[i-1]
-  r[i] &lt;- 2 * r[i-1] + 1
-}
-print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
-stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
-          all(g == 2 * 2^(seq_along(g)-1)))</code></pre>
-<h4>Cómo leer el resultado</h4><p>Las fórmulas vectorizadas comprueban las dos primeras sucesiones. La recurrencia exige inicializar el primer valor. Aquí se garantiza longitud 6 antes de usar 2:length(a).</p><aside class="notice"><strong>Un error frecuente</strong><p>Olvidar el primer término o aplicar 2:n cuando n podría ser menor que 2.</p></aside>
-<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Cuál es el tercer término de la recurrencia? 7.</p></details>
-<a class="anchor" href="#NIV-05">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-06" data-title="Ciclos while y condiciones de término" aria-labelledby="title-NIV-06">
-<header class="slide-head"><h3 id="title-NIV-06">Ciclos while y condiciones de término</h3><span class="number">LÁMINA 06</span></header>
-<div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-06</span></div>
-<p class="question">¿Cuántas duplicaciones hacen falta para llegar a 100?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Se detendrá antes de 20 pasos?</p></div>
-<h4>En R · Tu turno</h4><p>Parte en 1, duplica hasta alcanzar 100 y conserva los términos.</p>
-<p class="data-note">Ejercicio de programación con objetos artificiales.</p>
-<details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
-<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de NIV-06">Copiar código</button></div><pre><code>valor &lt;- 1
-paso &lt;- 0L
-max_pasos &lt;- 20L
-trayectoria &lt;- numeric(max_pasos + 1L)
-trayectoria[1] &lt;- valor
-while (valor &lt; 100 &amp;&amp; paso &lt; max_pasos) {
-  valor &lt;- 2 * valor
-  paso &lt;- paso + 1L
-  trayectoria[paso + 1L] &lt;- valor
-}
-print(trayectoria[seq_len(paso + 1L)])
-print(c(pasos = paso, valor = valor))</code></pre>
-<h4>Cómo leer el resultado</h4><p>Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.</p><aside class="notice"><strong>Un error frecuente</strong><p>No actualizar valor o paso.</p></aside>
-<p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><p>¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.</p></details>
-<a class="anchor" href="#NIV-06">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-07" data-title="Matrices y ciclos anidados" aria-labelledby="title-NIV-07">
-<header class="slide-head"><h3 id="title-NIV-07">Matrices y ciclos anidados</h3><span class="number">LÁMINA 07</span></header>
+<a class="anchor" href="#NIV-02">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-07" data-title="Matrices y ciclos anidados" aria-labelledby="title-NIV-07">
+<header class="slide-head"><h3 id="title-NIV-07">Matrices y ciclos anidados</h3><span class="number">LÁMINA 08</span></header>
 <div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-07</span></div>
 <p class="question">¿Cómo guardamos resultados por filas y columnas?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Cuánto valdrá la posición [2,3]?</p></div>
 <h4>En R · Tu turno</h4><p>Llena una matriz 2 por 3 con 10*fila + columna; luego modifica [1,1].</p>
@@ -136,7 +160,7 @@ print(m); print(dim(m))</code></pre>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
 <details class="check"><summary>Comprueba lo aprendido</summary><p>¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.</p></details>
 <a class="anchor" href="#NIV-07">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-08" data-title="Actividad integradora: sucesiones y matrices" aria-labelledby="title-NIV-08">
-<header class="slide-head"><h3 id="title-NIV-08">Actividad integradora: sucesiones y matrices</h3><span class="number">LÁMINA 08</span></header>
+<header class="slide-head"><h3 id="title-NIV-08">Actividad integradora: sucesiones y matrices</h3><span class="number">LÁMINA 09</span></header>
 <div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-08</span></div>
 <p class="question">¿Podemos reunir una sucesión y una decisión?</p><div class="prompt"><strong>Antes de ejecutar</strong><p>¿Desde qué término se supera 10?</p></div>
 <h4>En R · Tu turno</h4><p>Genera 2,5,8,11,14,17 y guarda índice, valor e indicador de superar 10.</p>
@@ -758,7 +782,7 @@ points(diferencia,.5,pch = 19); abline(v = 0,lty = 2)</code></pre>
 <h4>Cómo leer el resultado</h4><p>Redacta según la salida efectiva: el IC incluye o excluye cero. El resultado compara medias de las poblaciones didácticas bajo muestreo independiente; no estima el efecto causal de educarse ni una brecha actual chilena.</p><aside class="notice"><strong>Un error frecuente</strong><p>Copiar la conclusión sin mirar los límites obtenidos.</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
 <details class="check"><summary>Comprueba lo aprendido</summary><p>¿Controlamos habilidad y contexto familiar? No.</p></details>
-<a class="anchor" href="#P3-18">Enlace a esta lámina ↗</a></div></article></section><section class="closure brief" id="cierre"><p class="eyebrow">Cierre</p><h2>Antes de salir: explica lo que hiciste</h2><ol><li>¿Qué evita que un while sea infinito?</li><li>¿Una muestra por conveniencia representa a todos?</li><li>¿Qué medida reacciona más ante un extremo?</li><li>¿Un IC de 95% contiene el 95% de los salarios?</li><li>¿Qué pasa con el margen al cuadruplicar n?</li><li>¿Una diferencia salarial prueba un efecto causal?</li></ol><details class="check"><summary>Revisar respuestas</summary><div class="solution-body"><ol><li>Actualizar el estado y establecer un máximo de iteraciones.</li><li>No; hay exclusiones y probabilidades de selección no justificadas.</li><li>En general, la media.</li><li>No; la confianza describe la cobertura del procedimiento para un parámetro.</li><li>Se reduce a la mitad con sigma y confianza constantes.</li><li>No; no se han aislado los otros factores.</li></ol></div></details><p>Para continuar: capítulo 1 y apéndice C de Wooldridge, según la lectura indicada por Sebastián.</p></section><section class="next-class" id="clase-2"><h2>📚 Para la próxima clase</h2><p><strong>Clase 2: Regresión lineal simple en R.</strong></p><p>Continúa con la lectura indicada por Sebastián: capítulo 1 y apéndice C de Wooldridge. El material del segundo taller se incorporará cuando esté preparado.</p></section><footer class="footer"><p>Iván · Taller de Econometría ICS-294 · Universidad Técnica Federico Santa María</p><p><a href="https://hizocar.github.io/econometria-usm/clases/clase1/">Cátedra de Sebastián ↗</a><a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">Fuente de datos ↗</a><a href="guia-actividades-taller-1.md">Guía y trazabilidad ↗</a><a href="https://github.com/IvanRenatoC/UTFSM-econometria">Repositorio ↗</a></p><p>Actividades propias para complementar la cátedra. Todo el código del curso está en R. Las soluciones se conservan en el notebook y la guía.</p></footer></div></main><aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a><a class="toc-group" href="#NIV">Nivelación · Computación en R</a><ul><li><a href="#NIV-01">Escribe tu nombre</a></li><li><a href="#NIV-ASIG">Asignación de valores: nombres y flecha &lt;-</a></li><li><a href="#NIV-02">Vectores: creación, selección, modificación y llenado con for</a></li><li><a href="#NIV-03">Condicionales: if, else y operadores lógicos</a></li><li><a href="#NIV-05">Sucesiones aritméticas, geométricas y recurrentes</a></li><li><a href="#NIV-06">Ciclos while y condiciones de término</a></li><li><a href="#NIV-07">Matrices y ciclos anidados</a></li><li><a href="#NIV-08">Actividad integradora: sucesiones y matrices</a></li></ul><a class="toc-group" href="#P1">Parte 1 · Introducción a la econometría</a><ul><li><a href="#P1-01">Introducción a la econometría y a los datos</a></li><li><a href="#P1-02">Econometría moderna: describir, explicar y predecir</a></li><li><a href="#P1-03">Del modelo económico a las variables observadas</a></li><li><a href="#P1-04">Correlación, causalidad y factores no observados</a></li><li><a href="#P1-05">Educación y salarios: alcances de la comparación</a></li><li><a href="#P1-06">Econometría aplicada y diseño de estudios</a></li><li><a href="#P1-07">Tipos y estructura de los datos económicos</a></li><li><a href="#P1-08">Población, muestra y unidad de observación</a></li><li><a href="#P1-09">Razones para trabajar con muestras</a></li><li><a href="#P1-10">Variables, parámetros y estadísticos</a></li><li><a href="#P1-11">Métodos de muestreo probabilístico en R</a></li><li><a href="#P1-12">Muestreo estratificado y por conglomerados</a></li><li><a href="#P1-13">Muestreo no probabilístico y selección</a></li><li><a href="#P1-14">Estadística descriptiva e inferencial</a></li></ul><a class="toc-group" href="#P2">Parte 2 · Estadística descriptiva</a><ul><li><a href="#P2-01">Ramas de la estadística</a></li><li><a href="#P2-02">Estadísticos como funciones de los datos</a></li><li><a href="#P2-03">Medidas de localización central: media y mediana</a></li><li><a href="#P2-04">Percentiles y cuartiles</a></li><li><a href="#P2-05">Medidas de dispersión: RIQ, varianza y desviación</a></li><li><a href="#P2-06">Histogramas y elección de intervalos</a></li><li><a href="#P2-07">Gráfico de caja, bigotes y valores atípicos</a></li></ul><a class="toc-group" href="#P3">Parte 3 · Estadística inferencial</a><ul><li><a href="#P3-01">Inferencia y población empírica de referencia</a></li><li><a href="#P3-02">Intervalos de confianza e incertidumbre</a></li><li><a href="#P3-03">Teorema central del límite: simulación en R</a></li><li><a href="#P3-04">Supuestos del teorema central del límite</a></li><li><a href="#P3-05">Intervalo para una media: ejemplo salarial</a></li><li><a href="#P3-06">Componentes del intervalo de confianza de 95%</a></li><li><a href="#P3-07">Intervalos con distintos niveles de confianza</a></li><li><a href="#P3-08">Comparación gráfica de intervalos de confianza</a></li><li><a href="#P3-09">Cobertura, confianza y precisión</a></li><li><a href="#P3-10">Tamaño muestral para estimar una media</a></li><li><a href="#P3-11">Intervalos de confianza para proporciones</a></li><li><a href="#P3-12">Proporciones: comparación con una referencia</a></li><li><a href="#P3-13">Tamaño muestral para estimar una proporción</a></li><li><a href="#P3-14">Aplicación: longitud y margen de error</a></li><li><a href="#P3-15">Comparación de medias entre dos poblaciones</a></li><li><a href="#P3-16">Diferencia de medias: parámetro e interpretación</a></li><li><a href="#P3-17">Diferencia de medias con varianzas conocidas</a></li><li><a href="#P3-18">Diferencia de medias: intervalo y conclusión</a></li></ul><a href="#cierre">✅ Autoevaluación</a><a href="#clase-2">📚 Para la próxima clase</a></nav></aside></div><nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>
+<a class="anchor" href="#P3-18">Enlace a esta lámina ↗</a></div></article></section><section class="closure brief" id="cierre"><p class="eyebrow">Cierre</p><h2>Antes de salir: explica lo que hiciste</h2><ol><li>¿Qué evita que un while sea infinito?</li><li>¿Una muestra por conveniencia representa a todos?</li><li>¿Qué medida reacciona más ante un extremo?</li><li>¿Un IC de 95% contiene el 95% de los salarios?</li><li>¿Qué pasa con el margen al cuadruplicar n?</li><li>¿Una diferencia salarial prueba un efecto causal?</li></ol><details class="check"><summary>Revisar respuestas</summary><div class="solution-body"><ol><li>Actualizar el estado y establecer un máximo de iteraciones.</li><li>No; hay exclusiones y probabilidades de selección no justificadas.</li><li>En general, la media.</li><li>No; la confianza describe la cobertura del procedimiento para un parámetro.</li><li>Se reduce a la mitad con sigma y confianza constantes.</li><li>No; no se han aislado los otros factores.</li></ol></div></details><p>Para continuar: capítulo 1 y apéndice C de Wooldridge, según la lectura indicada por Sebastián.</p></section><section class="next-class" id="clase-2"><h2>📚 Para la próxima clase</h2><p><strong>Clase 2: Regresión lineal simple en R.</strong></p><p>Continúa con la lectura indicada por Sebastián: capítulo 1 y apéndice C de Wooldridge. El material del segundo taller se incorporará cuando esté preparado.</p></section><footer class="footer"><p>Iván · Taller de Econometría ICS-294 · Universidad Técnica Federico Santa María</p><p><a href="https://hizocar.github.io/econometria-usm/clases/clase1/">Cátedra de Sebastián ↗</a><a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">Fuente de datos ↗</a><a href="guia-actividades-taller-1.md">Guía y trazabilidad ↗</a><a href="https://github.com/IvanRenatoC/UTFSM-econometria">Repositorio ↗</a></p><p>Actividades propias para complementar la cátedra. Todo el código del curso está en R. Las soluciones se conservan en el notebook y la guía.</p></footer></div></main><aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a><a class="toc-group" href="#NIV">Nivelación · Computación en R</a><ul><li><a href="#NIV-01">Escribe tu nombre</a></li><li><a href="#NIV-ASIG">Asignación de valores: nombres y flecha &lt;-</a></li><li><a href="#NIV-03">Condicionales: if, else y operadores lógicos</a></li><li><a href="#NIV-06">Ciclos while y condiciones de término</a></li><li><a href="#NIV-FOR">Ciclos for y condiciones de término</a></li><li><a href="#NIV-05">Sucesiones aritméticas, geométricas y recurrentes</a></li><li><a href="#NIV-02">Vectores: creación, selección, modificación y llenado con for</a></li><li><a href="#NIV-07">Matrices y ciclos anidados</a></li><li><a href="#NIV-08">Actividad integradora: sucesiones y matrices</a></li></ul><a class="toc-group" href="#P1">Parte 1 · Introducción a la econometría</a><ul><li><a href="#P1-01">Introducción a la econometría y a los datos</a></li><li><a href="#P1-02">Econometría moderna: describir, explicar y predecir</a></li><li><a href="#P1-03">Del modelo económico a las variables observadas</a></li><li><a href="#P1-04">Correlación, causalidad y factores no observados</a></li><li><a href="#P1-05">Educación y salarios: alcances de la comparación</a></li><li><a href="#P1-06">Econometría aplicada y diseño de estudios</a></li><li><a href="#P1-07">Tipos y estructura de los datos económicos</a></li><li><a href="#P1-08">Población, muestra y unidad de observación</a></li><li><a href="#P1-09">Razones para trabajar con muestras</a></li><li><a href="#P1-10">Variables, parámetros y estadísticos</a></li><li><a href="#P1-11">Métodos de muestreo probabilístico en R</a></li><li><a href="#P1-12">Muestreo estratificado y por conglomerados</a></li><li><a href="#P1-13">Muestreo no probabilístico y selección</a></li><li><a href="#P1-14">Estadística descriptiva e inferencial</a></li></ul><a class="toc-group" href="#P2">Parte 2 · Estadística descriptiva</a><ul><li><a href="#P2-01">Ramas de la estadística</a></li><li><a href="#P2-02">Estadísticos como funciones de los datos</a></li><li><a href="#P2-03">Medidas de localización central: media y mediana</a></li><li><a href="#P2-04">Percentiles y cuartiles</a></li><li><a href="#P2-05">Medidas de dispersión: RIQ, varianza y desviación</a></li><li><a href="#P2-06">Histogramas y elección de intervalos</a></li><li><a href="#P2-07">Gráfico de caja, bigotes y valores atípicos</a></li></ul><a class="toc-group" href="#P3">Parte 3 · Estadística inferencial</a><ul><li><a href="#P3-01">Inferencia y población empírica de referencia</a></li><li><a href="#P3-02">Intervalos de confianza e incertidumbre</a></li><li><a href="#P3-03">Teorema central del límite: simulación en R</a></li><li><a href="#P3-04">Supuestos del teorema central del límite</a></li><li><a href="#P3-05">Intervalo para una media: ejemplo salarial</a></li><li><a href="#P3-06">Componentes del intervalo de confianza de 95%</a></li><li><a href="#P3-07">Intervalos con distintos niveles de confianza</a></li><li><a href="#P3-08">Comparación gráfica de intervalos de confianza</a></li><li><a href="#P3-09">Cobertura, confianza y precisión</a></li><li><a href="#P3-10">Tamaño muestral para estimar una media</a></li><li><a href="#P3-11">Intervalos de confianza para proporciones</a></li><li><a href="#P3-12">Proporciones: comparación con una referencia</a></li><li><a href="#P3-13">Tamaño muestral para estimar una proporción</a></li><li><a href="#P3-14">Aplicación: longitud y margen de error</a></li><li><a href="#P3-15">Comparación de medias entre dos poblaciones</a></li><li><a href="#P3-16">Diferencia de medias: parámetro e interpretación</a></li><li><a href="#P3-17">Diferencia de medias con varianzas conocidas</a></li><li><a href="#P3-18">Diferencia de medias: intervalo y conclusión</a></li></ul><a href="#cierre">✅ Autoevaluación</a><a href="#clase-2">📚 Para la próxima clase</a></nav></aside></div><nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>
 const slides=[...document.querySelectorAll('.slide')];let current=0;const toggle=document.querySelector('#present');const count=document.querySelector('.counter');
 function show(i){current=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===current));count.textContent=`${current+1} / ${slides.length}`;document.querySelector('#prev').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;if(document.body.classList.contains('presenting'))window.scrollTo(0,0);}
 toggle.addEventListener('click',()=>{const on=document.body.classList.toggle('presenting');toggle.textContent=on?'Salir de presentación':'Modo presentación';toggle.setAttribute('aria-pressed',String(on));if(on){const h=location.hash.slice(1);const index=slides.findIndex(s=>s.id===h);show(index>=0?index:current);}});
