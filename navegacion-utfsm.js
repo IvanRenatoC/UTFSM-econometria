@@ -71,7 +71,6 @@ document.addEventListener('click',event=>{
   const link=event.target.closest('a[href^="#"]');
   if(link)expandSlide(document.getElementById(link.getAttribute('href').slice(1))?.closest('.slide'));
 });
-expandLinkedSlide();
 document.querySelector('#present').addEventListener('click',()=>{
   if(document.body.classList.contains('presenting'))document.querySelectorAll('.slide').forEach(expandSlide);
 });
