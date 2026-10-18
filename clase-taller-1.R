@@ -4,13 +4,13 @@
 # NIV-01 · Escribe tu nombre
 print("tu nombre")
 
-# NIV-ASIG · Asignación de valores: nombres y flecha <-
+# NIV-ASIG · Asignación de valores
 x <- 2
 y <- 5
 z <- x - y
 w <- abs(x - y)
 print(x)
-print(y)
+print(w)
 
 # NIV-03 · Condicionales: if, else y operadores lógicos
 v <- c(2, 7, 9)  # Valores del ejemplo, definidos antes de usarlos.
@@ -25,83 +25,76 @@ print(v[v > 4])
 
 # NIV-06 · Ciclos while y condiciones de término
 valor <- 1
-paso <- 0L
-max_pasos <- 20L
-trayectoria <- numeric(max_pasos + 1L)
+paso <- 0
+max_pasos <- 20
+trayectoria <- numeric(max_pasos + 1)
 trayectoria[1] <- valor
 while (valor < 100 && paso < max_pasos) {
   valor <- 2 * valor
-  paso <- paso + 1L
-  trayectoria[paso + 1L] <- valor
+  paso <- paso + 1
+  trayectoria[paso + 1] <- valor
 }
-print(trayectoria[seq_len(paso + 1L)])
+print(trayectoria[seq_len(paso + 1)])
 print(c(pasos = paso, valor = valor))
 
 # NIV-FOR · Ciclos for y condiciones de término
 valor <- 1
-max_pasos <- 20L
-trayectoria <- numeric(max_pasos + 1L)
+max_pasos <- 20
+trayectoria <- numeric(max_pasos + 1)
 trayectoria[1] <- valor
 for (paso in seq_len(max_pasos)) {
   valor <- 2 * valor
-  trayectoria[paso + 1L] <- valor
+  trayectoria[paso + 1] <- valor
   if (valor >= 100) {
     break
   }
 }
-print(trayectoria[seq_len(paso + 1L)])
+print(trayectoria[seq_len(paso + 1)])
 print(c(pasos = paso, valor = valor))
 
-# NIV-05 · Sucesiones aritméticas, geométricas y recurrentes
-a <- g <- r <- numeric(6)
-a[1] <- 2; g[1] <- 2; r[1] <- 1
-for (i in 2:length(a)) {
-  a[i] <- a[i-1] + 3
-  g[i] <- 2 * g[i-1]
-  r[i] <- 2 * r[i-1] + 1
+# NIV-05 · Sucesión geométrica: 1, 2, 4, 8, 16…
+sucesion <- numeric(6)
+sucesion[1] <- 1
+for (i in 2:6) {
+  sucesion[i] <- 2 * sucesion[i - 1]
 }
-print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
-stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
-          all(g == 2 * 2^(seq_along(g)-1)))
+print(sucesion)
 
 # NIV-02 · Vectores: creación, selección, modificación y llenado con for
-# 1. Crear, seleccionar y modificar
-v <- numeric(3)
-v[1] <- 2; v[2] <- 6; v[3] <- 9
-print(v[v > 4])
-v[2] <- 7
-print(v); print(length(v))
-
-# 2. Reservar y llenar con for
-dobles <- numeric(5)
-for (i in seq_along(dobles)) {
-  dobles[i] <- 2 * i
-}
-print(dobles)
-
-# NIV-07 · Matrices y ciclos anidados
-m <- matrix(0, nrow = 2, ncol = 3)
-for (i in seq_len(nrow(m))) {
-  for (j in seq_len(ncol(m))) {
-    m[i,j] <- 10*i + j
+v <- numeric(20)
+for (i in 1:20) {
+  if (i %% 2 != 0) {
+    v[i] <- -1
   }
 }
-print(m)
-m[1,1] <- 99
-print(m); print(dim(m))
+print(v)
+
+# Comprueba lo aprendido: Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.
+for (i in seq_along(v)) {
+  if (v[i] == 0) {
+    v[i] <- i
+  }
+}
+print(v)
+
+# NIV-07 · Matrices y ciclos anidados
+A <- matrix(0, nrow = 3, ncol = 3)
+for (i in 1:3) {
+  A[i, i] <- 1
+}
+print(A)
+
+# Comprueba lo aprendido: Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.
+A <- matrix(1:8, nrow = 2, ncol = 4)
+print(A[2, 3])
+print(t(A)[3, 2])
+print(A[2, 3] == t(A)[3, 2])
 
 # NIV-08 · Actividad integradora: sucesiones y matrices
-terminos <- numeric(6)
-terminos[1] <- 2
-for (i in 2:length(terminos)) terminos[i] <- terminos[i-1] + 3
-resultado <- matrix(0, nrow = 6, ncol = 3,
-                    dimnames = list(NULL, c("indice", "valor", "supera_10")))
-for (i in seq_along(terminos)) {
-  resultado[i,1] <- i
-  resultado[i,2] <- terminos[i]
-  if (terminos[i] > 10) resultado[i,3] <- 1
-}
-print(resultado)
+sucesion <- 3^(1:6)
+A <- matrix(sucesion, nrow = 3, ncol = 2)
+print(sucesion)
+print(A)
 
 # P1-01 · Introducción a la econometría y a los datos
 # La copia local permite trabajar sin conexión.

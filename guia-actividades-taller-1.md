@@ -8,7 +8,11 @@
 
 ## Objetivos
 
-Al terminar la ruta presencial podrás llenar vectores y matrices con ciclos y condiciones, reconocer una base transversal, resumir salarios con gráficos y estadísticos y explicar la interpretación de un intervalo de confianza. Las ampliaciones permiten completar la práctica de todos los apartados.
+Al terminar la ruta presencial podrás:
+
+- Usar sentencias clave como if, else, while y for, para hacer rutinas.
+- Crear y modificar **vectores y matrices**, utilizando índices y preasignación.
+- Reconocer una base transversal, resumir salarios con gráficos y estadísticos y explicar la interpretación de un intervalo de confianza. Las ampliaciones permiten completar la práctica de todos los apartados.
 
 ## Agenda presencial · 140 minutos efectivos
 
@@ -98,7 +102,7 @@ print("tu nombre")
 
 
 <a id="NIV-ASIG"></a>
-## Lámina 02 · Asignación de valores: nombres y flecha <-
+## Lámina 02 · Asignación de valores
 
 **Identificador de enlace:** `NIV-ASIG`. La numeración se reinicia por bloque, como en la web.
 
@@ -108,7 +112,7 @@ print("tu nombre")
 
 **Antes de ejecutar:** Con x = 2 e y = 5, ¿cuánto valdrán z y w? ¿Qué mostrará cada print?
 
-**Consigna:** Ejecuta las instrucciones una a una. Después consulta z y w con print(z) y print(w).
+**Consigna:** Ejecuta las instrucciones una a una. Después consulta z con print(z).
 
 **Datos:** Objetos artificiales de programación.
 
@@ -124,11 +128,13 @@ y <- 5
 z <- x - y
 w <- abs(x - y)
 print(x)
-print(y)
+print(w)
 ```
 
 
-**Lectura del resultado:** La flecha <- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(y) muestra 5; z y w quedan guardados, pero esas dos instrucciones no los imprimen. Los nombres permiten recuperar los valores asociados. La flecha se lee como asignación, no como un puntero de memoria: no se guardan direcciones ni una fórmula que se actualice sola. Si luego cambias x, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.
+**Lectura del resultado:** La flecha <- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(w) muestra 3. z queda guardado, aunque no se imprime en estas instrucciones. Si cambias x o y, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.
+
+**Los valores quedan asignados mientras la sesión siga activa. En R de escritorio se conservan hasta que los reasignes, los elimines o cierres o reinicies la sesión. En Google Colab ocurre lo mismo mientras el entorno de ejecución permanezca activo: se pierden al reiniciarlo o eliminarlo, no necesariamente por una desconexión temporal.**
 
 **Error frecuente:** Invertir la flecha o creer que z se recalcula automáticamente al cambiar x. En la expresión de la derecha, x e y deben estar definidos previamente.
 
@@ -183,11 +189,11 @@ print(v[v > 4])
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** Primera parte: while. ¿Cuántas duplicaciones hacen falta para llegar a 100?
+**Pregunta:** Primera parte: while. Iteraciones y loops
 
 **Antes de ejecutar:** ¿Se detendrá antes de 20 pasos?
 
-**Consigna:** Parte en 1, duplica hasta alcanzar 100 y conserva los términos.
+**Consigna:** Parte en 1 y multiplica el valor por 2 en cada iteración, hasta alcanzar 100. Conserva los valores de cada paso.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -199,21 +205,21 @@ Ejecutar después de intentar la consigna.
 
 ```r
 valor <- 1
-paso <- 0L
-max_pasos <- 20L
-trayectoria <- numeric(max_pasos + 1L)
+paso <- 0
+max_pasos <- 20
+trayectoria <- numeric(max_pasos + 1)
 trayectoria[1] <- valor
 while (valor < 100 && paso < max_pasos) {
   valor <- 2 * valor
-  paso <- paso + 1L
-  trayectoria[paso + 1L] <- valor
+  paso <- paso + 1
+  trayectoria[paso + 1] <- valor
 }
-print(trayectoria[seq_len(paso + 1L)])
+print(trayectoria[seq_len(paso + 1)])
 print(c(pasos = paso, valor = valor))
 ```
 
 
-**Lectura del resultado:** while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. El cuerpo actualiza valor y paso. Se llega a 128 en siete duplicaciones y la condición valor < 100 deja de cumplirse. El límite adicional de 20 pasos protege ante una condición mal planteada; si la condición inicial fuese falsa, el cuerpo no se ejecutaría.
+**Lectura del resultado:** while evalúa su condición antes de cada repetición: seguimos si valor < 100 y paso < max_pasos. En cada iteración se multiplica el valor por 2 y se actualiza el contador paso. Se llega a 128 después de siete iteraciones y la condición valor < 100 deja de cumplirse. El límite de 20 pasos evita que el ciclo continúe indefinidamente si la condición se plantea mal. Si la condición inicial es falsa, el cuerpo no se ejecuta.
 
 **Error frecuente:** No actualizar valor o paso.
 
@@ -243,22 +249,24 @@ Ejecutar después de intentar la consigna.
 
 ```r
 valor <- 1
-max_pasos <- 20L
-trayectoria <- numeric(max_pasos + 1L)
+max_pasos <- 20
+trayectoria <- numeric(max_pasos + 1)
 trayectoria[1] <- valor
 for (paso in seq_len(max_pasos)) {
   valor <- 2 * valor
-  trayectoria[paso + 1L] <- valor
+  trayectoria[paso + 1] <- valor
   if (valor >= 100) {
     break
   }
 }
-print(trayectoria[seq_len(paso + 1L)])
+print(trayectoria[seq_len(paso + 1)])
 print(c(pasos = paso, valor = valor))
 ```
 
 
 **Lectura del resultado:** for recorre los pasos de seq_len(max_pasos). Termina al agotar esa secuencia o antes si ejecuta break. Aquí el if detecta valor >= 100 y break sale del ciclo en el paso 7, con valor 128; la trayectoria coincide con la del while. Si max_pasos es 3, se agota la secuencia con valor 8. En este ejemplo max_pasos debe ser un entero positivo; paso recibe automáticamente cada índice, sin escribir paso <- paso + 1.
+
+**Diferencia entre while y for:** while repite instrucciones mientras una condición sea verdadera; el número de repeticiones depende de cuándo deje de cumplirse. for recorre una secuencia de valores, uno por iteración. En este ejemplo, for puede terminar antes de agotar la secuencia porque if detecta que se alcanzó 100 y break sale del ciclo. Ambos producen la misma trayectoria, pero expresan el control de la repetición de distinta forma.
 
 **Error frecuente:** Confundir el recorrido de for con una prueba automática de valor < 100: esa condición de salida anticipada se expresa con if y break. No usar paso después de un ciclo vacío sin inicializarlo.
 
@@ -266,17 +274,17 @@ print(c(pasos = paso, valor = valor))
 
 
 <a id="NIV-05"></a>
-## Lámina 06 · Sucesiones aritméticas, geométricas y recurrentes
+## Lámina 06 · Sucesión geométrica: 1, 2, 4, 8, 16…
 
 **Identificador de enlace:** `NIV-05`. La numeración se reinicia por bloque, como en la web.
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo se calcula un término desde el anterior?
+**Pregunta:** ¿Cómo construimos la sucesión 1, 2, 4, 8, 16…?
 
-**Antes de ejecutar:** Predice los cuatro primeros términos de cada sucesión.
+**Antes de ejecutar:** Observa la sucesión 1, 2, 4, 8, 16… ¿Cuál es el siguiente número?
 
-**Consigna:** Construye seis términos: aritmética con inicio 2 y paso 3; geométrica con inicio 2 y razón 2; recurrencia con inicio 1 y a[i] = 2*a[i-1]+1.
+**Consigna:** Genera los seis primeros términos de la sucesión 1, 2, 4, 8, 16… Multiplica cada término por 2 para obtener el siguiente.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -287,24 +295,20 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-a <- g <- r <- numeric(6)
-a[1] <- 2; g[1] <- 2; r[1] <- 1
-for (i in 2:length(a)) {
-  a[i] <- a[i-1] + 3
-  g[i] <- 2 * g[i-1]
-  r[i] <- 2 * r[i-1] + 1
+sucesion <- numeric(6)
+sucesion[1] <- 1
+for (i in 2:6) {
+  sucesion[i] <- 2 * sucesion[i - 1]
 }
-print(rbind(aritmetica = a, geometrica = g, recurrencia = r))
-stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
-          all(g == 2 * 2^(seq_along(g)-1)))
+print(sucesion)
 ```
 
 
-**Lectura del resultado:** Las fórmulas vectorizadas comprueban las dos primeras sucesiones. La recurrencia exige inicializar el primer valor. Aquí se garantiza longitud 6 antes de usar 2:length(a).
+**Lectura del resultado:** El resultado es 1, 2, 4, 8, 16, 32. Cada término es el anterior multiplicado por 2: por eso es una sucesión geométrica de razón 2. Primero asignamos el valor 1 a la primera posición; el ciclo calcula las cinco posiciones restantes.
 
-**Error frecuente:** Olvidar el primer término o aplicar 2:n cuando n podría ser menor que 2.
+**Error frecuente:** Empezar el ciclo en la posición 1 y tratar de leer la posición 0. En R los índices comienzan en 1.
 
-**Comprueba:** ¿Cuál es el tercer término de la recurrencia? 7.
+**Comprueba:** ¿Qué número sigue después de 32? 64, porque 32 × 2 = 64.
 
 
 <a id="NIV-02"></a>
@@ -314,11 +318,11 @@ stopifnot(all(a == 2 + 3 * (seq_along(a)-1)),
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo guardamos varios valores y los llenamos con un ciclo for?
+**Pregunta:** ¿Cómo reservamos un vector y modificamos solo algunas posiciones?
 
-**Antes de ejecutar:** ¿Qué posición contiene 6? En el vector de dobles, ¿cuáles serán el primer y último término?
 
-**Consigna:** Crea tres valores, selecciona los mayores que 4 y modifica la segunda posición. Después, llena cinco posiciones con el doble de su índice; amplía a ocho.
+
+**Consigna:** Crea un vector de largo 20, solo con valores 0, pero con un −1 en las posiciones impares.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -329,28 +333,44 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-# 1. Crear, seleccionar y modificar
-v <- numeric(3)
-v[1] <- 2; v[2] <- 6; v[3] <- 9
-print(v[v > 4])
-v[2] <- 7
-print(v); print(length(v))
-
-# 2. Reservar y llenar con for
-dobles <- numeric(5)
-for (i in seq_along(dobles)) {
-  dobles[i] <- 2 * i
+v <- numeric(20)
+for (i in 1:20) {
+  if (i %% 2 != 0) {
+    v[i] <- -1
+  }
 }
-print(dobles)
+print(v)
 ```
 
 
-**Lectura del resultado:** R cuenta posiciones desde 1. El resultado final es 2, 7, 9; un vector reúne elementos del mismo tipo. La salida con cinco posiciones es 2, 4, 6, 8, 10. Se reserva espacio antes del ciclo.
+**Lectura del resultado:** El vector alterna −1, 0, −1, 0 hasta completar 20 posiciones. numeric(20) reserva un vector de veinte ceros. El ciclo recorre sus posiciones y la condición i %% 2 != 0 identifica los índices impares. Solo esas posiciones cambian a −1: quedan diez valores −1 y diez ceros.
 
-**Error frecuente:** Usar el índice 0 como primera posición. Llenar un objeto inexistente o recorrer más índices de los reservados.
+**Error frecuente:** Confundir el valor guardado con su posición. La condición se aplica al índice i, no al contenido v[i].
 
-**Comprueba:** ¿length(v) cambia al modificar v[2]? No. ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.
+**Comprueba:** Ahora inserta el número de la posición en todos los valores que sean 0.
 
+
+### Comprueba lo aprendido · Lámina 07
+
+Trabaja sobre el vector anterior: reemplaza cada 0 por el número de su posición y conserva los valores −1.
+
+Intenta resolverlo antes de continuar a la solución.
+
+
+### Solución del ejercicio de comprobación
+
+
+```r
+for (i in seq_along(v)) {
+  if (v[i] == 0) {
+    v[i] <- i
+  }
+}
+print(v)
+```
+
+
+El resultado alterna −1, 2, −1, 4, −1, 6 y continúa hasta −1, 20. Las posiciones impares conservan −1; cada posición par contiene su propio índice.
 
 <a id="NIV-07"></a>
 ## Lámina 08 · Matrices y ciclos anidados
@@ -361,9 +381,9 @@ print(dobles)
 
 **Pregunta:** ¿Cómo guardamos resultados por filas y columnas?
 
-**Antes de ejecutar:** ¿Cuánto valdrá la posición [2,3]?
+**Antes de ejecutar:** Indica cuáles son las posiciones (2, 3) y (3, 2).
 
-**Consigna:** Llena una matriz 2 por 3 con 10*fila + columna; luego modifica [1,1].
+**Consigna:** Llena una matriz de 3 × 3 solo con valores 0; luego haz que su diagonal principal contenga únicamente valores 1.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -374,24 +394,40 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-m <- matrix(0, nrow = 2, ncol = 3)
-for (i in seq_len(nrow(m))) {
-  for (j in seq_len(ncol(m))) {
-    m[i,j] <- 10*i + j
-  }
+A <- matrix(0, nrow = 3, ncol = 3)
+for (i in 1:3) {
+  A[i, i] <- 1
 }
-print(m)
-m[1,1] <- 99
-print(m); print(dim(m))
+print(A)
 ```
 
 
-**Lectura del resultado:** La posición [2,3] vale 23 antes y después de modificar [1,1]. Una matriz tiene un tipo común; un data.frame permite columnas de distintos tipos.
+**Lectura del resultado:** Esta es la matriz identidad: cumple en la multiplicación de matrices un papel similar al 1 en los escalares. Tiene unos en la diagonal principal y ceros en las otras posiciones.
 
-**Error frecuente:** Intercambiar fila y columna.
+**Error frecuente:** Confundir la diagonal principal con una fila completa. En la diagonal principal coinciden el índice de fila y el de columna.
 
-**Comprueba:** ¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.
+**Comprueba:** Si $A$ es una matriz de $2 \times 4$, ¿se cumple $A_{2,3} = (A^{\mathsf{T}})_{3,2}$? $A^{\mathsf{T}}$ es la transpuesta de $A$ y en R se obtiene con `t(A)`.
 
+
+### Comprueba lo aprendido · Lámina 08
+
+Comprueba la igualdad con una matriz de ejemplo de 2 filas y 4 columnas.
+
+Intenta resolverlo antes de continuar a la solución.
+
+
+### Solución del ejercicio de comprobación
+
+
+```r
+A <- matrix(1:8, nrow = 2, ncol = 4)
+print(A[2, 3])
+print(t(A)[3, 2])
+print(A[2, 3] == t(A)[3, 2])
+```
+
+
+Sí. La transposición intercambia filas y columnas: A[2,3] y t(A)[3,2] contienen el mismo elemento. En este ejemplo ambos valen 6 y la comparación devuelve TRUE.
 
 <a id="NIV-08"></a>
 ## Lámina 09 · Actividad integradora: sucesiones y matrices
@@ -400,11 +436,11 @@ print(m); print(dim(m))
 
 **Referencia:** Nivelación · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Podemos reunir una sucesión y una decisión?
+**Pregunta:** ¿Cómo organizamos una sucesión de números en una matriz?
 
-**Antes de ejecutar:** ¿Desde qué término se supera 10?
 
-**Consigna:** Genera 2,5,8,11,14,17 y guarda índice, valor e indicador de superar 10.
+
+**Consigna:** Genera la sucesión 3, 9, 27, 81, 243 y 729, es decir, 3 elevado a 1, 2, 3, 4, 5 y 6. Con esos números crea una matriz de 3 × 2.
 
 **Datos:** Objetos artificiales de programación.
 
@@ -415,25 +451,18 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-terminos <- numeric(6)
-terminos[1] <- 2
-for (i in 2:length(terminos)) terminos[i] <- terminos[i-1] + 3
-resultado <- matrix(0, nrow = 6, ncol = 3,
-                    dimnames = list(NULL, c("indice", "valor", "supera_10")))
-for (i in seq_along(terminos)) {
-  resultado[i,1] <- i
-  resultado[i,2] <- terminos[i]
-  if (terminos[i] > 10) resultado[i,3] <- 1
-}
-print(resultado)
+sucesion <- 3^(1:6)
+A <- matrix(sucesion, nrow = 3, ncol = 2)
+print(sucesion)
+print(A)
 ```
 
 
-**Lectura del resultado:** El indicador vale 1 desde el cuarto término. Esta es programación con objetos artificiales, no evidencia económica.
+**Lectura del resultado:** La sucesión contiene las seis primeras potencias de 3. matrix() distribuye estos valores por columnas: la primera contiene 3, 9 y 27; la segunda, 81, 243 y 729. Una matriz puede entenderse como varios vectores columna organizados juntos. En estadística siempre vemos matrices.
 
-**Error frecuente:** Asignar una cadena de texto a una matriz numérica y convertir toda la matriz a texto.
+**Error frecuente:** Leer los valores por filas cuando matrix() los ha organizado por columnas de forma predeterminada.
 
-**Comprueba:** ¿Qué cambia con umbral 14 y condición estricta >? Solo el último indicador vale 1.
+**Comprueba:** ¿Cuáles son los valores de la segunda columna? 81, 243 y 729.
 
 
 <a id="P1-01"></a>

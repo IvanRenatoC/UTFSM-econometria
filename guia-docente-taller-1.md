@@ -18,14 +18,14 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
 | 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
-| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
+| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, calcula z y w; print(x) y print(w) muestran 2 y 3. |
 | 19:00–19:04 | NIV-03 (lámina 03). Anticipar el mensaje con valores 3 y 8; el ejemplo define sus propios valores. |
 | 19:04–19:07 | NIV-06 (lámina 04). while: condición previa, actualización y límite de seguridad. |
 | 19:07–19:09 | NIV-FOR (lámina 05). for: recorrido de pasos y salida anticipada con break. |
-| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan una sucesión y revisan las otras. |
-| 19:14–19:20 | NIV-02 (lámina 07). Crear, seleccionar, modificar y llenar un vector con for. |
-| 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
-| 19:27–19:35 | NIV-08. Integración en parejas; intercambiar teclado y verificar cuarto término. |
+| 19:09–19:14 | NIV-05 (lámina 06). Parejas completan 1, 2, 4, 8, 16 y 32. |
+| 19:14–19:20 | NIV-02 (lámina 07). Reservar 20 ceros; asignar −1 en posiciones impares y luego reemplazar cada cero por su índice. |
+| 19:20–19:27 | NIV-07. Crear la identidad de 3 × 3; reconocer filas, columnas y la transposición. |
+| 19:27–19:35 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | P1-06 a P1-10 en orden. Recorrido conceptual breve y selección de 12 filas. |
 | 19:47–20:00 | P1-11 a P1-14. Ejecutar selección simple y estratificada, mostrar los otros algoritmos y límites. No comparar eficiencia de grupos artificiales. |
