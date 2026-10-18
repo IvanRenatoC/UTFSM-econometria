@@ -640,7 +640,7 @@ if (variable == "wage") {
 
 **Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Una nube ascendente demuestra una causa?
+**Pregunta:** Relación lineal de dos variables
 
 
 
@@ -648,9 +648,9 @@ if (variable == "wage") {
 
 
 
-**Antes de ejecutar:** ¿Podrían existir personas con igual educación y salarios diferentes?
 
-**Consigna:** Dibuja salario frente a educación y propón dos factores adicionales.
+
+**Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el rojo a las mujeres.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -661,17 +661,24 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
-     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)",
-     main = "Educación y salario: observar no es aislar una causa")
+colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+
+plot(datos$educ, datos$wage,
+     pch = 19,
+     col = colores[datos$female + 1],
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     main = "Educación y salario por género")
+
+# Añadir una leyenda para identificar los colores.
+legend("topleft",
+       legend = c("Hombre", "Mujer"),
+       col = colores,
+       pch = 19)
 ```
 
 
-**Lectura del resultado:** Cada punto es una persona. La comparación no mantiene constantes habilidad, ocupación o experiencia. La temperatura en el caso de helados y tiburones de cátedra ilustra el mismo problema de un factor común.
-
-**Error frecuente:** Dibujar una flecha causal solo por observar una asociación.
-
-**Comprueba:** ¿El gráfico mantiene todo lo demás constante? No.
+**Lectura del resultado:** La nube de puntos sugiere una asociación positiva: a más años de educación, los salarios tienden a ser mayores, aunque hay mucha dispersión. Las columnas de puntos aparecen porque varias personas tienen los mismos años de educación. A igual educación se observan salarios distintos y los colores permiten comparar ambos grupos. No se ha dibujado ni estimado una recta: el gráfico es una primera aproximación para estudiar una posible relación lineal. Esta asociación, por sí sola, no demuestra que estudiar cause un aumento salarial ni que las diferencias entre grupos se deban únicamente al género.
 
 
 <a id="P1-05"></a>
