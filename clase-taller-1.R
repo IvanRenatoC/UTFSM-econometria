@@ -114,13 +114,27 @@ if (file.exists("datos/wage1.csv")) {
 datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
 
-# P1-02 · Econometría moderna: describir, explicar y predecir
-preguntas <- data.frame(
-  pregunta = c("¿Cómo se relacionan educación y salario?",
-               "¿Más educación causa mayor salario?",
-               "¿Qué salario tendrá otra persona?"),
-  finalidad = c("Descripción", "Causalidad", "Predicción"))
-print(preguntas)
+# P1-02 · Exploración gráfica de los datos
+# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
+variable <- "wage"
+if (variable == "wage") {
+  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
+       col = "#0160a0", border = "white", main = "Salario por hora",
+       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("educ", "exper", "tenure")) {
+  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
+  frecuencias <- table(factor(datos[[variable]], levels = anios))
+  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
+  barplot(frecuencias, col = colores[variable], border = "white",
+          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("female", "married")) {
+  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
+  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
+    c("No casado/a (0)", "Casado/a (1)")
+  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+      col = c("#0160a0", "#f8c751"), main = variable)
+}
 
 # P1-03 · Del modelo económico a las variables observadas
 print(names(datos))

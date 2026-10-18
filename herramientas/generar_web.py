@@ -2,6 +2,7 @@
 from pathlib import Path
 from html import escape as e
 import runpy, re
+from graficos_wage1 import explorer
 root=Path(__file__).resolve().parent.parent
 content=runpy.run_path(str(root/'herramientas/generar_taller.py'))
 activities=content['activities']
@@ -11,6 +12,9 @@ sections=[]
 for prefix,label,title,desc in groups:
  cards=[]
  for n,a in enumerate([a for a in activities if a['id'].split('-')[0]==prefix],1):
+  if a.get('data_explorer'):
+   cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}">{explorer(root)}</div></article>')
+   continue
   if a.get('overview'):
    cards.append(f'<article class="slide" id="{a["id"]}" data-title="{e(a["title"])}" aria-labelledby="title-{a["id"]}"><header class="slide-head"><h3 id="title-{a["id"]}"><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{a["id"]}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a["title"])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" hidden id="body-{a["id"]}"><h4 class="question">{e(a["question"])}</h4><p>{e(a["task"])}</p></div></article>')
    continue
