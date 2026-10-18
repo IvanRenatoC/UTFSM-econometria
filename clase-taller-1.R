@@ -198,18 +198,18 @@ print(transversal)
 print(serie_tiempo)
 print(panel)
 
+# P1-09 · Razones para trabajar con muestras
+presupuesto <- 100
+costo <- 5
+capacidad <- floor(presupuesto/costo)
+print(capacidad)
+
 # P1-08 · Población, muestra y unidad de observación
 set.seed(16201)
 N <- nrow(datos)
 marco <- seq_len(N)
 ids <- sample(marco, size = 12, replace = FALSE)
 print(datos[ids, c("wage", "educ")])
-
-# P1-09 · Razones para trabajar con muestras
-presupuesto <- 100
-costo <- 5
-capacidad <- floor(presupuesto/costo)
-print(capacidad)
 
 # P1-10 · Variables, parámetros y estadísticos
 print(data.frame(

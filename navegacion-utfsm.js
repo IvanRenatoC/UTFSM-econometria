@@ -75,8 +75,8 @@ document.querySelector('#present').addEventListener('click',()=>{
   if(document.body.classList.contains('presenting'))document.querySelectorAll('.slide').forEach(expandSlide);
 });
 
-// Cada botón muestra una distribución del mismo conjunto de 526 personas.
-for(const explorer of document.querySelectorAll('.wage-explorer')){
+// Cada botonera muestra un solo gráfico o argumento a la vez.
+for(const explorer of document.querySelectorAll('.wage-explorer, .reason-explorer')){
   const choices=[...explorer.querySelectorAll('.chart-choice')];
   for(const choice of choices){
     choice.addEventListener('click',()=>{
