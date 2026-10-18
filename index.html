@@ -187,7 +187,11 @@ m[1,1] &lt;- 99
 print(m); print(dim(m))</code></pre>
 <h4>Cómo leer el resultado</h4><p>La posición [2,3] vale 23 antes y después de modificar [1,1]. Una matriz tiene un tipo común; un data.frame permite columnas de distintos tipos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Intercambiar fila y columna.</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>
-<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.</p></div></details>
+<details class="check"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.</p><h4>Ejercicio para comprobar lo aprendido</h4><p>Haz una matriz de 4 × 4 que contenga solo ceros; luego inserta números 1 en su diagonal principal.</p><p>Intenta resolverlo antes de abrir la solución.</p><details class="solution"><summary>Ver solución del ejercicio</summary><div class="solution-body"><pre><code>identidad &lt;- matrix(0, nrow = 4, ncol = 4)
+for (i in seq_len(nrow(identidad))) {
+  identidad[i, i] &lt;- 1
+}
+print(identidad)</code></pre><p>Las posiciones [1,1], [2,2], [3,3] y [4,4] deben valer 1; las otras doce quedan en 0. En la diagonal principal coinciden el índice de fila y el de columna. El resultado es la matriz identidad de orden 4.</p></div></details></div></details>
 <a class="anchor" href="#NIV-07">Enlace a esta lámina ↗</a></div></article><article class="slide" id="NIV-08" data-title="Actividad integradora: sucesiones y matrices" aria-labelledby="title-NIV-08">
 <header class="slide-head"><h3 id="title-NIV-08">Actividad integradora: sucesiones y matrices</h3><span class="number">LÁMINA 09</span></header>
 <div class="slide-body"><div class="meta"><span>Nivelación</span><span>Presencial</span><span>NIV-08</span></div>

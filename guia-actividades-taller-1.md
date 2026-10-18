@@ -416,6 +416,27 @@ print(m); print(dim(m))
 **Comprueba:** ¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.
 
 
+### Comprueba lo aprendido · Lámina 08
+
+Haz una matriz de 4 × 4 que contenga solo ceros; luego inserta números 1 en su diagonal principal.
+
+Intenta resolverlo antes de continuar a la solución.
+
+
+### Solución del ejercicio de comprobación
+
+
+```r
+identidad <- matrix(0, nrow = 4, ncol = 4)
+for (i in seq_len(nrow(identidad))) {
+  identidad[i, i] <- 1
+}
+print(identidad)
+```
+
+
+Las posiciones [1,1], [2,2], [3,3] y [4,4] deben valer 1; las otras doce quedan en 0. En la diagonal principal coinciden el índice de fila y el de columna. El resultado es la matriz identidad de orden 4.
+
 <a id="NIV-08"></a>
 ## Lámina 09 · Actividad integradora: sucesiones y matrices
 
