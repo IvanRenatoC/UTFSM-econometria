@@ -137,9 +137,20 @@ if (variable == "wage") {
 }
 
 # P1-04 · Correlación, causalidad y factores no observados
-plot(datos$educ, datos$wage, pch = 19, col = "#35618A80",
-     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)",
-     main = "Educación y salario: observar no es aislar una causa")
+colores <- c("#0160A080", "#E1252380")  # Azul para hombres (0), rojo para mujeres (1)
+
+plot(datos$educ, datos$wage,
+     pch = 19,
+     col = colores[datos$female + 1],
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     main = "Educación y salario por género")
+
+# Añadir una leyenda para identificar los colores.
+legend("topleft",
+       legend = c("Hombre", "Mujer"),
+       col = colores,
+       pch = 19)
 
 # P1-05 · Educación y salarios: alcances de la comparación
 datos$educ16 <- datos$educ >= 16
