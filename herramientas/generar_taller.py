@@ -352,9 +352,17 @@ muestreo.update(
  task='Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y luego cada ejemplo en el orden de la clase de Sebastián. Para practicar, las 526 filas forman nuestro marco didáctico; no reproducimos el diseño original de la CPS ni afirmamos representatividad nacional.',
  code=PREPARACION+'\n\n'+'\n\n'.join('# '+example['title']+'\n'+example['code'] for example in EJEMPLOS),
  answer='Los ejemplos seleccionan filas de wage1. Los cuatro primeros usan un mecanismo aleatorio; el último depende de un criterio y del orden disponible. Los diseños tienen tamaños y probabilidades de inclusión diferentes: aquí aprendemos a seleccionar, no comparamos su precisión.',
- error='', check='¿En qué método aparecen todos los estratos? En el estratificado. ¿En cuál seleccionamos grupos completos? En el ejemplo de conglomerados.')
+ error='', check='¿En qué método aparecen todos los estratos? En el estratificado. ¿En cuál seleccionamos primero grupos y después personas? En conglomerados de dos etapas.')
 # Se eliminan las que eran las láminas 09 y 10 antes de esta revisión.
 activities = [a for a in activities if a['id'] not in ('P1-10', 'P1-11')]
+
+# Fusionar las actuales 08, 09 y 10 en una sola lámina de cuatro métodos.
+activities = [a for a in activities if a['id'] not in ('P1-12', 'P1-13')]
+muestreo.update(
+ title='Cuatro técnicas de muestreo en R con wage1',
+ task='Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y después los cuatro ejemplos en orden. Las 526 personas de la base forman nuestro marco didáctico; estas selecciones no reproducen el diseño original de la CPS ni permiten afirmar representatividad nacional.',
+ answer='Simple: sortea personas directamente. Sistemático: sortea un inicio y recorre la lista cada 20 posiciones. Estratificado: sortea personas dentro de todos los estratos. Conglomerados de dos etapas: sortea grupos y después personas dentro de esos grupos.',
+ check='¿Qué diferencia hay entre estratificar y seleccionar conglomerados? En el estratificado seleccionamos dentro de todos los estratos; en conglomerados seleccionamos solo algunos grupos y, en este ejemplo, sorteamos personas dentro de ellos.')
 
 header='''# Taller 1 · Del código a los datos
 
@@ -575,7 +583,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 46 láminas (10 de nivelación, 11 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 46 láminas resueltas en clase.
+**Organización actual:** 44 láminas (10 de nivelación, 9 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 44 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -619,7 +627,7 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 19:33–19:35 | NIV-NOTEBOOK (lámina 10). Vista general: librerías, adecuación de datos, EDA, modelamiento y resultados. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | Recorrer video, gráficos y razones para muestrear. Preparar wage1 para P1-08. |
-| 19:47–20:00 | P1-08: ejecutar preparación y cinco muestreos en orden. Continuar con P1-12 a P1-14. No comparar eficiencia de grupos artificiales. |
+| 19:47–20:00 | P1-08: ejecutar preparación y cuatro muestreos en orden. Continuar con P1-14. No comparar eficiencia de grupos artificiales. |
 | 20:00–20:15 | Pausa de 15 minutos. |
 | 20:15–20:18 | P2-01 y P2-02. Qué entra y sale de una función. |
 | 20:18–20:27 | P2-03 a P2-05. Cada pareja anticipa qué hace un extremo y calcula medidas de centro y dispersión. |
@@ -651,7 +659,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==46
+assert len(activities)==44
 assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:

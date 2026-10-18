@@ -29,7 +29,7 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 19:33–19:35 | NIV-NOTEBOOK (lámina 10). Vista general: librerías, adecuación de datos, EDA, modelamiento y resultados. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | Recorrer video, gráficos y razones para muestrear. Preparar wage1 para P1-08. |
-| 19:47–20:00 | P1-08: ejecutar preparación y cinco muestreos en orden. Continuar con P1-12 a P1-14. No comparar eficiencia de grupos artificiales. |
+| 19:47–20:00 | P1-08: ejecutar preparación y cuatro muestreos en orden. Continuar con P1-14. No comparar eficiencia de grupos artificiales. |
 | 20:00–20:15 | Pausa de 15 minutos. |
 | 20:15–20:18 | P2-01 y P2-02. Qué entra y sale de una función. |
 | 20:18–20:27 | P2-03 a P2-05. Cada pareja anticipa qué hace un extremo y calcula medidas de centro y dispersión. |

@@ -1,5 +1,5 @@
 """Ejemplos propios en R, en el orden de los muestreos de Sebastián."""
-PREPARACION = '''# Ejecuta esta preparación una vez antes de los cinco ejemplos.
+PREPARACION = '''# Ejecuta esta preparación una vez antes de los cuatro ejemplos.
 if (!requireNamespace("wooldridge", quietly = TRUE)) {
   install.packages("wooldridge", repos = "https://cloud.r-project.org/")
 }
@@ -22,7 +22,7 @@ inicio <- sample(1:k, size = 1)
 ids_sistema <- seq(inicio, N, by = k)
 muestra_sistematica <- datos[ids_sistema, ]
 print(muestra_sistematica[c("wage", "educ", "female")])''',
-      reading='El tamaño será 26 o 27 personas. Es un diseño probabilístico con inicio aleatorio, aunque no permite todas las combinaciones posibles de una muestra aleatoria simple. El orden de la lista y posibles patrones periódicos importan.'),
+      reading='El tamaño será 26 o 27 personas. Con este inicio aleatorio, cada fila tiene probabilidad 1/20 de entrar antes de realizar el sorteo. Por eso es un diseño probabilístico, aunque no permite todas las combinaciones de una muestra aleatoria simple. Una vez fijado el inicio, las demás posiciones quedan determinadas. El orden de la lista y posibles patrones periódicos importan.'),
  dict(title='Muestreo aleatorio estratificado',
       description='Dividimos la base en dos estratos de educación: menos de 16 años y 16 años o más. Sorteamos 12 personas dentro de cada uno.',
       code='''estrato_menos16 <- which(!datos$educ16)
@@ -33,20 +33,19 @@ muestra_estratificada <- datos[ids_estrato, ]
 print(table(muestra_estratificada$educ16))
 print(muestra_estratificada[c("wage", "educ")])''',
       reading='Participan ambos estratos: 12 personas de cada uno. Como sus tamaños en la base son distintos (427 y 99), seleccionar la misma cantidad no conserva sus proporciones. Para estimar una media global con este diseño habría que ponderar por el tamaño de cada estrato.'),
- dict(title='Muestreo por conglomerados',
-      description='Creamos 12 grupos artificiales, sorteamos dos y conservamos todas las personas de los grupos elegidos. Es una ilustración de conglomerados de una etapa; los grupos no representan geografía real de la encuesta.',
+ dict(title='Muestreo por conglomerados (cluster)',
+      description='Creamos 12 grupos artificiales y realizamos un muestreo de dos etapas: primero sorteamos dos grupos y luego sorteamos 12 personas dentro de cada grupo elegido. Los grupos son didácticos y no representan barrios o escuelas reales de la CPS.',
       code='''grupo_artificial <- rep(1:12, length.out = N)
 elegidos <- sample(unique(grupo_artificial), size = 2)
-ids_conglomerado <- which(grupo_artificial %in% elegidos)
+
+# Segunda etapa: seleccionar personas dentro de los grupos elegidos.
+personas_grupo1 <- which(grupo_artificial == elegidos[1])
+personas_grupo2 <- which(grupo_artificial == elegidos[2])
+ids_conglomerado <- c(sample(personas_grupo1, size = 12),
+                     sample(personas_grupo2, size = 12))
 muestra_conglomerados <- datos[ids_conglomerado, ]
 print(elegidos)
 print(table(grupo_artificial[ids_conglomerado]))
 print(muestra_conglomerados[c("wage", "educ", "female")])''',
-      reading='Solo entran dos grupos, pero entran completos. La diferencia con estratificar es que no seleccionamos personas dentro de todos los grupos. En un diseño de dos etapas podríamos sortear personas dentro de los conglomerados elegidos.'),
- dict(title='Muestreo no probabilístico',
-      description='Elegimos por criterio y orden disponible: las primeras 12 personas con al menos 16 años de educación. Aquí no se realiza un sorteo.',
-      code='''ids_conveniencia <- head(which(datos$educ16), 12)
-muestra_no_probabilistica <- datos[ids_conveniencia, ]
-print(muestra_no_probabilistica[c("wage", "educ", "female")])''',
-      reading='La selección depende del criterio y del orden de la base. Las personas con menos de 16 años quedan fuera, de modo que no podemos tratar esta selección como una muestra aleatoria de las 526 personas.')
+      reading='La muestra tiene 24 personas: 12 de cada uno de los dos grupos sorteados. En el estratificado entran personas de todos los estratos; aquí solo de los conglomerados elegidos. Si incluyéramos a todas las personas de esos grupos, sería un diseño de una etapa. Los grupos artificiales permiten ilustrar el algoritmo, no evaluar la eficiencia de un diseño geográfico real.')
 ]
