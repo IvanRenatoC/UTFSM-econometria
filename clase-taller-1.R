@@ -79,6 +79,15 @@ for (i in seq_along(dobles)) {
 }
 print(dobles)
 
+# Comprueba lo aprendido: Haz un vector de largo 20, solo con ceros; luego deja un 1 solo en las celdas de posiciones pares.
+pares <- numeric(20)
+for (i in seq_along(pares)) {
+  if (i %% 2 == 0) {
+    pares[i] <- 1
+  }
+}
+print(pares)
+
 # NIV-07 · Matrices y ciclos anidados
 m <- matrix(0, nrow = 2, ncol = 3)
 for (i in seq_len(nrow(m))) {

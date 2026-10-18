@@ -352,6 +352,29 @@ print(dobles)
 **Comprueba:** ¿length(v) cambia al modificar v[2]? No. ¿Qué cambia al reservar numeric(8)? Se calculan ocho términos.
 
 
+### Comprueba lo aprendido · Lámina 07
+
+Haz un vector de largo 20, solo con ceros; luego deja un 1 solo en las celdas de posiciones pares.
+
+Intenta resolverlo antes de continuar a la solución.
+
+
+### Solución del ejercicio de comprobación
+
+
+```r
+pares <- numeric(20)
+for (i in seq_along(pares)) {
+  if (i %% 2 == 0) {
+    pares[i] <- 1
+  }
+}
+print(pares)
+```
+
+
+El vector debe alternar 0, 1, 0, 1 hasta completar 20 posiciones: diez ceros y diez unos. En R los índices comienzan en 1; i %% 2 == 0 identifica posiciones pares, no valores pares.
+
 <a id="NIV-07"></a>
 ## Lámina 08 · Matrices y ciclos anidados
 
