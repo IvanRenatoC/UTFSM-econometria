@@ -597,301 +597,8 @@ print(A)
 EDA significa análisis exploratorio de datos.
 
 
-<a id="P1-01"></a>
-## Lámina 01 · Introducción a la econometría y a los datos
-
-**Identificador de enlace:** `P1-01`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
-
-
-
-datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.
-
-
-
-
-
-
-
-
-
-- `wage`: Salario promedio por hora, en dólares estadounidenses de 1976.
-- `educ`: Años de educación.
-- `exper`: Años de experiencia laboral potencial.
-- `tenure`: Años de antigüedad con el empleador actual.
-- `female`: Indicador: 1 si la persona está registrada como mujer; 0 en caso contrario.
-- `married`: Indicador: 1 si la persona está registrada como casada; 0 en caso contrario.
-
-[Documentación de wage1](https://justinmshea.github.io/wooldridge/reference/wage1.html). El paquete se instala desde CRAN: `repos = "https://cloud.r-project.org/"`.
-
-
-
-**Consigna:** Carga la base e identifica wage y educ en seis filas.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-01
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-# Usa la copia local; si no está, carga la base del paquete.
-if (file.exists("datos/wage1.csv")) {
-  datos <- read.csv("datos/wage1.csv")
-} else {
-  if (!requireNamespace("wooldridge", quietly = TRUE)) {
-    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
-  }
-  datos <- wooldridge::wage1
-}
-
-# Conserva las seis variables que utilizaremos en el taller.
-datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
-head(datos)
-```
-
-
-**Lectura del resultado:** wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.
-
-**Comprueba:** ¿Cuántas filas tiene el dataset? Tiene 526 filas: son observaciones de personas, no períodos de tiempo.
-
-
-<a id="P1-02"></a>
-## Lámina 02 · Exploración gráfica de los datos
-
-**Identificador de enlace:** `P1-02`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
-
-**Pregunta:** Selecciona una variable para explorar su distribución.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Consigna:** En la web, pulsa wage, educ, exper, tenure, female o married. En R, cambia el nombre de variable y ejecuta la celda para reproducir el gráfico.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-02
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
-variable <- "wage"
-if (variable == "wage") {
-  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
-       col = "#0160a0", border = "white", main = "Salario por hora",
-       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
-} else if (variable %in% c("educ", "exper", "tenure")) {
-  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
-  frecuencias <- table(factor(datos[[variable]], levels = anios))
-  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
-  barplot(frecuencias, col = colores[variable], border = "white",
-          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
-} else if (variable %in% c("female", "married")) {
-  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
-  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
-    c("No casado/a (0)", "Casado/a (1)")
-  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
-  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
-      col = c("#0160a0", "#f8c751"), main = variable)
-}
-```
-
-
-**Lectura del resultado:** Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.
-
-
-<a id="P1-04"></a>
-## Lámina 03 · Correlación, causalidad y factores no observados
-
-**Identificador de enlace:** `P1-04`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
-
-**Pregunta:** Relación lineal de dos variables
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el amarillo a las mujeres.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-04
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-colores <- c("#0160A080", "#F8C75180")  # Azul para hombres (0), amarillo para mujeres (1)
-
-plot(datos$educ, datos$wage,
-     pch = 19,
-     col = colores[datos$female + 1],
-     xlab = "Educación (años)",
-     ylab = "Salario por hora (USD de 1976)",
-     main = "Educación y salario por género")
-
-# Añadir una leyenda para identificar los colores.
-legend("topleft",
-       legend = c("Hombre", "Mujer"),
-       col = colores,
-       pch = 19)
-```
-
-
-**Lectura del resultado:** La nube de puntos sugiere una asociación positiva: a más años de educación, los salarios tienden a ser mayores, aunque hay mucha dispersión. Las columnas de puntos aparecen porque varias personas tienen los mismos años de educación. A igual educación se observan salarios distintos y los colores permiten comparar ambos grupos. No se ha dibujado ni estimado una recta: el gráfico es una primera aproximación para estudiar una posible relación lineal. Esta asociación, por sí sola, no demuestra que estudiar cause un aumento salarial o que el género corresponda a una condición causal a las diferencias. Para llegar a esa conclusión se debe hacer un estudio más profundo.
-
-
-<a id="P1-05"></a>
-## Lámina 04 · Educación y salarios: alcances de la comparación
-
-**Identificador de enlace:** `P1-05`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Podemos llamar universitario a todo registro con educ >= 16?
-
-
-
-
-
-
-
-
-
-### ¿Por qué educ ≥ 16 y no educ ≥ 18?
-
-educ mide años de educación, no la edad. Usamos 16 como un umbral didáctico: la referencia habitual es 12 años escolares más unos 4 años de estudios universitarios en Estados Unidos. Esto no permite afirmar que cada persona tenga un título universitario. Exigir 18 años de educación seleccionaría una trayectoria educativa más larga y dejaría fuera a quienes registran 16 o 17 años. En esta base, educ ≥ 16 reúne 99 personas, mientras que educ ≥ 18 reúne solo 19. Para la comparación siguiente mantendremos dos grupos: menos de 16 años y 16 años o más. Es una decisión de agrupación para este ejercicio, no una frontera universal ni una prueba de causalidad.
-
-[Referencia: duración habitual de estudios universitarios, NCES](https://nces.ed.gov/surveys/ctes/tables/glossary_college.asp). Los tamaños de grupo se calcularon con el CSV del taller.
-
-
-
-
-
-**Antes de ejecutar:** ¿Los dos grupos serán idénticos en sus otras características?
-
-**Consigna:** Crea una etiqueta de umbral educativo y examina filas, sin calcular todavía diferencias de medias.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-05
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-datos$educ16 <- datos$educ >= 16
-print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
-```
-
-
-**Lectura del resultado:** educ >= 16 es un umbral de años de educación, no una certificación de título. El ejemplo del 30% de Chile pertenece a cátedra; no se atribuye a esta base. La comparación de promedios se hará en su bloque.
-
-**Error frecuente:** Repetir el 30% como si se hubiese calculado con wage1.
-
-**Comprueba:** ¿Una diferencia entre grupos sería automáticamente efecto de estudiar? No.
-
-
-<a id="P1-06"></a>
-## Lámina 05 · Comparar salarios con boxplots
-
-**Identificador de enlace:** `P1-06`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Cómo cambia la distribución salarial entre grupos?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Consigna:** Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-06
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-# Elige: "educ", "female" o "married".
-variable <- "educ"
-colores <- c("#0160A0", "#F8C751")
-
-if (variable == "educ") {
-  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
-                  labels = c("Menos de 16 años", "16 años o más"))
-} else if (variable == "female") {
-  grupo <- factor(datos$female, levels = c(0, 1),
-                  labels = c("Hombre (0)", "Mujer (1)"))
-} else if (variable == "married") {
-  grupo <- factor(datos$married, levels = c(0, 1),
-                  labels = c("No casado/a (0)", "Casado/a (1)"))
-}
-
-boxplot(datos$wage ~ grupo,
-        col = colores,
-        main = paste("Salario según", variable),
-        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
-```
-
-
-**Lectura del resultado:** La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.
-
-
 <a id="P1-07"></a>
-## Lámina 06 · Tipos y estructura de los datos económicos
+## Lámina 01 · Tipos y estructura de los datos económicos
 
 **Identificador de enlace:** `P1-07`. La numeración se reinicia por bloque, como en la web.
 
@@ -964,6 +671,299 @@ print(panel)
 **Lectura del resultado:** En el corte transversal cada punto es una unidad distinta en 2020. En la serie de tiempo cada punto es un período de la unidad A. En el panel cada punto combina una de las unidades A, B o C con un período. Los colores conservan la identidad de la unidad y las líneas solo conectan observaciones; no son regresiones estimadas. wage1 es transversal.
 
 **Comprueba:** Si seguimos a las mismas personas A, B y C en 2020, 2021 y 2022, tenemos datos de panel.
+
+
+<a id="P1-01"></a>
+## Lámina 02 · Introducción a la econometría y a los datos
+
+**Identificador de enlace:** `P1-01`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · lámina 1 · **Modalidad:** Presencial.
+
+
+
+datos/wage1.csv es una copia local de wage1, una base del paquete de R wooldridge, asociado al libro de Jeffrey M. Wooldridge. Contiene 526 observaciones de personas y 24 variables de la Current Population Survey (CPS) de Estados Unidos de 1976. Es una base de corte transversal: cada fila corresponde a una persona. En este taller utilizaremos seis variables.
+
+
+
+
+
+
+
+
+
+- `wage`: Salario promedio por hora, en dólares estadounidenses de 1976.
+- `educ`: Años de educación.
+- `exper`: Años de experiencia laboral potencial.
+- `tenure`: Años de antigüedad con el empleador actual.
+- `female`: Indicador: 1 si la persona está registrada como mujer; 0 en caso contrario.
+- `married`: Indicador: 1 si la persona está registrada como casada; 0 en caso contrario.
+
+[Documentación de wage1](https://justinmshea.github.io/wooldridge/reference/wage1.html). El paquete se instala desde CRAN: `repos = "https://cloud.r-project.org/"`.
+
+
+
+**Consigna:** Carga la base e identifica wage y educ en seis filas.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-01
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+# Usa la copia local; si no está, carga la base del paquete.
+if (file.exists("datos/wage1.csv")) {
+  datos <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  datos <- wooldridge::wage1
+}
+
+# Conserva las seis variables que utilizaremos en el taller.
+datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
+head(datos)
+```
+
+
+**Lectura del resultado:** wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.
+
+**Comprueba:** ¿Cuántas filas tiene el dataset? Tiene 526 filas: son observaciones de personas, no períodos de tiempo.
+
+
+<a id="P1-02"></a>
+## Lámina 03 · Exploración gráfica de los datos
+
+**Identificador de enlace:** `P1-02`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · lámina 2 · **Modalidad:** Presencial.
+
+**Pregunta:** Selecciona una variable para explorar su distribución.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Consigna:** En la web, pulsa wage, educ, exper, tenure, female o married. En R, cambia el nombre de variable y ejecuta la celda para reproducir el gráfico.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-02
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
+variable <- "wage"
+if (variable == "wage") {
+  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
+       col = "#0160a0", border = "white", main = "Salario por hora",
+       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("educ", "exper", "tenure")) {
+  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
+  frecuencias <- table(factor(datos[[variable]], levels = anios))
+  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
+  barplot(frecuencias, col = colores[variable], border = "white",
+          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
+} else if (variable %in% c("female", "married")) {
+  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
+  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
+    c("No casado/a (0)", "Casado/a (1)")
+  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+      col = c("#0160a0", "#f8c751"), main = variable)
+}
+```
+
+
+**Lectura del resultado:** Cada gráfico resume las mismas 526 personas. El histograma agrupa salarios en intervalos de 2 USD; las barras cuentan personas para cada cantidad de años; los gráficos circulares muestran proporciones de las categorías 0 y 1.
+
+
+<a id="P1-04"></a>
+## Lámina 04 · Correlación, causalidad y factores no observados
+
+**Identificador de enlace:** `P1-04`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · lámina 4 · **Modalidad:** Presencial.
+
+**Pregunta:** Relación lineal de dos variables
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Consigna:** Observa el gráfico: cada punto representa a una persona. El eje horizontal muestra sus años de educación y el vertical, su salario por hora. El azul identifica a los hombres y el amarillo a las mujeres.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-04
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+colores <- c("#0160A080", "#F8C75180")  # Azul para hombres (0), amarillo para mujeres (1)
+
+plot(datos$educ, datos$wage,
+     pch = 19,
+     col = colores[datos$female + 1],
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     main = "Educación y salario por género")
+
+# Añadir una leyenda para identificar los colores.
+legend("topleft",
+       legend = c("Hombre", "Mujer"),
+       col = colores,
+       pch = 19)
+```
+
+
+**Lectura del resultado:** La nube de puntos sugiere una asociación positiva: a más años de educación, los salarios tienden a ser mayores, aunque hay mucha dispersión. Las columnas de puntos aparecen porque varias personas tienen los mismos años de educación. A igual educación se observan salarios distintos y los colores permiten comparar ambos grupos. No se ha dibujado ni estimado una recta: el gráfico es una primera aproximación para estudiar una posible relación lineal. Esta asociación, por sí sola, no demuestra que estudiar cause un aumento salarial o que el género corresponda a una condición causal a las diferencias. Para llegar a esa conclusión se debe hacer un estudio más profundo.
+
+
+<a id="P1-05"></a>
+## Lámina 05 · Educación y salarios: alcances de la comparación
+
+**Identificador de enlace:** `P1-05`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · láminas 5–6 · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Podemos llamar universitario a todo registro con educ >= 16?
+
+
+
+
+
+
+
+
+
+### ¿Por qué educ ≥ 16 y no educ ≥ 18?
+
+educ mide años de educación, no la edad. Usamos 16 como un umbral didáctico: la referencia habitual es 12 años escolares más unos 4 años de estudios universitarios en Estados Unidos. Esto no permite afirmar que cada persona tenga un título universitario. Exigir 18 años de educación seleccionaría una trayectoria educativa más larga y dejaría fuera a quienes registran 16 o 17 años. En esta base, educ ≥ 16 reúne 99 personas, mientras que educ ≥ 18 reúne solo 19. Para la comparación siguiente mantendremos dos grupos: menos de 16 años y 16 años o más. Es una decisión de agrupación para este ejercicio, no una frontera universal ni una prueba de causalidad.
+
+[Referencia: duración habitual de estudios universitarios, NCES](https://nces.ed.gov/surveys/ctes/tables/glossary_college.asp). Los tamaños de grupo se calcularon con el CSV del taller.
+
+
+
+
+
+**Antes de ejecutar:** ¿Los dos grupos serán idénticos en sus otras características?
+
+**Consigna:** Crea una etiqueta de umbral educativo y examina filas, sin calcular todavía diferencias de medias.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-05
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+datos$educ16 <- datos$educ >= 16
+print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
+```
+
+
+**Lectura del resultado:** educ >= 16 es un umbral de años de educación, no una certificación de título. El ejemplo del 30% de Chile pertenece a cátedra; no se atribuye a esta base. La comparación de promedios se hará en su bloque.
+
+**Error frecuente:** Repetir el 30% como si se hubiese calculado con wage1.
+
+**Comprueba:** ¿Una diferencia entre grupos sería automáticamente efecto de estudiar? No.
+
+
+<a id="P1-06"></a>
+## Lámina 06 · Comparar salarios con boxplots
+
+**Identificador de enlace:** `P1-06`. La numeración se reinicia por bloque, como en la web.
+
+**Referencia:** Parte 1 · lámina 7 · **Modalidad:** Ampliación autónoma.
+
+**Pregunta:** ¿Cómo cambia la distribución salarial entre grupos?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Consigna:** Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.
+
+**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
+
+
+### Solución · P1-06
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+# Elige: "educ", "female" o "married".
+variable <- "educ"
+colores <- c("#0160A0", "#F8C751")
+
+if (variable == "educ") {
+  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
+                  labels = c("Menos de 16 años", "16 años o más"))
+} else if (variable == "female") {
+  grupo <- factor(datos$female, levels = c(0, 1),
+                  labels = c("Hombre (0)", "Mujer (1)"))
+} else if (variable == "married") {
+  grupo <- factor(datos$married, levels = c(0, 1),
+                  labels = c("No casado/a (0)", "Casado/a (1)"))
+}
+
+boxplot(datos$wage ~ grupo,
+        col = colores,
+        main = paste("Salario según", variable),
+        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
+```
+
+
+**Lectura del resultado:** La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.
 
 
 <a id="P1-09"></a>
@@ -2677,12 +2677,12 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
 | NIV-08 | Nivelación | `niv-08-consigna` / `niv-08-r` | Presencial |
 | NIV-NOTEBOOK | Nivelación | `niv-notebook-consigna` | Presencial |
+| P1-07 | Parte 1 · láminas 8–11 | `p1-07-consigna` / `p1-07-r` | Presencial |
 | P1-01 | Parte 1 · lámina 1 | `p1-01-consigna` / `p1-01-r` | Presencial |
 | P1-02 | Parte 1 · lámina 2 | `p1-02-consigna` / `p1-02-r` | Presencial |
 | P1-04 | Parte 1 · lámina 4 | `p1-04-consigna` / `p1-04-r` | Presencial |
 | P1-05 | Parte 1 · láminas 5–6 | `p1-05-consigna` / `p1-05-r` | Presencial |
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
-| P1-07 | Parte 1 · láminas 8–11 | `p1-07-consigna` / `p1-07-r` | Presencial |
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` / `p1-09-r` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P1-10 | Parte 1 · lámina 15 | `p1-10-consigna` / `p1-10-r` | Ampliación autónoma |

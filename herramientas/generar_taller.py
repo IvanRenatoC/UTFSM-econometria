@@ -335,6 +335,12 @@ razones.update(
   ('terreno', 'Estudios en terreno',
    'Visitar hogares, empresas o localidades requiere coordinar rutas, encuestadores, horarios y permisos. Una muestra hace viable ese trabajo y permite supervisar las entrevistas y revisar la calidad de las respuestas. Antes de salir se define a quién se quiere estudiar, el marco de selección y cómo se elegirán las unidades; luego se registran los rechazos y las ausencias. Entrevistar únicamente a quienes resulta más fácil contactar puede dejar fuera a grupos importantes y sesgar las conclusiones.')])
 
+# La explicación de estructuras abre la parte de econometría.
+video_inicial = next(a for a in activities if a['id'] == 'P1-07')
+activities.remove(video_inicial)
+inicio_econometria = next(i for i,a in enumerate(activities) if a['id'].startswith('P1-'))
+activities.insert(inicio_econometria, video_inicial)
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
