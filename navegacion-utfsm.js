@@ -109,8 +109,8 @@ for(const lesson of document.querySelectorAll('.dataset-lesson')){
   new MutationObserver(()=>{if(document.body.classList.contains('presenting')&&!slide.classList.contains('active'))video.pause();}).observe(slide,{attributes:true,attributeFilter:['class']});
   for(const answer of lesson.querySelectorAll('[data-answer]')){
     answer.addEventListener('click',()=>{
-      const correct=answer.dataset.answer==='repetidos';
-      lesson.querySelector('.dataset-feedback').textContent=correct?'Correcto: son cortes transversales repetidos. Cambia la muestra de personas entre los dos períodos.':'Revisa los nombres: no seguimos a las mismas personas. Es una muestra diferente en cada período; son cortes transversales repetidos.';
+      const correct=answer.dataset.answer==='panel';
+      lesson.querySelector('.dataset-feedback').textContent=correct?'Correcto: son datos de panel. Seguimos a las mismas personas en varios períodos.':'Observa que se repiten las mismas personas A, B y C en varios años. Cada punto combina persona y período: son datos de panel.';
       for(const button of lesson.querySelectorAll('[data-answer]'))button.setAttribute('aria-pressed',String(button===answer));
     });
   }

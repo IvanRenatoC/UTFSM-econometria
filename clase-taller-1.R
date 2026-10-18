@@ -178,29 +178,24 @@ boxplot(datos$wage ~ grupo,
         xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
 
 # P1-07 · Tipos y estructura de los datos económicos
-# Ejemplos ficticios para reconocer la estructura de las filas.
+# Ejemplos ficticios: los mismos puntos que aparecen en el video.
 transversal <- data.frame(
-  persona = c("Ana", "Bruno", "Carla", "Diego"),
-  anio = c(2020, 2020, 2020, 2020),
-  educ = c(12, 16, 14, 10), salario = c(4, 8, 6, 3))
+  unidad = LETTERS[1:6], anio = rep(2020, 6),
+  valor = c(5, 12, 8, 16, 10, 19))
 
-serie_temporal <- data.frame(
-  empresa = rep("Empresa A", 4), anio = 2020:2023,
-  publicidad = c(10, 12, 11, 15), ventas = c(42, 45, 44, 52))
-
-cortes_repetidos <- data.frame(
-  persona = c("Ana", "Bruno", "Elena", "Felipe"),
-  anio = c(2020, 2020, 2023, 2023),
-  educ = c(12, 16, 12, 16), salario = c(4, 8, 5, 9))
+serie_tiempo <- data.frame(
+  unidad = rep("A", 6), anio = 2020:2025,
+  valor = c(4, 6, 5, 8, 7, 10))
 
 panel <- data.frame(
-  persona = c("Ana", "Ana", "Bruno", "Bruno"),
-  anio = c(2020, 2023, 2020, 2023),
-  educ = c(12, 13, 16, 16), salario = c(4, 5, 8, 9))
+  unidad = rep(c("A", "B", "C"), each = 6),
+  anio = rep(2020:2025, 3),
+  valor = c(4, 6, 5, 8, 7, 10,
+            10, 9, 12, 11, 14, 13,
+            16, 15, 18, 17, 19, 20))
 
 print(transversal)
-print(serie_temporal)
-print(cortes_repetidos)
+print(serie_tiempo)
 print(panel)
 
 # P1-08 · Población, muestra y unidad de observación
