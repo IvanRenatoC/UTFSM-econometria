@@ -88,6 +88,19 @@ vector.update(
  check=vector['check'] + ' ' + loop['check'])
 activities = [a for a in activities if a['id'] != 'NIV-04']
 
+# Inserta una introducción a la asignación antes de los vectores.
+add('NIV-ASIG', 'Asignación de valores: nombres y flecha <-', 'Nivelación',
+    '¿Cómo damos un nombre a un valor y lo usamos en un cálculo?',
+    'Con x = 2 e y = 5, ¿cuánto valdrán z y w? ¿Qué mostrará cada print?',
+    'Ejecuta las instrucciones una a una. Después consulta z y w con print(z) y print(w).',
+    'x <- 2\ny <- 5\nz <- x - y\nw <- abs(x - y)\nprint(x)\nprint(y)',
+    'La flecha <- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(y) muestra 5; z y w quedan guardados, pero esas dos instrucciones no los imprimen. Los nombres permiten recuperar los valores asociados. La flecha se lee como asignación, no como un puntero de memoria: no se guardan direcciones ni una fórmula que se actualice sola. Si luego cambias x, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.',
+    'Invertir la flecha o creer que z se recalcula automáticamente al cambiar x. En la expresión de la derecha, x e y deben estar definidos previamente.',
+    '¿Cuánto valen z y w? -3 y 3. Si ejecutas solo x <- 10, ¿cambia z? No; debes volver a ejecutar z <- x - y.',
+    'Presencial')
+activities.insert(1, activities.pop())
+
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -248,7 +261,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 46/46 actividades (7 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 46 actividades resueltas en clase.
+**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -277,9 +290,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | Hora | Ruta y conducción |
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
-| 18:55–19:00 | NIV-01. Escribe tu nombre: ejecutar print("tu nombre"), reemplazar el texto y observar la consola. |
-| 19:00–19:10 | NIV-02 (fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
-| 19:10–19:12 | NIV-03. Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
+| 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
+| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
+| 19:00–19:10 | NIV-02 (lámina 03; fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
+| 19:10–19:12 | NIV-03 (lámina 04). Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
 | 19:12–19:15 | NIV-05. Parejas completan una sucesión y revisan las otras. |
 | 19:15–19:20 | NIV-06. Preguntar qué permite terminar el while. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
@@ -318,8 +332,8 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==46
-assert sum(c['cell_type']=='code' for c in cells)==46
+assert len(activities)==47
+assert sum(c['cell_type']=='code' for c in cells)==47
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
