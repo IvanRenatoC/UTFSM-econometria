@@ -197,22 +197,18 @@ print(A)</code></pre>
 <h4>En R · Tu turno</h4><p>Carga la base e identifica wage y educ en seis filas.</p>
 <p class="data-note">Datos: wage1 · Estados Unidos, CPS 1976. Salario por hora en USD nominales del período. Aplicación propia con datos de Wooldridge.</p>
 <details class="solution"><summary>Ver código y solución <span aria-hidden="true">＋</span></summary>
-<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-01">Copiar código</button></div><pre><code># La copia local permite trabajar sin conexión.
+<div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy" aria-label="Copiar código de P1-01">Copiar código</button></div><pre><code># Usa la copia local; si no está, carga la base del paquete.
 if (file.exists(&quot;datos/wage1.csv&quot;)) {
-  original &lt;- read.csv(&quot;datos/wage1.csv&quot;)
-  original$rownames &lt;- NULL
-} else if (requireNamespace(&quot;wooldridge&quot;, quietly = TRUE)) {
-  original &lt;- as.data.frame(wooldridge::wage1)
+  datos &lt;- read.csv(&quot;datos/wage1.csv&quot;)
 } else {
-  stop(&quot;Abra el proyecto desde su carpeta raíz o instale wooldridge.&quot;)
+  if (!requireNamespace(&quot;wooldridge&quot;, quietly = TRUE)) {
+    install.packages(&quot;wooldridge&quot;, repos = &quot;https://cloud.r-project.org/&quot;)
+  }
+  datos &lt;- wooldridge::wage1
 }
-variables &lt;- c(&quot;wage&quot;, &quot;educ&quot;, &quot;exper&quot;, &quot;tenure&quot;, &quot;female&quot;, &quot;married&quot;)
-stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
-print(colSums(is.na(original[variables])))
-datos &lt;- original[complete.cases(original[variables]), variables]
-stopifnot(all(datos$wage &gt; 0), all(datos$female %in% 0:1),
-          all(datos$married %in% 0:1), nrow(datos) &gt; 100)
-str(datos)
+
+# Conserva las seis variables que utilizaremos en el taller.
+datos &lt;- datos[c(&quot;wage&quot;, &quot;educ&quot;, &quot;exper&quot;, &quot;tenure&quot;, &quot;female&quot;, &quot;married&quot;)]
 head(datos)</code></pre>
 <h4>Cómo leer el resultado</h4><p>wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.</p><aside class="notice"><strong>Un error frecuente</strong><p>Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.</p></aside>
 <p class="execution-note">Código preparado para ejecutar en el notebook de R. Esta página no ejecuta R ni muestra salidas verificadas.</p></div></details>

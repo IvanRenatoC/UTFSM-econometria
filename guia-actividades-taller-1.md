@@ -57,7 +57,7 @@ Las aplicaciones son actividades propias elaboradas con datos asociados al libro
 | female | Indicador tal como aparece documentado en la base histórica | 1 si mujer, 0 en otro caso según esa codificación |
 | married | Estado civil registrado | 1 si casado/a, 0 en otro caso |
 
-La documentación advierte inconsistencias entre experiencia potencial y antigüedad en algunos registros. No las corregimos arbitrariamente ni usamos esas columnas para inferir trayectoria laboral. Se informan faltantes en las seis variables y se trabaja con casos completos; esto define el conjunto de análisis y no garantiza representatividad. `educ16` se deriva de educ >= 16, sin afirmar titulación.
+La documentación advierte inconsistencias entre experiencia potencial y antigüedad en algunos registros. No las corregimos arbitrariamente ni usamos esas columnas para inferir trayectoria laboral. La carga conserva todas las filas y selecciona las seis variables del taller, sin eliminar observaciones. Esta selección no garantiza representatividad. `educ16` se deriva de educ >= 16, sin afirmar titulación.
 
 ## Diagnóstico · antes de ejecutar
 
@@ -493,22 +493,18 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-# La copia local permite trabajar sin conexión.
+# Usa la copia local; si no está, carga la base del paquete.
 if (file.exists("datos/wage1.csv")) {
-  original <- read.csv("datos/wage1.csv")
-  original$rownames <- NULL
-} else if (requireNamespace("wooldridge", quietly = TRUE)) {
-  original <- as.data.frame(wooldridge::wage1)
+  datos <- read.csv("datos/wage1.csv")
 } else {
-  stop("Abra el proyecto desde su carpeta raíz o instale wooldridge.")
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  datos <- wooldridge::wage1
 }
-variables <- c("wage", "educ", "exper", "tenure", "female", "married")
-stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
-print(colSums(is.na(original[variables])))
-datos <- original[complete.cases(original[variables]), variables]
-stopifnot(all(datos$wage > 0), all(datos$female %in% 0:1),
-          all(datos$married %in% 0:1), nrow(datos) > 100)
-str(datos)
+
+# Conserva las seis variables que utilizaremos en el taller.
+datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
 ```
 

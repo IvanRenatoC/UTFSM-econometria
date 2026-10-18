@@ -100,22 +100,18 @@ print(A)
 # Librerías -> adecuación de datos -> EDA -> modelamiento -> resultados
 
 # P1-01 · Introducción a la econometría y a los datos
-# La copia local permite trabajar sin conexión.
+# Usa la copia local; si no está, carga la base del paquete.
 if (file.exists("datos/wage1.csv")) {
-  original <- read.csv("datos/wage1.csv")
-  original$rownames <- NULL
-} else if (requireNamespace("wooldridge", quietly = TRUE)) {
-  original <- as.data.frame(wooldridge::wage1)
+  datos <- read.csv("datos/wage1.csv")
 } else {
-  stop("Abra el proyecto desde su carpeta raíz o instale wooldridge.")
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  datos <- wooldridge::wage1
 }
-variables <- c("wage", "educ", "exper", "tenure", "female", "married")
-stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
-print(colSums(is.na(original[variables])))
-datos <- original[complete.cases(original[variables]), variables]
-stopifnot(all(datos$wage > 0), all(datos$female %in% 0:1),
-          all(datos$married %in% 0:1), nrow(datos) > 100)
-str(datos)
+
+# Conserva las seis variables que utilizaremos en el taller.
+datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
 
 # P1-02 · Econometría moderna: describir, explicar y predecir
