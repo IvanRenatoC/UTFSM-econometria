@@ -25,7 +25,8 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 19:09–19:14 | NIV-05 (lámina 06). Parejas completan 1, 2, 4, 8, 16 y 32. |
 | 19:14–19:20 | NIV-02 (lámina 07). Reservar 20 ceros; asignar −1 en posiciones impares y luego reemplazar cada cero por su índice. |
 | 19:20–19:27 | NIV-07. Crear la identidad de 3 × 3; reconocer filas, columnas y la transposición. |
-| 19:27–19:35 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
+| 19:27–19:33 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
+| 19:33–19:35 | NIV-NOTEBOOK (lámina 10). Vista general: librerías, adecuación de datos, EDA, modelamiento y resultados. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | P1-06 a P1-10 en orden. Recorrido conceptual breve y selección de 12 filas. |
 | 19:47–20:00 | P1-11 a P1-14. Ejecutar selección simple y estratificada, mostrar los otros algoritmos y límites. No comparar eficiencia de grupos artificiales. |

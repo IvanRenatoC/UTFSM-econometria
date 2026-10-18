@@ -19,7 +19,7 @@ Al terminar la ruta presencial podrás:
 | Hora | Minutos | Trabajo |
 |---|---:|---|
 | 18:50–18:55 | 5 | Diagnóstico y apertura del notebook |
-| 18:55–19:35 | 40 | NIV-01 a NIV-08: demostraciones breves y actividad integradora |
+| 18:55–19:35 | 40 | NIV-01 a NIV-08 y NIV-NOTEBOOK: demostraciones, integración y vista general |
 | 19:35–20:00 | 25 | Parte 1: recorrido en orden; practicar selección simple y estratificada |
 | 20:00–20:15 | 15 | Pausa |
 | 20:15–20:40 | 25 | Parte 2: centro, posición, dispersión y gráficos |
@@ -461,6 +461,14 @@ print(A)
 **Error frecuente:** Leer los valores por filas cuando matrix() los ha organizado por columnas de forma predeterminada.
 
 **Comprueba:** ¿Cuáles son los valores de la segunda columna? 81, 243 y 729.
+
+
+<a id="NIV-NOTEBOOK"></a>
+## Lámina 10 · Vista general de un notebook
+
+### Librerías → adecuación de datos → EDA → modelamiento → resultados
+
+EDA significa análisis exploratorio de datos.
 
 
 <a id="P1-01"></a>
@@ -1977,6 +1985,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
 | NIV-07 | Nivelación | `niv-07-consigna` / `niv-07-r` | Presencial |
 | NIV-08 | Nivelación | `niv-08-consigna` / `niv-08-r` | Presencial |
+| NIV-NOTEBOOK | Nivelación | `niv-notebook-consigna` | Presencial |
 | P1-01 | Parte 1 · lámina 1 | `p1-01-consigna` / `p1-01-r` | Presencial |
 | P1-02 | Parte 1 · lámina 2 | `p1-02-consigna` / `p1-02-r` | Presencial |
 | P1-03 | Parte 1 · lámina 3 | `p1-03-consigna` / `p1-03-r` | Presencial |
@@ -2035,4 +2044,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 48/48 actividades (9 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 actividades resueltas en clase.
+**Cobertura documental:** 49/49 láminas (10 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 49 láminas resueltas en clase.

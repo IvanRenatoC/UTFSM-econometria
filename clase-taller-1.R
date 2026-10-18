@@ -96,6 +96,9 @@ A <- matrix(sucesion, nrow = 3, ncol = 2)
 print(sucesion)
 print(A)
 
+# NIV-NOTEBOOK · Vista general de un notebook
+# Librerías -> adecuación de datos -> EDA -> modelamiento -> resultados
+
 # P1-01 · Introducción a la econometría y a los datos
 # La copia local permite trabajar sin conexión.
 if (file.exists("datos/wage1.csv")) {
