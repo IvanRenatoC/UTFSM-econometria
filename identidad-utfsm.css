@@ -28,3 +28,57 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 .vector-cell:nth-child(4) .vector-dot{animation-name:vector-fill-4}
 .vector-cell:nth-child(5) .vector-dot{animation-name:vector-fill-5}
 .vector-cell:nth-child(6) .vector-dot{animation-name:vector-fill-6}
+
+/* Matriz 6 x 4 y transpuesta 4 x 6: cada punto comparte su paso. */
+.matrix-figures{display:flex;align-items:center;justify-content:space-evenly;flex-wrap:wrap;gap:28px;padding:28px 0}.matrix-equation{display:flex;align-items:center;gap:12px}.matrix-grid{display:grid;grid-template-columns:repeat(var(--matrix-columns),28px);border-top:1px solid #1b2a5e;border-left:1px solid #1b2a5e}.matrix-cell{width:28px;height:28px;border-right:1px solid #1b2a5e;border-bottom:1px solid #1b2a5e;display:flex;align-items:center;justify-content:center;background:#f5f7fc}.matrix-dot{width:10px;height:10px;border-radius:50%;background:#1b2a5e;opacity:0;animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:steps(1,end)}.matrix-demo.is-paused .matrix-dot{animation-play-state:paused}.matrix-dim{text-align:center;color:var(--muted);font-size:12px;margin:6px 0 0}
+@media(max-width:1050px){.matrix-figures{flex-direction:column;gap:24px}}
+@media(prefers-reduced-motion:reduce){.matrix-demo .matrix-dot{animation:none;opacity:1}}
+@media print{.matrix-demo .matrix-dot{animation:none;opacity:1}}
+.matrix-step-1{animation-name:matrix-fill-1}
+@keyframes matrix-fill-1{0%,7.99%{opacity:0}8.00%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-2{animation-name:matrix-fill-2}
+@keyframes matrix-fill-2{0%,10.69%{opacity:0}10.70%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-3{animation-name:matrix-fill-3}
+@keyframes matrix-fill-3{0%,13.39%{opacity:0}13.40%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-4{animation-name:matrix-fill-4}
+@keyframes matrix-fill-4{0%,16.09%{opacity:0}16.10%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-5{animation-name:matrix-fill-5}
+@keyframes matrix-fill-5{0%,18.79%{opacity:0}18.80%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-6{animation-name:matrix-fill-6}
+@keyframes matrix-fill-6{0%,21.49%{opacity:0}21.50%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-7{animation-name:matrix-fill-7}
+@keyframes matrix-fill-7{0%,24.19%{opacity:0}24.20%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-8{animation-name:matrix-fill-8}
+@keyframes matrix-fill-8{0%,26.89%{opacity:0}26.90%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-9{animation-name:matrix-fill-9}
+@keyframes matrix-fill-9{0%,29.59%{opacity:0}29.60%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-10{animation-name:matrix-fill-10}
+@keyframes matrix-fill-10{0%,32.29%{opacity:0}32.30%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-11{animation-name:matrix-fill-11}
+@keyframes matrix-fill-11{0%,34.99%{opacity:0}35.00%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-12{animation-name:matrix-fill-12}
+@keyframes matrix-fill-12{0%,37.69%{opacity:0}37.70%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-13{animation-name:matrix-fill-13}
+@keyframes matrix-fill-13{0%,40.39%{opacity:0}40.40%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-14{animation-name:matrix-fill-14}
+@keyframes matrix-fill-14{0%,43.09%{opacity:0}43.10%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-15{animation-name:matrix-fill-15}
+@keyframes matrix-fill-15{0%,45.79%{opacity:0}45.80%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-16{animation-name:matrix-fill-16}
+@keyframes matrix-fill-16{0%,48.49%{opacity:0}48.50%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-17{animation-name:matrix-fill-17}
+@keyframes matrix-fill-17{0%,51.19%{opacity:0}51.20%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-18{animation-name:matrix-fill-18}
+@keyframes matrix-fill-18{0%,53.89%{opacity:0}53.90%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-19{animation-name:matrix-fill-19}
+@keyframes matrix-fill-19{0%,56.59%{opacity:0}56.60%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-20{animation-name:matrix-fill-20}
+@keyframes matrix-fill-20{0%,59.29%{opacity:0}59.30%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-21{animation-name:matrix-fill-21}
+@keyframes matrix-fill-21{0%,61.99%{opacity:0}62.00%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-22{animation-name:matrix-fill-22}
+@keyframes matrix-fill-22{0%,64.69%{opacity:0}64.70%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-23{animation-name:matrix-fill-23}
+@keyframes matrix-fill-23{0%,67.39%{opacity:0}67.40%,91.99%{opacity:1}92%,100%{opacity:0}}
+.matrix-step-24{animation-name:matrix-fill-24}
+@keyframes matrix-fill-24{0%,70.09%{opacity:0}70.10%,91.99%{opacity:1}92%,100%{opacity:0}}
