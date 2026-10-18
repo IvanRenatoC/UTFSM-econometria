@@ -2,6 +2,16 @@
 from html import escape
 import re
 
+def animacion_vector():
+    cells = ''.join(f'<span class="vector-cell"><span class="vector-dot" aria-hidden="true"></span></span>' for i in range(1, 7))
+    return f'''<figure class="vector-demo" aria-labelledby="vector-caption">
+<figcaption id="vector-caption"><strong>Un vector, posición a posición</strong><span>Los puntos aparecen en orden: de izquierda a derecha y de arriba abajo.</span></figcaption>
+<div class="vector-figures" role="img" aria-label="A es una fila de seis casillas. Su transpuesta A T es una columna de seis casillas. Ambas se llenan en el mismo orden con puntos azules.">
+<div class="vector-equation vector-horizontal"><span class="vector-symbol">A =</span><div class="vector-grid">{cells}</div></div>
+<div class="vector-equation vector-vertical"><span class="vector-symbol">A<sup>T</sup> =</span><div class="vector-grid">{cells}</div></div>
+</div><div class="vector-controls"><button type="button" class="vector-pause" aria-pressed="false">Pausar animación</button><button type="button" class="vector-replay">Reiniciar</button></div>
+<p class="vector-note">Cada casilla representa una posición. La transposición cambia la orientación y conserva el orden de los elementos. En R, un vector simple no tiene dimensión de fila o columna; aquí usamos ambas orientaciones como representación visual.</p></figure>'''
+
 def aplicar_identidad(html, activities):
     nav_left='''<aside class="class-sidebar" aria-label="Temario de talleres"><nav><p class="sidebar-title">Clases</p><a class="classes-home" href="#inicio">🏫 Clases</a><a class="current" href="#inicio" aria-current="page">Clase 1: Introducción a la computación estadística usando R</a><a href="#clase-2">Clase 2: Regresión lineal simple en R</a></nav></aside>'''
     toc=['<aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a>']
@@ -26,4 +36,5 @@ def aplicar_identidad(html, activities):
     html=html.replace('<title>Taller 1 · Econometría en R · UTFSM</title>','<title>Clase 1 · Computación estadística en R · Econometría ICS-294</title>')
     html=html.replace('</head>','<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="identidad-utfsm.css"></head>')
     html=html.replace('</body>','<script src="navegacion-utfsm.js"></script></body>')
+    html = re.sub(r'(<article class="slide" id="NIV-02".*?<p class="question">.*?</p>)', lambda match: match.group(1) + animacion_vector(), html, count=1, flags=re.S)
     return html

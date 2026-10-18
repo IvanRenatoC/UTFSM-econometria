@@ -23,3 +23,20 @@ themeButton.addEventListener('click',()=>{const dark=document.body.classList.tog
 const contentsLinks=[...document.querySelectorAll('.contents-sidebar a')];
 const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;for(const link of contentsLinks){const active=link.getAttribute('href')===`#${entry.target.id}`;link.classList.toggle('is-active',active);if(active)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');}}},{rootMargin:'-120px 0px -65% 0px'});
 document.querySelectorAll('section[id],article.slide').forEach(node=>observer.observe(node));
+
+// Controles de la ilustración; ambas orientaciones comparten el mismo ciclo.
+for(const demo of document.querySelectorAll('.vector-demo')){
+  const pause=demo.querySelector('.vector-pause');
+  pause.addEventListener('click',()=>{
+    const paused=demo.classList.toggle('is-paused');
+    pause.setAttribute('aria-pressed',String(paused));
+    pause.textContent=paused?'Continuar animación':'Pausar animación';
+  });
+  demo.querySelector('.vector-replay').addEventListener('click',()=>{
+    demo.classList.remove('is-paused');pause.setAttribute('aria-pressed','false');pause.textContent='Pausar animación';
+    const dots=demo.querySelectorAll('.vector-dot');
+    for(const dot of dots)dot.style.animation='none';
+    void demo.offsetWidth;
+    for(const dot of dots)dot.style.animation='';
+  });
+}

@@ -9,3 +9,22 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 @media(max-width:480px){.header-inner{display:block}.brand{margin-bottom:8px}.header-actions{justify-content:space-between}.search-wrap{flex:1}.search-label{width:100%}.hero h1{font-size:26px}.slide-head{flex-direction:column}.number{padding-top:0}.presenting .slide-head h3{font-size:22px}#search-results{right:-110px}}@media print{.class-sidebar,.contents-sidebar,.search-wrap{display:none!important}.page-layout{display:block}.official-info,.slide{break-inside:avoid}.session-meta span{border:1px solid #1b2a5e}body{color:#222;background:#fff}}
 
 .official-info h2 .info-icon{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;width:16px;height:16px;font-size:12px;font-weight:700;background:#00b8d4;color:white;font-style:normal;flex-shrink:0}
+
+/* Llenado sincronizado de un vector y su transpuesta. */
+.vector-demo{margin:24px 0;padding:22px;background:var(--paper);border:1px solid var(--line);border-radius:8px}.vector-demo figcaption{color:var(--ink);font-size:16px}.vector-demo figcaption>span{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:5px}.vector-figures{display:flex;align-items:center;justify-content:space-evenly;gap:28px;padding:28px 0}.vector-equation{display:flex;align-items:center;gap:14px}.vector-symbol{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:27px;color:var(--ink);white-space:nowrap}.vector-symbol sup{font-size:15px}.vector-grid{display:flex;border:1.5px solid #1b2a5e}.vector-cell{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#f5f7fc}.vector-cell+.vector-cell{border-left:1px solid #1b2a5e}.vector-vertical .vector-grid{flex-direction:column}.vector-vertical .vector-cell+.vector-cell{border-left:0;border-top:1px solid #1b2a5e}.vector-dot{width:11px;height:11px;border-radius:50%;background:#1b2a5e;opacity:0;animation-duration:6s;animation-iteration-count:infinite;animation-timing-function:steps(1,end)}.vector-demo.is-paused .vector-dot{animation-play-state:paused}.vector-controls{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}.vector-controls button{font:inherit;font-size:12px;color:var(--ink);background:var(--wash);border:1px solid var(--line);padding:7px 12px;border-radius:5px}.vector-note{font-size:12px;color:var(--muted);line-height:1.6;margin:16px 0 0}
+@keyframes vector-fill-1{0%,15.99%{opacity:0}16%,91.99%{opacity:1}92%,100%{opacity:0}}
+@keyframes vector-fill-2{0%,23.99%{opacity:0}24%,91.99%{opacity:1}92%,100%{opacity:0}}
+@keyframes vector-fill-3{0%,31.99%{opacity:0}32%,91.99%{opacity:1}92%,100%{opacity:0}}
+@keyframes vector-fill-4{0%,39.99%{opacity:0}40%,91.99%{opacity:1}92%,100%{opacity:0}}
+@keyframes vector-fill-5{0%,47.99%{opacity:0}48%,91.99%{opacity:1}92%,100%{opacity:0}}
+@keyframes vector-fill-6{0%,55.99%{opacity:0}56%,91.99%{opacity:1}92%,100%{opacity:0}}
+@media(max-width:1050px){.vector-figures{flex-direction:column;gap:24px}.vector-demo{padding:16px}.vector-cell{width:30px;height:30px}}
+@media(prefers-reduced-motion:reduce){.vector-demo .vector-dot{animation:none;opacity:1}.vector-controls{display:none}}
+@media print{.vector-demo .vector-dot{animation:none;opacity:1}.vector-controls{display:none}}
+
+.vector-cell:nth-child(1) .vector-dot{animation-name:vector-fill-1}
+.vector-cell:nth-child(2) .vector-dot{animation-name:vector-fill-2}
+.vector-cell:nth-child(3) .vector-dot{animation-name:vector-fill-3}
+.vector-cell:nth-child(4) .vector-dot{animation-name:vector-fill-4}
+.vector-cell:nth-child(5) .vector-dot{animation-name:vector-fill-5}
+.vector-cell:nth-child(6) .vector-dot{animation-name:vector-fill-6}
