@@ -99,6 +99,13 @@ print(m)
 m[1,1] <- 99
 print(m); print(dim(m))
 
+# Comprueba lo aprendido: Haz una matriz de 4 × 4 que contenga solo ceros; luego inserta números 1 en su diagonal principal.
+identidad <- matrix(0, nrow = 4, ncol = 4)
+for (i in seq_len(nrow(identidad))) {
+  identidad[i, i] <- 1
+}
+print(identidad)
+
 # NIV-08 · Actividad integradora: sucesiones y matrices
 terminos <- numeric(6)
 terminos[1] <- 2
