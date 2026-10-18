@@ -989,169 +989,115 @@ Referencias: [tidymodels](https://www.tidymodels.org/start/recipes/) y [Banco Mu
 
 
 <a id="P1-08"></a>
-## Lámina 08 · Población, muestra y unidad de observación
+## Lámina 08 · Tipos de muestreo en R con wage1
 
-**Identificador de enlace:** `P1-08`. La numeración se reinicia por bloque, como en la web.
+Usamos wage1, incluida en el paquete wooldridge. Ejecuta la preparación una vez y luego cada ejemplo en el orden de la clase de Sebastián. Para practicar, las 526 filas forman nuestro marco didáctico; no reproducimos el diseño original de la CPS ni afirmamos representatividad nacional.
 
-**Referencia:** Parte 1 · láminas 12–13 · **Modalidad:** Presencial.
+[Tipos de muestreo en la clase de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/#muestreo-aleatorio).
 
-**Pregunta:** ¿De qué conjunto seleccionaremos personas?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Una submuestra representa automáticamente a Estados Unidos?
-
-**Consigna:** Define el marco de filas de datos y extrae 12 registros sin reemplazo.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-08
-
-Ejecutar después de intentar la consigna.
+### Preparación
 
 
 ```r
-set.seed(16201)
+# Ejecuta esta preparación una vez antes de los cinco ejemplos.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+}
+datos <- as.data.frame(wooldridge::wage1)
+datos$educ16 <- datos$educ >= 16
 N <- nrow(datos)
-marco <- seq_len(N)
-ids <- sample(marco, size = 12, replace = FALSE)
-print(datos[ids, c("wage", "educ")])
+marco <- 1:N
+set.seed(36)
 ```
 
 
-**Lectura del resultado:** Tratamos la tabla completa como población finita didáctica. Su encuesta original tiene otra población y diseño; nuestro submuestreo no los reproduce.
+### 1. Muestreo aleatorio simple
 
-**Error frecuente:** Llamar población real completa a las 526 observaciones.
-
-**Comprueba:** ¿Cuál es nuestra unidad de observación? La persona registrada.
-
-
-<a id="P1-10"></a>
-## Lámina 09 · Variables, parámetros y estadísticos
-
-**Identificador de enlace:** `P1-10`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 15 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Es lo mismo una variable que un parámetro?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿El salario de una persona es un promedio poblacional?
-
-**Consigna:** Clasifica variable, parámetro objetivo y estadístico.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-10
-
-Ejecutar después de intentar la consigna.
+Sorteamos 24 personas sin reemplazo. Cada fila de la base tiene la misma probabilidad de ser incluida.
 
 
 ```r
-print(data.frame(
-  concepto = c("Variable", "Parámetro", "Estadístico"),
-  ejemplo = c("Salario por hora individual",
-              "Media salarial de la población objetivo",
-              "Media salarial calculada en una muestra")))
+ids_simple <- sample(marco, size = 24, replace = FALSE)
+muestra_simple <- datos[ids_simple, ]
+print(muestra_simple[c("wage", "educ", "female")])
 ```
 
 
-**Lectura del resultado:** La variable se observa por persona; el parámetro resume una población; el estadístico depende de la muestra. Las fórmulas vienen después.
-
-**Error frecuente:** Llamar parámetro a cualquier número de una fila.
-
-**Comprueba:** ¿Un estadístico cambia al cambiar la muestra? Generalmente sí.
+Se obtienen 24 filas distintas. set.seed() permite repetir la selección cuando se ejecuta la preparación y luego los ejemplos en el mismo orden.
 
 
-<a id="P1-11"></a>
-## Lámina 10 · Métodos de muestreo probabilístico en R
+### 2. Muestreo aleatorio sistemático
 
-**Identificador de enlace:** `P1-11`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · láminas 16–17 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Cómo cambia quién entra según el método?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Estratificar garantiza que ambos grupos definidos tengan participantes?
-
-**Consigna:** Selecciona por cuatro algoritmos y conserva sus índices.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-11
-
-Ejecutar después de intentar la consigna.
+Conservamos el orden de las filas, sorteamos el inicio entre 1 y 20 y elegimos después una de cada 20 personas.
 
 
 ```r
-set.seed(16202)
-ids_simple <- sample(marco, 24)
-k <- 20L
-inicio <- sample.int(k, 1)
-ids_sistema <- seq.int(inicio, N, by = k)
-estratos <- split(marco, datos$educ16)
-stopifnot(all(lengths(estratos) >= 12))
-ids_estrato <- unlist(lapply(estratos, function(g) sample(g, 12)), use.names = FALSE)
-# Grupos artificiales: ilustración algorítmica, no barrios reales.
-grupo_artificial <- rep(seq_len(12), length.out = N)
-elegidos <- sample(unique(grupo_artificial), 2)
+k <- 20
+inicio <- sample(1:k, size = 1)
+ids_sistema <- seq(inicio, N, by = k)
+muestra_sistematica <- datos[ids_sistema, ]
+print(muestra_sistematica[c("wage", "educ", "female")])
+```
+
+
+El tamaño será 26 o 27 personas. Es un diseño probabilístico con inicio aleatorio, aunque no permite todas las combinaciones posibles de una muestra aleatoria simple. El orden de la lista y posibles patrones periódicos importan.
+
+
+### 3. Muestreo aleatorio estratificado
+
+Dividimos la base en dos estratos de educación: menos de 16 años y 16 años o más. Sorteamos 12 personas dentro de cada uno.
+
+
+```r
+estrato_menos16 <- which(!datos$educ16)
+estrato_16omas <- which(datos$educ16)
+ids_estrato <- c(sample(estrato_menos16, size = 12),
+                 sample(estrato_16omas, size = 12))
+muestra_estratificada <- datos[ids_estrato, ]
+print(table(muestra_estratificada$educ16))
+print(muestra_estratificada[c("wage", "educ")])
+```
+
+
+Participan ambos estratos: 12 personas de cada uno. Como sus tamaños en la base son distintos (427 y 99), seleccionar la misma cantidad no conserva sus proporciones. Para estimar una media global con este diseño habría que ponderar por el tamaño de cada estrato.
+
+
+### 4. Muestreo por conglomerados
+
+Creamos 12 grupos artificiales, sorteamos dos y conservamos todas las personas de los grupos elegidos. Es una ilustración de conglomerados de una etapa; los grupos no representan geografía real de la encuesta.
+
+
+```r
+grupo_artificial <- rep(1:12, length.out = N)
+elegidos <- sample(unique(grupo_artificial), size = 2)
 ids_conglomerado <- which(grupo_artificial %in% elegidos)
-print(list(simple = ids_simple, sistematico = ids_sistema,
-           estratificado = ids_estrato, conglomerados = ids_conglomerado))
+muestra_conglomerados <- datos[ids_conglomerado, ]
+print(elegidos)
+print(table(grupo_artificial[ids_conglomerado]))
+print(muestra_conglomerados[c("wage", "educ", "female")])
 ```
 
 
-**Lectura del resultado:** El sistemático usa inicio aleatorio; su tamaño puede variar aquí. Los grupos artificiales no sustentan una comparación real de eficiencia. La afijación igual por estrato requeriría ponderar al estimar una media global si difieren los tamaños; aquí solo seleccionamos.
+Solo entran dos grupos, pero entran completos. La diferencia con estratificar es que no seleccionamos personas dentro de todos los grupos. En un diseño de dos etapas podríamos sortear personas dentro de los conglomerados elegidos.
 
-**Error frecuente:** Comparar precisión de diseños con tamaños distintos o usar media estratificada no ponderada como estimador global.
 
-**Comprueba:** ¿El sistemático deja de ser probabilístico porque solo se sortea el inicio? No.
+### 5. Muestreo no probabilístico
+
+Elegimos por criterio y orden disponible: las primeras 12 personas con al menos 16 años de educación. Aquí no se realiza un sorteo.
+
+
+```r
+ids_conveniencia <- head(which(datos$educ16), 12)
+muestra_no_probabilistica <- datos[ids_conveniencia, ]
+print(muestra_no_probabilistica[c("wage", "educ", "female")])
+```
+
+
+La selección depende del criterio y del orden de la base. Las personas con menos de 16 años quedan fuera, de modo que no podemos tratar esta selección como una muestra aleatoria de las 526 personas.
 
 
 <a id="P1-12"></a>
-## Lámina 11 · Muestreo estratificado y por conglomerados
+## Lámina 09 · Muestreo estratificado y por conglomerados
 
 **Identificador de enlace:** `P1-12`. La numeración se reinicia por bloque, como en la web.
 
@@ -1199,7 +1145,7 @@ print(table(grupo_artificial[ids_conglomerado]))
 
 
 <a id="P1-13"></a>
-## Lámina 12 · Muestreo no probabilístico y selección
+## Lámina 10 · Muestreo no probabilístico y selección
 
 **Identificador de enlace:** `P1-13`. La numeración se reinicia por bloque, como en la web.
 
@@ -1247,7 +1193,7 @@ print(datos[ids_conveniencia, c("wage", "educ")])
 
 
 <a id="P1-14"></a>
-## Lámina 13 · Estadística descriptiva e inferencial
+## Lámina 11 · Estadística descriptiva e inferencial
 
 **Identificador de enlace:** `P1-14`. La numeración se reinicia por bloque, como en la web.
 
@@ -2646,8 +2592,6 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
-| P1-10 | Parte 1 · lámina 15 | `p1-10-consigna` / `p1-10-r` | Ampliación autónoma |
-| P1-11 | Parte 1 · láminas 16–17 | `p1-11-consigna` / `p1-11-r` | Presencial |
 | P1-12 | Parte 1 · lámina 18 | `p1-12-consigna` / `p1-12-r` | Ampliación autónoma |
 | P1-13 | Parte 1 · lámina 19 | `p1-13-consigna` / `p1-13-r` | Presencial |
 | P1-14 | Parte 1 · lámina 20 | `p1-14-consigna` / `p1-14-r` | Presencial |
@@ -2689,10 +2633,10 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Parte 3: 34 láminas en orden | P3-01 a P3-18 |
 | Intuición, predicción, consigna, solución, interpretación y comprobación | Todas las actividades |
 | Dinámica presencial y tiempos | inicio; guía docente enlazada |
-| Muestras didácticas, sigma conocida y límites de inferencia | P1-08, P1-11, P3-01 a P3-18 |
+| Muestras didácticas, sigma conocida y límites de inferencia | P1-08, P3-01 a P3-18 |
 | Semillas, reproducción y verificación | Celdas de selección/simulación, cierre |
 | Autoevaluación y soluciones | cierre |
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 48/48 láminas (10 de nivelación, 13 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 láminas resueltas en clase.
+**Organización actual:** 46 láminas (10 de nivelación, 11 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 46 láminas resueltas en clase.
