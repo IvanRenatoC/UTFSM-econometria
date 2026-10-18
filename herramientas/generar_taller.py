@@ -188,6 +188,16 @@ por_id['NIV-08'].update(
  error='Leer los valores por filas cuando matrix() los ha organizado por columnas de forma predeterminada.',
  check='¿Cuáles son los valores de la segunda columna? 81, 243 y 729.')
 
+
+# Lámina conceptual de cierre de la nivelación; sin celda de ejecución.
+add('NIV-NOTEBOOK', 'Vista general de un notebook', 'Nivelación',
+    'Librerías → adecuación de datos → EDA → modelamiento → resultados',
+    '', 'EDA significa análisis exploratorio de datos.',
+    '# Librerías -> adecuación de datos -> EDA -> modelamiento -> resultados',
+    '', '', '', 'Presencial')
+activities[-1]['overview'] = True
+activities.insert(next(i for i, a in enumerate(activities) if not a['id'].startswith('NIV-')), activities.pop())
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -209,7 +219,7 @@ Al terminar la ruta presencial podrás:
 | Hora | Minutos | Trabajo |
 |---|---:|---|
 | 18:50–18:55 | 5 | Diagnóstico y apertura del notebook |
-| 18:55–19:35 | 40 | NIV-01 a NIV-08: demostraciones breves y actividad integradora |
+| 18:55–19:35 | 40 | NIV-01 a NIV-08 y NIV-NOTEBOOK: demostraciones, integración y vista general |
 | 19:35–20:00 | 25 | Parte 1: recorrido en orden; practicar selección simple y estratificada |
 | 20:00–20:15 | 15 | Pausa |
 | 20:15–20:40 | 25 | Parte 2: centro, posición, dispersión y gráficos |
@@ -309,6 +319,11 @@ for a in activities:
  bloque=id.split('-')[0]
  numeros_por_bloque[bloque] = numeros_por_bloque.get(bloque, 0) + 1
  numero = numeros_por_bloque[bloque]
+ if a.get('overview'):
+  overview=f"<a id=\"{id}\"></a>\n## Lámina {numero:02d} · {a['title']}\n\n### {a['question']}\n\n{a['task']}\n"
+  md(overview,id.lower()+'-consigna')
+  sections.append(overview)
+  continue
  intro=f'''<a id="{id}"></a>
 ## Lámina {numero:02d} · {a['title']}
 
@@ -345,7 +360,9 @@ for a in activities:
   sections.extend([exercise,'### Solución del ejercicio de comprobación\n','```r\n'+practice['code']+'\n```\n',practice['answer']])
 md(closing,'cierre'); sections.append(closing)
 rows=['| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |','|---|---|---|---|']
-for a in activities: rows.append(f"| {a['id']} | {a['slides']} | `{a['id'].lower()}-consigna` / `{a['id'].lower()}-r` | {a['mode']} |")
+for a in activities:
+ cells_ref=f"`{a['id'].lower()}-consigna`" if a.get('overview') else f"`{a['id'].lower()}-consigna` / `{a['id'].lower()}-r`"
+ rows.append(f"| {a['id']} | {a['slides']} | {cells_ref} | {a['mode']} |")
 trace='''## Matriz de correspondencia
 
 La guía y el notebook se generan desde el mismo contenido: todas las consignas, soluciones y celdas R de actividades coinciden. Los IDs son estables. Los enunciados son el código inicial de trabajo: cada pareja escribe su intento en una celda R nueva antes de consultar la celda de solución; no hay ejercicios deliberadamente rotos que impidan ejecutar el notebook completo.
@@ -370,7 +387,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 48/48 actividades (9 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 48 actividades resueltas en clase.
+**Cobertura documental:** 49/49 láminas (10 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 49 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -410,7 +427,8 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 19:09–19:14 | NIV-05 (lámina 06). Parejas completan 1, 2, 4, 8, 16 y 32. |
 | 19:14–19:20 | NIV-02 (lámina 07). Reservar 20 ceros; asignar −1 en posiciones impares y luego reemplazar cada cero por su índice. |
 | 19:20–19:27 | NIV-07. Crear la identidad de 3 × 3; reconocer filas, columnas y la transposición. |
-| 19:27–19:35 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
+| 19:27–19:33 | NIV-08. Crear las potencias de 3 y organizarlas en una matriz de 3 × 2; leer sus columnas. |
+| 19:33–19:35 | NIV-NOTEBOOK (lámina 10). Vista general: librerías, adecuación de datos, EDA, modelamiento y resultados. |
 | 19:35–19:42 | P1-01 a P1-05 en orden. Cargar datos; ubicar país/año; discutir asociación sin calcular aún medias. |
 | 19:42–19:47 | P1-06 a P1-10 en orden. Recorrido conceptual breve y selección de 12 filas. |
 | 19:47–20:00 | P1-11 a P1-14. Ejecutar selección simple y estratificada, mostrar los otros algoritmos y límites. No comparar eficiencia de grupos artificiales. |
@@ -445,8 +463,8 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==48
-assert sum(c['cell_type']=='code' for c in cells)==len(activities)+sum('practice' in a for a in activities)
+assert len(activities)==49
+assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') for a in activities)+sum('practice' in a for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
