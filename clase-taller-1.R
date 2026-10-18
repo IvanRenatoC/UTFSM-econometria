@@ -4,6 +4,14 @@
 # NIV-01 · Escribe tu nombre
 print("tu nombre")
 
+# NIV-ASIG · Asignación de valores: nombres y flecha <-
+x <- 2
+y <- 5
+z <- x - y
+w <- abs(x - y)
+print(x)
+print(y)
+
 # NIV-02 · Vectores: creación, selección, modificación y llenado con for
 # 1. Crear, seleccionar y modificar
 v <- numeric(3)

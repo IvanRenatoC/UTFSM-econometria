@@ -95,6 +95,42 @@ print("tu nombre")
 **Comprueba:** ¿Qué debes cambiar para mostrar otro nombre? El texto que está dentro de las comillas.
 
 
+<a id="NIV-ASIG"></a>
+## NIV-ASIG · Asignación de valores: nombres y flecha <-
+
+**Referencia:** Nivelación · **Modalidad:** Presencial.
+
+**Pregunta:** ¿Cómo damos un nombre a un valor y lo usamos en un cálculo?
+
+**Antes de ejecutar:** Con x = 2 e y = 5, ¿cuánto valdrán z y w? ¿Qué mostrará cada print?
+
+**Consigna:** Ejecuta las instrucciones una a una. Después consulta z y w con print(z) y print(w).
+
+**Datos:** Objetos artificiales de programación.
+
+
+### Solución · NIV-ASIG
+
+Ejecutar después de intentar la consigna.
+
+
+```r
+x <- 2
+y <- 5
+z <- x - y
+w <- abs(x - y)
+print(x)
+print(y)
+```
+
+
+**Lectura del resultado:** La flecha <- asigna el resultado de la derecha al nombre de la izquierda. x recibe 2 e y recibe 5. z recibe x - y = -3. abs() calcula el valor absoluto: w recibe 3. print(x) muestra 2 y print(y) muestra 5; z y w quedan guardados, pero esas dos instrucciones no los imprimen. Los nombres permiten recuperar los valores asociados. La flecha se lee como asignación, no como un puntero de memoria: no se guardan direcciones ni una fórmula que se actualice sola. Si luego cambias x, debes ejecutar de nuevo las asignaciones de z y w para recalcularlos.
+
+**Error frecuente:** Invertir la flecha o creer que z se recalcula automáticamente al cambiar x. En la expresión de la derecha, x e y deben estar definidos previamente.
+
+**Comprueba:** ¿Cuánto valen z y w? -3 y 3. Si ejecutas solo x <- 10, ¿cambia z? No; debes volver a ejecutar z <- x - y.
+
+
 <a id="NIV-02"></a>
 ## NIV-02 · Vectores: creación, selección, modificación y llenado con for
 
@@ -1766,6 +1802,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |
 |---|---|---|---|
 | NIV-01 | Nivelación | `niv-01-consigna` / `niv-01-r` | Presencial |
+| NIV-ASIG | Nivelación | `niv-asig-consigna` / `niv-asig-r` | Presencial |
 | NIV-02 | Nivelación | `niv-02-consigna` / `niv-02-r` | Presencial |
 | NIV-03 | Nivelación | `niv-03-consigna` / `niv-03-r` | Presencial |
 | NIV-05 | Nivelación | `niv-05-consigna` / `niv-05-r` | Presencial |
@@ -1830,4 +1867,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Cobertura documental:** 46/46 actividades (7 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 46 actividades resueltas en clase.
+**Cobertura documental:** 47/47 actividades (8 de nivelación, 14 introductorias, 7 descriptivas y 18 inferenciales); 64/64 láminas de contenido del curso; 15/15 categorías de requisitos anteriores. Esto no equivale a una certificación de ejecución ni a 47 actividades resueltas en clase.
