@@ -12,24 +12,21 @@ add('NIV-05','Tres sucesiones','Nivelación','¿Cómo se calcula un término des
 add('NIV-06','Un while que termina','Nivelación','¿Cuántas duplicaciones hacen falta para llegar a 100?','¿Se detendrá antes de 20 pasos?','Parte en 1, duplica hasta alcanzar 100 y conserva los términos.','valor <- 1\npaso <- 0L\nmax_pasos <- 20L\ntrayectoria <- numeric(max_pasos + 1L)\ntrayectoria[1] <- valor\nwhile (valor < 100 && paso < max_pasos) {\n  valor <- 2 * valor\n  paso <- paso + 1L\n  trayectoria[paso + 1L] <- valor\n}\nprint(trayectoria[seq_len(paso + 1L)])\nprint(c(pasos = paso, valor = valor))','Se llega a 128 en siete duplicaciones. El límite adicional protege de una condición mal planteada.','No actualizar valor o paso.','¿Qué ocurre si max_pasos es 3? Termina por el límite, sin llegar a 100.','Presencial')
 add('NIV-07','Una matriz, dos índices','Nivelación','¿Cómo guardamos resultados por filas y columnas?','¿Cuánto valdrá la posición [2,3]?','Llena una matriz 2 por 3 con 10*fila + columna; luego modifica [1,1].','m <- matrix(0, nrow = 2, ncol = 3)\nfor (i in seq_len(nrow(m))) {\n  for (j in seq_len(ncol(m))) {\n    m[i,j] <- 10*i + j\n  }\n}\nprint(m)\nm[1,1] <- 99\nprint(m); print(dim(m))','La posición [2,3] vale 23 antes y después de modificar [1,1]. Una matriz tiene un tipo común; un data.frame permite columnas de distintos tipos.','Intercambiar fila y columna.','¿m[2,3] y m[3,2] son siempre válidos? No: solo hay dos filas.','Presencial')
 add('NIV-08','Integra: término y clasificación','Nivelación','¿Podemos reunir una sucesión y una decisión?','¿Desde qué término se supera 10?','Genera 2,5,8,11,14,17 y guarda índice, valor e indicador de superar 10.','terminos <- numeric(6)\nterminos[1] <- 2\nfor (i in 2:length(terminos)) terminos[i] <- terminos[i-1] + 3\nresultado <- matrix(0, nrow = 6, ncol = 3,\n                    dimnames = list(NULL, c("indice", "valor", "supera_10")))\nfor (i in seq_along(terminos)) {\n  resultado[i,1] <- i\n  resultado[i,2] <- terminos[i]\n  if (terminos[i] > 10) resultado[i,3] <- 1\n}\nprint(resultado)','El indicador vale 1 desde el cuarto término. Esta es programación con objetos artificiales, no evidencia económica.','Asignar una cadena de texto a una matriz numérica y convertir toda la matriz a texto.','¿Qué cambia con umbral 14 y condición estricta >? Solo el último indicador vale 1.','Presencial')
-load='''# La copia local permite trabajar sin conexión.
+load='''# Usa la copia local; si no está, carga la base del paquete.
 if (file.exists("datos/wage1.csv")) {
-  original <- read.csv("datos/wage1.csv")
-  original$rownames <- NULL
-} else if (requireNamespace("wooldridge", quietly = TRUE)) {
-  original <- as.data.frame(wooldridge::wage1)
+  datos <- read.csv("datos/wage1.csv")
 } else {
-  stop("Abra el proyecto desde su carpeta raíz o instale wooldridge.")
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  datos <- wooldridge::wage1
 }
-variables <- c("wage", "educ", "exper", "tenure", "female", "married")
-stopifnot(nrow(original) == 526L, all(variables %in% names(original)))
-print(colSums(is.na(original[variables])))
-datos <- original[complete.cases(original[variables]), variables]
-stopifnot(all(datos$wage > 0), all(datos$female %in% 0:1),
-          all(datos$married %in% 0:1), nrow(datos) > 100)
-str(datos)
+
+# Conserva las seis variables que utilizaremos en el taller.
+datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
 '''
+
 add('P1-01','¿Qué podemos preguntar a los datos?','Parte 1 · lámina 1','¿Qué sabemos de educación y salario de cada persona?','¿Cada fila representa una persona o un mes?','Carga la base e identifica wage y educ en seis filas.',load,'wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.','Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.','¿526 filas equivalen a 526 períodos? No.','Presencial')
 add('P1-02','Tres preguntas distintas','Parte 1 · lámina 2','¿Describir, explicar una causa o predecir?','Clasifica: ¿quién gana más?, ¿estudiar cambia el salario?, ¿cuánto ganará alguien?','Asocia cada pregunta con una finalidad.','preguntas <- data.frame(\n  pregunta = c("¿Cómo se relacionan educación y salario?",\n               "¿Más educación causa mayor salario?",\n               "¿Qué salario tendrá otra persona?"),\n  finalidad = c("Descripción", "Causalidad", "Predicción"))\nprint(preguntas)','Una misma tabla permite formular preguntas distintas, pero no garantiza resolverlas todas. Aquí no entrenamos predictores ni estimamos efectos.','Tratar una predicción acertada como identificación causal.','¿Una pregunta causal requiere supuestos adicionales? Sí.','Presencial')
 add('P1-03','De la pregunta a las columnas','Parte 1 · lámina 3','¿Qué parte del modelo conceptual observamos?','¿Está la habilidad directamente medida en estas columnas?','Distingue salario, educación, experiencia y factores no observados.','print(names(datos))\nprint(head(datos[c("wage", "educ", "exper")]))','Una formulación conceptual es salario = f(educación, experiencia, otros factores) + error. Habilidad y recursos familiares no se identifican en estas columnas. No estimamos f.','Interpretar el error como un simple error de digitación.','¿Que una variable no esté en la tabla significa que no importa? No.','Presencial')
@@ -257,7 +254,7 @@ Las aplicaciones son actividades propias elaboradas con datos asociados al libro
 | female | Indicador tal como aparece documentado en la base histórica | 1 si mujer, 0 en otro caso según esa codificación |
 | married | Estado civil registrado | 1 si casado/a, 0 en otro caso |
 
-La documentación advierte inconsistencias entre experiencia potencial y antigüedad en algunos registros. No las corregimos arbitrariamente ni usamos esas columnas para inferir trayectoria laboral. Se informan faltantes en las seis variables y se trabaja con casos completos; esto define el conjunto de análisis y no garantiza representatividad. `educ16` se deriva de educ >= 16, sin afirmar titulación.
+La documentación advierte inconsistencias entre experiencia potencial y antigüedad en algunos registros. No las corregimos arbitrariamente ni usamos esas columnas para inferir trayectoria laboral. La carga conserva todas las filas y selecciona las seis variables del taller, sin eliminar observaciones. Esta selección no garantiza representatividad. `educ16` se deriva de educ >= 16, sin afirmar titulación.
 
 ## Diagnóstico · antes de ejecutar
 
