@@ -257,6 +257,12 @@ legend("topleft",
  answer='La nube de puntos sugiere una asociación positiva: a más años de educación, los salarios tienden a ser mayores, aunque hay mucha dispersión. Las columnas de puntos aparecen porque varias personas tienen los mismos años de educación. A igual educación se observan salarios distintos y los colores permiten comparar ambos grupos. No se ha dibujado ni estimado una recta: el gráfico es una primera aproximación para estudiar una posible relación lineal. Esta asociación, por sí sola, no demuestra que estudiar cause un aumento salarial o que el género corresponda a una condición causal a las diferencias. Para llegar a esa conclusión se debe hacer un estudio más profundo.',
  error='', check='')
 
+umbral = next(a for a in activities if a['id'] == 'P1-05')
+umbral.update(
+ explanation_title='¿Por qué educ ≥ 16 y no educ ≥ 18?',
+ explanation='educ mide años de educación, no la edad. Usamos 16 como un umbral didáctico: la referencia habitual es 12 años escolares más unos 4 años de estudios universitarios en Estados Unidos. Esto no permite afirmar que cada persona tenga un título universitario. Exigir 18 años de educación seleccionaría una trayectoria educativa más larga y dejaría fuera a quienes registran 16 o 17 años. En esta base, educ ≥ 16 reúne 99 personas, mientras que educ ≥ 18 reúne solo 19. Para la comparación siguiente mantendremos dos grupos: menos de 16 años y 16 años o más. Es una decisión de agrupación para este ejercicio, no una frontera universal ni una prueba de causalidad.',
+ explanation_source='https://nces.ed.gov/surveys/ctes/tables/glossary_college.asp')
+
 activities = [a for a in activities if a['id'] != 'P1-03']
 
 header='''# Taller 1 · Del código a los datos
@@ -395,6 +401,8 @@ for a in activities:
 {('**Pregunta:** ' + a['question']) if a['question'] else ''}
 
 {a.get('description', '')}
+
+{('### ' + a['explanation_title'] + chr(10) + chr(10) + a['explanation'] + chr(10) + chr(10) + '[Referencia: duración habitual de estudios universitarios, NCES](' + a['explanation_source'] + '). Los tamaños de grupo se calcularon con el CSV del taller.') if a.get('explanation') else ''}
 
 {chr(10).join('- `' + name + '`: ' + meaning for name, meaning in a.get('variable_definitions', []))}
 

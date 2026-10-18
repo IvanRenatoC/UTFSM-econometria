@@ -30,6 +30,8 @@ for prefix,label,title,desc in groups:
   introduction_html=f'<p class="question">{e(a["question"])}</p>' if a['question'] else ''
   if a.get('description'):
    introduction_html += '<h4>Conoce la base de datos</h4><p>'+e(a['description'])+'</p><ul>'+''.join('<li><code>'+e(name)+'</code>: '+e(meaning)+'</li>' for name,meaning in a['variable_definitions'])+'</ul><p class="data-note">Fuente: <a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">documentación de wage1</a>. El paquete se instala desde CRAN con <code>repos = &quot;https://cloud.r-project.org/&quot;</code>.</p>'
+  if a.get('explanation'):
+   introduction_html += '<h4>'+e(a['explanation_title'])+'</h4><p>'+e(a['explanation'])+'</p><p class="data-note">Referencia: <a href="'+e(a['explanation_source'])+'">duración habitual de estudios universitarios, NCES</a>. Los tamaños de grupo se calcularon con el CSV del taller.</p>'
   anticipation=f'<div class="prompt"><strong>Antes de ejecutar</strong><p>{e(a["predict"])}</p></div>' if a['predict'] else ''
   note_html=f'<p><strong>{e(a["note"])}</strong></p>' if a.get('note') else ''
   comparison_html=f'<h4>Diferencia entre while y for</h4><p>{e(a["comparison"])}</p>' if a.get('comparison') else ''
