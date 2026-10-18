@@ -17,9 +17,10 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | Hora | Ruta y conducción |
 |---|---|
 | 18:50–18:55 | Diagnóstico del inicio. Pedir respuestas a tres estudiantes distintos. Abrir notebook y confirmar kernel. |
-| 18:55–19:00 | NIV-01. Escribe tu nombre: ejecutar print("tu nombre"), reemplazar el texto y observar la consola. |
-| 19:00–19:10 | NIV-02 (fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
-| 19:10–19:12 | NIV-03. Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
+| 18:55–18:57 | NIV-01 (lámina 01). Escribe tu nombre y observa la consola. |
+| 18:57–19:00 | NIV-ASIG (lámina 02). Asigna x e y, anticipa z y w y distingue guardar de imprimir. |
+| 19:00–19:10 | NIV-02 (lámina 03; fusiona las antiguas láminas 02 y 04). Crear, seleccionar y modificar un vector; después reservar y llenar con for. |
+| 19:10–19:12 | NIV-03 (lámina 04). Después de vectores y for, anticipar el mensaje con valores 3 y 8. |
 | 19:12–19:15 | NIV-05. Parejas completan una sucesión y revisan las otras. |
 | 19:15–19:20 | NIV-06. Preguntar qué permite terminar el while. |
 | 19:20–19:27 | NIV-07. Llenar matriz por filas/columnas con ciclos anidados. |
