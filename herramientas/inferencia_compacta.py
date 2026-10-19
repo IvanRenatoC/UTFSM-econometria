@@ -34,7 +34,7 @@ curve(dnorm(x, mean = mu, sd = sigma / sqrt(n)), add = TRUE,
 print(c(media_poblacional = mu, varianza_media = sigma^2 / n,
         error_estandar = sigma / sqrt(n)))'''),
  activity('P3-05','Intervalo de confianza para una media','media','ic-ejemplo1',
- 'Ejemplo de Sebastián: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.',
+ 'Ejemplo: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.',
  '''xbarra <- 200
 sigma <- 60
 n <- 36
@@ -79,7 +79,7 @@ points(rep(xbarra, 3), 1:3, pch = 19)
 n_requerido <- ceiling((qnorm((1 + confianza) / 2) * sigma / E)^2)
 print(c(margen_deseado = E, n_requerido = n_requerido))'''),
  activity('P3-11','Proporciones: intervalo y planificación','proporcion','ic-para-las-proporciones-ejemplo',
- 'Ejemplo de Sebastián: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.',
+ 'Ejemplo: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.',
  '''exitos <- 19
 n <- 200
 confianza <- 0.95
@@ -103,7 +103,7 @@ if (n >= 30 && exitos > 5 && n - exitos > 5) {
 n_requerido <- ceiling(z^2 * p_previa * (1 - p_previa) / E^2)
 print(c(n_requerido = n_requerido, largo_deseado = 2 * E))'''),
  activity('P3-15','Diferencia de dos medias independientes','diferencia','ejemplo_1',
- 'Ejemplo de Sebastián: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.',
+ 'Ejemplo: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.',
  '''xbarra <- 800000
 ybarra <- 680000
 sigma_x <- 60000
@@ -139,4 +139,4 @@ def render_inference(a,root):
  elif kind=='precision':controls=slider('n','Tamaño muestral',36,5,400)+confidence+slider('E','Margen deseado E',10,2,30,.5);formula='n requerido = techo((z × σ / E)²)'
  elif kind=='proporcion':controls=slider('n','Productos observados',200,50,1000)+slider('exitos','Productos defectuosos',19,1,199)+confidence+slider('p_previa','Proporción preliminar p*',.5,.05,.95,.01)+slider('E','Margen deseado E',.03,.01,.10,.005);formula='IC = p̂ ± z√(p̂(1−p̂)/n) · n = techo(z²p*(1−p*)/E²)'
  else:controls=slider('xbarra','Media de ingeniería',800000,600000,900000,10000)+slider('nx','n ingeniería',144,30,300)+slider('ny','n arquitectura',121,30,300)+confidence;formula='IC = (x̄−ȳ) ± z√(σₓ²/nₓ + σᵧ²/nᵧ)'
- return f'<div class="inference-demo" data-kind="{kind}"{attrs}><p>{e(a["task"])}</p><p class="inf-formula">{formula}</p><div class="inf-controls">{controls}</div><svg class="wage-chart inf-plot" viewBox="0 0 700 380" role="img" aria-label="Figura interactiva: {e(a["title"])}"></svg><p class="inf-reading" role="status"></p><p class="data-note">Referencia: <a href="{SOURCE}{"#"+a["source_anchor"]}">apartado correspondiente de Sebastián</a>. El código de abajo actualiza sus parámetros cuando mueves los controles.</p><details class="solution"><summary>Código en R de esta lámina</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code class="inf-r-code">{e(a["code"])}</code></pre></div></details></div>'
+ return f'<div class="inference-demo" data-kind="{kind}"{attrs}><p>{e(a["task"])}</p><p class="inf-formula">{formula}</p><div class="inf-controls">{controls}</div><svg class="wage-chart inf-plot" viewBox="0 0 700 380" role="img" aria-label="Figura interactiva: {e(a["title"])}"></svg><p class="inf-reading" role="status"></p><p class="data-note">Referencia: <a href="{SOURCE}{"#"+a["source_anchor"]}">Cátedra 1</a>.</p><details class="solution"><summary>Código en R de esta lámina</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code class="inf-r-code">{e(a["code"])}</code></pre></div></details></div>'
