@@ -522,6 +522,10 @@ for a in activities:
  bloque=id.split('-')[0]
  numeros_por_bloque[bloque] = numeros_por_bloque.get(bloque, 0) + 1
  numero = numeros_por_bloque[bloque]
+ if numero == 1 and bloque in ('P2', 'P3'):
+  titulo_bloque = {'P2': 'Parte 2 · Ayudantía · Repaso de estadística descriptiva', 'P3': 'Parte 3 · Ayudantía · Estadística inferencial'}[bloque]
+  md('# '+titulo_bloque+'\n', bloque.lower()+'-titulo')
+  sections.append('# '+titulo_bloque+'\n')
  if a.get('sampling_examples'):
   intro=f'<a id="{id}"></a>\n## Lámina {numero:02d} · {a["title"]}\n\n{a["task"]}\n\n[Tipos de muestreo en la clase de Sebastián](https://hizocar.github.io/econometria-usm/clases/clase1/#muestreo-aleatorio).\n\n### Preparación\n'
   md(intro,id.lower()+'-consigna');rc(a['preparation_code'],id.lower()+'-r')
