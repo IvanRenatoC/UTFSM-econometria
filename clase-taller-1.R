@@ -430,5 +430,25 @@ segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = "#0160A0")
 points(diferencia, 0.5, pch = 19)
 abline(v = 0, lty = 2)
 
+# Ejercitación: resuelve las consignas de la guía.
+# Desafío wall balls: escribe aquí tu programa.
+# Ejecuta la instalación una vez, si aún no tienes el paquete:
+# install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+library(wooldridge)
+datos_ejercicio <- as.data.frame(wooldridge::wage2)
+head(datos_ejercicio)
+# Diccionario completo de las variables:
+help("wage2", package = "wooldridge")
+# Pregunta 1: escribe tu respuesta.
+# Pregunta 2: escribe tu respuesta.
+# Pregunta 3: escribe tu respuesta.
+# Pregunta 4: escribe tu respuesta.
+# Pregunta 5: escribe tu respuesta.
+# Pregunta 6: escribe tu respuesta.
+# Pregunta 7: escribe tu respuesta.
+# Pregunta 8: escribe tu respuesta.
+# Pregunta 9: escribe tu respuesta.
+# Pregunta 10: escribe tu respuesta.
+
 cat("Todas las actividades finalizaron. Revise también gráficos e interpretaciones.\n")
 sessionInfo()

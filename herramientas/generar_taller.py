@@ -592,6 +592,13 @@ for a in activities:
   md(practice['answer'],id.lower()+'-practica-lectura')
   sections.extend([exercise,'### Solución del ejercicio de comprobación\n','```r\n'+practice['code']+'\n```\n',practice['answer']])
 md(closing,'cierre'); sections.append(closing)
+from ejercitacion import markdown as ejercicios_markdown, LOAD as ejercicios_carga
+md(ejercicios_markdown(), 'ejercitacion')
+sections.append(ejercicios_markdown())
+rc('# Escribe aquí tu solución del desafío de wall balls.', 'ejercitacion-wall-balls-r')
+rc(ejercicios_carga, 'ejercitacion-wage2-carga')
+for pregunta in range(1, 11):
+ rc(f'# Respuesta a la pregunta {pregunta}: código e interpretación.', f'ejercitacion-pregunta-{pregunta}')
 rows=['| Actividad | Referencia web | Sección y celda de código del notebook | Modalidad |','|---|---|---|---|']
 for a in activities:
  cells_ref=f"`{a['id'].lower()}-consigna`" if a.get('overview') or a.get('reason_only') else f"`{a['id'].lower()}-consigna` / `{a['id'].lower()}-r`"
@@ -631,6 +638,7 @@ for a in activities:
  script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
  if 'practice' in a:
   script.extend(['\n# Comprueba lo aprendido: '+a['practice']['task']+'\n',a['practice']['code']+'\n'])
+script.extend(['\n# Ejercitación: resuelve las consignas de la guía.\n', '# Desafío wall balls: escribe aquí tu programa.\n', ejercicios_carga+'\n', '\n'.join(f'# Pregunta {i}: escribe tu respuesta.' for i in range(1, 11))+'\n'])
 script.append('\ncat("Todas las actividades finalizaron. Revise también gráficos e interpretaciones.\\n")\nsessionInfo()\n')
 (root/'clase-taller-1.R').write_text(''.join(script))
 (root/'guia-docente-taller-1.md').write_text('''# Guía docente · Taller 1
@@ -702,7 +710,7 @@ with (root/'guia-docente-taller-1.md').open('a') as archivo:
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
 assert len(activities)==25
-assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
+assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)+12
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
  rows=list(csv.DictReader(f))
