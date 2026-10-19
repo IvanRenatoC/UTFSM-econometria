@@ -25,6 +25,8 @@ if (file.exists("datos/wage1.csv")) {
 # Conserva las seis variables que utilizaremos en el taller.
 datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
+str(datos)
+summary(datos)
 '''
 
 add('P1-01','¿Qué podemos preguntar a los datos?','Parte 1 · lámina 1','¿Qué sabemos de educación y salario de cada persona?','¿Cada fila representa una persona o un mes?','Carga la base e identifica wage y educ en seis filas.',load,'wage1 es un corte transversal observacional de Estados Unidos en 1976. wage es remuneración por hora en dólares nominales de ese período; educ son años de educación. No son pesos chilenos actuales. La inspección no prueba efectos.','Confundir índice de fila con tiempo o borrar faltantes sin informar cuántos.','¿526 filas equivalen a 526 períodos? No.','Presencial')
@@ -290,6 +292,13 @@ boxplot(datos$wage ~ grupo,
  answer='La línea dentro de la caja es la mediana; la caja resume la mitad central de los salarios. Los bigotes llegan hasta los valores más extremos dentro de 1,5 veces el rango intercuartílico desde los bordes de la caja. Los puntos exteriores son valores atípicos según esta regla, no necesariamente errores. Compara medianas y dispersión; las diferencias entre grupos no demuestran causalidad.',
  error='', check='')
 
+# Código explícito de cada gráfico, compartido entre web y notebook.
+from codigos_graficos import EXPLORACION, BOXPLOTS
+for actividad_id, bloques in [('P1-02', EXPLORACION), ('P1-06', BOXPLOTS)]:
+ actividad = next(a for a in activities if a['id'] == actividad_id)
+ actividad['code'] = '\n\n'.join('# '+titulo+'\n'+codigo for titulo, codigo in bloques)
+ actividad['task'] = 'Ejecuta los bloques de R para reproducir cada uno de los gráficos de esta lámina, después de cargar datos en la lámina 02.'
+
 from video_datasets import CHAPTERS
 estructuras = next(a for a in activities if a['id'] == 'P1-07')
 estructuras.update(
@@ -328,6 +337,8 @@ razones = next(a for a in activities if a['id'] == 'P1-09')
 razones.update(
  question='¿Para qué trabajar con una parte de los datos?', predict='',
  reason_panels=[
+  ('computacional', 'Costo computacional',
+   'Con volúmenes muy grandes, por ejemplo terabytes (TB), incluso un análisis descriptivo puede requerir mucho tiempo, memoria e infraestructura analítica. Repetir cálculos para explorar y aprender de los datos también tiene un costo. Una alternativa es trabajar con una muestra representativa de la población de datos, seleccionada mediante un diseño acorde con el objetivo. Esto reduce la carga de cálculo, pero introduce incertidumbre muestral: hay que revisar la cobertura de los grupos, la precisión y posibles sesgos, especialmente si interesan eventos poco frecuentes. Una muestra grande o cómoda de obtener no garantiza representatividad.'),
   ('presupuesto', 'Presupuesto',
    'Observar a toda la población puede exigir más dinero, tiempo y personal de los disponibles. Una muestra permite planificar la recolección y concentrar recursos en mediciones de calidad. Por ejemplo, con un presupuesto de 100 unidades y un costo de 5 por entrevista, podemos financiar 20 entrevistas. El tamaño y la selección deben responder al objetivo del estudio: ahorrar no garantiza representatividad ni precisión.'),
   ('validaciones', 'Validaciones (train / test)',
