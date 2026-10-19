@@ -125,3 +125,13 @@ for(const summary of document.querySelectorAll('.salary-summary')){
     });
   }
 }
+
+for(const demo of document.querySelectorAll('.variance-demo')){
+ const slider=demo.querySelector('.variance-scale'),button=demo.querySelector('.variance-play');let playing=false,start=0;
+ function update(){const s=Number(slider.value);for(const dot of demo.querySelectorAll('.variance-point'))dot.setAttribute('cx',String(365+s*Number(dot.dataset.z)*30));demo.querySelector('.variance-reading').textContent=`Desviación = ${s.toFixed(2)} · Varianza = ${(s*s).toFixed(2)}`;}
+ function stop(){playing=false;button.setAttribute('aria-pressed','false');button.textContent='Animar aumento de varianza';}
+ slider.addEventListener('input',()=>{stop();update();});
+ function tick(t){if(!playing)return;if(demo.closest('.slide-body').hidden){stop();return;}if(!start)start=t;const p=Math.min(1,(t-start)/6500);slider.value=String(.2+2.3*p);update();if(p<1)requestAnimationFrame(tick);else stop();}
+ button.addEventListener('click',()=>{if(playing){stop();return;}playing=true;start=0;slider.value='.2';update();button.setAttribute('aria-pressed','true');button.textContent='Pausar animación';requestAnimationFrame(tick);});
+ update();
+}
