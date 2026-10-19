@@ -435,63 +435,82 @@ plot(range(c(ic, 0)), c(0, 1), type = &quot;n&quot;, yaxt = &quot;n&quot;,
      xlab = &quot;Diferencia de medias (pesos del ejemplo de cátedra)&quot;, ylab = &quot;&quot;)
 segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = &quot;#0160A0&quot;)
 points(diferencia, 0.5, pch = 19)
-abline(v = 0, lty = 2)</code></pre></div></details></div></div></article></section><section class="closure brief" id="cierre"><p class="eyebrow">Cierre</p><h2>Antes de salir: explica lo que hiciste</h2><ol><li>¿Qué evita que un while sea infinito?</li><li>¿Una muestra por conveniencia representa a todos?</li><li>¿Qué medida reacciona más ante un extremo?</li><li>¿Un IC de 95% contiene el 95% de los salarios?</li><li>¿Qué pasa con el margen al cuadruplicar n?</li><li>¿Una diferencia salarial prueba un efecto causal?</li></ol><details class="check"><summary>Revisar respuestas</summary><div class="solution-body"><ol><li>Actualizar el estado y establecer un máximo de iteraciones.</li><li>No; hay exclusiones y probabilidades de selección no justificadas.</li><li>En general, la media.</li><li>No; la confianza describe la cobertura del procedimiento para un parámetro.</li><li>Se reduce a la mitad con sigma y confianza constantes.</li><li>No; no se han aislado los otros factores.</li></ol></div></details><p>Para continuar: según indicaciones de la cátedra.</p></section><section class="brief" id="ejercitacion"><h2>✍️ Ejercitación</h2><details class="check"><summary>Parte 1 · Programación en R: 100 wall balls</summary><div class="solution-body"><p>En disciplinas deportivas y clubes de entrenamiento se practica un ejercicio llamado wall ball. Consiste en lanzar un balón de aproximadamente 60 cm de diámetro mientras se pasa de una posición de sentadilla a una postura completamente erguida.</p><p>Para este problema, supón que una persona debe completar 100 lanzamientos y no puede realizar más de 20 seguidos. Cada vez que interrumpe una tanda para descansar, el descanso dura tres segundos por cada lanzamiento de esa tanda: por ejemplo, después de cinco lanzamientos descansa 15 segundos. No se cuenta un descanso después del lanzamiento número 100.</p><p>Dentro de cada tanda, el lanzamiento número j tarda 1,1 + 0,3 × j segundos. La numeración comienza en j = 1 y se reinicia después de cada descanso. Supón que la persona puede retomar el ejercicio con ese mismo patrón tras descansar.</p><p>Escribe un programa en R que utilice ciclos for o while y vectores para encontrar una combinación de tandas que permita completar los 100 lanzamientos en el menor tiempo total posible. Almacena la cantidad de lanzamientos de cada tanda, calcula sus tiempos de ejecución y descanso, y muestra la sucesión óptima y el tiempo total. Justifica que la solución es óptima, en lugar de comparar solo algunas combinaciones elegidas a mano.</p><p>El diámetro y las reglas de tiempo son supuestos del ejercicio de programación. No se incluye un tiempo fijo adicional por detenerse ni por reiniciar una tanda.</p><details class="solution"><summary>Solución paso a paso en R</summary><div class="solution-body"><p>El mínimo bajo estas reglas es 423,5 segundos. Una solución es realizar 90 tandas de un lanzamiento y terminar con una de diez. La ausencia de un costo fijo por detenerse favorece las tandas individuales.</p><pre><code># Tiempos en décimas de segundo para comparar valores exactos.
+abline(v = 0, lty = 2)</code></pre></div></details></div></div></article></section><section class="closure brief" id="cierre"><p class="eyebrow">Cierre</p><h2>Antes de salir: explica lo que hiciste</h2><ol><li>¿Qué evita que un while sea infinito?</li><li>¿Una muestra por conveniencia representa a todos?</li><li>¿Qué medida reacciona más ante un extremo?</li><li>¿Un IC de 95% contiene el 95% de los salarios?</li><li>¿Qué pasa con el margen al cuadruplicar n?</li><li>¿Una diferencia salarial prueba un efecto causal?</li></ol><details class="check"><summary>Revisar respuestas</summary><div class="solution-body"><ol><li>Actualizar el estado y establecer un máximo de iteraciones.</li><li>No; hay exclusiones y probabilidades de selección no justificadas.</li><li>En general, la media.</li><li>No; la confianza describe la cobertura del procedimiento para un parámetro.</li><li>Se reduce a la mitad con sigma y confianza constantes.</li><li>No; no se han aislado los otros factores.</li></ol></div></details><p>Para continuar: según indicaciones de la cátedra.</p></section><section class="brief" id="ejercitacion"><h2>✍️ Ejercitación</h2><details class="check"><summary>Parte 1 · Programación en R: 100 wall balls</summary><div class="solution-body"><p>En disciplinas deportivas y clubes de entrenamiento se practica un ejercicio llamado wall ball. Consiste en lanzar un balón de aproximadamente 60 cm de diámetro mientras se pasa de una posición de sentadilla a una postura completamente erguida.</p><p>Para este problema, supón que una persona debe completar 100 lanzamientos y no puede realizar más de 20 lanzamientos seguidos y debe completar la rutina en un máximo de 20 tandas. Una tanda es un grupo de lanzamientos consecutivos antes de descansar. Cada vez que interrumpe una tanda para descansar, el descanso dura tres segundos por cada lanzamiento de esa tanda: por ejemplo, después de cinco lanzamientos descansa 15 segundos. No se cuenta un descanso después del lanzamiento número 100.</p><p>Dentro de cada tanda, el lanzamiento número j tarda 1,1 + 0,3 × j segundos. La numeración comienza en j = 1 y se reinicia después de cada descanso. Supón que la persona puede retomar el ejercicio con ese mismo patrón tras descansar.</p><p>Escribe un programa en R que utilice ciclos for o while y vectores para encontrar una combinación de tandas que permita completar los 100 lanzamientos en el menor tiempo total posible. Almacena la cantidad de lanzamientos de cada tanda, calcula sus tiempos de ejecución y descanso, y muestra la sucesión óptima y el tiempo total. Justifica que la solución es óptima, en lugar de comparar solo algunas combinaciones elegidas a mano.</p><p>El diámetro y las reglas de tiempo son supuestos del ejercicio de programación. No se incluye un tiempo fijo adicional por detenerse ni por reiniciar una tanda.</p><details class="solution"><summary>Solución paso a paso en R</summary><div class="solution-body"><p>El mínimo con un máximo de 20 tandas es 471,5 segundos. La solución cumple ambos límites: como máximo 20 tandas y 20 lanzamientos por tanda. Consulta el registro y la explicación del notebook para ver la sucesión óptima.</p><pre><code># Restricciones: 100 lanzamientos, como máximo 20 tandas,
+# y entre 1 y 20 lanzamientos en cada tanda.
 meta &lt;- 100
-max_tanda &lt;- 20
-# El lanzamiento j tarda 11 + 3*j décimas.
-tiempo_tanda &lt;- numeric(max_tanda)
-for (k in 1:max_tanda) {
+max_tandas &lt;- 20
+max_lanzamientos &lt;- 20
+# Tiempos en décimas de segundo: evita errores de redondeo.
+tiempo_tanda &lt;- numeric(max_lanzamientos)
+for (k in 1:max_lanzamientos) {
   for (j in 1:k) {
     tiempo_tanda[k] &lt;- tiempo_tanda[k] + 11 + 3 * j
   }
 }
 
-# mejor[n+1]: mínimo tiempo para completar n lanzamientos,
-# sin descanso después del último. mejor[1] corresponde a n = 0.
-mejor &lt;- rep(Inf, meta + 1)
-elegida &lt;- numeric(meta + 1)
-mejor[1] &lt;- 0
-for (n in 1:meta) {
-  for (k in 1:min(max_tanda, n)) {
-    descanso &lt;- 0
-    if (k &lt; n) {
-      descanso &lt;- 30 * k
-    }
-    candidato &lt;- tiempo_tanda[k] + descanso + mejor[n - k + 1]
-    if (candidato &lt; mejor[n + 1]) {
-      mejor[n + 1] &lt;- candidato
-      elegida[n + 1] &lt;- k
+# Guardamos en vectores los estados (n lanzamientos, b tandas exactas).
+# Cada grupo de meta+1 posiciones corresponde a una cantidad de tandas.
+posicion &lt;- function(n, b) {
+  n + 1 + b * (meta + 1)
+}
+mejor &lt;- rep(Inf, (meta + 1) * (max_tandas + 1))
+elegida &lt;- numeric(length(mejor))
+mejor[posicion(0, 0)] &lt;- 0
+for (b in 1:max_tandas) {
+  for (n in 1:meta) {
+    for (k in 1:min(max_lanzamientos, n)) {
+      descanso &lt;- 0
+      if (k &lt; n) {
+        descanso &lt;- 30 * k
+      }
+      candidato &lt;- tiempo_tanda[k] + descanso + mejor[posicion(n - k, b - 1)]
+      if (candidato &lt; mejor[posicion(n, b)]) {
+        mejor[posicion(n, b)] &lt;- candidato
+        elegida[posicion(n, b)] &lt;- k
+      }
     }
   }
 }
-
-# Recuperar las tandas elegidas desde el problema de 100 lanzamientos.
-tandas &lt;- numeric(meta)  # A lo sumo, 100 tandas de un lanzamiento.
-pendientes &lt;- meta
-b &lt;- 0
-while (pendientes &gt; 0) {
-  b &lt;- b + 1
-  tandas[b] &lt;- elegida[pendientes + 1]
-  pendientes &lt;- pendientes - tandas[b]
+# Elegir entre todas las cantidades permitidas de tandas, no imponer 20.
+tiempo_final &lt;- numeric(max_tandas)
+for (b in 1:max_tandas) {
+  tiempo_final[b] &lt;- mejor[posicion(meta, b)]
 }
-tandas &lt;- tandas[1:b]
-# Un descanso después de cada tanda, excepto la última.
+if (!any(is.finite(tiempo_final))) {
+  stop(&quot;No existe un plan que cumpla estas restricciones.&quot;)
+}
+b_optimo &lt;- which.min(tiempo_final)
+
+# Recuperar la sucesión óptima.
+tandas &lt;- numeric(b_optimo)
+pendientes &lt;- meta
+b_restantes &lt;- b_optimo
+i &lt;- 0
+while (pendientes &gt; 0) {
+  i &lt;- i + 1
+  k &lt;- elegida[posicion(pendientes, b_restantes)]
+  tandas[i] &lt;- k
+  pendientes &lt;- pendientes - k
+  b_restantes &lt;- b_restantes - 1
+}
 ejecucion &lt;- tiempo_tanda[tandas] / 10
 descansos &lt;- 3 * tandas
-descansos[b] &lt;- 0
+descansos[length(tandas)] &lt;- 0
 registro &lt;- data.frame(
-  tanda = 1:b, lanzamientos = tandas,
-  acumulado = cumsum(tandas),
-  ejecucion_seg = ejecucion, descanso_seg = descansos,
+  tanda = seq_along(tandas), lanzamientos = tandas,
+  acumulado = cumsum(tandas), ejecucion_seg = ejecucion,
+  descanso_seg = descansos,
   tiempo_acumulado_seg = cumsum(ejecucion + descansos)
 )
 print(registro)
 print(tandas)
-cat(&quot;Tiempo mínimo:&quot;, mejor[meta + 1] / 10, &quot;segundos\n&quot;)
-cat(&quot;Tandas:&quot;, b, &quot;| Descansos:&quot;, b - 1, &quot;\n&quot;)
+cat(&quot;Tiempo mínimo:&quot;, tiempo_final[b_optimo] / 10, &quot;segundos\n&quot;)
+cat(&quot;Tandas:&quot;, length(tandas), &quot;| Descansos:&quot;, length(tandas) - 1, &quot;\n&quot;)
 cat(&quot;Tiempo lanzando:&quot;, sum(ejecucion), &quot;| Tiempo descansando:&quot;, sum(descansos), &quot;\n&quot;)
-stopifnot(sum(tandas) == meta, all(tandas &gt;= 1 &amp; tandas &lt;= max_tanda),
-          abs(sum(ejecucion + descansos) - mejor[meta + 1] / 10) &lt; 1e-9)
+stopifnot(sum(tandas) == meta, length(tandas) &lt;= max_tandas,
+          all(tandas &gt;= 1 &amp; tandas &lt;= max_lanzamientos),
+          b_restantes == 0,
+          abs(sum(ejecucion + descansos) - tiempo_final[b_optimo] / 10) &lt; 1e-9)
 </code></pre><p><a href="solucion-ejercitacion-taller-1.ipynb" download>Descargar notebook de soluciones paso a paso ↓</a></p></div></details></div></details><details class="check"><summary>Parte 2 · Análisis estadístico con wage2</summary><div class="solution-body"><p>Trabaja con wage2, otra base de corte transversal del libro Wooldridge: 935 observaciones y 17 variables correspondientes a 1980. Cada fila representa a una persona. Aquí wage es el ingreso mensual; no es el salario por hora de wage1. No combines ambas escalas.</p><p>Usa wage (ingreso mensual), educ (años de educación), exper (años de experiencia), tenure (años con el empleador actual), age (edad), hours (horas semanales promedio) y married (1: casado; 0: no casado). El grupo no casado no equivale necesariamente a soltero. La documentación advierte inconsistencias entre tenure, exper y age: identifícalas y no las corrijas arbitrariamente.</p><p>Responde con código R, resultados e interpretación breve. En cada cálculo informa el número de casos utilizados y los faltantes excluidos. Los intervalos se plantean como aproximaciones de práctica, bajo independencia y representatividad; no prueban causalidad ni garantizan representar una población sin revisar el diseño muestral.</p><p><a href="https://justinmshea.github.io/wooldridge/reference/wage2.html">Diccionario y fuente de wage2 ↗</a></p><h3>Descarga y carga de los datos</h3><pre><code># Ejecuta la instalación una vez, si aún no tienes el paquete:
 # install.packages(&quot;wooldridge&quot;, repos = &quot;https://cloud.r-project.org/&quot;)
 library(wooldridge)
