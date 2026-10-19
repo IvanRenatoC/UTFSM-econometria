@@ -364,6 +364,28 @@ muestreo.update(
  answer='Simple: sortea personas directamente. Sistemático: sortea un inicio y recorre la lista cada 20 posiciones. Estratificado: sortea personas dentro de todos los estratos. Conglomerados de dos etapas: sortea grupos y después personas dentro de esos grupos.',
  check='¿Qué diferencia hay entre estratificar y seleccionar conglomerados? En el estratificado seleccionamos dentro de todos los estratos; en conglomerados seleccionamos solo algunos grupos y, en este ejemplo, sorteamos personas dentro de ellos.')
 
+descriptiva = next(a for a in activities if a['id'] == 'P1-14')
+descriptiva.update(
+ title='Análisis descriptivo de wage1', descriptive=True,
+ question='¿Qué nos dicen las seis variables de la base completa?', predict='',
+ task='Explora calidad, medidas descriptivas, frecuencias, correlaciones y salarios por grupo. El código completo en R está al final de la lámina y en la celda siguiente. Describe las 526 personas de la base completa, no las submuestras de los ejercicios de muestreo.',
+ code=(root/'herramientas/analisis_descriptivo_wage1.R').read_text().strip(),
+ answer='La media y la mediana describen el centro; varianza, desviación y RIQ describen dispersión; percentiles y forma ayudan a reconocer asimetría y valores extremos. Las correlaciones Pearson y Spearman resumen asociaciones diferentes. Las medias de indicadores 0/1 son proporciones. Las comparaciones por educación, sexo y estado civil son descriptivas, no causales.',
+ error='', check='¿La media de female es un salario? No: es la proporción de registros con female = 1. ¿Una correlación demuestra causalidad? No.')
+
+# La antigua lámina 09 de Econometría abre ahora la ayudantía descriptiva.
+activities = [a for a in activities if a['id'] != 'P2-01']
+descriptiva.update(id='P2-01', title='Salarios: promedio, mediana, moda y percentiles',
+ slides='Ayudantía · Localización central y percentiles de Sebastián',
+ question='¿Cómo se distribuye el salario total y por estado civil?',
+ task='Compara el total, no casados (married = 0) y casados (married = 1). Obtén promedio, mediana, moda y percentiles 24, 50 y 75. married = 0 no identifica exclusivamente a personas solteras.',
+ code=(root/'herramientas/analisis_descriptivo_wage1.R').read_text().strip(),
+ answer='La mediana coincide con P50. La moda puede contener varios valores empatados. Los percentiles usan type = 7. Los salarios son USD por hora de 1976 y la comparación entre estados civiles es descriptiva, no causal.',
+ check='¿P50 coincide con la mediana? Sí. ¿married = 0 significa exclusivamente soltero? No.')
+activities.remove(descriptiva)
+inicio_p2 = next(i for i,a in enumerate(activities) if a['id'].startswith('P2-'))
+activities.insert(inicio_p2,descriptiva)
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -583,7 +605,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 44 láminas (10 de nivelación, 9 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 44 láminas resueltas en clase.
+**Organización actual:** 43 láminas (10 de nivelación, 8 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 43 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -659,7 +681,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==44
+assert len(activities)==43
 assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:

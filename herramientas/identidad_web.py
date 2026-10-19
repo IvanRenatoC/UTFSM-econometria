@@ -53,7 +53,7 @@ def animacion_escalera():
 def aplicar_identidad(html, activities):
     nav_left='''<aside class="class-sidebar" aria-label="Temario de talleres"><nav><p class="sidebar-title">Clases</p><a class="classes-home" href="#inicio">🏫 Clases</a><a class="current" href="#inicio" aria-current="page">Clase 1: Introducción a la computación estadística usando R</a><a href="#clase-2">Clase 2: Regresión lineal simple en R</a></nav></aside>'''
     toc=['<aside class="contents-sidebar" aria-label="Tabla de contenidos"><nav><p class="sidebar-title">Tabla de contenidos</p><a href="#objetivos">🎯 Objetivos de la sesión</a><a href="#agenda">🗓️ Agenda del taller (18:50–21:25)</a>']
-    groups=[('NIV','Nivelación · Computación en R'),('P1','Parte 1 · Introducción a la econometría'),('P2','Parte 2 · Estadística descriptiva'),('P3','Parte 3 · Estadística inferencial')]
+    groups=[('NIV','Nivelación · Computación en R'),('P1','Parte 1 · Introducción a la econometría'),('P2','Ayudantía · Repaso de estadística descriptiva en R'),('P3','Parte 3 · Estadística inferencial')]
     for prefix,label in groups:
         toc.append(f'<a class="toc-group" href="#{prefix}">{label}</a><ul>')
         for a in activities:
