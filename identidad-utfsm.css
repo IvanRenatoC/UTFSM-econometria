@@ -132,3 +132,14 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 .dataset-quiz legend{font-weight:700;color:var(--ink);padding:0 6px}
 .dataset-feedback{font-weight:600}
 @media print{.dataset-video,.dataset-chapters,.dataset-status{display:none}.dataset-lesson details>.solution-body{display:block}}
+
+.salary-choices{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.salary-group{font:inherit;font-size:13px;padding:8px 12px;border:2px solid #0160a0;border-radius:7px;background:var(--paper);color:var(--ink)}
+.salary-group[aria-pressed="true"]{background:#0160a0;color:white}
+.salary-panel[hidden]{display:none}
+.salary-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.salary-cards>div{background:var(--wash);border-radius:7px;padding:12px}
+.salary-cards span{display:block;font-size:12px;color:var(--muted)}
+.salary-cards strong{font-size:22px;color:var(--ink)}
+@media(max-width:600px){.salary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{.salary-panel[hidden]{display:block!important}.salary-choices{display:none}}

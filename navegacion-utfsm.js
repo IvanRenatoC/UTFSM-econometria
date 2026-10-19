@@ -115,3 +115,13 @@ for(const lesson of document.querySelectorAll('.dataset-lesson')){
     });
   }
 }
+
+// Salarios por estado civil: mostrar un grupo sin perder la comparación global.
+for(const summary of document.querySelectorAll('.salary-summary')){
+  for(const button of summary.querySelectorAll('.salary-group')){
+    button.addEventListener('click',()=>{
+      for(const choice of summary.querySelectorAll('.salary-group'))choice.setAttribute('aria-pressed',String(choice===button));
+      for(const panel of summary.querySelectorAll('.salary-panel'))panel.hidden=panel.id!==button.getAttribute('aria-controls');
+    });
+  }
+}

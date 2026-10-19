@@ -1086,65 +1086,14 @@ print(muestra_conglomerados[c("wage", "educ", "female")])
 La muestra tiene 24 personas: 12 de cada uno de los dos grupos sorteados. En el estratificado entran personas de todos los estratos; aquí solo de los conglomerados elegidos. Si incluyéramos a todas las personas de esos grupos, sería un diseño de una etapa. Los grupos artificiales permiten ilustrar el algoritmo, no evaluar la eficiencia de un diseño geográfico real.
 
 
-<a id="P1-14"></a>
-## Lámina 09 · Estadística descriptiva e inferencial
-
-**Identificador de enlace:** `P1-14`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 1 · lámina 20 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Describimos la tabla o hablamos de una población?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Decir “en estas filas” cambia el alcance?
-
-**Consigna:** Redacta una frase descriptiva y otra inferencial, identificando qué supuesto falta.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P1-14
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-frases <- c("Describo los salarios de las filas observadas",
-            "Quiero estimar un promedio de una población definida")
-print(frases)
-```
-
-
-**Lectura del resultado:** La segunda frase exige definir población y mecanismo de muestreo. Continúa con la descripción antes de construir intervalos.
-
-**Error frecuente:** Generalizar sin identificar el universo.
-
-**Comprueba:** ¿La inferencia usa solo programación? No, también supuestos.
-
-
 <a id="P2-01"></a>
-## Lámina 01 · Ramas de la estadística
+## Lámina 01 · Salarios: promedio, mediana, moda y percentiles
 
 **Identificador de enlace:** `P2-01`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 2 · lámina 1 · **Modalidad:** Ampliación autónoma.
+**Referencia:** Ayudantía · Localización central y percentiles de Sebastián · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Qué puede decirnos una tabla antes de generalizar?
-
-
+**Pregunta:** ¿Cómo se distribuye el salario total y por estado civil?
 
 
 
@@ -1158,9 +1107,11 @@ print(frases)
 
 
 
-**Antes de ejecutar:** ¿Un resumen de esta muestra es ya una ley general?
 
-**Consigna:** Selecciona la variable salarial y verifica su tamaño.
+
+
+
+**Consigna:** Compara el total, no casados (married = 0) y casados (married = 1). Obtén promedio, mediana, moda y percentiles 24, 50 y 75. married = 0 no identifica exclusivamente a personas solteras.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1171,16 +1122,44 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-x <- datos$wage
-print(length(x))
+# Salarios de la base completa wage1, no de las submuestras anteriores.
+if (file.exists("datos/wage1.csv")) {
+  base <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  base <- as.data.frame(wooldridge::wage1)
+}
+# married = 0 significa no casado/a; no identifica solamente a solteros.
+grupos <- list(Total = base$wage,
+               No_casados = base$wage[base$married == 0],
+               Casados = base$wage[base$married == 1])
+
+resumir <- function(x) {
+  frecuencias <- table(x)
+  modas <- names(frecuencias)[frecuencias == max(frecuencias)]
+  percentiles <- quantile(x, probs = c(0.24, 0.50, 0.75), type = 7,
+                         names = FALSE)
+  data.frame(n = length(x), promedio = mean(x), mediana = median(x),
+             moda = paste(modas, collapse = "; "),
+             P24 = percentiles[1], P50 = percentiles[2], P75 = percentiles[3])
+}
+resumen <- do.call(rbind, lapply(grupos, resumir))
+print(resumen)
+
+# Comparar el promedio de cada grupo.
+barplot(resumen$promedio, names.arg = rownames(resumen),
+        col = c("#00875A", "#0160A0", "#F8C751"),
+        ylab = "Salario por hora (USD de 1976)",
+        main = "Promedio salarial: total y estado civil")
+# La mediana coincide con P50. Las diferencias no demuestran causalidad.
 ```
 
 
-**Lectura del resultado:** Descriptiva resume x; inferencia requiere un marco adicional. Los datos conservan sus unidades históricas.
+**Lectura del resultado:** La mediana coincide con P50. La moda puede contener varios valores empatados. Los percentiles usan type = 7. Los salarios son USD por hora de 1976 y la comparación entre estados civiles es descriptiva, no causal.
 
-**Error frecuente:** Cambiar de población sin avisar.
-
-**Comprueba:** ¿Un histograma es descriptivo? Sí.
+**Comprueba:** ¿P50 coincide con la mediana? Sí. ¿married = 0 significa exclusivamente soltero? No.
 
 
 <a id="P2-02"></a>
@@ -2486,8 +2465,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-06 | Parte 1 · lámina 7 | `p1-06-consigna` / `p1-06-r` | Ampliación autónoma |
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
-| P1-14 | Parte 1 · lámina 20 | `p1-14-consigna` / `p1-14-r` | Presencial |
-| P2-01 | Parte 2 · lámina 1 | `p2-01-consigna` / `p2-01-r` | Ampliación autónoma |
+| P2-01 | Ayudantía · Localización central y percentiles de Sebastián | `p2-01-consigna` / `p2-01-r` | Presencial |
 | P2-02 | Parte 2 · lámina 2 | `p2-02-consigna` / `p2-02-r` | Presencial |
 | P2-03 | Parte 2 · láminas 3–4 | `p2-03-consigna` / `p2-03-r` | Presencial |
 | P2-04 | Parte 2 · lámina 5 | `p2-04-consigna` / `p2-04-r` | Presencial |
@@ -2531,4 +2509,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 44 láminas (10 de nivelación, 9 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 44 láminas resueltas en clase.
+**Organización actual:** 43 láminas (10 de nivelación, 8 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 43 láminas resueltas en clase.
