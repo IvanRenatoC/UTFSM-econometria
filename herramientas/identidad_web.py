@@ -70,7 +70,7 @@ def aplicar_identidad(html, activities):
     html=html.replace('</table></details>','</table></section>',1)
     html=html.replace('<main id="contenido">','<div class="page-layout">'+nav_left+'<main id="contenido">',1)
     html=html.replace('</main>','</main>'+''.join(toc)+'</div>',1)
-    html=html.replace('<footer class="footer">','<section class="next-class" id="clase-2"><h2>📚 Para la próxima clase</h2><p><strong>Clase 2: Regresión lineal simple en R.</strong></p><p>Continúa con la lectura indicada por Sebastián: capítulo 1 y apéndice C de Wooldridge. El material del segundo taller se incorporará cuando esté preparado.</p></section><footer class="footer">',1)
+    html=html.replace('<footer class="footer">','<section class="next-class" id="clase-2"><h2>📚 Para la próxima clase</h2><p><strong>Clase 2: Regresión lineal simple en R.</strong></p><p>Próximo lunes.</p></section><footer class="footer">',1)
     html=html.replace('<title>Taller 1 · Econometría en R · UTFSM</title>','<title>Clase 1 · Computación estadística en R · Econometría ICS-294</title>')
     html=html.replace('</head>','<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="identidad-utfsm.css"></head>')
     html=html.replace('</body>','<script src="navegacion-utfsm.js"></script></body>')
