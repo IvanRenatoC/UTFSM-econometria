@@ -1327,7 +1327,7 @@ print(c(media_poblacional = mu, varianza_media = sigma^2 / n,
 
 
 
-**Consigna:** Ejemplo de Sebastián: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
+**Consigna:** Ejemplo: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1363,7 +1363,7 @@ print(mean(cubre))
 ```
 
 
-**Lectura del resultado:** Ejemplo de Sebastián: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
+**Lectura del resultado:** Ejemplo: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
 
 
 <a id="P3-07"></a>
@@ -1452,7 +1452,7 @@ print(c(margen_deseado = E, n_requerido = n_requerido))
 
 
 
-**Consigna:** Ejemplo de Sebastián: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
+**Consigna:** Ejemplo: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1488,7 +1488,7 @@ print(c(n_requerido = n_requerido, largo_deseado = 2 * E))
 ```
 
 
-**Lectura del resultado:** Ejemplo de Sebastián: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
+**Lectura del resultado:** Ejemplo: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
 
 
 <a id="P3-15"></a>
@@ -1516,7 +1516,7 @@ print(c(n_requerido = n_requerido, largo_deseado = 2 * E))
 
 
 
-**Consigna:** Ejemplo de Sebastián: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
+**Consigna:** Ejemplo: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1548,7 +1548,7 @@ abline(v = 0, lty = 2)
 ```
 
 
-**Lectura del resultado:** Ejemplo de Sebastián: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
+**Lectura del resultado:** Ejemplo: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
 
 
 ## CIERRE · Autoevaluación
