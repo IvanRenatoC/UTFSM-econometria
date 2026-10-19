@@ -9,7 +9,7 @@ from inferencia_compacta import render_inference
 root=Path(__file__).resolve().parent.parent
 content=runpy.run_path(str(root/'herramientas/generar_taller.py'))
 activities=content['activities']
-groups=[('NIV','Antes de comenzar','Nivelación de computación en R','Objetos, decisiones y ciclos para construir tus primeras instrucciones.'),('P1','Parte 1 · Econometría','Introducción a la econometría','Preguntas económicas, estructura de los datos y selección de muestras.'),('P2','Parte 2 · Ayudantía','Repaso de estadística descriptiva en R','Salarios por estado civil, medidas de posición y dispersión.'),('P3','Parte 3 · Estadística inferencial','Estadística inferencial en R','Ejemplos de inferencia estadística aplicada a datos.')]
+groups=[('NIV','Antes de comenzar','Nivelación de computación en R','Objetos, decisiones y ciclos para construir tus primeras instrucciones.'),('P1','Parte 1 · Econometría','Introducción a la econometría','Preguntas económicas, estructura de los datos y selección de muestras.'),('P2','Parte 2 · Ayudantía','Repaso de estadística descriptiva','Salarios por estado civil, medidas de posición y dispersión.'),('P3','Parte 3 · Ayudantía · Estadística inferencial','Estadística inferencial en R','Ejemplos de inferencia estadística aplicada a datos.')]
 nav=''.join(f'<a href="#{g[0]}">{g[1]}</a>' for g in groups)
 sections=[]
 for prefix,label,title,desc in groups:

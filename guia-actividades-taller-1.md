@@ -1086,6 +1086,9 @@ print(muestra_conglomerados[c("wage", "educ", "female")])
 La muestra tiene 24 personas: 12 de cada uno de los dos grupos sorteados. En el estratificado entran personas de todos los estratos; aquí solo de los conglomerados elegidos. Si incluyéramos a todas las personas de esos grupos, sería un diseño de una etapa. Los grupos artificiales permiten ilustrar el algoritmo, no evaluar la eficiencia de un diseño geográfico real.
 
 
+# Parte 2 · Ayudantía · Repaso de estadística descriptiva
+
+
 <a id="P2-01"></a>
 ## Lámina 01 · Salarios: promedio, mediana, moda y percentiles
 
@@ -1238,6 +1241,9 @@ for (s in seq(0.2, 2.5, length.out = 80)) {
 
 
 **Lectura del resultado:** Varianza = desviación estándar al cuadrado. La varianza usa n − 1 y unidades al cuadrado; la desviación mantiene las unidades originales. RIQ = P75 − P25. La altura de la nube solo separa puntos; la variación representada es horizontal.
+
+
+# Parte 3 · Ayudantía · Estadística inferencial
 
 
 <a id="P3-01"></a>
