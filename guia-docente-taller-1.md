@@ -34,10 +34,11 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 20:15–20:18 | P2-01 y P2-02. Qué entra y sale de una función. |
 | 20:18–20:27 | P2-03 a P2-05. Cada pareja anticipa qué hace un extremo y calcula medidas de centro y dispersión. |
 | 20:27–20:40 | P2-06 y P2-07. Mostrar histograma y boxplot, comparar intervalos y explicar atípicos sin borrarlos. |
-| 20:40–20:48 | P3-01 a P3-04. Definir población didáctica y ejecutar demostración TCL. Distinguir sd de salarios y de medias. |
-| 20:48–20:58 | P3-05 a P3-10 en orden. IC de media; cambiar confianza; mostrar cobertura y fórmula de tamaño. Ampliar ejercicios de planificación después. |
-| 20:58–21:06 | P3-11 a P3-14. Proporción educativa y referencia. Presentar longitud vs margen, dejar cálculos detallados de planificación como ampliación. |
-| 21:06–21:15 | P3-15 a P3-18. Dos grupos, independencia, diferencia e interpretación. El profesor ejecuta y una pareja redacta la conclusión mirando la salida. |
+| 20:40–20:47 | P3-01: inferencia, TCL y supuestos; cambiar n en la figura. |
+| 20:47–20:54 | P3-05: IC de media y repetición de intervalos del ejemplo de ventas. |
+| 20:54–21:01 | P3-07: confianza, precisión y planificación de n. |
+| 21:01–21:08 | P3-11: 19/200 defectuosos, referencia 0,05 y tamaño para proporciones. |
+| 21:08–21:15 | P3-15: diferencia de medias con varianzas conocidas, ejemplo de carreras de Sebastián. |
 | 21:15–21:25 | Autoevaluación individual, discusión en pareja y respuesta colectiva. Registrar dudas para apoyo posterior. |
 
 El tiempo para todas las láminas es una revisión computacional selectiva, no una clase exhaustiva de inferencia. Las ampliaciones se conservan en orden y no se eliminan del notebook. Si el diagnóstico muestra dificultades, reducir modificaciones autónomas durante la sesión y usar las demostraciones ya preparadas; conservar el horario y asignar la práctica restante para después.
@@ -49,11 +50,23 @@ El tiempo para todas las láminas es una revisión computacional selectiva, no u
 - P1-08: ¿qué representa cada selección? Aclarar inicio aleatorio del sistemático, pesos por estrato y grupos artificiales.
 - P2-03: ¿el dato extremo es real? No: es una copia alterada con propósito explícito.
 - P3-01: ¿de qué población conocemos sigma? Solo de nuestra distribución empírica didáctica.
-- P3-09: ¿el 95% tiene que cumplirse exactamente en 100 repeticiones? No; fluctúa y depende de aproximación.
-- P3-18: ¿puede decirse que estudiar causó la diferencia? No.
+- P3-05: ¿el 95% tiene que cumplirse exactamente en pocas repeticiones? No; fluctúa y depende de aproximación.
+- P3-15: ¿puede decirse que estudiar causó la diferencia? No.
 
 ## Revisión y decisiones
 
 La matriz completa de cobertura y los IDs están al final de la guía y notebook. Las guías y el notebook comparten consignas, soluciones y código generados desde `herramientas/generar_taller.py`. No editar solo una copia: regenerar las salidas tras modificar ese origen. El script `.R` facilita una alternativa en RStudio.
 
 No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el material. La experiencia previa e instalaciones de los alumnos siguen sin confirmarse; comprobarlas antes del taller. El material contiene soluciones abiertas en celdas separadas: durante la actividad detenerse antes de la solución y pedir al estudiante que escriba su intento en una celda nueva.
+
+## Correspondencia de las cinco láminas de inferencia con Sebastián
+
+| Lámina del taller | Contenido de la cátedra conservado |
+|---|---|
+| 01 · Inferir, TCL y supuestos | Estadística inferencial, distribución muestral del promedio, TCL, i.i.d. y momentos finitos. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#teorema-central-del-limite). |
+| 02 · IC de una media | Interpretación frecuentista, σ conocida, ventas: media 200, σ 60, n 36, IC 95 %. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ic-ejemplo1). |
+| 03 · Confianza, precisión y n | Niveles de confianza, ancho/margen, efecto de n y fórmula de tamaño muestral con redondeo superior. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#intervalos-de-confianza-determinacion-del-tamano-muestral). |
+| 04 · Proporciones | Aproximación normal y condiciones, 19 defectuosos de 200, referencia 0,05, planificación con p* y E. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ic-para-las-proporciones-ejemplo). |
+| 05 · Diferencia de medias | Dos grupos independientes, varianzas conocidas, medias 800.000/680.000, n 144/121 y σ 60.000/50.000; interpretación del cero. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ejemplo_1). |
+
+La visualización del TCL usa wage1 como población empírica didáctica. Los otros ejemplos conservan los números de Sebastián y no se atribuyen a wage1. No se añaden pruebas de hipótesis, regresiones estimadas ni métodos fuera del repaso de la cátedra. Las figuras se actualizan matemáticamente en el navegador; el código R reproduce las fórmulas y sus parámetros. No se ha ejecutado R en este entorno.

@@ -143,3 +143,13 @@ body.dark{--ink:#eef1fb;--accent:#3d9bd6;--paper:#10142a;--body-ink:rgba(226,228
 .salary-cards strong{font-size:22px;color:var(--ink)}
 @media(max-width:600px){.salary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{.salary-panel[hidden]{display:block!important}.salary-choices{display:none}}
+
+.inf-formula{font-size:19px;font-weight:700;color:var(--ink);background:var(--wash);padding:12px;border-radius:7px}
+.inf-controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:18px 0}
+.inf-controls label{font-size:13px;display:block;min-width:180px;flex:1}
+.inf-controls input[type="range"]{display:block;width:100%;accent-color:#0160a0;margin-top:8px}
+.inf-controls select{font:inherit;background:var(--paper);color:var(--ink);padding:7px;border:1px solid var(--line);border-radius:5px}
+.inf-controls output{font-weight:700;color:var(--ink)}
+.inf-reading{background:var(--wash);padding:12px;border-left:3px solid #0160a0;border-radius:5px}
+.inf-plot text{font-size:12px}
+@media print{.inf-controls{display:none}}
