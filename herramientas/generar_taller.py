@@ -397,6 +397,10 @@ dispersion_actividad = dict(id='P2-02',title='Dispersión: de la nube compacta a
  error='',check='',dispersion_demo=True)
 activities.insert(next(i for i,a in enumerate(activities) if a['id'].startswith('P3-')),dispersion_actividad)
 
+# Síntesis de inferencia: cinco láminas, sin temas ajenos a la cátedra.
+from inferencia_compacta import ACTIVITIES as INFERENCIA
+activities = [a for a in activities if not a['id'].startswith('P3-')] + INFERENCIA
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -616,7 +620,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 38 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 38 láminas resueltas en clase.
+**Organización actual:** 25 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 5 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 25 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -665,10 +669,11 @@ Iván dirige el taller computacional de la materia de Sebastián para 8 a 10 alu
 | 20:15–20:18 | P2-01 y P2-02. Qué entra y sale de una función. |
 | 20:18–20:27 | P2-03 a P2-05. Cada pareja anticipa qué hace un extremo y calcula medidas de centro y dispersión. |
 | 20:27–20:40 | P2-06 y P2-07. Mostrar histograma y boxplot, comparar intervalos y explicar atípicos sin borrarlos. |
-| 20:40–20:48 | P3-01 a P3-04. Definir población didáctica y ejecutar demostración TCL. Distinguir sd de salarios y de medias. |
-| 20:48–20:58 | P3-05 a P3-10 en orden. IC de media; cambiar confianza; mostrar cobertura y fórmula de tamaño. Ampliar ejercicios de planificación después. |
-| 20:58–21:06 | P3-11 a P3-14. Proporción educativa y referencia. Presentar longitud vs margen, dejar cálculos detallados de planificación como ampliación. |
-| 21:06–21:15 | P3-15 a P3-18. Dos grupos, independencia, diferencia e interpretación. El profesor ejecuta y una pareja redacta la conclusión mirando la salida. |
+| 20:40–20:47 | P3-01: inferencia, TCL y supuestos; cambiar n en la figura. |
+| 20:47–20:54 | P3-05: IC de media y repetición de intervalos del ejemplo de ventas. |
+| 20:54–21:01 | P3-07: confianza, precisión y planificación de n. |
+| 21:01–21:08 | P3-11: 19/200 defectuosos, referencia 0,05 y tamaño para proporciones. |
+| 21:08–21:15 | P3-15: diferencia de medias con varianzas conocidas, ejemplo de carreras de Sebastián. |
 | 21:15–21:25 | Autoevaluación individual, discusión en pareja y respuesta colectiva. Registrar dudas para apoyo posterior. |
 
 El tiempo para todas las láminas es una revisión computacional selectiva, no una clase exhaustiva de inferencia. Las ampliaciones se conservan en orden y no se eliminan del notebook. Si el diagnóstico muestra dificultades, reducir modificaciones autónomas durante la sesión y usar las demostraciones ya preparadas; conservar el horario y asignar la práctica restante para después.
@@ -680,8 +685,8 @@ El tiempo para todas las láminas es una revisión computacional selectiva, no u
 - P1-08: ¿qué representa cada selección? Aclarar inicio aleatorio del sistemático, pesos por estrato y grupos artificiales.
 - P2-03: ¿el dato extremo es real? No: es una copia alterada con propósito explícito.
 - P3-01: ¿de qué población conocemos sigma? Solo de nuestra distribución empírica didáctica.
-- P3-09: ¿el 95% tiene que cumplirse exactamente en 100 repeticiones? No; fluctúa y depende de aproximación.
-- P3-18: ¿puede decirse que estudiar causó la diferencia? No.
+- P3-05: ¿el 95% tiene que cumplirse exactamente en pocas repeticiones? No; fluctúa y depende de aproximación.
+- P3-15: ¿puede decirse que estudiar causó la diferencia? No.
 
 ## Revisión y decisiones
 
@@ -689,10 +694,14 @@ La matriz completa de cobertura y los IDs están al final de la guía y notebook
 
 No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el material. La experiencia previa e instalaciones de los alumnos siguen sin confirmarse; comprobarlas antes del taller. El material contiene soluciones abiertas en celdas separadas: durante la actividad detenerse antes de la solución y pedir al estudiante que escriba su intento en una celda nueva.
 ''')
+# Correspondencia explícita de la síntesis con la fuente de la cátedra.
+with (root/'guia-docente-taller-1.md').open('a') as archivo:
+ archivo.write('''\n## Correspondencia de las cinco láminas de inferencia con Sebastián\n\n| Lámina del taller | Contenido de la cátedra conservado |\n|---|---|\n| 01 · Inferir, TCL y supuestos | Estadística inferencial, distribución muestral del promedio, TCL, i.i.d. y momentos finitos. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#teorema-central-del-limite). |\n| 02 · IC de una media | Interpretación frecuentista, σ conocida, ventas: media 200, σ 60, n 36, IC 95 %. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ic-ejemplo1). |\n| 03 · Confianza, precisión y n | Niveles de confianza, ancho/margen, efecto de n y fórmula de tamaño muestral con redondeo superior. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#intervalos-de-confianza-determinacion-del-tamano-muestral). |\n| 04 · Proporciones | Aproximación normal y condiciones, 19 defectuosos de 200, referencia 0,05, planificación con p* y E. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ic-para-las-proporciones-ejemplo). |\n| 05 · Diferencia de medias | Dos grupos independientes, varianzas conocidas, medias 800.000/680.000, n 144/121 y σ 60.000/50.000; interpretación del cero. [Fuente](https://hizocar.github.io/econometria-usm/clases/clase1/#ejemplo_1). |\n\nLa visualización del TCL usa wage1 como población empírica didáctica. Los otros ejemplos conservan los números de Sebastián y no se atribuyen a wage1. No se añaden pruebas de hipótesis, regresiones estimadas ni métodos fuera del repaso de la cátedra. Las figuras se actualizan matemáticamente en el navegador; el código R reproduce las fórmulas y sus parámetros. No se ha ejecutado R en este entorno.\n''')
+
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==38
+assert len(activities)==25
 assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:
