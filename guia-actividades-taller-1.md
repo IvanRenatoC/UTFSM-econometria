@@ -727,6 +727,8 @@ if (file.exists("datos/wage1.csv")) {
 # Conserva las seis variables que utilizaremos en el taller.
 datos <- datos[c("wage", "educ", "exper", "tenure", "female", "married")]
 head(datos)
+str(datos)
+summary(datos)
 ```
 
 
@@ -760,7 +762,7 @@ head(datos)
 
 
 
-**Consigna:** En la web, pulsa wage, educ, exper, tenure, female o married. En R, cambia el nombre de variable y ejecuta la celda para reproducir el gráfico.
+**Consigna:** Ejecuta los bloques de R para reproducir cada uno de los gráficos de esta lámina, después de cargar datos en la lámina 02.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -771,26 +773,42 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-# Elige: "wage", "educ", "exper", "tenure", "female" o "married".
-variable <- "wage"
-if (variable == "wage") {
-  hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
-       col = "#0160a0", border = "white", main = "Salario por hora",
-       xlab = "USD de 1976", ylab = "Frecuencia (personas)")
-} else if (variable %in% c("educ", "exper", "tenure")) {
-  anios <- seq(min(datos[[variable]]), max(datos[[variable]]))
-  frecuencias <- table(factor(datos[[variable]], levels = anios))
-  colores <- c(educ = "#0160a0", exper = "#e12523", tenure = "#00875a")
-  barplot(frecuencias, col = colores[variable], border = "white",
-          main = variable, xlab = "Años", ylab = "Frecuencia (personas)")
-} else if (variable %in% c("female", "married")) {
-  frecuencias <- table(factor(datos[[variable]], levels = c(0, 1)))
-  etiquetas <- if (variable == "female") c("Hombre (0)", "Mujer (1)") else
-    c("No casado/a (0)", "Casado/a (1)")
-  porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
-  pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
-      col = c("#0160a0", "#f8c751"), main = variable)
-}
+# wage · Histograma
+hist(datos$wage, breaks = seq(0, 26, by = 2), right = FALSE,
+     col = "#0160a0", border = "white", main = "Salario por hora",
+     xlab = "USD de 1976", ylab = "Frecuencia (personas)")
+
+# educ · Gráfico de barras
+anios <- seq(min(datos$educ), max(datos$educ))
+frecuencias <- table(factor(datos$educ, levels = anios))
+barplot(frecuencias, col = "#0160a0", border = "white",
+        main = "educ", xlab = "Años", ylab = "Frecuencia (personas)")
+
+# exper · Gráfico de barras
+anios <- seq(min(datos$exper), max(datos$exper))
+frecuencias <- table(factor(datos$exper, levels = anios))
+barplot(frecuencias, col = "#e12523", border = "white",
+        main = "exper", xlab = "Años", ylab = "Frecuencia (personas)")
+
+# tenure · Gráfico de barras
+anios <- seq(min(datos$tenure), max(datos$tenure))
+frecuencias <- table(factor(datos$tenure, levels = anios))
+barplot(frecuencias, col = "#00875a", border = "white",
+        main = "tenure", xlab = "Años", ylab = "Frecuencia (personas)")
+
+# female · Gráfico circular
+frecuencias <- table(factor(datos$female, levels = c(0, 1)))
+etiquetas <- c("Hombre (0)", "Mujer (1)")
+porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+    col = c("#0160a0", "#f8c751"), main = "female")
+
+# married · Gráfico circular
+frecuencias <- table(factor(datos$married, levels = c(0, 1)))
+etiquetas <- c("No casado/a (0)", "Casado/a (1)")
+porcentajes <- round(100 * frecuencias / sum(frecuencias), 1)
+pie(frecuencias, labels = paste(etiquetas, porcentajes, "%"),
+    col = c("#0160a0", "#f8c751"), main = "married")
 ```
 
 
@@ -930,7 +948,7 @@ print(head(datos[c("educ", "educ16", "wage", "exper")], 12))
 
 
 
-**Consigna:** Selecciona educ, female o married en la web. En R, cambia variable para comparar los salarios por educación (menos de 16 años y 16 años o más), sexo registrado o estado civil registrado.
+**Consigna:** Ejecuta los bloques de R para reproducir cada uno de los gráficos de esta lámina, después de cargar datos en la lámina 02.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -941,25 +959,26 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-# Elige: "educ", "female" o "married".
-variable <- "educ"
-colores <- c("#0160A0", "#F8C751")
+# educ · Boxplot del salario
+grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
+                labels = c("Menos de 16 años", "16 años o más"))
+boxplot(datos$wage ~ grupo, col = c("#0160a0", "#f8c751"),
+        main = "Salario según educ", xlab = "Grupo",
+        ylab = "Salario por hora (USD de 1976)")
 
-if (variable == "educ") {
-  grupo <- factor(datos$educ >= 16, levels = c(FALSE, TRUE),
-                  labels = c("Menos de 16 años", "16 años o más"))
-} else if (variable == "female") {
-  grupo <- factor(datos$female, levels = c(0, 1),
-                  labels = c("Hombre (0)", "Mujer (1)"))
-} else if (variable == "married") {
-  grupo <- factor(datos$married, levels = c(0, 1),
-                  labels = c("No casado/a (0)", "Casado/a (1)"))
-}
+# female · Boxplot del salario
+grupo <- factor(datos$female, levels = c(0, 1),
+                labels = c("Hombre (0)", "Mujer (1)"))
+boxplot(datos$wage ~ grupo, col = c("#0160a0", "#f8c751"),
+        main = "Salario según female", xlab = "Grupo",
+        ylab = "Salario por hora (USD de 1976)")
 
-boxplot(datos$wage ~ grupo,
-        col = colores,
-        main = paste("Salario según", variable),
-        xlab = "Grupo", ylab = "Salario por hora (USD de 1976)")
+# married · Boxplot del salario
+grupo <- factor(datos$married, levels = c(0, 1),
+                labels = c("No casado/a (0)", "Casado/a (1)"))
+boxplot(datos$wage ~ grupo, col = c("#0160a0", "#f8c751"),
+        main = "Salario según married", xlab = "Grupo",
+        ylab = "Salario por hora (USD de 1976)")
 ```
 
 
@@ -970,6 +989,10 @@ boxplot(datos$wage ~ grupo,
 ## Lámina 07 · Razones para trabajar con muestras
 
 ¿Para qué trabajar con una parte de los datos?
+
+### Costo computacional
+
+Con volúmenes muy grandes, por ejemplo terabytes (TB), incluso un análisis descriptivo puede requerir mucho tiempo, memoria e infraestructura analítica. Repetir cálculos para explorar y aprender de los datos también tiene un costo. Una alternativa es trabajar con una muestra representativa de la población de datos, seleccionada mediante un diseño acorde con el objetivo. Esto reduce la carga de cálculo, pero introduce incertidumbre muestral: hay que revisar la cobertura de los grupos, la precisión y posibles sesgos, especialmente si interesan eventos poco frecuentes. Una muestra grande o cómoda de obtener no garantiza representatividad.
 
 ### Presupuesto
 
