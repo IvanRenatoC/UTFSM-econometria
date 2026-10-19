@@ -1163,15 +1163,13 @@ barplot(resumen$promedio, names.arg = rownames(resumen),
 
 
 <a id="P2-02"></a>
-## Lámina 02 · Estadísticos como funciones de los datos
+## Lámina 02 · Dispersión: de la nube compacta a la nube amplia
 
 **Identificador de enlace:** `P2-02`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 2 · lámina 2 · **Modalidad:** Presencial.
+**Referencia:** Ayudantía · Dispersión, histograma y boxplot de Sebastián · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Qué entra y qué sale de un estadístico?
-
-
+**Pregunta:** ¿Cómo cambia una nube cuando aumenta su varianza?
 
 
 
@@ -1185,9 +1183,11 @@ barplot(resumen$promedio, names.arg = rownames(resumen),
 
 
 
-**Antes de ejecutar:** ¿length devuelve un vector de 526 valores?
 
-**Consigna:** Construye un pequeño resumen de tamaño y rango observado.
+
+
+
+**Consigna:** Compara varianza, desviación estándar, rango, RIQ y CV del salario total y por estado civil. Después usa la nube artificial para aumentar la dispersión sin mover la media.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1198,271 +1198,46 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-resumen_inicial <- c(n = length(x), minimo = min(x), maximo = max(x))
-print(resumen_inicial)
+# Indicadores de dispersión del salario en wage1.
+if (file.exists("datos/wage1.csv")) {
+  base <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  base <- as.data.frame(wooldridge::wage1)
+}
+grupos <- list(Total = base$wage,
+               No_casados = base$wage[base$married == 0],
+               Casados = base$wage[base$married == 1])
+dispersion <- function(x) {
+  data.frame(n = length(x), varianza = var(x), desviacion = sd(x),
+             rango = diff(range(x)), RIQ = IQR(x, type = 7),
+             CV_porcentaje = 100 * sd(x) / mean(x))
+}
+print(do.call(rbind, lapply(grupos, dispersion)))
+boxplot(grupos, col = c("#00875A", "#0160A0", "#F8C751"),
+        ylab = "Salario por hora (USD de 1976)", main = "Dispersión salarial")
+
+# Ilustración artificial: misma media 10 y dispersión creciente.
+set.seed(39)
+z <- rnorm(60)
+z <- (z - mean(z)) / sd(z)
+altura_visual <- runif(60, -1, 1)
+for (s in seq(0.2, 2.5, length.out = 80)) {
+  valores <- 10 + s * z
+  plot(valores, altura_visual, pch = 19, col = "#0160A080",
+       xlim = c(0, 20), ylim = c(-1.3, 1.3), yaxt = "n", ylab = "",
+       xlab = "Valor artificial", main = paste("Varianza =", round(var(valores), 2)))
+  abline(v = 10, lty = 2)
+  Sys.sleep(0.06)
+}
+# El eje vertical solo separa los puntos: no representa otra variable.
+# var() usa n - 1; sd() conserva unidades; la varianza las eleva al cuadrado.
 ```
 
 
-**Lectura del resultado:** Cada función transforma el vector en un resultado. Un estadístico es una función de la muestra.
-
-**Error frecuente:** Confundir el vector de datos con su resumen.
-
-**Comprueba:** ¿max(x) conserva todas las observaciones? No.
-
-
-<a id="P2-03"></a>
-## Lámina 03 · Medidas de localización central: media y mediana
-
-**Identificador de enlace:** `P2-03`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 2 · láminas 3–4 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Media y mediana reaccionan igual a un salario extremo?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Cuál cambiará más al añadir un valor enorme?
-
-**Consigna:** Calcula ambas y compara con una copia que añade un dato artificial.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P2-03
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-centro <- function(z) c(media = mean(z), mediana = median(z))
-print(centro(x))
-x_modificado <- c(x, 10*max(x))
-print(rbind(original = centro(x), copia_con_extremo = centro(x_modificado)))
-ordenados <- sort(x)
-n_x <- length(x)
-mediana_manual <- if (n_x %% 2 == 1) ordenados[(n_x+1)/2] else
-  (ordenados[n_x/2] + ordenados[n_x/2+1])/2
-stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
-```
-
-
-**Lectura del resultado:** La media es sensible a extremos. La mediana se obtiene de posiciones centrales; la copia modificada no es una nueva observación real.
-
-**Error frecuente:** Guardar el dato artificial sobre la base original.
-
-**Comprueba:** ¿La mediana exige ordenar conceptualmente los datos? Sí.
-
-
-<a id="P2-04"></a>
-## Lámina 04 · Percentiles y cuartiles
-
-**Identificador de enlace:** `P2-04`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 2 · lámina 5 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Dónde comienza el cuarto superior?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿P50 coincide con la mediana?
-
-**Consigna:** Obtén cuartiles y el percentil 90 con interpolación tipo 7.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P2-04
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-cuartiles <- quantile(x, probs = c(.25, .5, .75), type = 7)
-print(cuartiles)
-print(quantile(x, .9, type = 7))
-```
-
-
-**Lectura del resultado:** Los cuartiles delimitan posiciones de la distribución; type=7 especifica la interpolación. Empates y convenciones pueden alterar recuentos exactos.
-
-**Error frecuente:** Interpretar P75 como el 75% del salario máximo.
-
-**Comprueba:** ¿P50 es la mitad del máximo? No.
-
-
-<a id="P2-05"></a>
-## Lámina 05 · Medidas de dispersión: RIQ, varianza y desviación
-
-**Identificador de enlace:** `P2-05`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 2 · láminas 6–7 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Dos muestras con la misma media pueden ser diferentes?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Varianza y salario tienen las mismas unidades?
-
-**Consigna:** Calcula RIQ, varianza muestral y desviación estándar; verifica manualmente.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P2-05
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-print(c(RIQ = IQR(x, type = 7), varianza = var(x), desviacion = sd(x)))
-s2_manual <- sum((x-mean(x))^2)/(length(x)-1)
-stopifnot(isTRUE(all.equal(s2_manual, var(x))))
-```
-
-
-**Lectura del resultado:** La varianza usa unidades al cuadrado y n-1; sd conserva USD por hora. RIQ mide la separación entre P75 y P25.
-
-**Error frecuente:** Confundir desviación estándar con error estándar de la media.
-
-**Comprueba:** ¿sd(x) disminuye necesariamente cuando aumenta n? No.
-
-
-<a id="P2-06"></a>
-## Lámina 06 · Histogramas y elección de intervalos
-
-**Identificador de enlace:** `P2-06`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 2 · lámina 8 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Cambian los datos cuando cambiamos los intervalos?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Esperas ver la misma apariencia con 5 y 20 cortes sugeridos?
-
-**Consigna:** Dibuja dos histogramas y compara forma y frecuencias.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P2-06
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-op <- par(mfrow = c(1,2))
-for (b in c(5,20)) hist(x, breaks = b, col = "#7DB4B5",
-  main = paste("Cortes sugeridos:", b),
-  xlab = "Salario por hora (USD de 1976)", ylab = "Frecuencia")
-par(op)
-```
-
-
-**Lectura del resultado:** breaks numérico es una sugerencia a R, que elige límites convenientes. La forma visual cambia aunque la muestra sea idéntica.
-
-**Error frecuente:** Confundir barras de frecuencia con la lista de valores individuales.
-
-**Comprueba:** ¿Un histograma con otra anchura prueba otra población? No.
-
-
-<a id="P2-07"></a>
-## Lámina 07 · Gráfico de caja, bigotes y valores atípicos
-
-**Identificador de enlace:** `P2-07`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 2 · láminas 9–10 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Un punto fuera de los bigotes es un error?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Cuántos posibles atípicos crees que aparecerán?
-
-**Consigna:** Dibuja la caja, extrae sus límites y contrasta bisagras con cuartiles tipo 7.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P2-07
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-boxplot(x, horizontal = TRUE, col = "#7DB4B5",
-  main = "Salarios: posición y dispersión", xlab = "USD por hora de 1976")
-bp <- boxplot.stats(x)
-print(bp$stats); print(bp$out)
-print(quantile(x, c(.25,.5,.75), type = 7))
-```
-
-
-**Lectura del resultado:** R usa bisagras para la caja, que no siempre coinciden con quantile(type=7). Los bigotes terminan en observaciones dentro de 1,5 veces el rango entre bisagras; las cercas no son necesariamente datos. Un atípico requiere investigar, no borrar.
-
-**Error frecuente:** Eliminar automáticamente puntos extremos.
-
-**Comprueba:** ¿El bigote siempre termina justo en q3+1,5*RIQ? No.
+**Lectura del resultado:** Varianza = desviación estándar al cuadrado. La varianza usa n − 1 y unidades al cuadrado; la desviación mantiene las unidades originales. RIQ = P75 − P25. La altura de la nube solo separa puntos; la variación representada es horizontal.
 
 
 <a id="P3-01"></a>
@@ -2466,12 +2241,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-09 | Parte 1 · lámina 14 | `p1-09-consigna` | Ampliación autónoma |
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P2-01 | Ayudantía · Localización central y percentiles de Sebastián | `p2-01-consigna` / `p2-01-r` | Presencial |
-| P2-02 | Parte 2 · lámina 2 | `p2-02-consigna` / `p2-02-r` | Presencial |
-| P2-03 | Parte 2 · láminas 3–4 | `p2-03-consigna` / `p2-03-r` | Presencial |
-| P2-04 | Parte 2 · lámina 5 | `p2-04-consigna` / `p2-04-r` | Presencial |
-| P2-05 | Parte 2 · láminas 6–7 | `p2-05-consigna` / `p2-05-r` | Presencial |
-| P2-06 | Parte 2 · lámina 8 | `p2-06-consigna` / `p2-06-r` | Presencial |
-| P2-07 | Parte 2 · láminas 9–10 | `p2-07-consigna` / `p2-07-r` | Presencial |
+| P2-02 | Ayudantía · Dispersión, histograma y boxplot de Sebastián | `p2-02-consigna` / `p2-02-r` | Presencial |
 | P3-01 | Parte 3 · lámina 1 | `p3-01-consigna` / `p3-01-r` | Presencial |
 | P3-02 | Parte 3 · lámina 2 | `p3-02-consigna` / `p3-02-r` | Presencial |
 | P3-03 | Parte 3 · lámina 3 | `p3-03-consigna` / `p3-03-r` | Presencial |
@@ -2509,4 +2279,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 43 láminas (10 de nivelación, 8 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 43 láminas resueltas en clase.
+**Organización actual:** 38 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 38 láminas resueltas en clase.

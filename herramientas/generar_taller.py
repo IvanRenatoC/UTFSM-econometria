@@ -386,6 +386,17 @@ activities.remove(descriptiva)
 inicio_p2 = next(i for i,a in enumerate(activities) if a['id'].startswith('P2-'))
 activities.insert(inicio_p2,descriptiva)
 
+# La ayudantía descriptiva se concentra en dos láminas.
+activities = [a for a in activities if not a['id'].startswith('P2-') or a['id']=='P2-01']
+dispersion_actividad = dict(id='P2-02',title='Dispersión: de la nube compacta a la nube amplia',
+ slides='Ayudantía · Dispersión, histograma y boxplot de Sebastián', mode='Presencial',
+ question='¿Cómo cambia una nube cuando aumenta su varianza?',predict='',
+ task='Compara varianza, desviación estándar, rango, RIQ y CV del salario total y por estado civil. Después usa la nube artificial para aumentar la dispersión sin mover la media.',
+ code=(root/'herramientas/dispersion_salarios.R').read_text().strip(),
+ answer='Varianza = desviación estándar al cuadrado. La varianza usa n − 1 y unidades al cuadrado; la desviación mantiene las unidades originales. RIQ = P75 − P25. La altura de la nube solo separa puntos; la variación representada es horizontal.',
+ error='',check='',dispersion_demo=True)
+activities.insert(next(i for i,a in enumerate(activities) if a['id'].startswith('P3-')),dispersion_actividad)
+
 header='''# Taller 1 · Del código a los datos
 
 **Iván · Taller presencial · Econometría ICS-294 · 8 a 10 estudiantes**
@@ -605,7 +616,7 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 43 láminas (10 de nivelación, 8 introductorias, 7 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 43 láminas resueltas en clase.
+**Organización actual:** 38 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 38 láminas resueltas en clase.
 '''
 md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
@@ -681,7 +692,7 @@ No se publicó ni modificó ningún sitio. No se requirió GitHub para crear el 
 # Checks on data, notebook IDs and complete mapping; no claim of R execution.
 ids=[c['id'] for c in cells]
 assert len(ids)==len(set(ids))
-assert len(activities)==43
+assert len(activities)==38
 assert sum(c['cell_type']=='code' for c in cells)==sum(not a.get('overview') and not a.get('reason_only') for a in activities)+sum('practice' in a for a in activities)+sum(len(a.get('sampling_examples', [])) for a in activities)
 assert all(c.get('execution_count') is None for c in cells if c['cell_type']=='code')
 with (root/'datos/wage1.csv').open() as f:

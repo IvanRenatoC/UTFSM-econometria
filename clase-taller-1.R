@@ -281,44 +281,43 @@ barplot(resumen$promedio, names.arg = rownames(resumen),
         main = "Promedio salarial: total y estado civil")
 # La mediana coincide con P50. Las diferencias no demuestran causalidad.
 
-# P2-02 · Estadísticos como funciones de los datos
-resumen_inicial <- c(n = length(x), minimo = min(x), maximo = max(x))
-print(resumen_inicial)
+# P2-02 · Dispersión: de la nube compacta a la nube amplia
+# Indicadores de dispersión del salario en wage1.
+if (file.exists("datos/wage1.csv")) {
+  base <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  base <- as.data.frame(wooldridge::wage1)
+}
+grupos <- list(Total = base$wage,
+               No_casados = base$wage[base$married == 0],
+               Casados = base$wage[base$married == 1])
+dispersion <- function(x) {
+  data.frame(n = length(x), varianza = var(x), desviacion = sd(x),
+             rango = diff(range(x)), RIQ = IQR(x, type = 7),
+             CV_porcentaje = 100 * sd(x) / mean(x))
+}
+print(do.call(rbind, lapply(grupos, dispersion)))
+boxplot(grupos, col = c("#00875A", "#0160A0", "#F8C751"),
+        ylab = "Salario por hora (USD de 1976)", main = "Dispersión salarial")
 
-# P2-03 · Medidas de localización central: media y mediana
-centro <- function(z) c(media = mean(z), mediana = median(z))
-print(centro(x))
-x_modificado <- c(x, 10*max(x))
-print(rbind(original = centro(x), copia_con_extremo = centro(x_modificado)))
-ordenados <- sort(x)
-n_x <- length(x)
-mediana_manual <- if (n_x %% 2 == 1) ordenados[(n_x+1)/2] else
-  (ordenados[n_x/2] + ordenados[n_x/2+1])/2
-stopifnot(isTRUE(all.equal(mediana_manual, median(x))))
-
-# P2-04 · Percentiles y cuartiles
-cuartiles <- quantile(x, probs = c(.25, .5, .75), type = 7)
-print(cuartiles)
-print(quantile(x, .9, type = 7))
-
-# P2-05 · Medidas de dispersión: RIQ, varianza y desviación
-print(c(RIQ = IQR(x, type = 7), varianza = var(x), desviacion = sd(x)))
-s2_manual <- sum((x-mean(x))^2)/(length(x)-1)
-stopifnot(isTRUE(all.equal(s2_manual, var(x))))
-
-# P2-06 · Histogramas y elección de intervalos
-op <- par(mfrow = c(1,2))
-for (b in c(5,20)) hist(x, breaks = b, col = "#7DB4B5",
-  main = paste("Cortes sugeridos:", b),
-  xlab = "Salario por hora (USD de 1976)", ylab = "Frecuencia")
-par(op)
-
-# P2-07 · Gráfico de caja, bigotes y valores atípicos
-boxplot(x, horizontal = TRUE, col = "#7DB4B5",
-  main = "Salarios: posición y dispersión", xlab = "USD por hora de 1976")
-bp <- boxplot.stats(x)
-print(bp$stats); print(bp$out)
-print(quantile(x, c(.25,.5,.75), type = 7))
+# Ilustración artificial: misma media 10 y dispersión creciente.
+set.seed(39)
+z <- rnorm(60)
+z <- (z - mean(z)) / sd(z)
+altura_visual <- runif(60, -1, 1)
+for (s in seq(0.2, 2.5, length.out = 80)) {
+  valores <- 10 + s * z
+  plot(valores, altura_visual, pch = 19, col = "#0160A080",
+       xlim = c(0, 20), ylim = c(-1.3, 1.3), yaxt = "n", ylab = "",
+       xlab = "Valor artificial", main = paste("Varianza =", round(var(valores), 2)))
+  abline(v = 10, lty = 2)
+  Sys.sleep(0.06)
+}
+# El eje vertical solo separa los puntos: no representa otra variable.
+# var() usa n - 1; sd() conserva unidades; la varianza las eleva al cuadrado.
 
 # P3-01 · Inferencia y población empírica de referencia
 poblacion <- datos$wage
