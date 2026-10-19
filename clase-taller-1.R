@@ -319,150 +319,116 @@ for (s in seq(0.2, 2.5, length.out = 80)) {
 # El eje vertical solo separa los puntos: no representa otra variable.
 # var() usa n - 1; sd() conserva unidades; la varianza las eleva al cuadrado.
 
-# P3-01 · Inferencia y población empírica de referencia
-poblacion <- datos$wage
-mu <- mean(poblacion)
-sigma2 <- mean((poblacion-mu)^2)
-sigma <- sqrt(sigma2)
-print(c(mu = mu, sigma = sigma, N = length(poblacion)))
-
-# P3-02 · Intervalos de confianza e incertidumbre
-print(c("El parámetro didáctico permanece fijo",
-        "La muestra y sus límites cambian",
-        "La confianza describe el procedimiento"))
-
-# P3-03 · Teorema central del límite: simulación en R
-set.seed(16203)
-B <- 1000L
-op <- par(mfrow = c(1,2))
-for (n in c(5,100)) {
-  medias <- replicate(B, mean(sample(poblacion, n, replace = TRUE)))
-  hist(medias, probability = TRUE, breaks = 25, col = "#7DB4B5",
-       main = paste("Medias con n =", n), xlab = "Media salarial (USD/h)")
-  curve(dnorm(x, mu, sigma/sqrt(n)), add = TRUE, col = "#BD4C45", lwd = 2)
-  print(c(n = n, media_medias = mean(medias),
-          sd_medias = sd(medias), error_teorico = sigma/sqrt(n)))
+# P3-01 · Inferir, TCL y supuestos
+if (file.exists("datos/wage1.csv")) {
+  base <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  base <- as.data.frame(wooldridge::wage1)
 }
-par(op)
+poblacion <- base$wage
+mu <- mean(poblacion)
+sigma <- sqrt(mean((poblacion - mu)^2))  # Momento poblacional: divisor N.
+n <- 50
+set.seed(40)
+medias <- replicate(1000, mean(sample(poblacion, n, replace = TRUE)))
+hist(medias, probability = TRUE, col = "#0160A0", border = "white",
+     xlab = "Promedio salarial (USD/h de 1976)", main = paste("Medias con n =", n))
+curve(dnorm(x, mean = mu, sd = sigma / sqrt(n)), add = TRUE,
+      col = "#E12523", lwd = 2)
+print(c(media_poblacional = mu, varianza_media = sigma^2 / n,
+        error_estandar = sigma / sqrt(n)))
 
-# P3-04 · Supuestos del teorema central del límite
-stopifnot(all(is.finite(poblacion)), sigma2 > 0)
-print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
+# P3-05 · Intervalo de confianza para una media
+xbarra <- 200
+sigma <- 60
+n <- 36
+confianza <- 0.95
+z <- qnorm((1 + confianza) / 2)
+se <- sigma / sqrt(n)
+ic <- xbarra + c(-1, 1) * z * se
+print(c(estimacion = xbarra, margen = z * se, inferior = ic[1], superior = ic[2]))
 
-# P3-05 · Intervalo para una media: ejemplo salarial
-set.seed(16204)
-n_ic <- 36L
-muestra_ic <- sample(poblacion, n_ic, replace = TRUE)
-xbarra <- mean(muestra_ic)
-z95 <- qnorm(.975)
-se <- sigma/sqrt(n_ic)
-ic95 <- xbarra + c(-1,1)*z95*se
-print(c(estimacion = xbarra, error_estandar = se,
-        inferior = ic95[1], superior = ic95[2], mu_didactica = mu))
+# Ilustración normal con mu = 200 fijo; no es un parámetro estimado de wage1.
+mu_demo <- 200
+z_demo <- c(-0.271313, -1.056361, 0.197561, 0.002057, 0.870213, 2.519121, -0.91341, -0.254936, 0.322156, 0.578074, 1.506138, 0.186028, -0.36742, 0.614709, -0.81785, 0.118748, -0.002822, 1.631639, -0.215701, -1.137394)
+medias_demo <- mu_demo + z_demo * se
+inferior <- medias_demo - z * se
+superior <- medias_demo + z * se
+cubre <- inferior <= mu_demo & superior >= mu_demo
+plot(range(c(inferior, superior, mu_demo)), c(1, 20), type = "n",
+     xlab = "Media de ventas", ylab = "Repetición")
+segments(inferior, 1:20, superior, 1:20,
+         col = ifelse(cubre, "#0160A0", "#E12523"), lwd = 2)
+abline(v = mu_demo, lty = 2)
+print(mean(cubre))
 
-# P3-06 · Componentes del intervalo de confianza de 95%
-margen95 <- z95*se
-print(c(estimacion = xbarra, z = z95, se = se, margen = margen95))
-stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
-
-# P3-07 · Intervalos con distintos niveles de confianza
-niveles <- c(.90,.95,.99)
-z <- qnorm((1+niveles)/2)
-limites <- cbind(inferior = xbarra-z*se, superior = xbarra+z*se)
-rownames(limites) <- paste0(100*niveles, "%")
+# P3-07 · Confianza, precisión y tamaño muestral
+xbarra <- 200
+sigma <- 60
+n <- 36
+confianza <- 0.95
+E <- 10
+niveles <- c(0.90, 0.95, 0.99)
+z_niveles <- qnorm((1 + niveles) / 2)
+se <- sigma / sqrt(n)
+limites <- cbind(inferior = xbarra - z_niveles * se,
+                 superior = xbarra + z_niveles * se)
+rownames(limites) <- paste0(100 * niveles, "%")
 print(limites)
-
-# P3-08 · Comparación gráfica de intervalos de confianza
-plot(range(limites), c(1,3), type = "n", yaxt = "n",
-     xlab = "Media salarial (USD/h)", ylab = "Confianza",
-     main = "La misma muestra, distinta confianza")
+plot(range(limites), c(1, 3), type = "n", yaxt = "n",
+     xlab = "Media de ventas", ylab = "Confianza")
 axis(2, at = 1:3, labels = rownames(limites))
-segments(limites[,1], 1:3, limites[,2], 1:3, lwd = 3, col = "#35618A")
-points(rep(xbarra,3), 1:3, pch = 19)
+segments(limites[, 1], 1:3, limites[, 2], 1:3, lwd = 3, col = "#0160A0")
+points(rep(xbarra, 3), 1:3, pch = 19)
+n_requerido <- ceiling((qnorm((1 + confianza) / 2) * sigma / E)^2)
+print(c(margen_deseado = E, n_requerido = n_requerido))
 
-# P3-09 · Cobertura, confianza y precisión
-set.seed(16205)
-medias_ic <- replicate(1000, mean(sample(poblacion, n_ic, replace = TRUE)))
-L <- medias_ic-z95*se; U <- medias_ic+z95*se
-cubre <- L <= mu & mu <= U
-print(c(cobertura_observada = mean(cubre), confianza_nominal = .95,
-        margen_n36 = margen95, margen_n144 = z95*sigma/sqrt(144)))
-j <- seq_len(100)
-plot(range(c(L[j],U[j],mu)), range(j), type = "n",
-     xlab = "Media salarial (USD/h)", ylab = "Muestra", main = "100 intervalos")
-segments(L[j],j,U[j],j,col = ifelse(cubre[j],"#35618A","#BD4C45"))
-abline(v = mu, lty = 2)
+# P3-11 · Proporciones: intervalo y planificación
+exitos <- 19
+n <- 200
+confianza <- 0.95
+p_previa <- 0.5
+E <- 0.03
+p_hat <- exitos / n
+z <- qnorm((1 + confianza) / 2)
+if (n >= 30 && exitos > 5 && n - exitos > 5) {
+  se <- sqrt(p_hat * (1 - p_hat) / n)
+  ic <- p_hat + c(-1, 1) * z * se
+  print(c(proporcion = p_hat, inferior = ic[1], superior = ic[2],
+          contiene_0_05 = ic[1] <= 0.05 && ic[2] >= 0.05))
+  plot(range(c(ic, 0.05)), c(0, 1), type = "n", yaxt = "n",
+       xlab = "Proporción de defectuosos", ylab = "")
+  segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = "#0160A0")
+  points(p_hat, 0.5, pch = 19)
+  abline(v = 0.05, lty = 2)
+} else {
+  message("No se cumplen las condiciones de la aproximación normal.")
+}
+n_requerido <- ceiling(z^2 * p_previa * (1 - p_previa) / E^2)
+print(c(n_requerido = n_requerido, largo_deseado = 2 * E))
 
-# P3-10 · Tamaño muestral para estimar una media
-E_media <- .5
-n_necesario <- ceiling((qnorm(.975)*sigma/E_media)^2)
-print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
-
-# P3-11 · Intervalos de confianza para proporciones
-indicador <- as.integer(datos$educ >= 16)
-p_real <- mean(indicador)
-set.seed(16206)
-muestra_p <- sample(indicador, 200, replace = TRUE)
-n_p <- length(muestra_p)
-p_hat <- mean(muestra_p)
-exitos <- sum(muestra_p); fracasos <- n_p-exitos
-stopifnot(exitos > 5, fracasos > 5)
-se_p <- sqrt(p_hat*(1-p_hat)/n_p)
-ic_p <- p_hat+c(-1,1)*qnorm(.975)*se_p
-print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
-        inferior = ic_p[1], superior = ic_p[2], p_didactica = p_real))
-
-# P3-12 · Proporciones: comparación con una referencia
-referencia <- .20
-compatible <- ic_p[1] <= referencia && referencia <= ic_p[2]
-print(c(referencia = referencia, dentro_del_IC = compatible))
-
-# P3-13 · Tamaño muestral para estimar una proporción
-E_p <- .03
-print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
-        conservador = ceiling(qnorm(.975)^2*.25/E_p^2)))
-
-# P3-14 · Aplicación: longitud y margen de error
-set.seed(16207)
-piloto <- sample(indicador, 30, replace = TRUE)
-p_estrella <- mean(piloto)
-longitud_max <- .05
-E_plan <- longitud_max/2
-n_plan <- ceiling(qnorm(.975)^2*p_estrella*(1-p_estrella)/E_plan^2)
-n_conservador <- ceiling(qnorm(.975)^2*.25/E_plan^2)
-print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
-        n_conservador = n_conservador))
-
-# P3-15 · Comparación de medias entre dos poblaciones
-pob_alta <- datos$wage[datos$educ >= 16]
-pob_resto <- datos$wage[datos$educ < 16]
-stopifnot(length(pob_alta) > 1, length(pob_resto) > 1)
-print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
-
-# P3-16 · Diferencia de medias: parámetro e interpretación
-mu_alta <- mean(pob_alta); mu_resto <- mean(pob_resto)
-delta <- mu_alta-mu_resto
-print(c(delta_didactica = delta))
-
-# P3-17 · Diferencia de medias con varianzas conocidas
-var_alta <- mean((pob_alta-mu_alta)^2)
-var_resto <- mean((pob_resto-mu_resto)^2)
-set.seed(16208)
-n_a <- 144L; n_b <- 121L
-m_a <- sample(pob_alta, n_a, replace = TRUE)
-m_b <- sample(pob_resto, n_b, replace = TRUE)
-diferencia <- mean(m_a)-mean(m_b)
-se_diferencia <- sqrt(var_alta/n_a+var_resto/n_b)
-print(c(estimacion = diferencia, error_estandar = se_diferencia))
-
-# P3-18 · Diferencia de medias: intervalo y conclusión
-ic_d <- diferencia+c(-1,1)*qnorm(.975)*se_diferencia
-print(c(inferior = ic_d[1], superior = ic_d[2], delta_didactica = delta,
-        contiene_cero = ic_d[1] <= 0 && ic_d[2] >= 0))
-plot(range(c(ic_d,0)), c(0,1), type = "n", yaxt = "n", ylab = "",
-     xlab = "Diferencia de medias (USD/h de 1976)", main = "Alta educación menos resto")
-segments(ic_d[1],.5,ic_d[2],.5,lwd = 3,col = "#35618A")
-points(diferencia,.5,pch = 19); abline(v = 0,lty = 2)
+# P3-15 · Diferencia de dos medias independientes
+xbarra <- 800000
+ybarra <- 680000
+sigma_x <- 60000
+sigma_y <- 50000
+nx <- 144
+ny <- 121
+confianza <- 0.95
+diferencia <- xbarra - ybarra
+se <- sqrt(sigma_x^2 / nx + sigma_y^2 / ny)
+z <- qnorm((1 + confianza) / 2)
+ic <- diferencia + c(-1, 1) * z * se
+print(c(diferencia = diferencia, inferior = ic[1], superior = ic[2],
+        contiene_cero = ic[1] <= 0 && ic[2] >= 0))
+plot(range(c(ic, 0)), c(0, 1), type = "n", yaxt = "n",
+     xlab = "Diferencia de medias (pesos del ejemplo de cátedra)", ylab = "")
+segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = "#0160A0")
+points(diferencia, 0.5, pch = 19)
+abline(v = 0, lty = 2)
 
 cat("Todas las actividades finalizaron. Revise también gráficos e interpretaciones.\n")
 sessionInfo()

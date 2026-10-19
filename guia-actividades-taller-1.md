@@ -1241,15 +1241,13 @@ for (s in seq(0.2, 2.5, length.out = 80)) {
 
 
 <a id="P3-01"></a>
-## Lámina 01 · Inferencia y población empírica de referencia
+## Lámina 01 · Inferir, TCL y supuestos
 
 **Identificador de enlace:** `P3-01`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 3 · lámina 1 · **Modalidad:** Presencial.
+**Referencia:** Parte 3 · teorema-central-del-limite · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo podemos evaluar un método si normalmente no conocemos la verdad?
-
-
+**Pregunta:** Inferir, TCL y supuestos
 
 
 
@@ -1263,9 +1261,11 @@ for (s in seq(0.2, 2.5, length.out = 80)) {
 
 
 
-**Antes de ejecutar:** ¿Qué cambia si tratamos toda la tabla como una distribución conocida?
 
-**Consigna:** Define la distribución empírica de salarios y sus momentos poblacionales.
+
+
+
+**Consigna:** Inferir utiliza una muestra para estudiar una población y requiere supuestos. El TCL aproxima la distribución de las medias por una normal de media μ y varianza σ²/n. Aquí wage1 se trata como una población empírica didáctica conocida; no como toda la población de Estados Unidos. La figura es una curva normal de referencia, no una distribución de salarios individuales. Las observaciones deben ser independientes e idénticamente distribuidas, con media y varianza finitas; las reglas n=30/50/100 son orientativas, no garantías.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1276,186 +1276,40 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-poblacion <- datos$wage
-mu <- mean(poblacion)
-sigma2 <- mean((poblacion-mu)^2)
-sigma <- sqrt(sigma2)
-print(c(mu = mu, sigma = sigma, N = length(poblacion)))
-```
-
-
-**Lectura del resultado:** Cada fila tiene probabilidad 1/N en esta distribución didáctica. Usamos denominador N; no afirmamos conocer la varianza salarial de todo Estados Unidos.
-
-**Error frecuente:** Llamar sigma a sd de la muestra sin justificar una población conocida.
-
-**Comprueba:** ¿Esta media es un parámetro de nuestra distribución didáctica? Sí.
-
-
-<a id="P3-02"></a>
-## Lámina 02 · Intervalos de confianza e incertidumbre
-
-**Identificador de enlace:** `P3-02`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 2 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Qué aporta un intervalo frente a un valor único?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Un intervalo ya calculado tiene parámetro aleatorio?
-
-**Consigna:** Escribe qué cambia al repetir el muestreo.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-02
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-print(c("El parámetro didáctico permanece fijo",
-        "La muestra y sus límites cambian",
-        "La confianza describe el procedimiento"))
-```
-
-
-**Lectura del resultado:** Como en los aros y la estaca de cátedra, mu permanece fijo y los intervalos cambian. La cobertura es una propiedad de repetición.
-
-**Error frecuente:** Decir que el 95% de las observaciones está dentro del IC de la media.
-
-**Comprueba:** ¿Un IC de media es un intervalo de salarios individuales? No.
-
-
-<a id="P3-03"></a>
-## Lámina 03 · Teorema central del límite: simulación en R
-
-**Identificador de enlace:** `P3-03`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 3 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Cómo se distribuye el promedio al repetir muestras?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Las medias de n=100 serán menos dispersas que las de n=5?
-
-**Consigna:** Extrae 1.000 muestras por tamaño, independientes y con reemplazo.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-03
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-set.seed(16203)
-B <- 1000L
-op <- par(mfrow = c(1,2))
-for (n in c(5,100)) {
-  medias <- replicate(B, mean(sample(poblacion, n, replace = TRUE)))
-  hist(medias, probability = TRUE, breaks = 25, col = "#7DB4B5",
-       main = paste("Medias con n =", n), xlab = "Media salarial (USD/h)")
-  curve(dnorm(x, mu, sigma/sqrt(n)), add = TRUE, col = "#BD4C45", lwd = 2)
-  print(c(n = n, media_medias = mean(medias),
-          sd_medias = sd(medias), error_teorico = sigma/sqrt(n)))
+if (file.exists("datos/wage1.csv")) {
+  base <- read.csv("datos/wage1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  base <- as.data.frame(wooldridge::wage1)
 }
-par(op)
+poblacion <- base$wage
+mu <- mean(poblacion)
+sigma <- sqrt(mean((poblacion - mu)^2))  # Momento poblacional: divisor N.
+n <- 50
+set.seed(40)
+medias <- replicate(1000, mean(sample(poblacion, n, replace = TRUE)))
+hist(medias, probability = TRUE, col = "#0160A0", border = "white",
+     xlab = "Promedio salarial (USD/h de 1976)", main = paste("Medias con n =", n))
+curve(dnorm(x, mean = mu, sd = sigma / sqrt(n)), add = TRUE,
+      col = "#E12523", lwd = 2)
+print(c(media_poblacional = mu, varianza_media = sigma^2 / n,
+        error_estandar = sigma / sqrt(n)))
 ```
 
 
-**Lectura del resultado:** La comparación usa muestras de una población empírica conocida, no remuestreo de una muestra para estimar un parámetro desconocido. El TCL aproxima la forma de la distribución de medias.
-
-**Error frecuente:** Confundir salarios individuales con medias muestrales.
-
-**Comprueba:** ¿sigma/sqrt(n) es la desviación de salarios? No, de la media.
-
-
-<a id="P3-04"></a>
-## Lámina 04 · Supuestos del teorema central del límite
-
-**Identificador de enlace:** `P3-04`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 4 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿n=30 garantiza normalidad en cualquier caso?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿La asimetría afecta la rapidez de aproximación?
-
-**Consigna:** Comprueba que los datos utilizados son finitos y revisa el mecanismo de muestreo.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-04
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-stopifnot(all(is.finite(poblacion)), sigma2 > 0)
-print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
-```
-
-
-**Lectura del resultado:** Con reemplazo cada extracción tiene la misma distribución y es independiente. Los umbrales de tamaño son orientativos. Si la población fuera normal, su media muestral sería normal para cualquier n.
-
-**Error frecuente:** Tratar 30, 50 o 100 como garantías universales.
-
-**Comprueba:** ¿El ciclo por sí solo demuestra independencia en la encuesta original? No.
+**Lectura del resultado:** Inferir utiliza una muestra para estudiar una población y requiere supuestos. El TCL aproxima la distribución de las medias por una normal de media μ y varianza σ²/n. Aquí wage1 se trata como una población empírica didáctica conocida; no como toda la población de Estados Unidos. La figura es una curva normal de referencia, no una distribución de salarios individuales. Las observaciones deben ser independientes e idénticamente distribuidas, con media y varianza finitas; las reglas n=30/50/100 son orientativas, no garantías.
 
 
 <a id="P3-05"></a>
-## Lámina 05 · Intervalo para una media: ejemplo salarial
+## Lámina 02 · Intervalo de confianza para una media
 
 **Identificador de enlace:** `P3-05`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 3 · láminas 5–7 · **Modalidad:** Presencial.
+**Referencia:** Parte 3 · ic-ejemplo1 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo estimamos mu con una muestra de 36 salarios?
-
-
+**Pregunta:** Intervalo de confianza para una media
 
 
 
@@ -1469,9 +1323,11 @@ print(c(media_finita = is.finite(mu), varianza_finita = is.finite(sigma2)))
 
 
 
-**Antes de ejecutar:** ¿El resultado quedará centrado en mu o en la media de la muestra?
 
-**Consigna:** Extrae 36 observaciones y calcula el intervalo normal de 95% con sigma conocida didáctica.
+
+
+
+**Consigna:** Ejemplo de Sebastián: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1482,84 +1338,42 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-set.seed(16204)
-n_ic <- 36L
-muestra_ic <- sample(poblacion, n_ic, replace = TRUE)
-xbarra <- mean(muestra_ic)
-z95 <- qnorm(.975)
-se <- sigma/sqrt(n_ic)
-ic95 <- xbarra + c(-1,1)*z95*se
-print(c(estimacion = xbarra, error_estandar = se,
-        inferior = ic95[1], superior = ic95[2], mu_didactica = mu))
+xbarra <- 200
+sigma <- 60
+n <- 36
+confianza <- 0.95
+z <- qnorm((1 + confianza) / 2)
+se <- sigma / sqrt(n)
+ic <- xbarra + c(-1, 1) * z * se
+print(c(estimacion = xbarra, margen = z * se, inferior = ic[1], superior = ic[2]))
+
+# Ilustración normal con mu = 200 fijo; no es un parámetro estimado de wage1.
+mu_demo <- 200
+z_demo <- c(-0.271313, -1.056361, 0.197561, 0.002057, 0.870213, 2.519121, -0.91341, -0.254936, 0.322156, 0.578074, 1.506138, 0.186028, -0.36742, 0.614709, -0.81785, 0.118748, -0.002822, 1.631639, -0.215701, -1.137394)
+medias_demo <- mu_demo + z_demo * se
+inferior <- medias_demo - z * se
+superior <- medias_demo + z * se
+cubre <- inferior <= mu_demo & superior >= mu_demo
+plot(range(c(inferior, superior, mu_demo)), c(1, 20), type = "n",
+     xlab = "Media de ventas", ylab = "Repetición")
+segments(inferior, 1:20, superior, 1:20,
+         col = ifelse(cubre, "#0160A0", "#E12523"), lwd = 2)
+abline(v = mu_demo, lty = 2)
+print(mean(cubre))
 ```
 
 
-**Lectura del resultado:** Es un ejercicio propio con wage1, análogo al ejemplo de ventas; no reproduce su media 200 ni su sigma 60. La cobertura normal aquí es aproximada.
-
-**Error frecuente:** Atribuir los números de ventas del sitio a la base salarial.
-
-**Comprueba:** ¿Cuál es el centro del intervalo? xbarra.
-
-
-<a id="P3-06"></a>
-## Lámina 06 · Componentes del intervalo de confianza de 95%
-
-**Identificador de enlace:** `P3-06`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 8 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Qué papel tiene cada pieza?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Qué ocurre al duplicar sigma y conservar lo demás?
-
-**Consigna:** Separa estimación, valor crítico, error estándar y margen.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-06
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-margen95 <- z95*se
-print(c(estimacion = xbarra, z = z95, se = se, margen = margen95))
-stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
-```
-
-
-**Lectura del resultado:** El margen es z por error estándar; la longitud total es el doble del margen.
-
-**Error frecuente:** Usar el margen como si fuera longitud total.
-
-**Comprueba:** ¿Duplicar sigma duplica el margen? Sí.
+**Lectura del resultado:** Ejemplo de Sebastián: ventas mensuales, x̄=200, σ=60 conocida y n=36. El intervalo es x̄ ± z × σ/√n. Para ilustrar su interpretación repetimos 20 medias de una población normal con μ=200: el parámetro permanece fijo y los intervalos cambian. La cobertura de estas 20 repeticiones puede diferir del nivel nominal. Un IC de la media no contiene necesariamente ese porcentaje de observaciones individuales.
 
 
 <a id="P3-07"></a>
-## Lámina 07 · Intervalos con distintos niveles de confianza
+## Lámina 03 · Confianza, precisión y tamaño muestral
 
 **Identificador de enlace:** `P3-07`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 3 · láminas 9–10 · **Modalidad:** Presencial.
+**Referencia:** Parte 3 · intervalos-de-confianza-determinacion-del-tamano-muestral · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Qué cambia al pasar a 99%?
-
-
+**Pregunta:** Confianza, precisión y tamaño muestral
 
 
 
@@ -1573,9 +1387,11 @@ stopifnot(isTRUE(all.equal(diff(ic95), 2*margen95)))
 
 
 
-**Antes de ejecutar:** ¿El centro debería moverse?
 
-**Consigna:** Calcula 90%, 95% y 99% para la misma muestra.
+
+
+
+**Consigna:** Para la misma media y muestra, aumentar la confianza ensancha el intervalo. Aumentar n reduce el error estándar; cuadruplicar n reduce el margen a la mitad. Para planificar, n = techo((z σ/E)²), con σ conocida y E como margen o semilongitud deseada, no longitud completa. Se conservan x̄=200 y σ=60 del ejemplo de Sebastián.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1586,189 +1402,39 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-niveles <- c(.90,.95,.99)
-z <- qnorm((1+niveles)/2)
-limites <- cbind(inferior = xbarra-z*se, superior = xbarra+z*se)
-rownames(limites) <- paste0(100*niveles, "%")
+xbarra <- 200
+sigma <- 60
+n <- 36
+confianza <- 0.95
+E <- 10
+niveles <- c(0.90, 0.95, 0.99)
+z_niveles <- qnorm((1 + niveles) / 2)
+se <- sigma / sqrt(n)
+limites <- cbind(inferior = xbarra - z_niveles * se,
+                 superior = xbarra + z_niveles * se)
+rownames(limites) <- paste0(100 * niveles, "%")
 print(limites)
-```
-
-
-**Lectura del resultado:** Se utiliza el cuantil superior positivo; el centro se conserva. qnorm evita inconsistencias por redondeo de 2,57 o 2,58.
-
-**Error frecuente:** Extraer otra muestra y atribuir todo cambio a la confianza.
-
-**Comprueba:** ¿Qué intervalo es más ancho? El de 99%.
-
-
-<a id="P3-08"></a>
-## Lámina 08 · Comparación gráfica de intervalos de confianza
-
-**Identificador de enlace:** `P3-08`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 11 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Podemos comparar los intervalos de un vistazo?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Cuál abarcará a los otros?
-
-**Consigna:** Representa los límites en una misma recta salarial.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-08
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-plot(range(limites), c(1,3), type = "n", yaxt = "n",
-     xlab = "Media salarial (USD/h)", ylab = "Confianza",
-     main = "La misma muestra, distinta confianza")
+plot(range(limites), c(1, 3), type = "n", yaxt = "n",
+     xlab = "Media de ventas", ylab = "Confianza")
 axis(2, at = 1:3, labels = rownames(limites))
-segments(limites[,1], 1:3, limites[,2], 1:3, lwd = 3, col = "#35618A")
-points(rep(xbarra,3), 1:3, pch = 19)
+segments(limites[, 1], 1:3, limites[, 2], 1:3, lwd = 3, col = "#0160A0")
+points(rep(xbarra, 3), 1:3, pch = 19)
+n_requerido <- ceiling((qnorm((1 + confianza) / 2) * sigma / E)^2)
+print(c(margen_deseado = E, n_requerido = n_requerido))
 ```
 
 
-**Lectura del resultado:** El intervalo mayor ofrece más cobertura bajo el modelo a costa de anchura.
-
-**Error frecuente:** Confundir intervalo más ancho con mejor precisión.
-
-**Comprueba:** ¿El centro de los tres es idéntico? Sí.
-
-
-<a id="P3-09"></a>
-## Lámina 09 · Cobertura, confianza y precisión
-
-**Identificador de enlace:** `P3-09`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 12–13 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿Cuántos intervalos capturan la media conocida?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Se obtendrán exactamente 950 aciertos de 1.000?
-
-**Consigna:** Repite 1.000 veces y visualiza los primeros 100 intervalos.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-09
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-set.seed(16205)
-medias_ic <- replicate(1000, mean(sample(poblacion, n_ic, replace = TRUE)))
-L <- medias_ic-z95*se; U <- medias_ic+z95*se
-cubre <- L <= mu & mu <= U
-print(c(cobertura_observada = mean(cubre), confianza_nominal = .95,
-        margen_n36 = margen95, margen_n144 = z95*sigma/sqrt(144)))
-j <- seq_len(100)
-plot(range(c(L[j],U[j],mu)), range(j), type = "n",
-     xlab = "Media salarial (USD/h)", ylab = "Muestra", main = "100 intervalos")
-segments(L[j],j,U[j],j,col = ifelse(cubre[j],"#35618A","#BD4C45"))
-abline(v = mu, lty = 2)
-```
-
-
-**Lectura del resultado:** La proporción observada fluctúa y la aproximación normal puede afectar cobertura. Cuadruplicar n reduce el margen a la mitad manteniendo confianza y sigma.
-
-**Error frecuente:** Prometer exactamente 95 aciertos en cada 100 muestras.
-
-**Comprueba:** ¿Un intervalo fallido demuestra que el código está mal? No.
-
-
-<a id="P3-10"></a>
-## Lámina 10 · Tamaño muestral para estimar una media
-
-**Identificador de enlace:** `P3-10`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 14 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Cuántas observaciones para un margen de 0,5 USD/h?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Reducir el margen a la mitad duplicará n?
-
-**Consigna:** Despeja n y verifica el margen obtenido después de redondear.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-10
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-E_media <- .5
-n_necesario <- ceiling((qnorm(.975)*sigma/E_media)^2)
-print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
-```
-
-
-**Lectura del resultado:** n crece con el inverso del margen al cuadrado. El muestreo con reemplazo puede requerir más extracciones que filas únicas. No es un plan validado para una encuesta nacional.
-
-**Error frecuente:** Redondear hacia abajo.
-
-**Comprueba:** ¿Reducir E a la mitad multiplica n por cuatro antes del redondeo? Sí.
+**Lectura del resultado:** Para la misma media y muestra, aumentar la confianza ensancha el intervalo. Aumentar n reduce el error estándar; cuadruplicar n reduce el margen a la mitad. Para planificar, n = techo((z σ/E)²), con σ conocida y E como margen o semilongitud deseada, no longitud completa. Se conservan x̄=200 y σ=60 del ejemplo de Sebastián.
 
 
 <a id="P3-11"></a>
-## Lámina 11 · Intervalos de confianza para proporciones
+## Lámina 04 · Proporciones: intervalo y planificación
 
 **Identificador de enlace:** `P3-11`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 3 · láminas 15–19 · **Modalidad:** Presencial.
+**Referencia:** Parte 3 · ic-para-las-proporciones-ejemplo · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Qué fracción tiene al menos 16 años de educación?
-
-
+**Pregunta:** Proporciones: intervalo y planificación
 
 
 
@@ -1782,9 +1448,11 @@ print(c(n = n_necesario, margen = qnorm(.975)*sigma/sqrt(n_necesario)))
 
 
 
-**Antes de ejecutar:** ¿Puede una proporción ser mayor que 1?
 
-**Consigna:** Define el indicador, extrae n=200 y calcula el IC normal aproximado si se cumplen las condiciones.
+
+
+
+**Consigna:** Ejemplo de Sebastián: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -1795,191 +1463,42 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-indicador <- as.integer(datos$educ >= 16)
-p_real <- mean(indicador)
-set.seed(16206)
-muestra_p <- sample(indicador, 200, replace = TRUE)
-n_p <- length(muestra_p)
-p_hat <- mean(muestra_p)
-exitos <- sum(muestra_p); fracasos <- n_p-exitos
-stopifnot(exitos > 5, fracasos > 5)
-se_p <- sqrt(p_hat*(1-p_hat)/n_p)
-ic_p <- p_hat+c(-1,1)*qnorm(.975)*se_p
-print(c(exitos = exitos, fracasos = fracasos, p_hat = p_hat,
-        inferior = ic_p[1], superior = ic_p[2], p_didactica = p_real))
+exitos <- 19
+n <- 200
+confianza <- 0.95
+p_previa <- 0.5
+E <- 0.03
+p_hat <- exitos / n
+z <- qnorm((1 + confianza) / 2)
+if (n >= 30 && exitos > 5 && n - exitos > 5) {
+  se <- sqrt(p_hat * (1 - p_hat) / n)
+  ic <- p_hat + c(-1, 1) * z * se
+  print(c(proporcion = p_hat, inferior = ic[1], superior = ic[2],
+          contiene_0_05 = ic[1] <= 0.05 && ic[2] >= 0.05))
+  plot(range(c(ic, 0.05)), c(0, 1), type = "n", yaxt = "n",
+       xlab = "Proporción de defectuosos", ylab = "")
+  segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = "#0160A0")
+  points(p_hat, 0.5, pch = 19)
+  abline(v = 0.05, lty = 2)
+} else {
+  message("No se cumplen las condiciones de la aproximación normal.")
+}
+n_requerido <- ceiling(z^2 * p_previa * (1 - p_previa) / E^2)
+print(c(n_requerido = n_requerido, largo_deseado = 2 * E))
 ```
 
 
-**Lectura del resultado:** El indicador es derivado, con definición explícita. Para aproximación poblacional se consideran np y n(1-p); los conteos observados sirven de diagnóstico práctico. Este intervalo de Wald puede funcionar mal cerca de 0 o 1; aquí no se amplían métodos.
-
-**Error frecuente:** Confundir “éxito” estadístico con juicio de valor o título universitario.
-
-**Comprueba:** ¿Un 1 representa exactamente qué? educ >= 16.
-
-
-<a id="P3-12"></a>
-## Lámina 12 · Proporciones: comparación con una referencia
-
-**Identificador de enlace:** `P3-12`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 20–21 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿La proporción de referencia 0,20 queda en el intervalo?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** Predice mirando los límites anteriores.
-
-**Consigna:** Comprueba inclusión y escribe una conclusión bajo el modelo didáctico.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-12
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-referencia <- .20
-compatible <- ic_p[1] <= referencia && referencia <= ic_p[2]
-print(c(referencia = referencia, dentro_del_IC = compatible))
-```
-
-
-**Lectura del resultado:** Si queda fuera, hay evidencia de diferencia bajo los supuestos; si queda dentro, no se ha demostrado igualdad. La referencia es hipotética, no una afirmación publicada sobre Estados Unidos.
-
-**Error frecuente:** Convertir ausencia de evidencia en prueba de igualdad.
-
-**Comprueba:** ¿Que quede dentro prueba p=0,20? No.
-
-
-<a id="P3-13"></a>
-## Lámina 13 · Tamaño muestral para estimar una proporción
-
-**Identificador de enlace:** `P3-13`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · lámina 22 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Qué pasa si no tenemos estimación previa?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿p=0,5 maximiza p(1-p)?
-
-**Consigna:** Compara el plan con p piloto y el conservador para margen 0,03.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-13
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-E_p <- .03
-print(c(con_piloto = ceiling(qnorm(.975)^2*p_hat*(1-p_hat)/E_p^2),
-        conservador = ceiling(qnorm(.975)^2*.25/E_p^2)))
-```
-
-
-**Lectura del resultado:** Usar 0,5 maximiza la varianza Bernoulli. Una proporción piloto imprecisa puede producir un plan optimista.
-
-**Error frecuente:** Usar p_hat=0 como garantía de tamaño cero suficiente.
-
-**Comprueba:** ¿El plan conservador depende de observar éxitos en el piloto? No.
-
-
-<a id="P3-14"></a>
-## Lámina 14 · Aplicación: longitud y margen de error
-
-**Identificador de enlace:** `P3-14`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 23–24 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Cuántas extracciones para longitud total máxima 0,05?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿El margen será 0,05 o 0,025?
-
-**Consigna:** Usa una muestra piloto de 30 indicadores educativos y compara con el caso conservador.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-14
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-set.seed(16207)
-piloto <- sample(indicador, 30, replace = TRUE)
-p_estrella <- mean(piloto)
-longitud_max <- .05
-E_plan <- longitud_max/2
-n_plan <- ceiling(qnorm(.975)^2*p_estrella*(1-p_estrella)/E_plan^2)
-n_conservador <- ceiling(qnorm(.975)^2*.25/E_plan^2)
-print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
-        n_conservador = n_conservador))
-```
-
-
-**Lectura del resultado:** Es un caso propio análogo a chips; el n del piloto es una planificación aproximada, no garantía de longitud real para toda muestra futura con varianza estimada.
-
-**Error frecuente:** Afirmar que el resultado debe ser 711 porque ese es el ejemplo de chips.
-
-**Comprueba:** ¿De dónde sale E=0,025? De dividir la longitud total por dos.
+**Lectura del resultado:** Ejemplo de Sebastián: 19 defectuosos entre 200 productos y afirmación del proveedor p=0,05. Usamos el IC normal p̂ ± z√(p̂(1−p̂)/n), con n≥30, éxitos>5 y fracasos>5. Para planificar, n = techo(z² p*(1−p*)/E²); p*=0,5 es el caso conservador cuando no hay una estimación preliminar. E es el margen, y el largo total es 2E.
 
 
 <a id="P3-15"></a>
-## Lámina 15 · Comparación de medias entre dos poblaciones
+## Lámina 05 · Diferencia de dos medias independientes
 
 **Identificador de enlace:** `P3-15`. La numeración se reinicia por bloque, como en la web.
 
-**Referencia:** Parte 3 · lámina 25 · **Modalidad:** Ampliación autónoma.
+**Referencia:** Parte 3 · ejemplo_1 · **Modalidad:** Presencial.
 
-**Pregunta:** ¿Cómo cambia el salario medio entre umbrales educativos?
-
-
+**Pregunta:** Diferencia de dos medias independientes
 
 
 
@@ -1993,9 +1512,11 @@ print(c(piloto = p_estrella, margen = E_plan, n_piloto = n_plan,
 
 
 
-**Antes de ejecutar:** ¿Qué signo esperas para alta educación menos el resto?
 
-**Consigna:** Define las dos poblaciones empíricas sin mezclarlas.
+
+
+
+**Consigna:** Ejemplo de Sebastián: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
 
 **Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
 
@@ -2006,175 +1527,28 @@ Ejecutar después de intentar la consigna.
 
 
 ```r
-pob_alta <- datos$wage[datos$educ >= 16]
-pob_resto <- datos$wage[datos$educ < 16]
-stopifnot(length(pob_alta) > 1, length(pob_resto) > 1)
-print(c(N_alta = length(pob_alta), N_resto = length(pob_resto)))
+xbarra <- 800000
+ybarra <- 680000
+sigma_x <- 60000
+sigma_y <- 50000
+nx <- 144
+ny <- 121
+confianza <- 0.95
+diferencia <- xbarra - ybarra
+se <- sqrt(sigma_x^2 / nx + sigma_y^2 / ny)
+z <- qnorm((1 + confianza) / 2)
+ic <- diferencia + c(-1, 1) * z * se
+print(c(diferencia = diferencia, inferior = ic[1], superior = ic[2],
+        contiene_cero = ic[1] <= 0 && ic[2] >= 0))
+plot(range(c(ic, 0)), c(0, 1), type = "n", yaxt = "n",
+     xlab = "Diferencia de medias (pesos del ejemplo de cátedra)", ylab = "")
+segments(ic[1], 0.5, ic[2], 0.5, lwd = 3, col = "#0160A0")
+points(diferencia, 0.5, pch = 19)
+abline(v = 0, lty = 2)
 ```
 
 
-**Lectura del resultado:** Los grupos son dos distribuciones empíricas para una comparación didáctica. No son carreras universitarias ni grupos aleatorizados.
-
-**Error frecuente:** Cambiar la definición de los grupos a mitad del ejercicio.
-
-**Comprueba:** ¿Los grupos se superponen? No.
-
-
-<a id="P3-16"></a>
-## Lámina 16 · Diferencia de medias: parámetro e interpretación
-
-**Identificador de enlace:** `P3-16`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 26–27 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Qué significa que el intervalo incluya cero?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Qué pasa con el signo si invertimos el orden?
-
-**Consigna:** Define delta como media de alta educación menos media del resto.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-16
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-mu_alta <- mean(pob_alta); mu_resto <- mean(pob_resto)
-delta <- mu_alta-mu_resto
-print(c(delta_didactica = delta))
-```
-
-
-**Lectura del resultado:** Un intervalo que excluye cero aporta evidencia de diferencia bajo el procedimiento. Invertir el orden invierte el signo y los extremos correspondientes.
-
-**Error frecuente:** Interpretar incluir cero como demostrar igualdad.
-
-**Comprueba:** ¿Excluir cero prueba causalidad? No.
-
-
-<a id="P3-17"></a>
-## Lámina 17 · Diferencia de medias con varianzas conocidas
-
-**Identificador de enlace:** `P3-17`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 28–31 · **Modalidad:** Ampliación autónoma.
-
-**Pregunta:** ¿Cómo se combina la incertidumbre de muestras independientes?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Se restan o se suman las varianzas?
-
-**Consigna:** Extrae 144 y 121 salarios con reemplazo de cada grupo; calcula el error estándar de la diferencia.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-17
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-var_alta <- mean((pob_alta-mu_alta)^2)
-var_resto <- mean((pob_resto-mu_resto)^2)
-set.seed(16208)
-n_a <- 144L; n_b <- 121L
-m_a <- sample(pob_alta, n_a, replace = TRUE)
-m_b <- sample(pob_resto, n_b, replace = TRUE)
-diferencia <- mean(m_a)-mean(m_b)
-se_diferencia <- sqrt(var_alta/n_a+var_resto/n_b)
-print(c(estimacion = diferencia, error_estandar = se_diferencia))
-```
-
-
-**Lectura del resultado:** Las varianzas se suman por independencia aunque las medias se resten. Los momentos conocidos son de las distribuciones didácticas con denominador N de cada grupo.
-
-**Error frecuente:** Usar var(m_a) y llamarla varianza poblacional conocida.
-
-**Comprueba:** ¿Usar una sola muestra compartida garantizaría independencia? No.
-
-
-<a id="P3-18"></a>
-## Lámina 18 · Diferencia de medias: intervalo y conclusión
-
-**Identificador de enlace:** `P3-18`. La numeración se reinicia por bloque, como en la web.
-
-**Referencia:** Parte 3 · láminas 32–34 · **Modalidad:** Presencial.
-
-**Pregunta:** ¿La diferencia es compatible con cero?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Antes de ejecutar:** ¿Tu conclusión cambia si hablas de causa?
-
-**Consigna:** Calcula límites y escribe dos frases: resultado e interpretación limitada.
-
-**Datos:** wage1: CPS de Estados Unidos, 1976; ver diccionario y limitaciones al inicio.
-
-
-### Solución · P3-18
-
-Ejecutar después de intentar la consigna.
-
-
-```r
-ic_d <- diferencia+c(-1,1)*qnorm(.975)*se_diferencia
-print(c(inferior = ic_d[1], superior = ic_d[2], delta_didactica = delta,
-        contiene_cero = ic_d[1] <= 0 && ic_d[2] >= 0))
-plot(range(c(ic_d,0)), c(0,1), type = "n", yaxt = "n", ylab = "",
-     xlab = "Diferencia de medias (USD/h de 1976)", main = "Alta educación menos resto")
-segments(ic_d[1],.5,ic_d[2],.5,lwd = 3,col = "#35618A")
-points(diferencia,.5,pch = 19); abline(v = 0,lty = 2)
-```
-
-
-**Lectura del resultado:** Redacta según la salida efectiva: el IC incluye o excluye cero. El resultado compara medias de las poblaciones didácticas bajo muestreo independiente; no estima el efecto causal de educarse ni una brecha actual chilena.
-
-**Error frecuente:** Copiar la conclusión sin mirar los límites obtenidos.
-
-**Comprueba:** ¿Controlamos habilidad y contexto familiar? No.
+**Lectura del resultado:** Ejemplo de Sebastián: media de ingeniería industrial 800.000, arquitectura 680.000; nₓ=144, nᵧ=121; σₓ=60.000 y σᵧ=50.000 conocidas. Se usa (x̄−ȳ) ± z√(σₓ²/nₓ+σᵧ²/nᵧ), suponiendo independencia. Si el intervalo contiene cero, no se detecta una diferencia al nivel elegido. Si lo excluye, hay evidencia de diferencia, pero no de un efecto causal de estudiar una carrera. Estos montos son los del ejemplo de cátedra, no salarios de wage1.
 
 
 ## CIERRE · Autoevaluación
@@ -2242,24 +1616,11 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | P1-08 | Parte 1 · láminas 12–13 | `p1-08-consigna` / `p1-08-r` | Presencial |
 | P2-01 | Ayudantía · Localización central y percentiles de Sebastián | `p2-01-consigna` / `p2-01-r` | Presencial |
 | P2-02 | Ayudantía · Dispersión, histograma y boxplot de Sebastián | `p2-02-consigna` / `p2-02-r` | Presencial |
-| P3-01 | Parte 3 · lámina 1 | `p3-01-consigna` / `p3-01-r` | Presencial |
-| P3-02 | Parte 3 · lámina 2 | `p3-02-consigna` / `p3-02-r` | Presencial |
-| P3-03 | Parte 3 · lámina 3 | `p3-03-consigna` / `p3-03-r` | Presencial |
-| P3-04 | Parte 3 · lámina 4 | `p3-04-consigna` / `p3-04-r` | Ampliación autónoma |
-| P3-05 | Parte 3 · láminas 5–7 | `p3-05-consigna` / `p3-05-r` | Presencial |
-| P3-06 | Parte 3 · lámina 8 | `p3-06-consigna` / `p3-06-r` | Ampliación autónoma |
-| P3-07 | Parte 3 · láminas 9–10 | `p3-07-consigna` / `p3-07-r` | Presencial |
-| P3-08 | Parte 3 · lámina 11 | `p3-08-consigna` / `p3-08-r` | Ampliación autónoma |
-| P3-09 | Parte 3 · láminas 12–13 | `p3-09-consigna` / `p3-09-r` | Presencial |
-| P3-10 | Parte 3 · lámina 14 | `p3-10-consigna` / `p3-10-r` | Ampliación autónoma |
-| P3-11 | Parte 3 · láminas 15–19 | `p3-11-consigna` / `p3-11-r` | Presencial |
-| P3-12 | Parte 3 · láminas 20–21 | `p3-12-consigna` / `p3-12-r` | Ampliación autónoma |
-| P3-13 | Parte 3 · lámina 22 | `p3-13-consigna` / `p3-13-r` | Ampliación autónoma |
-| P3-14 | Parte 3 · láminas 23–24 | `p3-14-consigna` / `p3-14-r` | Ampliación autónoma |
-| P3-15 | Parte 3 · lámina 25 | `p3-15-consigna` / `p3-15-r` | Ampliación autónoma |
-| P3-16 | Parte 3 · láminas 26–27 | `p3-16-consigna` / `p3-16-r` | Ampliación autónoma |
-| P3-17 | Parte 3 · láminas 28–31 | `p3-17-consigna` / `p3-17-r` | Ampliación autónoma |
-| P3-18 | Parte 3 · láminas 32–34 | `p3-18-consigna` / `p3-18-r` | Presencial |
+| P3-01 | Parte 3 · teorema-central-del-limite | `p3-01-consigna` / `p3-01-r` | Presencial |
+| P3-05 | Parte 3 · ic-ejemplo1 | `p3-05-consigna` / `p3-05-r` | Presencial |
+| P3-07 | Parte 3 · intervalos-de-confianza-determinacion-del-tamano-muestral | `p3-07-consigna` / `p3-07-r` | Presencial |
+| P3-11 | Parte 3 · ic-para-las-proporciones-ejemplo | `p3-11-consigna` / `p3-11-r` | Presencial |
+| P3-15 | Parte 3 · ejemplo_1 | `p3-15-consigna` / `p3-15-r` | Presencial |
 
 | Requisito de las instrucciones | Ubicación en el notebook |
 |---|---|
@@ -2279,4 +1640,4 @@ La guía y el notebook se generan desde el mismo contenido: todas las consignas,
 | Preparación y alternativa sin conexión | inicio, P1-01 |
 | Trazabilidad y cobertura | matriz-correspondencia |
 
-**Organización actual:** 38 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 18 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 38 láminas resueltas en clase.
+**Organización actual:** 25 láminas (10 de nivelación, 8 introductorias, 2 descriptivas y 5 inferenciales), con las modificaciones y eliminaciones solicitadas por el docente. La trazabilidad muestra el material conservado; no equivale a una certificación de ejecución ni a 25 láminas resueltas en clase.
