@@ -22,6 +22,11 @@ def generar():
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
             r(lamina['codigo'], lamina['id'].lower()+'-r')
+            if lamina.get('tablas_anova'):
+                table_text = []
+                for t in lamina['tablas_anova']:
+                    table_text.append('**'+t['titulo']+' · '+t['modelo']+' · n = '+str(t['n'])+'**\n\n| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |\n|---|---:|---:|---:|---:|---:|\n'+'\n'.join('| '+' | '.join(row)+' |' for row in t['filas']))
+                md('\n\n'.join(table_text)+'\n\n'+lamina['nota_anova'], lamina['id'].lower()+'-anova')
             if lamina.get('salidas_r'):
                 md('**Resultados de referencia calculados en R**\n\n'+'\n\n'.join('**'+t+'**\n\n```text\n'+out+'\n```' for t,out in lamina['salidas_r']), lamina['id'].lower()+'-salidas')
             if lamina.get('explicaciones'):

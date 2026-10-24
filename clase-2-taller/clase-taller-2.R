@@ -66,10 +66,12 @@ head(autos[, c("qsec", "hp", "drat")])
 # Caso negativo: potencia y tiempo de aceleración
 modelo_neg <- lm(qsec ~ hp, data = autos)
 print(summary(modelo_neg))
+print(anova(modelo_neg))
 
 # Caso no significativo: relación de transmisión y tiempo
 modelo_plano <- lm(qsec ~ drat, data = autos)
 print(summary(modelo_plano))
+print(anova(modelo_plano))
 
 par(mfrow = c(1, 2))
 plot(qsec ~ hp, data = autos, pch = 19, col = "#005E9080",
@@ -83,6 +85,7 @@ par(mfrow = c(1, 1))
 
 # Ejecuta primero la lámina 08 para crear autos y modelo_plano.
 print(summary(modelo_plano))
+print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
 plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9060",
      xlab = "Relación de transmisión (sin unidades)",
