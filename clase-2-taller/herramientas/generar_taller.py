@@ -22,6 +22,8 @@ def generar():
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
             r(lamina['codigo'], lamina['id'].lower()+'-r')
+            if lamina.get('explicaciones'):
+                md('**El código, paso a paso**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-explicaciones')
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
     nb = {'nbformat': 4, 'nbformat_minor': 5, 'metadata': {'kernelspec': {'display_name': 'R', 'language': 'R', 'name': 'ir'}, 'language_info': {'name': 'R', 'file_extension': '.r', 'mimetype': 'text/x-r-source'}}, 'cells': cells}
     (ROOT / 'clase-taller-2.ipynb').write_text(json.dumps(nb, ensure_ascii=False, indent=1)+'\n')

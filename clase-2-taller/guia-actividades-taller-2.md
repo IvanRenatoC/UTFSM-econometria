@@ -40,19 +40,22 @@ summary(datos)
 
 **Lectura del resultado:** Observa los nombres y rangos antes de modelar. La experiencia es potencial, no necesariamente experiencia laboral efectivamente acumulada. La columna rownames de la copia CSV es un identificador de fila y no se usa como predictor.
 
-### Tres nubes: anticipar el signo de la pendiente
+### Nube de puntos: salario y educación
 
-Alterna entre los tres casos. Antes de mostrar la recta, predice si la tendencia es ascendente, descendente o poco marcada. Los tres usan la misma base sin alterar los datos.
+Observa la nube de salario y educación. Antes de mostrar la recta, anticipa la dirección de la tendencia. Luego ejecuta los otros gráficos en R para explorar salario frente a experiencia potencial y número de dependientes.
 
 ```r
-par(mfrow = c(1, 3))
+# Salario vs Educación
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9080")
-plot(educ ~ exper, data = datos, pch = 19, col = "#005E9080")
+
+# Otros gráficos:
+par(mfrow = c(1, 3))
+plot(wage ~ exper, data = datos, pch = 19, col = "#005E9080")
 plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
 par(mfrow = c(1, 1))
 ```
 
-**Lectura del resultado:** La tendencia describe una asociación promedio. Una nube ancha puede tener pendiente distinta de cero; una recta casi horizontal tampoco prueba independencia.
+**Lectura del resultado:** La nube de salario y educación muestra una tendencia ascendente, con dispersión entre personas de un mismo nivel educativo. La recta resume la asociación promedio. En los otros gráficos se usa wage, el nombre de la variable salario en datos. par(mfrow = c(1, 3)) reserva tres espacios; estos dos gráficos ocupan los dos primeros.
 
 ### Modelo, error y factores que no observamos
 
@@ -84,17 +87,40 @@ abline(h = promedio, lty = 2)
 
 **Lectura del resultado:** Cada punto dorado resume personas con el mismo educ; la línea horizontal resume a todas. Los tamaños de los grupos son diferentes. Bajo E[u | educ] = 0, la regresión poblacional es E[wage | educ] = β₀ + β₁ educ.
 
-### Mínimos cuadrados: elegir una recta
+### Mínimos cuadrados: estimar con lm()
 
-Ajusta intercepto y pendiente para reducir la suma de residuos al cuadrado. Luego compara tu propuesta con lm(). Un residuo es y observado menos y ajustado; se eleva al cuadrado para evitar que signos opuestos se cancelen.
+Ejecuta el código para estimar la recta de salario y educación mediante mínimos cuadrados ordinarios. Los coeficientes los calcula lm() a partir de los datos; en esta lámina no se modifican manualmente.
 
 ```r
 modelo_pos <- lm(wage ~ educ, data = datos)
+print(summary(modelo_pos))
 print(coef(modelo_pos))
 print(sum(resid(modelo_pos)^2))
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060")
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 ```
+
+**El código, paso a paso**
+
+**modelo_pos <- lm(wage ~ educ, data = datos)**
+
+Estima el salario como función lineal de los años de educación y guarda el ajuste en modelo_pos. La fórmula incluye un intercepto por defecto.
+
+**print(summary(modelo_pos))**
+
+Muestra el resumen del ajuste. Residuals resume los residuos. En Coefficients, Estimate contiene el intercepto (aproximadamente −0.905) y la pendiente (0.541); Std. Error muestra sus errores estándar; t value y Pr(>|t|) corresponden al contraste de que cada coeficiente poblacional sea cero. También aparecen el error estándar residual, R² (aproximadamente 0.1648), R² ajustado y el contraste F global. Estos contrastes requieren los supuestos de la inferencia clásica; no demuestran causalidad.
+
+**print(coef(modelo_pos))**
+
+Extrae e imprime únicamente los dos coeficientes estimados, con sus nombres: (Intercept) y educ. Permite leer la ecuación ŷ = −0.905 + 0.541 educ. La pendiente indica una asociación promedio de 0.541 USD por hora por año adicional de educación.
+
+**print(sum(resid(modelo_pos)^2))**
+
+resid() obtiene las diferencias entre salarios observados y ajustados. ^2 eleva cada residuo al cuadrado y sum() suma esos cuadrados. print() muestra SSR ≈ 5980.68, la suma de cuadrados residual que MCO minimiza. No es un promedio ni R²; está expresada en unidades de salario al cuadrado.
+
+**plot(...) y abline(...)**
+
+plot() dibuja la nube de observaciones. abline(modelo_pos, ...) agrega la recta estimada en dorado; lwd = 3 fija su grosor.
 
 **Lectura del resultado:** MCO minimiza SSR = Σ(yᵢ − ŷᵢ)². El ajuste observado es aproximadamente ŷ = −0.905 + 0.541 educ. Un año adicional de educación se asocia con 0.541 USD/h más, en promedio. El intercepto no debe interpretarse fuera del contexto y soporte de los datos.
 

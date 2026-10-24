@@ -12,9 +12,12 @@ head(datos)
 str(datos)
 summary(datos)
 
-par(mfrow = c(1, 3))
+# Salario vs Educación
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9080")
-plot(educ ~ exper, data = datos, pch = 19, col = "#005E9080")
+
+# Otros gráficos:
+par(mfrow = c(1, 3))
+plot(wage ~ exper, data = datos, pch = 19, col = "#005E9080")
 plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
 par(mfrow = c(1, 1))
 
@@ -33,6 +36,7 @@ points(por_educ$educ, por_educ$wage, pch = 19, col = "#D6A600", cex = 1.4)
 abline(h = promedio, lty = 2)
 
 modelo_pos <- lm(wage ~ educ, data = datos)
+print(summary(modelo_pos))
 print(coef(modelo_pos))
 print(sum(resid(modelo_pos)^2))
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060")
