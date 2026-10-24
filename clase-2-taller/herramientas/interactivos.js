@@ -8,9 +8,9 @@ let kind=lab.dataset.kind,selected=['positive','negative','flat'].includes(kind)
 lab.innerHTML='<div class="lab-controls"></div><svg viewBox="0 0 760 420" role="img"></svg><p class="lab-result" aria-live="polite"></p>';
 const controls=lab.querySelector('.lab-controls'),svg=lab.querySelector('svg'),out=lab.querySelector('.lab-result');
 const button=(label,fn)=>{let b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);controls.append(b);return b;};
-let reveal=!['cases'].includes(kind),manual=kind==='fit';
+let reveal=!['cases','explore-positive'].includes(kind),manual=kind==='fit';
 if(['cases','variance'].includes(kind)) Object.entries({positive:'Pendiente positiva',negative:'Pendiente negativa',flat:'No significativa'}).forEach(([k,label])=>{let b=button(label,()=>{selected=k;controls.querySelectorAll('button[data-case]').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));draw();});b.dataset.case=k;b.setAttribute('aria-pressed',String(k===selected));});
-if(kind==='cases')button('Mostrar / ocultar recta',()=>{reveal=!reveal;draw();});
+if(['cases','explore-positive'].includes(kind))button('Mostrar / ocultar recta',()=>{reveal=!reveal;draw();});
 let intercept,slope;
 if(manual){const slider=(label,min,max,step,value)=>{let l=document.createElement('label');l.textContent=label+' ';let i=document.createElement('input');i.type='range';Object.assign(i,{min,max,step,value});l.append(i);controls.append(l);i.addEventListener('input',draw);return i;};intercept=slider('Intercepto',-8,10,.000001,0);slope=slider('Pendiente',-.5,1.5,.000001,.5);button('Ajustar con MCO',()=>{let f=fit(D.map(d=>d.educ),D.map(d=>d.wage));intercept.value=f.a;slope.value=f.b;draw();});}
 if(kind==='residuals')button('Animar residuos / reiniciar',()=>{cancelAnimationFrame(frame);animate=0;const start=performance.now();const tick=t=>{animate=Math.min(1,(t-start)/2400);draw();if(animate<1)frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);});
@@ -25,7 +25,7 @@ let defs=node('defs'),clip=node('clipPath',{id:'clip-'+index});clip.append(node(
 x.forEach((v,i)=>{g.append(node('circle',{cx:X(v),cy:Y(y[i]),r:3.1,fill:'#005E90','fill-opacity':.4}));if(kind==='residuals'&&i<x.length*animate)g.append(node('line',{x1:X(v),x2:X(v),y1:Y(a+b*v),y2:Y(y[i]),stroke:'#D6A600','stroke-opacity':.55}));});
 if(kind==='means'){let groups={};x.forEach((v,i)=>{(groups[v]??=[]).push(y[i]);});Object.entries(groups).forEach(([v,ys])=>g.append(node('circle',{cx:X(+v),cy:Y(ys.reduce((a,b)=>a+b)/ys.length),r:6,fill:'#D6A600'})));g.append(node('line',{x1:65,x2:720,y1:Y(f.my),y2:Y(f.my),stroke:'currentColor','stroke-dasharray':'5 5'}));out.textContent=`Promedio total: ${f.my.toFixed(3)} USD/h. Los puntos dorados son promedios por nivel educativo.`;return;}
 if(reveal)g.append(node('line',{x1:X(xmin),x2:X(xmax),y1:Y(a+b*xmin),y2:Y(a+b*xmax),stroke:'#D6A600','stroke-width':3,class:'fitted-line'}));
-let ssr=y.reduce((s,v,i)=>s+(v-a-b*x[i])**2,0);out.textContent=reveal?`ŷ = ${a.toFixed(3)} ${b<0?'−':'+'} ${Math.abs(b).toFixed(3)} x · SSR = ${ssr.toFixed(2)}${manual?' · Compara con el mínimo MCO.':` · R² = ${f.r2.toFixed(4)}`}`:'¿Qué signo anticipas? Muestra la recta después de mirar la nube.';
+let ssr=y.reduce((s,v,i)=>s+(v-a-b*x[i])**2,0);out.textContent=reveal?`ŷ = ${a.toFixed(3)} ${b<0?'−':'+'} ${Math.abs(b).toFixed(3)} x; SSR = ${ssr.toFixed(2)}${manual?'. Compara con el mínimo MCO.':`; R² = ${f.r2.toFixed(4)}`}`:'¿Qué signo anticipas? Muestra la recta después de mirar la nube.';
 }
 draw();
 });
