@@ -24,7 +24,7 @@ La fecha exacta del taller no fue especificada: la etiqueta muestra «Lunes · T
 
 ## Regeneración
 
-Ejecutar `python3 herramientas/generar_web.py`. Este generador conserva las actividades del notebook y aplica `herramientas/identidad_web.py`. Los estilos y la búsqueda están en `identidad-utfsm.css` y `navegacion-utfsm.js`.
+Ejecutar `python3 clase-1-taller/herramientas/generar_web.py`. Este generador conserva las actividades del notebook y aplica `clase-1-taller/herramientas/identidad_web.py`. Los estilos y la búsqueda están en `identidad-utfsm.css` y `navegacion-utfsm.js`.
 
 ## Verificación
 

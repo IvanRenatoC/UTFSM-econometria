@@ -1,0 +1,49 @@
+{
+  "titulo": "Clase 2 · Regresión lineal simple en R",
+  "docente": "Iván Canales",
+  "estado": "Plantilla de trabajo; contenido pendiente de desarrollar y validar con la cátedra.",
+  "bloques": [
+    {
+      "id": "P1",
+      "etiqueta": "Parte 1 · Econometría",
+      "titulo": "Contenido de la cátedra",
+      "laminas": [
+        {
+          "id": "C2-01",
+          "titulo": "Tema de la cátedra por desarrollar",
+          "texto": "Incorporar aquí el primer tema de clase 2 y su aplicación computacional, conservando el orden de Sebastián.",
+          "codigo": "# Desarrollar aquí el ejemplo de R correspondiente.",
+          "lectura": "Pendiente de completar después de ejecutar el código."
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "etiqueta": "Parte 2 · Ayudantía",
+      "titulo": "Aplicación en R",
+      "laminas": [
+        {
+          "id": "C2-02",
+          "titulo": "Actividad guiada por desarrollar",
+          "texto": "Definir una consigna, un gráfico o resultado esperado y su interpretación.",
+          "codigo": "# Escribir aquí el código R de la actividad guiada.",
+          "lectura": "Pendiente de completar."
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "etiqueta": "Parte 3 · Ejercitación",
+      "titulo": "Práctica y cierre",
+      "laminas": [
+        {
+          "id": "C2-03",
+          "titulo": "Ejercicio por desarrollar",
+          "texto": "Agregar una actividad para comprobar lo aprendido, con la solución plegada.",
+          "codigo": "# Escribir aquí la solución en R.",
+          "lectura": "Pendiente de completar."
+        }
+      ]
+    }
+  ]
+}

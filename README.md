@@ -1,26 +1,48 @@
-# Econometría UTFSM · Taller 1
+# Econometría UTFSM
 
-Material presencial de Iván para complementar la cátedra de Sebastián Azócar en ICS-294. Horario: 18:50–21:25, con pausa de 15 minutos y 140 minutos efectivos.
+Material del taller de Econometría ICS-294.
 
-- [Abrir la clase publicada en GitHub Pages](https://ivanrenatoc.github.io/UTFSM-econometria/)
-- [Guía de actividades](guia-actividades-taller-1.md)
-- [Notebook con kernel R](clase-taller-1.ipynb)
-- [Script equivalente para RStudio](clase-taller-1.R)
-- [Guía docente y agenda](guia-docente-taller-1.md)
-- [Instrucciones del material](instruccion-clase-taller-1.md)
-- [Lectura del material existente](Lectura%20clase%201%20-%20material%20existente.md)
-- [Datos y procedencia](datos/LEEME.md)
+## Clase 1
 
-Primero nivelación en R; después introducción, descriptiva e inferencia en el orden de la [clase 1](https://hizocar.github.io/econometria-usm/clases/clase1/). Incluye 25 láminas y copia local de wage1 para trabajar sin conexión. Las soluciones están separadas de las consignas.
+Todo el material específico de la primera clase está en [clase-1-taller/](clase-1-taller/).
 
-Descargar o clonar el repositorio completo y abrirlo desde su carpeta raíz. Para RStudio ejecutar `clase-taller-1.R`; para Jupyter elegir kernel R. La guía contiene instrucciones de preparación.
+- [Abrir la clase](clase-1-taller/index.html)
+- [Notebook completo en R](clase-1-taller/clase-taller-1.ipynb)
+- [Guía del material](clase-1-taller/README.md)
+- [Ejercicios en PDF](clase-1-taller/ejercicios-econometria-taller-1.pdf)
+- [Respuestas en PDF](clase-1-taller/respuestas-ejercicios-econometria-taller-1.pdf)
 
-**Validación pendiente:** no se ejecutó R en el entorno de elaboración. Antes de usar en clase, ejecutar el script en una sesión limpia o todas las celdas del notebook y revisar salidas y gráficos. No hay resultados de ejecución inventados.
+Para ejecutar el notebook o el script R, utiliza `clase-1-taller/` como directorio de trabajo, junto a su carpeta `datos/`.
 
-`clase-1-pasado/` conserva el material de referencia atribuido a Jocelyn Tapia Stefanoni. Las actividades nuevas se elaboraron con datos asociados al libro de Jeffrey M. Wooldridge; no son transcripciones de sus ejercicios.
+Para regenerar la web desde la raíz:
 
-## Versión web
+```sh
+python3 clase-1-taller/herramientas/generar_web.py
+```
 
-`index.html` contiene las 25 láminas enmarcadas, soluciones desplegables, copia de código y modo presentación. Los títulos se sincronizan con la guía, el script y el notebook al ejecutar `python3 herramientas/generar_web.py`.
+## Clase 2
 
-**Publicación:** repositorio público por autorización del profesor. GitHub Pages configurado desde la rama `main`, carpeta raíz. Dirección de la clase: https://ivanrenatoc.github.io/UTFSM-econometria/.
+Base de trabajo preparada en [clase-2-taller/](clase-2-taller/).
+
+- [Plantilla web](clase-2-taller/index.html)
+- [Notebook de R](clase-2-taller/clase-taller-2.ipynb)
+- [Instrucciones para desarrollar la clase](clase-2-taller/instruccion-clase-taller-2.md)
+
+## Recursos compartidos del curso
+
+El logo `Logo_UTFSM.png`, los estilos `identidad-utfsm.css`, la navegación `navegacion-utfsm.js`, la especificación `IDENTIDAD-VISUAL.md` y el documento general `Econometria_USM_2026_3.pdf` permanecen en la raíz.
+
+El archivo `index.html` de la raíz es el menú del curso. Cada clase se publica en su propia ruta:
+
+- Portada: https://ivanrenatoc.github.io/UTFSM-econometria/
+- Clase 1: https://ivanrenatoc.github.io/UTFSM-econometria/clase-1-taller/
+- Clase 2: https://ivanrenatoc.github.io/UTFSM-econometria/clase-2-taller/
+
+Los enlaces antiguos a láminas de la clase 1 conservan su destino mediante redirección desde la portada. El antiguo `#clase-2` abre ahora la página independiente de la clase 2. La clase 2 está señalada como material en preparación.
+
+
+## Sincronización con GitHub
+
+Esta carpeta está vinculada al repositorio `IvanRenatoC/UTFSM-econometria`. Después de editar una clase, ejecuta su generador, revisa los cambios con `git status` y utiliza una rama y un pull request para incorporarlos a `main`. GitHub Pages publica desde `main`, en la raíz del repositorio.
+
+Los archivos temporales de LaTeX y las cachés de Python se excluyen mediante `.gitignore`; los PDF finales, notebooks, fuentes y recursos de las clases forman parte del material versionado.
