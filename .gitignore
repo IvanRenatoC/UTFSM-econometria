@@ -1,0 +1,13 @@
+# Cachés y archivos temporales locales
+.DS_Store
+__pycache__/
+*.py[cod]
+# Intermedios de compilación LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.xdv
+*.synctex.gz
+# Cálculo provisional no utilizado por el material publicado
+clase-1-taller/datos/resultados-descriptivos-wage1.csv

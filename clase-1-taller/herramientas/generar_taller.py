@@ -648,7 +648,7 @@ md(trace,'matriz-correspondencia'); sections.append(trace)
 notebook=dict(nbformat=4,nbformat_minor=5,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source'),taller=dict(docente='Iván',audiencia='8–10',inicio='18:50',fin='21:25',pausa_min=15,trabajo_min=140)),cells=cells)
 (root/'clase-taller-1.ipynb').write_text(json.dumps(notebook,ensure_ascii=False,indent=1)+'\n')
 (root/'guia-actividades-taller-1.md').write_text('\n\n'.join(sections))
-script=['# Taller 1: ejecutar desde la raíz del proyecto en una sesión limpia.\n# Equivalente a todas las celdas R del notebook; no instala paquetes.\n']
+script=['# Taller 1: ejecutar desde clase-1-taller/ en una sesión limpia.\n# Equivalente a todas las celdas R del notebook; no instala paquetes.\n']
 for a in activities:
  script.extend(['\n# '+a['id']+' · '+a['title']+'\n',a['code']+'\n'])
  if 'practice' in a:

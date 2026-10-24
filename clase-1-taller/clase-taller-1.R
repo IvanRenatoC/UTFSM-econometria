@@ -1,4 +1,4 @@
-# Taller 1: ejecutar desde la raíz del proyecto en una sesión limpia.
+# Taller 1: ejecutar desde clase-1-taller/ en una sesión limpia.
 # Equivalente a todas las celdas R del notebook; no instala paquetes.
 
 # NIV-01 · Escribe tu nombre

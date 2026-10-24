@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{graphicx,enumitem,fancyhdr,listings,hyperref}
+\definecolor{azul}{HTML}{1B2A5E}
+\definecolor{dorado}{HTML}{E5B300}
+\definecolor{fondo}{HTML}{F3F6FA}
+\hypersetup{colorlinks=true,urlcolor=azul,pdftitle={Ejercicios Econometría Taller 1 - Introducción a la computación estadística y econometría},pdfauthor={Iván Canales}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\color{azul}Econometría - Taller 1}
+\setlength{\headheight}{32pt}
+\fancyhead[R]{\includegraphics[height=0.95cm]{../Logo_UTFSM.png}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlist[enumerate]{leftmargin=*,itemsep=13pt,parsep=4pt}
+\lstset{language=R,basicstyle=\ttfamily\small,backgroundcolor=\color{fondo},frame=single,rulecolor=\color{fondo},breaklines=true,columns=fullflexible,keepspaces=true,showstringspaces=false,xleftmargin=6pt,xrightmargin=6pt,aboveskip=6pt,belowskip=6pt}
+\newcommand{\codigo}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\captura}[3]{\begin{minipage}[t]{0.48\linewidth}\centering\includegraphics[width=\linewidth,height=#3,keepaspectratio]{colab-#1.png}\par\vspace{2pt}{\footnotesize\color{azul}\textbf{#1.} #2}\end{minipage}}
+\begin{document}
+{\LARGE\bfseries\color{azul}Ejercicios Econometría Taller 1\par}
+{\large\color{azul}Introducción a la computación estadística y econometría\par}
+\vspace{2pt}{\color{dorado}\hrule height 1.5pt}\vspace{7pt}
+{\large\bfseries\color{azul}Si no tienes aún Google Colaboratory, esta es la manera de hacerlo. La otra opción es buscarlo directamente en Google.\par}
+{\small Accede con tu cuenta de Google. Si Colaboratory no aparece en Drive, usa \textbf{Nuevo $\rightarrow$ Más $\rightarrow$ Conectar más aplicaciones}, busca la aplicación oficial y conéctala. Luego abre el notebook y selecciona el entorno \textbf{R}.}
+
+\captura{1}{Abre Drive desde las aplicaciones de Google.}{4.3cm}\hfill
+\captura{2}{Accede a Google Workspace Marketplace.}{4.3cm}
+\par\vspace{8pt}
+\captura{3}{Busca Colaboratory y pulsa Instalar.}{3.9cm}\hfill
+\captura{4}{En Drive, entra a Nuevo $\rightarrow$ Más $\rightarrow$ Google Colaboratory.}{3.9cm}
+\par\vspace{8pt}
+\captura{5}{Entorno de ejecución $\rightarrow$ Cambiar tipo de entorno de ejecución.}{4.5cm}\hfill
+\captura{6}{Selecciona R y pulsa Guardar.}{4.5cm}
+\par\vspace{5pt}
+{\footnotesize Con R seleccionado, ejecuta el código directamente: no necesitas \texttt{\%\%R} ni cargar la extensión de Python \codigo{rpy2}.}
+
+\newpage
+{\Large\bfseries\color{azul}Repaso del taller 1\par}
+\vspace{2pt}{\color{dorado}\hrule height 1pt}\vspace{6pt}
+\textbf{A continuación se hará un repaso de lo visto en el taller 1.}
+
+Haz un código en Colab explicando lo que hiciste. Para ello, averigua cómo crear una celda Markdown.
+
+\begin{enumerate}
+\item \textbf{Nombre y apellido con ciclos.} Escribe un programa que muestre tu nombre y tu apellido de manera alternada: nombre, apellido, nombre, apellido, etc. Elige e indica cuántas alternancias realizará. Resuélvelo primero con \codigo{while} y después con \codigo{for}.
+
+\textit{Consejo: utiliza las sentencias condicionales \codigo{if} y \codigo{else} para decidir qué texto mostrar en cada iteración.}
+
+\item \textbf{Una sucesión de signos alternados.} La sucesión
+\[
+1,\,-1,\,2,\,-2,\,3,\,-3,\,4,\,-4,\,\ldots
+\]
+tiene una estructura que puede codificarse. Genérala hasta llegar a $-20$, inclusive, utilizando primero \codigo{while} y después \codigo{for}.
+
+\textit{Consejo: utiliza \codigo{if} y \codigo{else} para alternar el signo.}
+
+\item \textbf{Funciones para construir secuencias y vectores.} Explica para qué sirven \codigo{c()}, \codigo{seq()}, \codigo{numeric()} y \codigo{rep()}. Investiga también el uso de \codigo{seq_len()}, \codigo{seq_along()}, \codigo{sequence()} y \codigo{gl()}. Para cada función, presenta un ejemplo en R y explica su resultado.
+
+En particular, ejecuta \codigo{gl(2, 3, labels = c("A", "B"))} y explica para qué sirve cada dato que escribes entre los paréntesis y cómo se organiza el resultado.
+
+\item \textbf{Valores aleatorios y redondeo.} La función \codigo{runif()} permite generar números aleatorios de una distribución uniforme; por defecto, sus límites son 0 y 1. Investiga sus parámetros y crea un vector de longitud 1.000. Asígnalo mediante \codigo{<-} a un objeto llamado \codigo{v}.
+
+Luego ejecuta \codigo{floor(v * 100)}. ¿Qué hace \codigo{floor()} y qué valores puede tomar el resultado? Compara algunos elementos de \codigo{v} con sus correspondientes valores transformados.
+\end{enumerate}
+
+\newpage
+{\Large\bfseries\color{azul}Aplicación con datos de Wooldridge\par}
+\vspace{2pt}{\color{dorado}\hrule height 1pt}\vspace{6pt}
+\begin{enumerate}[start=5]
+\item \textbf{Carga de datos y transformación logarítmica.} Recupera la base utilizada en clase. Si todavía no tienes instalado el paquete, ejecuta la instalación una vez; después carga los datos:
+\begin{lstlisting}
+install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+datos <- wooldridge::wage1
+\end{lstlisting}
+Asigna \codigo{y <- datos$wage} y ejecuta \codigo{hist(log(y))}. Agrega un título al gráfico y nombres a sus ejes. Explica con tus palabras qué observas. Recuerda que \codigo{wage} es el salario por hora, expresado en USD de 1976, y que \codigo{log()} calcula el logaritmo natural.
+
+\item \textbf{Antigüedad y gráficos de caja.} Crea una variable nueva en \codigo{datos} que clasifique \codigo{tenure} en cuatro grupos: 0 años; entre 1 y 3 años, inclusive; entre 4 y 8 años, inclusive; y más de 8 años. \codigo{tenure} mide la antigüedad con el empleador actual, en años.
+
+Construye gráficos de caja del salario \codigo{wage} según esta nueva variable. Compara los grupos y explica lo que observas en sus medianas, dispersión y posibles valores atípicos.
+
+\item \textbf{Distribución de promedios muestrales.} Crea un vector llamado \codigo{avg_wage} de longitud 1.000. Toma una muestra aleatoria simple \textbf{sin reposición} de 50 filas de \codigo{datos}, calcula el promedio de \codigo{wage} con \codigo{mean()} y almacénalo en la posición 1 de \codigo{avg_wage}.
+
+Vuelve a tomar una muestra de 50 filas de la base completa, calcula su promedio salarial y guárdalo en la posición 2. Continúa mediante un ciclo hasta completar las 1.000 posiciones.
+
+La selección es sin reposición \textbf{dentro de cada muestra}; las muestras se toman nuevamente desde la base completa, por lo que una persona puede aparecer en distintas repeticiones.
+
+Antes de iniciar el ciclo, fija la siguiente semilla una sola vez:
+\begin{lstlisting}
+set.seed(123)
+\end{lstlisting}
+Dentro del ciclo, utiliza esta sentencia para seleccionar las 50 filas de cada muestra:
+\begin{lstlisting}
+filas <- sample(1:nrow(datos), size = 50, replace = FALSE)
+\end{lstlisting}
+Usa \codigo{datos[filas, ]} para acceder a las filas seleccionadas.
+
+Finalmente, construye un histograma de \codigo{avg_wage} con \codigo{hist()}. ¿Qué forma observas? Relaciona lo observado con la distribución de los promedios muestrales.
+
+\item \textbf{Nube de puntos y correlación.} Construye un diagrama de dispersión entre \codigo{educ} y \codigo{exper}, y calcula su correlación con \codigo{cor()}. Ambas variables se miden en años: educación y experiencia laboral, respectivamente.
+
+Explica qué observas en la nube de puntos y cómo se relaciona con el signo y la magnitud de la correlación. Distingue asociación de causalidad.
+\end{enumerate}
+\end{document}
