@@ -30,7 +30,7 @@ head(datos)'''
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
     nb = {'nbformat': 4, 'nbformat_minor': 5, 'metadata': {'kernelspec': {'display_name': 'R', 'language': 'R', 'name': 'ir'}, 'language_info': {'name': 'R', 'file_extension': '.r', 'mimetype': 'text/x-r-source'}}, 'cells': cells}
     (ROOT / 'clase-taller-2.ipynb').write_text(json.dumps(nb, ensure_ascii=False, indent=1)+'\n')
-    (ROOT / 'clase-taller-2.R').write_text(''.join(script))
+    (ROOT / 'clase-taller-2.R').write_text(''.join(script).rstrip()+'\n')
     (ROOT / 'guia-actividades-taller-2.md').write_text('\n\n'.join(guia)+'\n')
     return contenido
 

@@ -9,4 +9,3 @@ head(datos)
 # Escribir aquí el código R de la actividad guiada.
 
 # Escribir aquí la solución en R.
-
