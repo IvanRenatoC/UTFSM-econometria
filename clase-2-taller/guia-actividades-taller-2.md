@@ -201,18 +201,18 @@ Call:
 lm(formula = wage ~ educ, data = datos)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--5.3396 -2.1501 -0.9674  1.1921 16.6085 
+    Min      1Q  Median      3Q     Max
+-5.3396 -2.1501 -0.9674  1.1921 16.6085
 
 Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept) -0.90485    0.68497  -1.321    0.187    
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.90485    0.68497  -1.321    0.187
 educ         0.54136    0.05325  10.167   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 3.378 on 524 degrees of freedom
-Multiple R-squared:  0.1648,	Adjusted R-squared:  0.1632 
+Multiple R-squared:  0.1648,	Adjusted R-squared:  0.1632
 F-statistic: 103.4 on 1 and 524 DF,  p-value: < 2.2e-16
 ```
 
@@ -222,9 +222,9 @@ F-statistic: 103.4 on 1 and 524 DF,  p-value: < 2.2e-16
 Analysis of Variance Table
 
 Response: wage
-           Df Sum Sq Mean Sq F value    Pr(>F)    
+           Df Sum Sq Mean Sq F value    Pr(>F)
 educ        1 1179.7 1179.73  103.36 < 2.2e-16 ***
-Residuals 524 5980.7   11.41                      
+Residuals 524 5980.7   11.41
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 ```
