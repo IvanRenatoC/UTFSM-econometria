@@ -53,23 +53,40 @@ residuos <- y - y_ajustado
 print(head(data.frame(y, y_ajustado, residuos)))
 
 modelo_pos <- lm(wage ~ educ, data = datos)
-summary(modelo_pos)
+print(summary(modelo_pos))
+print(anova(modelo_pos))
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
      xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)")
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 predict(modelo_pos, newdata = data.frame(educ = c(12, 16)))
 
-modelo_neg <- lm(educ ~ exper, data = datos)
-summary(modelo_neg)
-plot(educ ~ exper, data = datos, pch = 19, col = "#005E9060",
-     xlab = "Experiencia potencial (años)", ylab = "Educación (años)")
-abline(modelo_neg, col = "#D6A600", lwd = 3)
+autos <- datasets::mtcars
+head(autos[, c("qsec", "hp", "drat")])
 
-modelo_plano <- lm(wage ~ numdep, data = datos)
-summary(modelo_plano)
-confint(modelo_plano, "numdep", level = 0.95)
-plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9060",
-     xlab = "Número de dependientes", ylab = "Salario por hora (USD de 1976)")
+# Caso negativo: potencia y tiempo de aceleración
+modelo_neg <- lm(qsec ~ hp, data = autos)
+print(summary(modelo_neg))
+
+# Caso no significativo: relación de transmisión y tiempo
+modelo_plano <- lm(qsec ~ drat, data = autos)
+print(summary(modelo_plano))
+
+par(mfrow = c(1, 2))
+plot(qsec ~ hp, data = autos, pch = 19, col = "#005E9080",
+     xlab = "Potencia bruta (hp)", ylab = "Tiempo de 1/4 de milla (s)")
+abline(modelo_neg, col = "#D6A600", lwd = 3)
+plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9080",
+     xlab = "Relación de transmisión (sin unidades)",
+     ylab = "Tiempo de 1/4 de milla (s)")
+abline(modelo_plano, col = "#D6A600", lwd = 3)
+par(mfrow = c(1, 1))
+
+# Ejecuta primero la lámina 08 para crear autos y modelo_plano.
+print(summary(modelo_plano))
+print(confint(modelo_plano, "drat", level = 0.95))
+plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9060",
+     xlab = "Relación de transmisión (sin unidades)",
+     ylab = "Tiempo de 1/4 de milla (s)")
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 
 modelo <- modelo_pos
@@ -98,7 +115,7 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
         names.arg = rownames(resumen), ylab = "Fracción de SST")
 
 comparacion <- data.frame(
-  caso = c("Salario y educación", "Educación y experiencia", "Salario y dependientes"),
+  caso = c("Salario y educación", "Tiempo y potencia", "Tiempo y transmisión"),
   pendiente = sapply(modelos, function(m) coef(m)[2]),
   R2 = sapply(modelos, function(m) summary(m)$r.squared),
   p_pendiente = sapply(modelos, function(m) coef(summary(m))[2, 4]))

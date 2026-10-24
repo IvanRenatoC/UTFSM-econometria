@@ -9,6 +9,7 @@ Material disponible: 12 láminas prácticas, gráficos interactivos, animación 
 - `contenido-clase-2.json`: fuente común de consignas, código e interpretación.
 - `guia-docente-taller-2.md`: metodología, fuentes y límites de interpretación.
 - `datos/wage1.csv`: copia completa del dataset Wooldridge usado en la clase 1.
+- `datos/mtcars.csv`: copia exportada de datasets::mtcars para los gráficos web. El notebook carga la misma base incluida en R.
 
 Desde esta carpeta: `python3 herramientas/generar_web.py`. El notebook conserva exactamente la secuencia y el código R de las láminas. Los controles web son una representación adicional; no ejecutan R en el navegador.
 
