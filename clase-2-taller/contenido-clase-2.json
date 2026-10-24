@@ -62,7 +62,7 @@
           "titulo": "Nube de puntos: salario y educación",
           "texto": "Observa la nube de salario y educación. Antes de mostrar la recta, anticipa la dirección de la tendencia. Luego ejecuta los otros gráficos en R para explorar salario frente a experiencia potencial y número de dependientes.",
           "codigo": "# Salario vs Educación\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9080\")\n\n# Otros gráficos:\npar(mfrow = c(1, 3))\nplot(wage ~ exper, data = datos, pch = 19, col = \"#005E9080\")\nplot(wage ~ numdep, data = datos, pch = 19, col = \"#005E9080\")\npar(mfrow = c(1, 1))",
-          "lectura": "La nube de salario y educación muestra una tendencia ascendente, con dispersión entre personas de un mismo nivel educativo. La recta resume la asociación promedio. En los otros gráficos se usa wage, el nombre de la variable salario en datos. par(mfrow = c(1, 3)) reserva tres espacios; estos dos gráficos ocupan los dos primeros.",
+          "lectura": "La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra.",
           "interactivo": "explore-positive"
         },
         {
@@ -116,7 +116,41 @@
           "titulo": "De la fórmula a lm(): regresión muestral",
           "texto": "Calcula los parámetros con vectores y compara con lm(). Esta es una estimación en la muestra, no los parámetros poblacionales conocidos.",
           "codigo": "x <- datos$educ\ny <- datos$wage\nb1 <- sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2)\nb0 <- mean(y) - b1 * mean(x)\nprint(c(b0 = b0, b1 = b1))\nprint(coef(modelo_pos))\ny_ajustado <- b0 + b1 * x\nresiduos <- y - y_ajustado\nprint(head(data.frame(y, y_ajustado, residuos)))",
-          "lectura": "Los dos métodos coinciden salvo redondeo numérico. La recta pasa por (x̄, ȳ). No confundas β₁ poblacional con b₁ estimado."
+          "lectura": "Los dos métodos coinciden salvo redondeo numérico. La recta pasa por (x̄, ȳ). No confundas β₁ poblacional con b₁ estimado.",
+          "explicaciones": [
+            [
+              "x <- datos$educ; y <- datos$wage",
+              "Extraemos dos columnas del dataset y las guardamos como vectores: x contiene los años de educación e y, el salario por hora. Las posiciones coinciden: x[i] e y[i] corresponden a la misma persona. La flecha <- asigna los valores a un nombre."
+            ],
+            [
+              "b1 <- sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2)",
+              "Calculamos la pendiente de mínimos cuadrados. mean(x) y mean(y) son los promedios. Al restarlos obtenemos cuánto se aleja cada observación de su promedio. El numerador multiplica esas diferencias persona por persona y las suma: resume cómo varían juntas educación y salario. El denominador suma las diferencias de educación al cuadrado: mide la variación de x y debe ser mayor que cero. Dividir ambos resultados produce b1 ≈ 0.541: por cada año adicional de educación, el salario ajustado aumenta aproximadamente 0.541 USD por hora."
+            ],
+            [
+              "b0 <- mean(y) - b1 * mean(x)",
+              "Calculamos el intercepto: al salario promedio le restamos la pendiente multiplicada por la educación promedio. Obtenemos b0 ≈ −0.905. Esta elección hace que la recta pase por el punto de los promedios (x̄, ȳ). No significa que exista un salario negativo observado."
+            ],
+            [
+              "print(c(b0 = b0, b1 = b1))",
+              "c() reúne los dos resultados en un vector con nombres. print() muestra el intercepto y la pendiente calculados con la fórmula. Los nombres b0 y b1 permiten distinguirlos en la salida."
+            ],
+            [
+              "print(coef(modelo_pos))",
+              "coef() extrae los coeficientes que lm() calculó en la lámina anterior. print() los muestra con los nombres (Intercept) y educ. Deben coincidir con b0 y b1, salvo diferencias mínimas de precisión numérica: estamos aplicando el mismo método. Primero debes ejecutar la celda que crea modelo_pos."
+            ],
+            [
+              "y_ajustado <- b0 + b1 * x",
+              "Aplicamos la ecuación de la recta a cada persona. R multiplica cada valor de x por b1 y le suma b0; así construye un vector de salarios ajustados. Por ejemplo, con 12 años de educación se obtiene aproximadamente 5.591 USD por hora. Es un valor sobre la recta, no el salario exacto que cada persona debe recibir."
+            ],
+            [
+              "residuos <- y - y_ajustado",
+              "Restamos, persona por persona, salario observado menos salario ajustado. Un residuo positivo indica que la persona gana más de lo que ajusta el modelo; uno negativo indica que gana menos. Este residuo calculado en la muestra se distingue del error poblacional u, que no observamos."
+            ],
+            [
+              "print(head(data.frame(y, y_ajustado, residuos)))",
+              "data.frame() coloca los tres vectores como columnas de una tabla; head() selecciona las primeras seis filas y print() las muestra. Compara cada salario real con su ajuste y verifica la resta. En la primera fila: 3.10 − 5.050 ≈ −1.950 USD por hora."
+            ]
+          ]
         }
       ]
     },
