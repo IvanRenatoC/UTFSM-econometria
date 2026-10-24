@@ -1,6 +1,6 @@
 # Clase 2 · Regresión lineal simple en R
 
-Casos prácticos con wage1: de la nube de puntos al ajuste y su interpretación.
+Casos prácticos con wage1 y mtcars: de la nube de puntos al ajuste y su interpretación.
 
 Docente: Iván Canales
 
@@ -180,47 +180,141 @@ data.frame() coloca los tres vectores como columnas de una tabla; head() selecci
 
 ### Caso positivo: educación y salario
 
-Estima, dibuja e interpreta la pendiente en sus unidades. Predice para 12 y 16 años de educación. ¿Representa cada predicción el salario exacto de una persona?
+Consulta summary(modelo_pos) y anova(modelo_pos). Despliega cada salida e interpreta sus componentes con los botones. El modelo explica salario por hora a partir de educación. Predice para 12 y 16 años: ¿es un salario individual garantizado?
 
 ```r
 modelo_pos <- lm(wage ~ educ, data = datos)
-summary(modelo_pos)
+print(summary(modelo_pos))
+print(anova(modelo_pos))
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
      xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)")
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 predict(modelo_pos, newdata = data.frame(educ = c(12, 16)))
 ```
 
-**Lectura del resultado:** La pendiente es aproximadamente 0.541. Las predicciones son valores medios ajustados, no salarios individuales garantizados. Factores omitidos pueden estar relacionados con educación.
+**Resultados de referencia calculados en R**
 
-### Caso negativo: experiencia potencial y educación
+**Ver summary(modelo_pos)**
 
-Ahora y es educ y x es exper. Mantén explícito este cambio: ya no estamos explicando salarios. Predice el signo antes de ejecutar.
+```text
+Call:
+lm(formula = wage ~ educ, data = datos)
 
-```r
-modelo_neg <- lm(educ ~ exper, data = datos)
-summary(modelo_neg)
-plot(educ ~ exper, data = datos, pch = 19, col = "#005E9060",
-     xlab = "Experiencia potencial (años)", ylab = "Educación (años)")
-abline(modelo_neg, col = "#D6A600", lwd = 3)
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.3396 -2.1501 -0.9674  1.1921 16.6085 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.90485    0.68497  -1.321    0.187    
+educ         0.54136    0.05325  10.167   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.378 on 524 degrees of freedom
+Multiple R-squared:  0.1648,	Adjusted R-squared:  0.1632 
+F-statistic: 103.4 on 1 and 524 DF,  p-value: < 2.2e-16
 ```
 
-**Lectura del resultado:** b₁ ≈ −0.0611: un año adicional de experiencia potencial se asocia con 0.061 años menos de educación en promedio. La relación es débil en capacidad explicativa. Además, experiencia potencial se construye habitualmente usando edad y educación: no interpretes el resultado como que trabajar reduce la escolaridad.
+**Ver anova(modelo_pos)**
 
-### Caso sin evidencia de pendiente: dependientes y salario
+```text
+Analysis of Variance Table
 
-Estima wage ~ numdep. Mira primero la nube, después la recta y al final el p-valor de numdep en summary(). Usa 5 % como umbral descriptivo de la decisión estadística.
+Response: wage
+           Df Sum Sq Mean Sq F value    Pr(>F)    
+educ        1 1179.7 1179.73  103.36 < 2.2e-16 ***
+Residuals 524 5980.7   11.41                      
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+```
+
+**El código, paso a paso**
+
+**summary · Estimate: intercepto y pendiente**
+
+Estimate contiene los coeficientes: intercepto ≈ −0.905 y pendiente de educ ≈ 0.541. Un año adicional de educación se asocia con 0.541 USD/h más de salario ajustado. El intercepto es la altura de la recta cuando educ = 0; no es un salario observado negativo.
+
+**summary · Std. Error, t value y Pr(>|t|)**
+
+El error estándar mide la incertidumbre del coeficiente estimado. Para educ es ≈ 0.05325; t = 0.54136/0.05325 ≈ 10.167. Su p-valor ≈ 2.78 × 10⁻²² contrasta H₀: β₁ = 0 bajo los supuestos clásicos. No es la probabilidad de que H₀ sea verdadera ni una medida del tamaño del efecto.
+
+**summary · Residual standard error y R²**
+
+El error estándar residual es ≈ 3.378 USD/h: raíz de SSR/(n−2). R² ≈ 0.1648 indica que la recta explica aproximadamente el 16.48 % de la variación salarial en esta muestra; el R² ajustado es ≈ 0.1632. Una pendiente significativa puede coexistir con baja capacidad explicativa.
+
+**ANOVA · Df: grados de libertad**
+
+La fila educ tiene 1 grado de libertad porque incorporamos una pendiente. Residuals tiene 524 = 526 − 2: estimamos intercepto y pendiente. Los grados de libertad totales son 525 = n − 1.
+
+**ANOVA · Sum Sq: variación explicada y residual**
+
+En la fila educ, Sum Sq ≈ 1179.732 es la suma explicada SSE. En Residuals, Sum Sq ≈ 5980.682 es la suma residual SSR. Ambas suman SST ≈ 7160.414. R² = 1179.732/7160.414 ≈ 0.1648. Seguimos la notación de la cátedra.
+
+**ANOVA · Mean Sq, F value y Pr(>F)**
+
+Mean Sq divide Sum Sq por Df: 1179.732/1 ≈ 1179.732 y 5980.682/524 ≈ 11.4135. F divide ambos cuadrados medios: ≈ 103.36. Pr(>F) es el p-valor del contraste global contra un modelo con sólo intercepto. En esta regresión simple, contrasta β₁ = 0; F = t² y su p-valor coincide con el de la pendiente.
+
+**Predicciones y límites de interpretación**
+
+Para educ = 12 y 16, predict() entrega aproximadamente 5.591 y 7.757 USD/h. Son puntos sobre la recta. Ni la ANOVA ni el p-valor prueban que estudiar cause un cambio salarial; la interpretación inferencial requiere supuestos sobre el error y la muestra.
+
+**Lectura del resultado:** La pendiente es aproximadamente 0.541. Las predicciones son valores medios ajustados, no salarios individuales garantizados. Factores omitidos pueden estar relacionados con educación.
+
+### Tiempo de aceleración: casos negativo y no significativo
+
+Usaremos mtcars, 32 automóviles de modelos 1973–1974, con datos publicados por Motor Trend en 1974. La respuesta es qsec: segundos para recorrer un cuarto de milla (aproximadamente 402 m). hp es potencia bruta en caballos de fuerza; drat es la relación de transmisión del eje trasero, sin unidades. Alterna entre ambos predictores y anticipa el signo. La base viene incluida en R: no necesitas instalar paquetes.
 
 ```r
-modelo_plano <- lm(wage ~ numdep, data = datos)
-summary(modelo_plano)
-confint(modelo_plano, "numdep", level = 0.95)
-plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9060",
-     xlab = "Número de dependientes", ylab = "Salario por hora (USD de 1976)")
+autos <- datasets::mtcars
+head(autos[, c("qsec", "hp", "drat")])
+
+# Caso negativo: potencia y tiempo de aceleración
+modelo_neg <- lm(qsec ~ hp, data = autos)
+print(summary(modelo_neg))
+
+# Caso no significativo: relación de transmisión y tiempo
+modelo_plano <- lm(qsec ~ drat, data = autos)
+print(summary(modelo_plano))
+
+par(mfrow = c(1, 2))
+plot(qsec ~ hp, data = autos, pch = 19, col = "#005E9080",
+     xlab = "Potencia bruta (hp)", ylab = "Tiempo de 1/4 de milla (s)")
+abline(modelo_neg, col = "#D6A600", lwd = 3)
+plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9080",
+     xlab = "Relación de transmisión (sin unidades)",
+     ylab = "Tiempo de 1/4 de milla (s)")
+abline(modelo_plano, col = "#D6A600", lwd = 3)
+par(mfrow = c(1, 1))
+```
+
+**El código, paso a paso**
+
+**Potencia: ¿por qué una pendiente negativa?**
+
+Menos segundos significa completar antes la distancia. Por eso una mayor potencia asociada con un menor tiempo produce una pendiente negativa. Diez hp adicionales se asocian con unos 0.185 segundos menos en el ajuste simple. No estamos comparando el mismo automóvil con y sin una intervención.
+
+**Relación de transmisión: ¿qué significa “neutro”?**
+
+drat describe la relación del eje trasero, no la velocidad medida ni la potencia. Su pendiente es pequeña respecto de su error estándar (0.3048 frente a 0.6076). Con p ≈ 0.62 no hay evidencia suficiente contra β₁ = 0 al 5 %. Esta muestra pequeña no demuestra ausencia de efecto mecánico ni independencia.
+
+**Lectura del resultado:** Con hp, la pendiente es aproximadamente −0.01846 segundos por hp (R² ≈ 0.5016; p ≈ 0.00000577): los autos más potentes tienden a completar la distancia en menos tiempo. Con drat, la pendiente es ≈ 0.3048 segundos por unidad (R² ≈ 0.0083; p ≈ 0.6196): no rechazamos pendiente poblacional cero al 5 %. Este segundo caso es el ejemplo “neutro” en sentido de falta de evidencia lineal, no de pendiente exactamente cero. Son asociaciones entre automóviles distintos; peso, diseño y otras diferencias impiden una conclusión causal.
+
+### Comprobar el caso no significativo con un intervalo
+
+Continúa con mtcars y el modelo qsec ~ drat de la lámina 08. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
+
+```r
+# Ejecuta primero la lámina 08 para crear autos y modelo_plano.
+print(summary(modelo_plano))
+print(confint(modelo_plano, "drat", level = 0.95))
+plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9060",
+     xlab = "Relación de transmisión (sin unidades)",
+     ylab = "Tiempo de 1/4 de milla (s)")
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 ```
 
-**Lectura del resultado:** b₁ ≈ −0.157 y p ≈ 0.218: no rechazamos β₁ = 0 al 5 % con la inferencia clásica de summary(lm). No hemos demostrado una pendiente exactamente cero ni ausencia de toda relación. Esa inferencia requiere sus supuestos; no sirve para afirmar causalidad.
+**Lectura del resultado:** El intervalo del 95 % para la pendiente es aproximadamente [−0.936, 1.546] segundos por unidad de drat. Incluye cero, en concordancia con p ≈ 0.620. La pendiente estimada es positiva, pero no significativa al 5 %. El intervalo también incluye asociaciones de magnitudes relevantes: no podemos concluir equivalencia a cero. Se aplica la inferencia clásica de lm(), condicionada a sus supuestos.
 
 ### Residuos y propiedades del ajuste
 
@@ -261,7 +355,7 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
         names.arg = rownames(resumen), ylab = "Fracción de SST")
 ```
 
-**Lectura del resultado:** R² = SSE/SST = 1 − SSR/SST. Un R² alto no demuestra causalidad. Educación como respuesta tiene unidades distintas del salario: compara fracciones explicadas, no las SST brutas de esos modelos.
+**Lectura del resultado:** R² = SSE/SST = 1 − SSR/SST. El ajuste salarial explica cerca del 16.48 %; potencia y tiempo, 50.16 %; transmisión y tiempo, 0.83 %. Salario y tiempo son respuestas con unidades y muestras diferentes: compara las fracciones explicadas, no sus SST brutas. El R² no demuestra causalidad.
 
 ### Tu turno: comparar y comunicar los tres casos
 
@@ -269,7 +363,7 @@ Completa una tabla con respuesta, predictor, signo, pendiente y R². Redacta una
 
 ```r
 comparacion <- data.frame(
-  caso = c("Salario y educación", "Educación y experiencia", "Salario y dependientes"),
+  caso = c("Salario y educación", "Tiempo y potencia", "Tiempo y transmisión"),
   pendiente = sapply(modelos, function(m) coef(m)[2]),
   R2 = sapply(modelos, function(m) summary(m)$r.squared),
   p_pendiente = sapply(modelos, function(m) coef(summary(m))[2, 4]))

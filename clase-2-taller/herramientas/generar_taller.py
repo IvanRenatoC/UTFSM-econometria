@@ -22,6 +22,8 @@ def generar():
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
             r(lamina['codigo'], lamina['id'].lower()+'-r')
+            if lamina.get('salidas_r'):
+                md('**Resultados de referencia calculados en R**\n\n'+'\n\n'.join('**'+t+'**\n\n```text\n'+out+'\n```' for t,out in lamina['salidas_r']), lamina['id'].lower()+'-salidas')
             if lamina.get('explicaciones'):
                 md('**El código, paso a paso**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-explicaciones')
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
