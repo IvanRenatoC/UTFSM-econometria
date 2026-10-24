@@ -192,6 +192,16 @@ abline(modelo_pos, col = "#D6A600", lwd = 3)
 predict(modelo_pos, newdata = data.frame(educ = c(12, 16)))
 ```
 
+**ANOVA · Salario y educación · wage ~ educ · n = 526**
+
+| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |
+|---|---:|---:|---:|---:|---:|
+| Regresión · SSE = Σ(ŷᵢ − ȳ)² | 1179.732 | 1 | 1179.732 | 103.363 | 2.78e-22 |
+| Error · SSR = Σ(yᵢ − ŷᵢ)² | 5980.682 | 524 | 11.414 | — | — |
+| Total · SST = Σ(yᵢ − ȳ)² | 7160.414 | 525 | — | — | — |
+
+Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados.
+
 **Resultados de referencia calculados en R**
 
 **Ver summary(modelo_pos)**
@@ -272,10 +282,12 @@ head(autos[, c("qsec", "hp", "drat")])
 # Caso negativo: potencia y tiempo de aceleración
 modelo_neg <- lm(qsec ~ hp, data = autos)
 print(summary(modelo_neg))
+print(anova(modelo_neg))
 
 # Caso no significativo: relación de transmisión y tiempo
 modelo_plano <- lm(qsec ~ drat, data = autos)
 print(summary(modelo_plano))
+print(anova(modelo_plano))
 
 par(mfrow = c(1, 2))
 plot(qsec ~ hp, data = autos, pch = 19, col = "#005E9080",
@@ -288,6 +300,24 @@ abline(modelo_plano, col = "#D6A600", lwd = 3)
 par(mfrow = c(1, 1))
 ```
 
+**ANOVA · Potencia y tiempo · qsec ~ hp · n = 32**
+
+| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |
+|---|---:|---:|---:|---:|---:|
+| Regresión · SSE = Σ(ŷᵢ − ȳ)² | 49.651 | 1 | 49.651 | 30.190 | 5.77e-06 |
+| Error · SSR = Σ(yᵢ − ŷᵢ)² | 49.338 | 30 | 1.645 | — | — |
+| Total · SST = Σ(yᵢ − ȳ)² | 98.988 | 31 | — | — | — |
+
+**ANOVA · Transmisión y tiempo · qsec ~ drat · n = 32**
+
+| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |
+|---|---:|---:|---:|---:|---:|
+| Regresión · SSE = Σ(ŷᵢ − ȳ)² | 0.823 | 1 | 0.823 | 0.252 | 0.62 |
+| Error · SSR = Σ(yᵢ − ŷᵢ)² | 98.165 | 30 | 3.272 | — | — |
+| Total · SST = Σ(yᵢ − ȳ)² | 98.988 | 31 | — | — | — |
+
+Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados.
+
 **El código, paso a paso**
 
 **Potencia: ¿por qué una pendiente negativa?**
@@ -298,6 +328,10 @@ Menos segundos significa completar antes la distancia. Por eso una mayor potenci
 
 drat describe la relación del eje trasero, no la velocidad medida ni la potencia. Su pendiente es pequeña respecto de su error estándar (0.3048 frente a 0.6076). Con p ≈ 0.62 no hay evidencia suficiente contra β₁ = 0 al 5 %. Esta muestra pequeña no demuestra ausencia de efecto mecánico ni independencia.
 
+**Leer las dos tablas ANOVA**
+
+Potencia: F ≈ 30.190 y p ≈ 0.00000577; rechazamos pendiente cero al 5 % bajo los supuestos clásicos. Transmisión: F ≈ 0.252 y p ≈ 0.620; no rechazamos pendiente cero. Ambos modelos usan los mismos 32 tiempos, por eso comparten SST y 31 grados de libertad totales. La regresión de potencia explica una fracción mucho mayor de esa variación.
+
 **Lectura del resultado:** Con hp, la pendiente es aproximadamente −0.01846 segundos por hp (R² ≈ 0.5016; p ≈ 0.00000577): los autos más potentes tienden a completar la distancia en menos tiempo. Con drat, la pendiente es ≈ 0.3048 segundos por unidad (R² ≈ 0.0083; p ≈ 0.6196): no rechazamos pendiente poblacional cero al 5 %. Este segundo caso es el ejemplo “neutro” en sentido de falta de evidencia lineal, no de pendiente exactamente cero. Son asociaciones entre automóviles distintos; peso, diseño y otras diferencias impiden una conclusión causal.
 
 ### Comprobar el caso no significativo con un intervalo
@@ -307,12 +341,29 @@ Continúa con mtcars y el modelo qsec ~ drat de la lámina 08. Obtén el interva
 ```r
 # Ejecuta primero la lámina 08 para crear autos y modelo_plano.
 print(summary(modelo_plano))
+print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
 plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9060",
      xlab = "Relación de transmisión (sin unidades)",
      ylab = "Tiempo de 1/4 de milla (s)")
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 ```
+
+**ANOVA · Caso no significativo · qsec ~ drat · n = 32**
+
+| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |
+|---|---:|---:|---:|---:|---:|
+| Regresión · SSE = Σ(ŷᵢ − ȳ)² | 0.823 | 1 | 0.823 | 0.252 | 0.62 |
+| Error · SSR = Σ(yᵢ − ŷᵢ)² | 98.165 | 30 | 3.272 | — | — |
+| Total · SST = Σ(yᵢ − ȳ)² | 98.988 | 31 | — | — | — |
+
+Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados.
+
+**El código, paso a paso**
+
+**ANOVA e intervalo: dos lecturas del mismo contraste**
+
+La tabla da F ≈ 0.252 con 1 y 30 grados de libertad y p ≈ 0.620. En una regresión simple con intercepto, F = t². El intervalo del 95 % de la pendiente incluye cero, coherente con no rechazar β₁ = 0 al 5 %. Ninguno de estos resultados prueba que la pendiente sea exactamente cero.
 
 **Lectura del resultado:** El intervalo del 95 % para la pendiente es aproximadamente [−0.936, 1.546] segundos por unidad de drat. Incluye cero, en concordancia con p ≈ 0.620. La pendiente estimada es positiva, pero no significativa al 5 %. El intervalo también incluye asociaciones de magnitudes relevantes: no podemos concluir equivalencia a cero. Se aplica la inferencia clásica de lm(), condicionada a sus supuestos.
 
