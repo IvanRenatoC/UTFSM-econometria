@@ -15,13 +15,8 @@ def generar():
         cells.append({'cell_type': 'code', 'id': id, 'metadata': {}, 'source': (codigo+'\n').splitlines(True), 'outputs': [], 'execution_count': None})
         script.append(codigo+'\n\n')
         guia.append('```r\n'+codigo+'\n```')
-    md('# '+contenido['titulo']+'\n\n'+contenido['estado']+'\n\nDocente: '+contenido['docente']+'\n\nEjecuta con kernel R desde esta carpeta. Las actividades están pendientes de desarrollo.', 'inicio')
-    carga = '''# Base disponible como apoyo; confirmar su uso en la clase 2.
-datos <- read.csv("datos/wage1.csv")
-datos$rownames <- NULL
-head(datos)'''
-    md('## Datos de apoyo\n\nCopia de wage1, utilizada en la clase 1. Esta carga permite comprobar el entorno; no constituye el contenido definitivo de la clase 2.', 'datos-apoyo')
-    r(carga, 'carga-r')
+    md('# '+contenido['titulo']+'\n\n'+contenido['estado']+'\n\nDocente: '+contenido['docente']+'\n\nEjecuta las celdas en orden con kernel R. En Colab selecciona R en el tipo de entorno; no uses %%R ni rpy2.', 'inicio')
+    md('## Agenda\n\n'+'\n'.join('- '+hora+': '+tema for hora,tema,_ in contenido['agenda']), 'agenda')
     for bloque in contenido['bloques']:
         md('## '+bloque['etiqueta']+' · '+bloque['titulo'], bloque['id'].lower())
         for lamina in bloque['laminas']:
