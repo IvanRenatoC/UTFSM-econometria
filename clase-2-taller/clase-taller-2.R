@@ -125,10 +125,52 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
         legend.text = c("Explicada", "Residual"),
         names.arg = rownames(resumen), ylab = "Fracción de SST")
 
-comparacion <- data.frame(
-  caso = c("Salario y educación", "Tiempo y potencia", "Tiempo y transmisión"),
-  pendiente = sapply(modelos, function(m) coef(m)[2]),
-  R2 = sapply(modelos, function(m) summary(m)$r.squared),
-  p_pendiente = sapply(modelos, function(m) coef(summary(m))[2, 4]))
-print(comparacion)
-# Escribe tus conclusiones en una celda Markdown del notebook.
+# 1. Cargar la base del libro. En Colab se descarga el paquete si hace falta.
+# La copia CSV permite trabajar sin conexión desde la carpeta del taller.
+if (file.exists("datos/ceosal1.csv")) {
+  datos_practica <- read.csv("datos/ceosal1.csv")
+} else {
+  if (!requireNamespace("wooldridge", quietly = TRUE)) {
+    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+  }
+  datos_practica <- wooldridge::ceosal1
+}
+
+# 2. Explorar y comprobar faltantes en las dos variables del modelo.
+print(head(datos_practica))
+str(datos_practica)
+print(summary(datos_practica[, c("salary", "roe")]))
+print(colSums(is.na(datos_practica[, c("salary", "roe")])))
+
+# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.
+plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
+     xlab = "Rentabilidad del patrimonio: roe (%)",
+     ylab = "Salario del director ejecutivo (miles de USD, 1990)",
+     main = "Rentabilidad y salario del director ejecutivo")
+
+# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.
+modelo_practica <- lm(salary ~ roe, data = datos_practica)
+print(nobs(modelo_practica))
+print(coef(modelo_practica))
+print(summary(modelo_practica))
+print(anova(modelo_practica))
+abline(modelo_practica, col = "#D6A600", lwd = 3)
+
+# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.
+nuevos_casos <- data.frame(roe = c(10, 20))
+print(data.frame(nuevos_casos,
+                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+
+# 6. Descomponer la variación usando las filas efectivas del modelo.
+y_practica <- model.response(model.frame(modelo_practica))
+ajustados_practica <- fitted(modelo_practica)
+residuos_practica <- resid(modelo_practica)
+SST_practica <- sum((y_practica - mean(y_practica))^2)
+SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
+SSR_practica <- sum(residuos_practica^2)
+print(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,
+        R2 = 1 - SSR_practica / SST_practica))
+print(all.equal(SST_practica, SSE_practica + SSR_practica))
+
+# 7. En una celda Markdown, escribe tu interpretación con unidades.
+# Distingue signo, significancia, R2 y asociación frente a causalidad.
