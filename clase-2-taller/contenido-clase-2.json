@@ -475,8 +475,8 @@
         {
           "id": "C2-13",
           "titulo": "Práctica 1 · Preparar una nueva base de Wooldridge",
-          "texto": "21:05–21:12 · Trabajen en parejas y creen sus propias celdas en R. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Descarguen el paquete wooldridge desde CRAN si aún no lo tienen y carguen ceosal1. La solución completa está en la lámina 15; intenten construirla antes de abrirla.",
-          "codigo": "",
+          "texto": "21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos?",
+          "codigo": "# Colab: selecciona R como tipo de entorno y ejecuta esta celda.\nif (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n  install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n}\ndatos_practica <- wooldridge::ceosal1",
           "lectura": "La base contiene 209 observaciones y 12 variables, a partir de datos publicados por Businessweek en 1991. salary es el salario de 1990 en miles de dólares; roe es la rentabilidad del patrimonio promedio de 1988–1990, expresada en porcentaje. Cada fila vincula a un director ejecutivo con su empresa. No son mediciones sucesivas de una sola persona.",
           "explicaciones": [
             [
@@ -491,12 +491,25 @@
               "Tu tarea · Predecir antes de ajustar",
               "Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una recta, propongan el signo de la pendiente. ¿La nube es estrecha o dispersa? ¿Hay salarios muy alejados del resto? No eliminen observaciones sólo porque sean extremas."
             ]
+          ],
+          "codigo_abierto": true,
+          "bloques_codigo": [
+            {
+              "titulo": "Ejercicio 2 · Explorar la base y revisar faltantes",
+              "codigo": "print(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\nprint(nrow(datos_practica))",
+              "lectura": "Hay 209 filas y no hay NA en salary ni roe. salary se mide en miles de USD y roe, en porcentaje."
+            },
+            {
+              "titulo": "Ejercicio 3 · Dibujar la nube de puntos",
+              "codigo": "plot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")",
+              "lectura": "La respuesta salary va en el eje vertical; roe, en el horizontal. Observa dispersión y salarios extremos antes de ajustar."
+            }
           ]
         },
         {
           "id": "C2-14",
           "titulo": "Práctica 2 · Estimar e interpretar su propia regresión",
-          "texto": "21:12–21:20 · A partir de la base que acaban de cargar, construyan una regresión simple en R sin copiar todavía la solución. Acuerden una interpretación y compártanla con otra pareja. Mantengan un solo predictor: roe.",
+          "texto": "21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Aquí tienes la solución de cada ejercicio, en orden. Puedes copiar cada bloque en su propia celda de R, ejecutarlo y comparar su salida con la explicación.",
           "codigo": "",
           "lectura": "Entregable de la pareja: un gráfico con su recta, la ecuación estimada, una interpretación de la pendiente con unidades, la lectura de R² y p-valor, dos predicciones y una limitación. La base es observacional; una asociación no demuestra causalidad.",
           "explicaciones": [
@@ -516,18 +529,45 @@
               "Reto 4 · Comprobar y comunicar",
               "Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST ≈ SSE + SSR. Agreguen la recta a la nube. Escriban una conclusión de tres frases: dirección de la asociación, capacidad explicativa y limitación de interpretación."
             ]
+          ],
+          "bloques_codigo": [
+            {
+              "titulo": "Ejercicio 1 · Estimar la regresión y obtener coeficientes",
+              "codigo": "modelo_practica <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(modelo_practica))\nprint(coef(modelo_practica))",
+              "lectura": "Se usan 209 observaciones. Salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional se asocia con 18.501 miles de USD más de salario ajustado."
+            },
+            {
+              "titulo": "Ejercicio 2 · Obtener summary y ANOVA",
+              "codigo": "print(summary(modelo_practica))\nprint(anova(modelo_practica))",
+              "lectura": "R² ≈ 0.0132 y p ≈ 0.0978. La pendiente estimada es positiva, pero no significativa al 5 %. Se explica cerca de 1.32 % de la variación salarial."
+            },
+            {
+              "titulo": "Ejercicio 3 · Predecir para roe de 10 % y 20 %",
+              "codigo": "nuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(modelo_practica, nuevos_casos)))",
+              "lectura": "Los valores ajustados son aproximadamente 1148.203 y 1333.215 miles de USD, respectivamente; no son salarios individuales garantizados."
+            },
+            {
+              "titulo": "Ejercicio 4 · Descomponer la variación y agregar la recta",
+              "codigo": "y_practica <- model.response(model.frame(modelo_practica))\najustados_practica <- fitted(modelo_practica)\nresiduos_practica <- resid(modelo_practica)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\nabline(modelo_practica, col = \"#D6A600\", lwd = 3)",
+              "lectura": "all.equal() devuelve TRUE: SST ≈ SSE + SSR. La recta resume una asociación de baja capacidad explicativa. No demuestra causalidad."
+            },
+            {
+              "titulo": "Ejercicio 5 · Redactar una conclusión en R",
+              "codigo": "cat(\"La asociación estimada es positiva: 18.501 miles de USD por punto porcentual de roe.\\n\")\ncat(\"El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\\n\")\ncat(\"Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\\n\")",
+              "lectura": "Usa esta redacción como referencia y escribe tu propia explicación en una celda Markdown."
+            }
           ]
         },
         {
           "id": "C2-15",
           "titulo": "Práctica 3 · Código completo y explicación de la solución",
-          "texto": "21:20–21:25 · Contrasten sus programas con esta solución de referencia. Todo el código está reunido en un único bloque, con comentarios para cada paso. La celda puede ejecutarse de forma independiente si se dispone de la copia CSV o de conexión para instalar wooldridge.",
-          "codigo": "# 1. Cargar la base del libro. En Colab se descarga el paquete si hace falta.\n# La copia CSV permite trabajar sin conexión desde la carpeta del taller.\nif (file.exists(\"datos/ceosal1.csv\")) {\n  datos_practica <- read.csv(\"datos/ceosal1.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  datos_practica <- wooldridge::ceosal1\n}\n\n# 2. Explorar y comprobar faltantes en las dos variables del modelo.\nprint(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\n\n# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\n\n# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.\nmodelo_practica <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(modelo_practica))\nprint(coef(modelo_practica))\nprint(summary(modelo_practica))\nprint(anova(modelo_practica))\nabline(modelo_practica, col = \"#D6A600\", lwd = 3)\n\n# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.\nnuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(modelo_practica, nuevos_casos)))\n\n# 6. Descomponer la variación usando las filas efectivas del modelo.\ny_practica <- model.response(model.frame(modelo_practica))\najustados_practica <- fitted(modelo_practica)\nresiduos_practica <- resid(modelo_practica)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n# 7. En una celda Markdown, escribe tu interpretación con unidades.\n# Distingue signo, significancia, R2 y asociación frente a causalidad.",
+          "texto": "21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV.",
+          "codigo": "# 1. Descargar el paquete del libro y cargar ceosal1.\n# Colab: selecciona R como tipo de entorno y ejecuta esta celda.\nif (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n  install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n}\ndatos_practica <- wooldridge::ceosal1\n\n# 2. Explorar y comprobar faltantes en las dos variables del modelo.\nprint(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\n\n# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\n\n# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.\nmodelo_practica <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(modelo_practica))\nprint(coef(modelo_practica))\nprint(summary(modelo_practica))\nprint(anova(modelo_practica))\nabline(modelo_practica, col = \"#D6A600\", lwd = 3)\n\n# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.\nnuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(modelo_practica, nuevos_casos)))\n\n# 6. Descomponer la variación usando las filas efectivas del modelo.\ny_practica <- model.response(model.frame(modelo_practica))\najustados_practica <- fitted(modelo_practica)\nresiduos_practica <- resid(modelo_practica)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n# 7. En una celda Markdown, escribe tu interpretación con unidades.\n# Distingue signo, significancia, R2 y asociación frente a causalidad.",
           "lectura": "Resultados de control: 209 observaciones; salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional de roe se asocia con 18.501 miles de USD más de salario ajustado. R² ≈ 0.0132 (1.32 %) y p ≈ 0.0978: al 5 % no rechazamos pendiente cero. Para roe de 10 % y 20 %, los ajustes son aproximadamente 1148.203 y 1333.215 miles de USD. La pendiente positiva no implica un buen ajuste ni demuestra causalidad. Los salarios extremos merecen revisión; no los borramos automáticamente.",
           "explicaciones": [
             [
               "Paso 1 · Obtener datos sin sobrescribir el trabajo anterior",
-              "El programa prioriza la copia local para trabajar sin conexión. Si no existe, instala el paquete desde CRAN sólo si hace falta y carga wooldridge::ceosal1. datos_practica separa esta base de wage1 y mtcars. En Colab la descarga inicial del paquete necesita conexión."
+              "Instala wooldridge desde CRAN sólo si el paquete no está disponible y carga ceosal1 con el nombre datos_practica. La instalación inicial necesita conexión. No hace falta buscar ni subir un archivo CSV a Colab."
             ],
             [
               "Paso 2 · Revisar antes de modelar",
@@ -553,7 +593,8 @@
               "Paso 7 · Redactar una conclusión",
               "Relaciona la pendiente con sus unidades, indica que la capacidad explicativa es baja y distingue no rechazar β₁ = 0 de demostrar β₁ = 0. Reconoce factores omitidos, la naturaleza observacional y el alcance histórico de la base."
             ]
-          ]
+          ],
+          "codigo_abierto": true
         }
       ]
     }

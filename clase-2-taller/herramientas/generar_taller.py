@@ -25,6 +25,10 @@ def generar():
                 md('**Firma oficial de lm() — referencia, no ejecutar como llamada completa**\n\n```r\n'+lamina['sintaxis']+'\n```\n\n[Documentación oficial de R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html)', lamina['id'].lower()+'-sintaxis')
             if lamina.get('codigo'):
                 r(lamina['codigo'], lamina['id'].lower()+'-r')
+            for index, block in enumerate(lamina.get('bloques_codigo', []), 1):
+                md('**'+block['titulo']+'**', lamina['id'].lower()+'-ejercicio-'+str(index))
+                r(block['codigo'], lamina['id'].lower()+'-ejercicio-'+str(index)+'-r')
+                md(block['lectura'], lamina['id'].lower()+'-ejercicio-'+str(index)+'-lectura')
             if lamina.get('tablas_anova'):
                 table_text = []
                 for t in lamina['tablas_anova']:

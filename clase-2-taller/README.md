@@ -15,4 +15,4 @@ Desde esta carpeta: `python3 herramientas/generar_web.py`. El notebook conserva 
 
 Las plantillas LaTeX heredadas continúan disponibles para una futura guía impresa; no forman parte de esta publicación de actividades.
 
-Las láminas 13–15 incorporan una práctica guiada con ceosal1 de Wooldridge. Los enunciados preceden a una única celda con la solución completa.
+Las láminas 13–15 incorporan una práctica guiada con ceosal1 de Wooldridge. La 13 incluye la carga directa en Colab; la 14, las soluciones de cada ejercicio; la 15, una celda con el programa completo.

@@ -510,7 +510,38 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
 
 ### Práctica 1 · Preparar una nueva base de Wooldridge
 
-21:05–21:12 · Trabajen en parejas y creen sus propias celdas en R. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Descarguen el paquete wooldridge desde CRAN si aún no lo tienen y carguen ceosal1. La solución completa está en la lámina 15; intenten construirla antes de abrirla.
+21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos?
+
+```r
+# Colab: selecciona R como tipo de entorno y ejecuta esta celda.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+}
+datos_practica <- wooldridge::ceosal1
+```
+
+**Ejercicio 2 · Explorar la base y revisar faltantes**
+
+```r
+print(head(datos_practica))
+str(datos_practica)
+print(summary(datos_practica[, c("salary", "roe")]))
+print(colSums(is.na(datos_practica[, c("salary", "roe")])))
+print(nrow(datos_practica))
+```
+
+Hay 209 filas y no hay NA en salary ni roe. salary se mide en miles de USD y roe, en porcentaje.
+
+**Ejercicio 3 · Dibujar la nube de puntos**
+
+```r
+plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
+     xlab = "Rentabilidad del patrimonio: roe (%)",
+     ylab = "Salario del director ejecutivo (miles de USD, 1990)",
+     main = "Rentabilidad y salario del director ejecutivo")
+```
+
+La respuesta salary va en el eje vertical; roe, en el horizontal. Observa dispersión y salarios extremos antes de ajustar.
 
 **El código, paso a paso**
 
@@ -530,7 +561,69 @@ Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una r
 
 ### Práctica 2 · Estimar e interpretar su propia regresión
 
-21:12–21:20 · A partir de la base que acaban de cargar, construyan una regresión simple en R sin copiar todavía la solución. Acuerden una interpretación y compártanla con otra pareja. Mantengan un solo predictor: roe.
+21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Aquí tienes la solución de cada ejercicio, en orden. Puedes copiar cada bloque en su propia celda de R, ejecutarlo y comparar su salida con la explicación.
+
+**Ejercicio 1 · Estimar la regresión y obtener coeficientes**
+
+```r
+modelo_practica <- lm(salary ~ roe, data = datos_practica)
+print(nobs(modelo_practica))
+print(coef(modelo_practica))
+```
+
+Se usan 209 observaciones. Salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional se asocia con 18.501 miles de USD más de salario ajustado.
+
+**Ejercicio 2 · Obtener summary y ANOVA**
+
+```r
+print(summary(modelo_practica))
+print(anova(modelo_practica))
+```
+
+R² ≈ 0.0132 y p ≈ 0.0978. La pendiente estimada es positiva, pero no significativa al 5 %. Se explica cerca de 1.32 % de la variación salarial.
+
+**Ejercicio 3 · Predecir para roe de 10 % y 20 %**
+
+```r
+nuevos_casos <- data.frame(roe = c(10, 20))
+print(data.frame(nuevos_casos,
+                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+```
+
+Los valores ajustados son aproximadamente 1148.203 y 1333.215 miles de USD, respectivamente; no son salarios individuales garantizados.
+
+**Ejercicio 4 · Descomponer la variación y agregar la recta**
+
+```r
+y_practica <- model.response(model.frame(modelo_practica))
+ajustados_practica <- fitted(modelo_practica)
+residuos_practica <- resid(modelo_practica)
+SST_practica <- sum((y_practica - mean(y_practica))^2)
+SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
+SSR_practica <- sum(residuos_practica^2)
+print(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,
+        R2 = 1 - SSR_practica / SST_practica))
+print(all.equal(SST_practica, SSE_practica + SSR_practica))
+
+
+plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
+     xlab = "Rentabilidad del patrimonio: roe (%)",
+     ylab = "Salario del director ejecutivo (miles de USD, 1990)",
+     main = "Rentabilidad y salario del director ejecutivo")
+abline(modelo_practica, col = "#D6A600", lwd = 3)
+```
+
+all.equal() devuelve TRUE: SST ≈ SSE + SSR. La recta resume una asociación de baja capacidad explicativa. No demuestra causalidad.
+
+**Ejercicio 5 · Redactar una conclusión en R**
+
+```r
+cat("La asociación estimada es positiva: 18.501 miles de USD por punto porcentual de roe.\n")
+cat("El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\n")
+cat("Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\n")
+```
+
+Usa esta redacción como referencia y escribe tu propia explicación en una celda Markdown.
 
 **El código, paso a paso**
 
@@ -554,19 +647,15 @@ Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST �
 
 ### Práctica 3 · Código completo y explicación de la solución
 
-21:20–21:25 · Contrasten sus programas con esta solución de referencia. Todo el código está reunido en un único bloque, con comentarios para cada paso. La celda puede ejecutarse de forma independiente si se dispone de la copia CSV o de conexión para instalar wooldridge.
+21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV.
 
 ```r
-# 1. Cargar la base del libro. En Colab se descarga el paquete si hace falta.
-# La copia CSV permite trabajar sin conexión desde la carpeta del taller.
-if (file.exists("datos/ceosal1.csv")) {
-  datos_practica <- read.csv("datos/ceosal1.csv")
-} else {
-  if (!requireNamespace("wooldridge", quietly = TRUE)) {
-    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
-  }
-  datos_practica <- wooldridge::ceosal1
+# 1. Descargar el paquete del libro y cargar ceosal1.
+# Colab: selecciona R como tipo de entorno y ejecuta esta celda.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
 }
+datos_practica <- wooldridge::ceosal1
 
 # 2. Explorar y comprobar faltantes en las dos variables del modelo.
 print(head(datos_practica))
@@ -612,7 +701,7 @@ print(all.equal(SST_practica, SSE_practica + SSR_practica))
 
 **Paso 1 · Obtener datos sin sobrescribir el trabajo anterior**
 
-El programa prioriza la copia local para trabajar sin conexión. Si no existe, instala el paquete desde CRAN sólo si hace falta y carga wooldridge::ceosal1. datos_practica separa esta base de wage1 y mtcars. En Colab la descarga inicial del paquete necesita conexión.
+Instala wooldridge desde CRAN sólo si el paquete no está disponible y carga ceosal1 con el nombre datos_practica. La instalación inicial necesita conexión. No hace falta buscar ni subir un archivo CSV a Colab.
 
 **Paso 2 · Revisar antes de modelar**
 
