@@ -20,7 +20,7 @@
     ],
     [
       "19:30–20:00",
-      "MCO y parámetros en R",
+      "Conocer lm(), aplicarlo y calcular MCO",
       "C2-05"
     ],
     [
@@ -31,17 +31,17 @@
     [
       "20:15–20:45",
       "Tres regresiones e interpretación",
-      "C2-07"
+      "C2-08"
     ],
     [
       "20:45–21:05",
       "Residuos, descomposición y R²",
-      "C2-10"
+      "C2-11"
     ],
     [
       "21:05–21:25",
       "Actividad de comparación y cierre",
-      "C2-12"
+      "C2-13"
     ]
   ],
   "bloques": [
@@ -83,36 +83,106 @@
         },
         {
           "id": "C2-05",
-          "titulo": "Mínimos cuadrados: estimar con lm()",
-          "texto": "Ejecuta el código para estimar la recta de salario y educación mediante mínimos cuadrados ordinarios. Los coeficientes los calcula lm() a partir de los datos; en esta lámina no se modifican manualmente.",
-          "codigo": "modelo_pos <- lm(wage ~ educ, data = datos)\nprint(summary(modelo_pos))\nprint(coef(modelo_pos))\nprint(sum(resid(modelo_pos)^2))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)",
-          "lectura": "MCO minimiza SSR = Σ(yᵢ − ŷᵢ)². El ajuste observado es aproximadamente ŷ = −0.905 + 0.541 educ. Un año adicional de educación se asocia con 0.541 USD/h más, en promedio. El intercepto no debe interpretarse fuera del contexto y soporte de los datos.",
-          "codigo_abierto": true,
+          "titulo": "Conoce lm(): sintaxis y parámetros",
+          "texto": "La función nativa de R para ajustar modelos lineales es lm(), abreviatura de Linear Model, del paquete stats. No necesitas indicar todos sus argumentos: para este taller bastan formula y data. Pulsa cada parámetro para explorar su función; los argumentos avanzados se presentan como referencia y no amplían el modelo simple que trabajaremos.",
+          "sintaxis": "lm(formula,\n   data,\n   subset,\n   weights,\n   na.action,\n   method = \"qr\",\n   model = TRUE,\n   x = FALSE,\n   y = FALSE,\n   qr = TRUE,\n   singular.ok = TRUE,\n   contrasts = NULL,\n   offset, ...)",
+          "codigo": "# Consultar los argumentos oficiales sin ajustar un modelo:\nargs(stats::lm)\n\n# Ver la configuración actual para valores faltantes:\ngetOption(\"na.action\")",
+          "lectura": "La firma muestra los argumentos disponibles, no una llamada que debas ejecutar con todos ellos. TRUE y FALSE controlan qué componentes se conservan; no añaden variables explicativas. En la siguiente lámina aplicaremos lm(wage ~ educ, data = datos).",
           "explicaciones": [
             [
-              "modelo_pos <- lm(wage ~ educ, data = datos)",
-              "Estima el salario como función lineal de los años de educación y guarda el ajuste en modelo_pos. La fórmula incluye un intercepto por defecto."
+              "formula · ¿qué queremos explicar?",
+              "Describe el modelo con una fórmula: la respuesta va a la izquierda de ~ y los predictores a la derecha. Por ejemplo, y ~ x. La fórmula incluye intercepto por defecto. En este taller usaremos un solo predictor: regresión lineal simple."
             ],
             [
-              "print(summary(modelo_pos))",
-              "Muestra el resumen del ajuste. Residuals resume los residuos. En Coefficients, Estimate contiene el intercepto (aproximadamente −0.905) y la pendiente (0.541); Std. Error muestra sus errores estándar; t value y Pr(>|t|) corresponden al contraste de que cada coeficiente poblacional sea cero. También aparecen el error estándar residual, R² (aproximadamente 0.1648), R² ajustado y el contraste F global. Estos contrastes requieren los supuestos de la inferencia clásica; no demuestran causalidad."
+              "data · ¿dónde están las variables?",
+              "Indica la tabla que contiene las columnas. Si una variable no aparece allí, R la busca en el entorno de la fórmula, que suele ser desde donde se llama lm(); no necesariamente es siempre el entorno global. Usar data de forma explícita ayuda a evitar confusiones."
             ],
             [
-              "print(coef(modelo_pos))",
-              "Extrae e imprime únicamente los dos coeficientes estimados, con sus nombres: (Intercept) y educ. Permite leer la ecuación ŷ = −0.905 + 0.541 educ. La pendiente indica una asociación promedio de 0.541 USD por hora por año adicional de educación."
+              "subset · ¿qué filas entran?",
+              "Permite seleccionar observaciones mediante índices o una condición lógica. Por ejemplo, subset = educ >= 12 selecciona esas filas; cambiar la muestra cambia el análisis. Lo dejaremos sin especificar para usar todas las observaciones disponibles del caso."
             ],
             [
-              "print(sum(resid(modelo_pos)^2))",
-              "resid() obtiene las diferencias entre salarios observados y ajustados. ^2 eleva cada residuo al cuadrado y sum() suma esos cuadrados. print() muestra SSR ≈ 5980.68, la suma de cuadrados residual que MCO minimiza. No es un promedio ni R²; está expresada en unidades de salario al cuadrado."
+              "weights · ¿todas las filas pesan igual?",
+              "Pesos numéricos opcionales. Si se indican, lm() minimiza la suma de residuos al cuadrado multiplicados por sus pesos: mínimos cuadrados ponderados. Aquí no los indicaremos y utilizaremos mínimos cuadrados ordinarios."
             ],
             [
-              "plot(...) y abline(...)",
-              "plot() dibuja la nube de observaciones. abline(modelo_pos, ...) agrega la recta estimada en dorado; lwd = 3 fija su grosor."
+              "na.action · ¿qué hacer con NA?",
+              "Controla el tratamiento de valores faltantes. Depende de getOption(\"na.action\"): la configuración inicial habitual de R es na.omit, que excluye filas con NA en las variables utilizadas por el ajuste. Si la opción no está definida, lm() utiliza na.fail. No se eliminan filas por NA en columnas ajenas al modelo."
+            ],
+            [
+              "method = \"qr\" · ¿cómo se calcula el ajuste?",
+              "El método habitual de cálculo es la descomposición QR. Es la opción de ajuste admitida por lm(). La alternativa method = \"model.frame\" devuelve la tabla utilizada por el modelo, sin estimar la regresión. Mantendremos \"qr\"."
+            ],
+            [
+              "model = TRUE · guardar los datos utilizados",
+              "Conserva dentro del resultado la tabla de variables utilizada por el modelo (model frame), incluidas las transformaciones y la selección de filas que correspondan. No es necesariamente una copia completa del dataset original."
+            ],
+            [
+              "x = FALSE · guardar la matriz de diseño",
+              "Si x = TRUE, conserva la matriz numérica con la que se estima el ajuste: incluye una columna para el intercepto y las columnas de los predictores. FALSE evita guardar ese componente por separado; no elimina los predictores del modelo."
+            ],
+            [
+              "y = FALSE · guardar la respuesta",
+              "Si y = TRUE, conserva por separado el vector de respuesta utilizado en el ajuste. El valor FALSE no elimina la respuesta ni impide estimar; sólo controla si se guarda ese componente adicional."
+            ],
+            [
+              "qr = TRUE · conservar la descomposición",
+              "Guarda la descomposición QR dentro del resultado. Funciones posteriores, como summary() para un ajuste lm ordinario, necesitan este componente. Conviene conservar el valor predeterminado."
+            ],
+            [
+              "singular.ok = TRUE · columnas redundantes",
+              "Permite continuar si la matriz de diseño tiene columnas perfectamente redundantes. Los coeficientes no identificables aparecen como NA. Con FALSE se produce un error. Esta tolerancia no resuelve el problema de identificación; sólo controla la reacción de R."
+            ],
+            [
+              "contrasts = NULL · codificar factores",
+              "Permite elegir cómo se representan los factores mediante columnas numéricas en la matriz de diseño. NULL deja la codificación habitual. No es necesario configurarlo para nuestro predictor numérico educ."
+            ],
+            [
+              "offset · un componente conocido",
+              "Añade al predictor lineal un componente conocido cuyo coeficiente queda fijado en 1, en lugar de estimarse. Puede indicarse como argumento o en la fórmula. No lo necesitamos en la regresión simple del taller."
+            ],
+            [
+              "... · otros argumentos",
+              "Permite pasar argumentos adicionales a las funciones internas de ajuste. No significa que falte completar algo: puedes omitirlo, igual que los demás argumentos opcionales."
             ]
           ]
         },
         {
           "id": "C2-06",
+          "titulo": "Aplicar lm() a wage1: educación y salario",
+          "texto": "Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 08.",
+          "codigo": "modelo_pos <- lm(wage ~ educ, data = datos)\nprint(nobs(modelo_pos))\nprint(coef(modelo_pos))\nprint(predict(modelo_pos, newdata = data.frame(educ = c(12, 16))))\nprint(sum(resid(modelo_pos)^2))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)",
+          "lectura": "MCO minimiza SSR = Σ(yᵢ − ŷᵢ)². El ajuste observado es aproximadamente ŷ = −0.905 + 0.541 educ. Un año adicional de educación se asocia con 0.541 USD/h más, en promedio. El intercepto no debe interpretarse fuera del contexto y soporte de los datos.",
+          "codigo_abierto": true,
+          "explicaciones": [
+            [
+              "Traducir la pregunta: lm(wage ~ educ, data = datos)",
+              "wage es el salario por hora que queremos explicar; educ es el predictor medido en años. datos contiene ambas columnas. Guardamos el ajuste en modelo_pos para consultarlo después. Dejamos los demás argumentos en sus valores habituales: no seleccionamos filas ni aplicamos pesos."
+            ],
+            [
+              "Comprobar la muestra: print(nobs(modelo_pos))",
+              "Muestra cuántas observaciones entraron efectivamente al ajuste: 526. Es importante comprobarlo, porque las filas usadas podrían reducirse si hubiera valores faltantes en las variables del modelo."
+            ],
+            [
+              "Interpretar coeficientes: print(coef(modelo_pos))",
+              "Obtenemos intercepto ≈ −0.905 y pendiente ≈ 0.541. La recta es salario ajustado = −0.905 + 0.541 × años de educación. Un año adicional se asocia con aproximadamente 0.541 USD/h más de salario ajustado. El signo positivo no prueba causalidad."
+            ],
+            [
+              "Aplicar la recta: print(predict(...))",
+              "newdata crea dos casos con el nombre de columna esperado, educ. Las predicciones para 12 y 16 años son aproximadamente 5.591 y 7.757 USD/h. La diferencia es 4 × 0.541 ≈ 2.165 USD/h. Son valores ajustados, no salarios individuales garantizados."
+            ],
+            [
+              "Medir lo que falta explicar: print(sum(resid(modelo_pos)^2))",
+              "resid() calcula salario observado menos ajustado, ^2 eleva cada diferencia al cuadrado y sum() las suma. El resultado SSR ≈ 5980.682 es el mínimo de esta suma para una recta con intercepto en esta muestra; no es un promedio ni un porcentaje."
+            ],
+            [
+              "Contrastar con la nube: plot(...) y abline(...)",
+              "La nube conserva los salarios observados. La línea dorada es el ajuste calculado por lm(), cuyos coeficientes no se modifican aquí. Observa la dispersión alrededor de la recta: personas con los mismos años de educación pueden ganar salarios distintos."
+            ]
+          ]
+        },
+        {
+          "id": "C2-07",
           "titulo": "De la fórmula a lm(): regresión muestral",
           "texto": "Calcula los parámetros con vectores y compara con lm(). Esta es una estimación en la muestra, no los parámetros poblacionales conocidos.",
           "codigo": "x <- datos$educ\ny <- datos$wage\nb1 <- sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2)\nb0 <- mean(y) - b1 * mean(x)\nprint(c(b0 = b0, b1 = b1))\nprint(coef(modelo_pos))\ny_ajustado <- b0 + b1 * x\nresiduos <- y - y_ajustado\nprint(head(data.frame(y, y_ajustado, residuos)))",
@@ -160,7 +230,7 @@
       "titulo": "Tres casos, diagnóstico y comparación",
       "laminas": [
         {
-          "id": "C2-07",
+          "id": "C2-08",
           "titulo": "Caso positivo: educación y salario",
           "texto": "Consulta summary(modelo_pos) y anova(modelo_pos). Despliega cada salida e interpreta sus componentes con los botones. El modelo explica salario por hora a partir de educación. Predice para 12 y 16 años: ¿es un salario individual garantizado?",
           "codigo": "modelo_pos <- lm(wage ~ educ, data = datos)\nprint(summary(modelo_pos))\nprint(anova(modelo_pos))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)\npredict(modelo_pos, newdata = data.frame(educ = c(12, 16)))",
@@ -242,7 +312,7 @@
           "nota_anova": "Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados."
         },
         {
-          "id": "C2-08",
+          "id": "C2-09",
           "titulo": "Tiempo de aceleración: casos negativo y no significativo",
           "texto": "Usaremos mtcars, 32 automóviles de modelos 1973–1974, con datos publicados por Motor Trend en 1974. La respuesta es qsec: segundos para recorrer un cuarto de milla (aproximadamente 402 m). hp es potencia bruta en caballos de fuerza; drat es la relación de transmisión del eje trasero, sin unidades. Alterna entre ambos predictores y anticipa el signo. La base viene incluida en R: no necesitas instalar paquetes.",
           "codigo": "autos <- datasets::mtcars\nhead(autos[, c(\"qsec\", \"hp\", \"drat\")])\n\n# Caso negativo: potencia y tiempo de aceleración\nmodelo_neg <- lm(qsec ~ hp, data = autos)\nprint(summary(modelo_neg))\nprint(anova(modelo_neg))\n\n# Caso no significativo: relación de transmisión y tiempo\nmodelo_plano <- lm(qsec ~ drat, data = autos)\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\n\npar(mfrow = c(1, 2))\nplot(qsec ~ hp, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Potencia bruta (hp)\", ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_neg, col = \"#D6A600\", lwd = 3)\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)\npar(mfrow = c(1, 1))",
@@ -329,10 +399,10 @@
           "nota_anova": "Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados."
         },
         {
-          "id": "C2-09",
+          "id": "C2-10",
           "titulo": "Comprobar el caso no significativo con un intervalo",
-          "texto": "Continúa con mtcars y el modelo qsec ~ drat de la lámina 08. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?",
-          "codigo": "# Ejecuta primero la lámina 08 para crear autos y modelo_plano.\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\nprint(confint(modelo_plano, \"drat\", level = 0.95))\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9060\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)",
+          "texto": "Continúa con mtcars y el modelo qsec ~ drat de la lámina 09. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?",
+          "codigo": "# Ejecuta primero la lámina 09 para crear autos y modelo_plano.\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\nprint(confint(modelo_plano, \"drat\", level = 0.95))\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9060\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)",
           "lectura": "El intervalo del 95 % para la pendiente es aproximadamente [−0.936, 1.546] segundos por unidad de drat. Incluye cero, en concordancia con p ≈ 0.620. La pendiente estimada es positiva, pero no significativa al 5 %. El intervalo también incluye asociaciones de magnitudes relevantes: no podemos concluir equivalencia a cero. Se aplica la inferencia clásica de lm(), condicionada a sus supuestos.",
           "interactivo": "flat",
           "tablas_anova": [
@@ -377,7 +447,7 @@
           ]
         },
         {
-          "id": "C2-10",
+          "id": "C2-11",
           "titulo": "Residuos y propiedades del ajuste",
           "texto": "Activa la animación para dibujar las distancias verticales de los datos a su recta. Comprueba las propiedades algebraicas de MCO con intercepto.",
           "codigo": "modelo <- modelo_pos\nx <- datos$educ\ny <- datos$wage\najuste <- fitted(modelo)\ne <- resid(modelo)\nprint(c(suma_residuos = sum(e), suma_x_residuos = sum(x * e),\n        media_y = mean(y), media_ajustada = mean(ajuste)))\nplot(x, y, pch = 19, col = \"#005E9060\")\nsegments(x, ajuste, x, y, col = \"#D6A60060\")\nabline(modelo, col = \"#D6A600\", lwd = 3)",
@@ -385,7 +455,7 @@
           "interactivo": "residuals"
         },
         {
-          "id": "C2-11",
+          "id": "C2-12",
           "titulo": "SST, SSE, SSR y R²: ¿cuánto explica la recta?",
           "texto": "Compara los tres casos con la misma definición que la cátedra: SST total, SSE explicada y SSR residual. En MCO con intercepto, SST = SSE + SSR.",
           "codigo": "modelos <- list(positivo = modelo_pos, negativo = modelo_neg, plano = modelo_plano)\nresumen <- do.call(rbind, lapply(modelos, function(m) {\n  y <- model.response(model.frame(m))\n  SST <- sum((y - mean(y))^2)\n  SSE <- sum((fitted(m) - mean(y))^2)\n  SSR <- sum(resid(m)^2)\n  c(SST = SST, SSE = SSE, SSR = SSR, R2 = 1 - SSR / SST)\n}))\nprint(resumen)\nbarplot(t(cbind(resumen[, \"R2\"], 1 - resumen[, \"R2\"])),\n        col = c(\"#D6A600\", \"#005E90\"),\n        legend.text = c(\"Explicada\", \"Residual\"),\n        names.arg = rownames(resumen), ylab = \"Fracción de SST\")",
@@ -393,7 +463,7 @@
           "interactivo": "variance"
         },
         {
-          "id": "C2-12",
+          "id": "C2-13",
           "titulo": "Tu turno: comparar y comunicar los tres casos",
           "texto": "Completa una tabla con respuesta, predictor, signo, pendiente y R². Redacta una frase en unidades para cada caso y una limitación. Antes de abrir el código, construye la tabla usando coef() y summary().",
           "codigo": "comparacion <- data.frame(\n  caso = c(\"Salario y educación\", \"Tiempo y potencia\", \"Tiempo y transmisión\"),\n  pendiente = sapply(modelos, function(m) coef(m)[2]),\n  R2 = sapply(modelos, function(m) summary(m)$r.squared),\n  p_pendiente = sapply(modelos, function(m) coef(summary(m))[2, 4]))\nprint(comparacion)\n# Escribe tus conclusiones en una celda Markdown del notebook.",

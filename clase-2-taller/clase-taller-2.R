@@ -35,11 +35,19 @@ plot(wage ~ educ, data = datos, pch = 19, col = "#005E9040")
 points(por_educ$educ, por_educ$wage, pch = 19, col = "#D6A600", cex = 1.4)
 abline(h = promedio, lty = 2)
 
+# Consultar los argumentos oficiales sin ajustar un modelo:
+args(stats::lm)
+
+# Ver la configuración actual para valores faltantes:
+getOption("na.action")
+
 modelo_pos <- lm(wage ~ educ, data = datos)
-print(summary(modelo_pos))
+print(nobs(modelo_pos))
 print(coef(modelo_pos))
+print(predict(modelo_pos, newdata = data.frame(educ = c(12, 16))))
 print(sum(resid(modelo_pos)^2))
-plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060")
+plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
+     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)")
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 
 x <- datos$educ
@@ -83,7 +91,7 @@ plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9080",
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 par(mfrow = c(1, 1))
 
-# Ejecuta primero la lámina 08 para crear autos y modelo_plano.
+# Ejecuta primero la lámina 09 para crear autos y modelo_plano.
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))

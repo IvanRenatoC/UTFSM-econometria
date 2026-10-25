@@ -5,7 +5,7 @@ Horario: 18:50–21:25. Descanso: 20:00–20:15. La agenda detallada está en la
 
 Trabajar en parejas: predecir el signo antes de mostrar la recta, ejecutar el código, interpretar en unidades y contrastar con la nube. Las láminas y soluciones comienzan plegadas.
 
-Se usa wage1 del libro de Wooldridge para wage ~ educ (positivo). La lámina 07 incorpora summary y ANOVA con sus resultados numéricos e interpretación desplegable. Para los otros casos se usa mtcars, base real incluida en R: qsec ~ hp (negativo) y qsec ~ drat (no significativo al 5 %). La respuesta es el tiempo en segundos para recorrer un cuarto de milla; hp es potencia bruta y drat, relación de transmisión del eje trasero. No hay una pendiente exactamente cero demostrada. La lámina 08 compara ambos casos y la 09 profundiza en el intervalo del no significativo. La inferencia clásica de lm requiere sus supuestos. Son asociaciones entre autos distintos, no efectos de una intervención.
+Se usa wage1 del libro de Wooldridge para wage ~ educ (positivo). La lámina 08 incorpora summary y ANOVA con sus resultados numéricos e interpretación desplegable. Para los otros casos se usa mtcars, base real incluida en R: qsec ~ hp (negativo) y qsec ~ drat (no significativo al 5 %). La respuesta es el tiempo en segundos para recorrer un cuarto de milla; hp es potencia bruta y drat, relación de transmisión del eje trasero. No hay una pendiente exactamente cero demostrada. La lámina 09 compara ambos casos y la 10 profundiza en el intervalo del no significativo. La inferencia clásica de lm requiere sus supuestos. Son asociaciones entre autos distintos, no efectos de una intervención.
 
 Resultados verificados: qsec ~ hp tiene pendiente −0.018458, R² ≈ 0.5016 y p ≈ 5.77e−6. qsec ~ drat tiene pendiente 0.3048, R² ≈ 0.008318, p ≈ 0.6196 e intervalo del 95 % [−0.9361, 1.5458]. En la regresión salarial, la ANOVA da SSE ≈ 1179.732 y SSR ≈ 5980.682, con F ≈ 103.36.
 
@@ -26,3 +26,6 @@ En Colab seleccionar kernel R y ejecutar de arriba abajo, sin rpy2 ni %%R. Si no
 ## Mantenimiento
 
 Editar contenido-clase-2.json y ejecutar `python3 herramientas/generar_web.py` desde esta carpeta. Genera web, notebook, script y guía de actividades. Las visualizaciones están en herramientas/interactivos.js. Verificar nuevamente R si cambia el contenido.
+
+
+La lámina 05 presenta la firma y los argumentos de lm() como referencia interactiva. La 06 los aplica a wage1; la 07 calcula las fórmulas manualmente. La ANOVA comienza en la 08. La firma completa es documentación, no una celda que deba ejecutarse.

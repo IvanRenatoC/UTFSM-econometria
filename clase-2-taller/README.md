@@ -2,7 +2,7 @@
 
 [Página del taller](https://ivanrenatoc.github.io/UTFSM-econometria/clase-2-taller/).
 
-Material disponible: 12 láminas prácticas, gráficos interactivos, animación de residuos, agenda con descanso y notebook con kernel R.
+Material disponible: 13 láminas prácticas, gráficos interactivos, animación de residuos, agenda con descanso y notebook con kernel R.
 
 - `clase-taller-2.ipynb`: ejecutar en orden con R (extensión estándar .ipynb).
 - `clase-taller-2.R`: los mismos ejemplos como script.
