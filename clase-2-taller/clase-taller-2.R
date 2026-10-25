@@ -125,16 +125,61 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
         legend.text = c("Explicada", "Residual"),
         names.arg = rownames(resumen), ylab = "Fracción de SST")
 
-# 1. Cargar la base del libro. En Colab se descarga el paquete si hace falta.
-# La copia CSV permite trabajar sin conexión desde la carpeta del taller.
-if (file.exists("datos/ceosal1.csv")) {
-  datos_practica <- read.csv("datos/ceosal1.csv")
-} else {
-  if (!requireNamespace("wooldridge", quietly = TRUE)) {
-    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
-  }
-  datos_practica <- wooldridge::ceosal1
+# Colab: selecciona R como tipo de entorno y ejecuta esta celda.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
 }
+datos_practica <- wooldridge::ceosal1
+
+print(head(datos_practica))
+str(datos_practica)
+print(summary(datos_practica[, c("salary", "roe")]))
+print(colSums(is.na(datos_practica[, c("salary", "roe")])))
+print(nrow(datos_practica))
+
+plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
+     xlab = "Rentabilidad del patrimonio: roe (%)",
+     ylab = "Salario del director ejecutivo (miles de USD, 1990)",
+     main = "Rentabilidad y salario del director ejecutivo")
+
+modelo_practica <- lm(salary ~ roe, data = datos_practica)
+print(nobs(modelo_practica))
+print(coef(modelo_practica))
+
+print(summary(modelo_practica))
+print(anova(modelo_practica))
+
+nuevos_casos <- data.frame(roe = c(10, 20))
+print(data.frame(nuevos_casos,
+                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+
+y_practica <- model.response(model.frame(modelo_practica))
+ajustados_practica <- fitted(modelo_practica)
+residuos_practica <- resid(modelo_practica)
+SST_practica <- sum((y_practica - mean(y_practica))^2)
+SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
+SSR_practica <- sum(residuos_practica^2)
+print(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,
+        R2 = 1 - SSR_practica / SST_practica))
+print(all.equal(SST_practica, SSE_practica + SSR_practica))
+
+
+plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
+     xlab = "Rentabilidad del patrimonio: roe (%)",
+     ylab = "Salario del director ejecutivo (miles de USD, 1990)",
+     main = "Rentabilidad y salario del director ejecutivo")
+abline(modelo_practica, col = "#D6A600", lwd = 3)
+
+cat("La asociación estimada es positiva: 18.501 miles de USD por punto porcentual de roe.\n")
+cat("El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\n")
+cat("Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\n")
+
+# 1. Descargar el paquete del libro y cargar ceosal1.
+# Colab: selecciona R como tipo de entorno y ejecuta esta celda.
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+}
+datos_practica <- wooldridge::ceosal1
 
 # 2. Explorar y comprobar faltantes en las dos variables del modelo.
 print(head(datos_practica))
