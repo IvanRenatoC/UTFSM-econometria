@@ -39,9 +39,19 @@
       "C2-11"
     ],
     [
-      "21:05–21:25",
-      "Actividad de comparación y cierre",
+      "21:05–21:12",
+      "Práctica: descargar y explorar ceosal1",
       "C2-13"
+    ],
+    [
+      "21:12–21:20",
+      "Práctica: construir e interpretar la regresión",
+      "C2-14"
+    ],
+    [
+      "21:20–21:25",
+      "Código completo y puesta en común",
+      "C2-15"
     ]
   ],
   "bloques": [
@@ -464,10 +474,86 @@
         },
         {
           "id": "C2-13",
-          "titulo": "Tu turno: comparar y comunicar los tres casos",
-          "texto": "Completa una tabla con respuesta, predictor, signo, pendiente y R². Redacta una frase en unidades para cada caso y una limitación. Antes de abrir el código, construye la tabla usando coef() y summary().",
-          "codigo": "comparacion <- data.frame(\n  caso = c(\"Salario y educación\", \"Tiempo y potencia\", \"Tiempo y transmisión\"),\n  pendiente = sapply(modelos, function(m) coef(m)[2]),\n  R2 = sapply(modelos, function(m) summary(m)$r.squared),\n  p_pendiente = sapply(modelos, function(m) coef(summary(m))[2, 4]))\nprint(comparacion)\n# Escribe tus conclusiones en una celda Markdown del notebook.",
-          "lectura": "Revisa dirección, unidades y dispersión alrededor de la recta. El caso no significativo no es una prueba de equivalencia a cero. Diferencia siempre asociación, predicción y causalidad."
+          "titulo": "Práctica 1 · Preparar una nueva base de Wooldridge",
+          "texto": "21:05–21:12 · Trabajen en parejas y creen sus propias celdas en R. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Descarguen el paquete wooldridge desde CRAN si aún no lo tienen y carguen ceosal1. La solución completa está en la lámina 15; intenten construirla antes de abrirla.",
+          "codigo": "",
+          "lectura": "La base contiene 209 observaciones y 12 variables, a partir de datos publicados por Businessweek en 1991. salary es el salario de 1990 en miles de dólares; roe es la rentabilidad del patrimonio promedio de 1988–1990, expresada en porcentaje. Cada fila vincula a un director ejecutivo con su empresa. No son mediciones sucesivas de una sola persona.",
+          "explicaciones": [
+            [
+              "Tu tarea · Conseguir y reconocer los datos",
+              "Usen install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\") si el paquete no está disponible; después carguen wooldridge::ceosal1 en datos_practica. Examinen head(), str() y summary(). No cambien la base datos usada anteriormente en el taller."
+            ],
+            [
+              "Tu tarea · Definir respuesta y predictor",
+              "Escriban en Markdown qué variable quieren explicar y con cuál la relacionarán. Identifiquen las unidades y revisen cuántas filas tienen NA en salary o roe. Indiquen cuántas observaciones podrán usar."
+            ],
+            [
+              "Tu tarea · Predecir antes de ajustar",
+              "Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una recta, propongan el signo de la pendiente. ¿La nube es estrecha o dispersa? ¿Hay salarios muy alejados del resto? No eliminen observaciones sólo porque sean extremas."
+            ]
+          ]
+        },
+        {
+          "id": "C2-14",
+          "titulo": "Práctica 2 · Estimar e interpretar su propia regresión",
+          "texto": "21:12–21:20 · A partir de la base que acaban de cargar, construyan una regresión simple en R sin copiar todavía la solución. Acuerden una interpretación y compártanla con otra pareja. Mantengan un solo predictor: roe.",
+          "codigo": "",
+          "lectura": "Entregable de la pareja: un gráfico con su recta, la ecuación estimada, una interpretación de la pendiente con unidades, la lectura de R² y p-valor, dos predicciones y una limitación. La base es observacional; una asociación no demuestra causalidad.",
+          "explicaciones": [
+            [
+              "Reto 1 · Ajustar y escribir la ecuación",
+              "Usen lm() y guarden el resultado en modelo_practica. Extraigan los coeficientes con coef(). Escriban la ecuación de salario ajustado en función de roe. ¿Qué significa aumentar roe en un punto porcentual? ¿Cuánto cambia el ajuste si aumenta diez puntos porcentuales?"
+            ],
+            [
+              "Reto 2 · Leer summary() y ANOVA",
+              "Obtengan summary() y anova(). Identifiquen pendiente, error estándar, p-valor y R². Apliquen el umbral del 5 %: ¿pueden rechazar pendiente poblacional cero? ¿Es lo mismo una pendiente positiva que una pendiente significativa?"
+            ],
+            [
+              "Reto 3 · Predecir y explicar",
+              "Con predict(), calculen los salarios ajustados para roe = 10 y roe = 20. El nombre de la columna de newdata debe coincidir con el predictor. Recuerden expresar el resultado en miles de dólares y distinguir valor ajustado de salario individual garantizado."
+            ],
+            [
+              "Reto 4 · Comprobar y comunicar",
+              "Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST ≈ SSE + SSR. Agreguen la recta a la nube. Escriban una conclusión de tres frases: dirección de la asociación, capacidad explicativa y limitación de interpretación."
+            ]
+          ]
+        },
+        {
+          "id": "C2-15",
+          "titulo": "Práctica 3 · Código completo y explicación de la solución",
+          "texto": "21:20–21:25 · Contrasten sus programas con esta solución de referencia. Todo el código está reunido en un único bloque, con comentarios para cada paso. La celda puede ejecutarse de forma independiente si se dispone de la copia CSV o de conexión para instalar wooldridge.",
+          "codigo": "# 1. Cargar la base del libro. En Colab se descarga el paquete si hace falta.\n# La copia CSV permite trabajar sin conexión desde la carpeta del taller.\nif (file.exists(\"datos/ceosal1.csv\")) {\n  datos_practica <- read.csv(\"datos/ceosal1.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  datos_practica <- wooldridge::ceosal1\n}\n\n# 2. Explorar y comprobar faltantes en las dos variables del modelo.\nprint(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\n\n# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\n\n# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.\nmodelo_practica <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(modelo_practica))\nprint(coef(modelo_practica))\nprint(summary(modelo_practica))\nprint(anova(modelo_practica))\nabline(modelo_practica, col = \"#D6A600\", lwd = 3)\n\n# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.\nnuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(modelo_practica, nuevos_casos)))\n\n# 6. Descomponer la variación usando las filas efectivas del modelo.\ny_practica <- model.response(model.frame(modelo_practica))\najustados_practica <- fitted(modelo_practica)\nresiduos_practica <- resid(modelo_practica)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n# 7. En una celda Markdown, escribe tu interpretación con unidades.\n# Distingue signo, significancia, R2 y asociación frente a causalidad.",
+          "lectura": "Resultados de control: 209 observaciones; salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional de roe se asocia con 18.501 miles de USD más de salario ajustado. R² ≈ 0.0132 (1.32 %) y p ≈ 0.0978: al 5 % no rechazamos pendiente cero. Para roe de 10 % y 20 %, los ajustes son aproximadamente 1148.203 y 1333.215 miles de USD. La pendiente positiva no implica un buen ajuste ni demuestra causalidad. Los salarios extremos merecen revisión; no los borramos automáticamente.",
+          "explicaciones": [
+            [
+              "Paso 1 · Obtener datos sin sobrescribir el trabajo anterior",
+              "El programa prioriza la copia local para trabajar sin conexión. Si no existe, instala el paquete desde CRAN sólo si hace falta y carga wooldridge::ceosal1. datos_practica separa esta base de wage1 y mtcars. En Colab la descarga inicial del paquete necesita conexión."
+            ],
+            [
+              "Paso 2 · Revisar antes de modelar",
+              "head() muestra las primeras filas; str(), los tipos de columnas; summary(), un resumen de salary y roe. is.na() identifica faltantes y colSums() cuenta cuántos hay por variable. En esta base ambas columnas están completas."
+            ],
+            [
+              "Paso 3 · Mirar las observaciones",
+              "La fórmula salary ~ roe coloca el salario en el eje vertical. Los títulos conservan las unidades. La nube ayuda a anticipar la tendencia y detectar dispersión y observaciones extremas antes de leer una prueba estadística."
+            ],
+            [
+              "Paso 4 · Ajustar y consultar",
+              "lm() estima intercepto y pendiente. nobs() comprueba el tamaño utilizado; coef() extrae la ecuación; summary() presenta errores estándar, p-valores y R²; anova() muestra la partición explicada/residual y F. abline() añade exactamente la recta estimada."
+            ],
+            [
+              "Paso 5 · Predecir en las mismas unidades",
+              "data.frame(roe = c(10, 20)) contiene dos casos con el nombre esperado por el modelo. predict() entrega valores sobre la recta, en miles de dólares. La diferencia entre los ajustes es diez veces la pendiente: aproximadamente 185.012 miles de USD."
+            ],
+            [
+              "Paso 6 · Verificar las sumas de cuadrados",
+              "Se usan las filas efectivas de model.frame(). SST mide variación total; SSE, variación de los ajustes respecto al promedio; SSR, variación residual. all.equal() comprueba la igualdad con tolerancia numérica. No necesitamos que una igualdad de decimales sea exacta bit por bit."
+            ],
+            [
+              "Paso 7 · Redactar una conclusión",
+              "Relaciona la pendiente con sus unidades, indica que la capacidad explicativa es baja y distingue no rechazar β₁ = 0 de demostrar β₁ = 0. Reconoce factores omitidos, la naturaleza observacional y el alcance histórico de la base."
+            ]
+          ]
         }
       ]
     }

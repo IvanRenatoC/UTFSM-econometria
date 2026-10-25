@@ -23,7 +23,8 @@ def generar():
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
             if lamina.get('sintaxis'):
                 md('**Firma oficial de lm() — referencia, no ejecutar como llamada completa**\n\n```r\n'+lamina['sintaxis']+'\n```\n\n[Documentación oficial de R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html)', lamina['id'].lower()+'-sintaxis')
-            r(lamina['codigo'], lamina['id'].lower()+'-r')
+            if lamina.get('codigo'):
+                r(lamina['codigo'], lamina['id'].lower()+'-r')
             if lamina.get('tablas_anova'):
                 table_text = []
                 for t in lamina['tablas_anova']:

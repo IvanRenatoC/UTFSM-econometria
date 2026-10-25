@@ -29,3 +29,12 @@ Editar contenido-clase-2.json y ejecutar `python3 herramientas/generar_web.py` d
 
 
 La lámina 05 presenta la firma y los argumentos de lm() como referencia interactiva. La 06 los aplica a wage1; la 07 calcula las fórmulas manualmente. La ANOVA comienza en la 08. La firma completa es documentación, no una celda que deba ejecutarse.
+
+
+## Ejercitación con ceosal1 · Láminas 13–15
+
+Reservar 21:05–21:25: siete minutos para preparar datos, ocho para estimar y comunicar, cinco para contrastar la solución. Trabajar en parejas y mantener la 15 cerrada hasta la puesta en común. Las láminas 13 y 14 contienen consignas sin código resuelto; la 15 reúne todo el código y sus explicaciones. En Colab deben crear sus propias celdas para resolver las consignas.
+
+Nueva base del libro: ceosal1, 209 observaciones de directores ejecutivos y sus empresas, publicada en Businessweek (1991). salary es salario de 1990 en miles de USD; roe es rentabilidad del patrimonio promedio 1988–1990, en porcentaje. Fuente: https://justinmshea.github.io/wooldridge/reference/ceosal1.html . Se conserva una copia CSV exportada sin modificar desde el archivo RData del repositorio del paquete.
+
+Resultados de control de salary ~ roe: intercepto 963.191, pendiente 18.501, R² 0.01319, p 0.09777. No adelantar estos valores durante la actividad. Usar la diferencia entre signo positivo y significancia como cierre. No se eliminan salarios extremos.

@@ -15,3 +15,8 @@ Copia de apoyo de la clase 1. La selección definitiva de la base para las activ
 ## mtcars
 
 Copia de `datasets::mtcars` exportada directamente desde R. Datos de Motor Trend (1974), 32 automóviles de modelos 1973–1974; sin observaciones eliminadas ni simuladas. Fuente: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html . La web usa qsec (segundos para recorrer 1/4 de milla), hp (potencia bruta) y drat (relación de transmisión del eje trasero). El notebook usa `autos <- datasets::mtcars`, sin instalación adicional.
+
+
+## ceosal1
+
+Copia íntegra exportada a CSV desde https://raw.githubusercontent.com/JustinMShea/wooldridge/master/data/ceosal1.RData . 209 filas y 12 variables, sin filtros ni datos simulados. Documentación: https://justinmshea.github.io/wooldridge/reference/ceosal1.html . La práctica ajusta salary ~ roe; el código utiliza la copia local o carga el paquete oficial wooldridge desde CRAN si no está disponible.
