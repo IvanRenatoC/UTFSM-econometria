@@ -11,7 +11,7 @@ Ejecuta las celdas en orden con kernel R. En Colab selecciona R en el tipo de en
 - 18:50–19:00: Datos y entorno
 - 19:00–19:15: Tres nubes y modelo con error
 - 19:15–19:30: Esperanza y promedios por grupo
-- 19:30–20:00: MCO y parámetros en R
+- 19:30–20:00: Conocer lm(), aplicarlo y calcular MCO
 - 20:00–20:15: Descanso
 - 20:15–20:45: Tres regresiones e interpretación
 - 20:45–21:05: Residuos, descomposición y R²
@@ -87,40 +87,138 @@ abline(h = promedio, lty = 2)
 
 **Lectura del resultado:** Cada punto dorado resume personas con el mismo educ; la línea horizontal resume a todas. Los tamaños de los grupos son diferentes. Bajo E[u | educ] = 0, la regresión poblacional es E[wage | educ] = β₀ + β₁ educ.
 
-### Mínimos cuadrados: estimar con lm()
+### Conoce lm(): sintaxis y parámetros
 
-Ejecuta el código para estimar la recta de salario y educación mediante mínimos cuadrados ordinarios. Los coeficientes los calcula lm() a partir de los datos; en esta lámina no se modifican manualmente.
+La función nativa de R para ajustar modelos lineales es lm(), abreviatura de Linear Model, del paquete stats. No necesitas indicar todos sus argumentos: para este taller bastan formula y data. Pulsa cada parámetro para explorar su función; los argumentos avanzados se presentan como referencia y no amplían el modelo simple que trabajaremos.
+
+**Firma oficial de lm() — referencia, no ejecutar como llamada completa**
+
+```r
+lm(formula,
+   data,
+   subset,
+   weights,
+   na.action,
+   method = "qr",
+   model = TRUE,
+   x = FALSE,
+   y = FALSE,
+   qr = TRUE,
+   singular.ok = TRUE,
+   contrasts = NULL,
+   offset, ...)
+```
+
+[Documentación oficial de R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html)
+
+```r
+# Consultar los argumentos oficiales sin ajustar un modelo:
+args(stats::lm)
+
+# Ver la configuración actual para valores faltantes:
+getOption("na.action")
+```
+
+**El código, paso a paso**
+
+**formula · ¿qué queremos explicar?**
+
+Describe el modelo con una fórmula: la respuesta va a la izquierda de ~ y los predictores a la derecha. Por ejemplo, y ~ x. La fórmula incluye intercepto por defecto. En este taller usaremos un solo predictor: regresión lineal simple.
+
+**data · ¿dónde están las variables?**
+
+Indica la tabla que contiene las columnas. Si una variable no aparece allí, R la busca en el entorno de la fórmula, que suele ser desde donde se llama lm(); no necesariamente es siempre el entorno global. Usar data de forma explícita ayuda a evitar confusiones.
+
+**subset · ¿qué filas entran?**
+
+Permite seleccionar observaciones mediante índices o una condición lógica. Por ejemplo, subset = educ >= 12 selecciona esas filas; cambiar la muestra cambia el análisis. Lo dejaremos sin especificar para usar todas las observaciones disponibles del caso.
+
+**weights · ¿todas las filas pesan igual?**
+
+Pesos numéricos opcionales. Si se indican, lm() minimiza la suma de residuos al cuadrado multiplicados por sus pesos: mínimos cuadrados ponderados. Aquí no los indicaremos y utilizaremos mínimos cuadrados ordinarios.
+
+**na.action · ¿qué hacer con NA?**
+
+Controla el tratamiento de valores faltantes. Depende de getOption("na.action"): la configuración inicial habitual de R es na.omit, que excluye filas con NA en las variables utilizadas por el ajuste. Si la opción no está definida, lm() utiliza na.fail. No se eliminan filas por NA en columnas ajenas al modelo.
+
+**method = "qr" · ¿cómo se calcula el ajuste?**
+
+El método habitual de cálculo es la descomposición QR. Es la opción de ajuste admitida por lm(). La alternativa method = "model.frame" devuelve la tabla utilizada por el modelo, sin estimar la regresión. Mantendremos "qr".
+
+**model = TRUE · guardar los datos utilizados**
+
+Conserva dentro del resultado la tabla de variables utilizada por el modelo (model frame), incluidas las transformaciones y la selección de filas que correspondan. No es necesariamente una copia completa del dataset original.
+
+**x = FALSE · guardar la matriz de diseño**
+
+Si x = TRUE, conserva la matriz numérica con la que se estima el ajuste: incluye una columna para el intercepto y las columnas de los predictores. FALSE evita guardar ese componente por separado; no elimina los predictores del modelo.
+
+**y = FALSE · guardar la respuesta**
+
+Si y = TRUE, conserva por separado el vector de respuesta utilizado en el ajuste. El valor FALSE no elimina la respuesta ni impide estimar; sólo controla si se guarda ese componente adicional.
+
+**qr = TRUE · conservar la descomposición**
+
+Guarda la descomposición QR dentro del resultado. Funciones posteriores, como summary() para un ajuste lm ordinario, necesitan este componente. Conviene conservar el valor predeterminado.
+
+**singular.ok = TRUE · columnas redundantes**
+
+Permite continuar si la matriz de diseño tiene columnas perfectamente redundantes. Los coeficientes no identificables aparecen como NA. Con FALSE se produce un error. Esta tolerancia no resuelve el problema de identificación; sólo controla la reacción de R.
+
+**contrasts = NULL · codificar factores**
+
+Permite elegir cómo se representan los factores mediante columnas numéricas en la matriz de diseño. NULL deja la codificación habitual. No es necesario configurarlo para nuestro predictor numérico educ.
+
+**offset · un componente conocido**
+
+Añade al predictor lineal un componente conocido cuyo coeficiente queda fijado en 1, en lugar de estimarse. Puede indicarse como argumento o en la fórmula. No lo necesitamos en la regresión simple del taller.
+
+**... · otros argumentos**
+
+Permite pasar argumentos adicionales a las funciones internas de ajuste. No significa que falte completar algo: puedes omitirlo, igual que los demás argumentos opcionales.
+
+**Lectura del resultado:** La firma muestra los argumentos disponibles, no una llamada que debas ejecutar con todos ellos. TRUE y FALSE controlan qué componentes se conservan; no añaden variables explicativas. En la siguiente lámina aplicaremos lm(wage ~ educ, data = datos).
+
+### Aplicar lm() a wage1: educación y salario
+
+Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 08.
 
 ```r
 modelo_pos <- lm(wage ~ educ, data = datos)
-print(summary(modelo_pos))
+print(nobs(modelo_pos))
 print(coef(modelo_pos))
+print(predict(modelo_pos, newdata = data.frame(educ = c(12, 16))))
 print(sum(resid(modelo_pos)^2))
-plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060")
+plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
+     xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)")
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 ```
 
 **El código, paso a paso**
 
-**modelo_pos <- lm(wage ~ educ, data = datos)**
+**Traducir la pregunta: lm(wage ~ educ, data = datos)**
 
-Estima el salario como función lineal de los años de educación y guarda el ajuste en modelo_pos. La fórmula incluye un intercepto por defecto.
+wage es el salario por hora que queremos explicar; educ es el predictor medido en años. datos contiene ambas columnas. Guardamos el ajuste en modelo_pos para consultarlo después. Dejamos los demás argumentos en sus valores habituales: no seleccionamos filas ni aplicamos pesos.
 
-**print(summary(modelo_pos))**
+**Comprobar la muestra: print(nobs(modelo_pos))**
 
-Muestra el resumen del ajuste. Residuals resume los residuos. En Coefficients, Estimate contiene el intercepto (aproximadamente −0.905) y la pendiente (0.541); Std. Error muestra sus errores estándar; t value y Pr(>|t|) corresponden al contraste de que cada coeficiente poblacional sea cero. También aparecen el error estándar residual, R² (aproximadamente 0.1648), R² ajustado y el contraste F global. Estos contrastes requieren los supuestos de la inferencia clásica; no demuestran causalidad.
+Muestra cuántas observaciones entraron efectivamente al ajuste: 526. Es importante comprobarlo, porque las filas usadas podrían reducirse si hubiera valores faltantes en las variables del modelo.
 
-**print(coef(modelo_pos))**
+**Interpretar coeficientes: print(coef(modelo_pos))**
 
-Extrae e imprime únicamente los dos coeficientes estimados, con sus nombres: (Intercept) y educ. Permite leer la ecuación ŷ = −0.905 + 0.541 educ. La pendiente indica una asociación promedio de 0.541 USD por hora por año adicional de educación.
+Obtenemos intercepto ≈ −0.905 y pendiente ≈ 0.541. La recta es salario ajustado = −0.905 + 0.541 × años de educación. Un año adicional se asocia con aproximadamente 0.541 USD/h más de salario ajustado. El signo positivo no prueba causalidad.
 
-**print(sum(resid(modelo_pos)^2))**
+**Aplicar la recta: print(predict(...))**
 
-resid() obtiene las diferencias entre salarios observados y ajustados. ^2 eleva cada residuo al cuadrado y sum() suma esos cuadrados. print() muestra SSR ≈ 5980.68, la suma de cuadrados residual que MCO minimiza. No es un promedio ni R²; está expresada en unidades de salario al cuadrado.
+newdata crea dos casos con el nombre de columna esperado, educ. Las predicciones para 12 y 16 años son aproximadamente 5.591 y 7.757 USD/h. La diferencia es 4 × 0.541 ≈ 2.165 USD/h. Son valores ajustados, no salarios individuales garantizados.
 
-**plot(...) y abline(...)**
+**Medir lo que falta explicar: print(sum(resid(modelo_pos)^2))**
 
-plot() dibuja la nube de observaciones. abline(modelo_pos, ...) agrega la recta estimada en dorado; lwd = 3 fija su grosor.
+resid() calcula salario observado menos ajustado, ^2 eleva cada diferencia al cuadrado y sum() las suma. El resultado SSR ≈ 5980.682 es el mínimo de esta suma para una recta con intercepto en esta muestra; no es un promedio ni un porcentaje.
+
+**Contrastar con la nube: plot(...) y abline(...)**
+
+La nube conserva los salarios observados. La línea dorada es el ajuste calculado por lm(), cuyos coeficientes no se modifican aquí. Observa la dispersión alrededor de la recta: personas con los mismos años de educación pueden ganar salarios distintos.
 
 **Lectura del resultado:** MCO minimiza SSR = Σ(yᵢ − ŷᵢ)². El ajuste observado es aproximadamente ŷ = −0.905 + 0.541 educ. Un año adicional de educación se asocia con 0.541 USD/h más, en promedio. El intercepto no debe interpretarse fuera del contexto y soporte de los datos.
 
@@ -336,10 +434,10 @@ Potencia: F ≈ 30.190 y p ≈ 0.00000577; rechazamos pendiente cero al 5 % bajo
 
 ### Comprobar el caso no significativo con un intervalo
 
-Continúa con mtcars y el modelo qsec ~ drat de la lámina 08. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
+Continúa con mtcars y el modelo qsec ~ drat de la lámina 09. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
 
 ```r
-# Ejecuta primero la lámina 08 para crear autos y modelo_plano.
+# Ejecuta primero la lámina 09 para crear autos y modelo_plano.
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
