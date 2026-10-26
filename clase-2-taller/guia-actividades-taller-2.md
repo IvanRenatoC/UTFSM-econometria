@@ -51,19 +51,20 @@ Observa la nube de salario y educación. Antes de mostrar la recta, anticipa la 
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9080")
 
 # Otros gráficos:
-par(mfrow = c(1, 3))
+par(mfrow = c(2, 1))
 plot(wage ~ exper, data = datos, pch = 19, col = "#005E9080")
 plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
-par(mfrow = c(1, 1))
+#par(mfrow = c(1, 1))
 ```
 
-**Lectura del resultado:** La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra.
+**Lectura del resultado:** La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra. La disposición de dos gráficos verticales permanece activa porque la última línea está comentada. Cada ejemplo gráfico posterior restablece su propia disposición para verse completo.
 
 ### Modelo, error y factores que no observamos
 
 Trabaja con wage = β₀ + β₁ educ + u. Propón factores que podrían integrar u: habilidad, ocupación o condiciones del empleo. Mueve la recta y observa las distancias verticales. El error poblacional u no se observa; los residuos se calculan después de estimar.
 
 ```r
+par(mfrow = c(1, 1))
 x <- datos$educ
 y <- datos$wage
 plot(x, y, pch = 19, col = "#005E9080",
@@ -73,11 +74,32 @@ abline(a = 0, b = 0.5, col = "#D6A600", lwd = 3)
 
 **Lectura del resultado:** La recta dibujada es una propuesta inicial, no una estimación. La linealidad es en los parámetros. E[u | x] = 0 es un supuesto sobre la población: esta nube no permite comprobarlo. Una asociación salarial no basta para concluir causalidad.
 
+**abline() · Añadir rectas a un gráfico existente**
+
+Primero crea la nube con plot(). Después abline() dibuja líneas sobre esos mismos ejes; por sí sola no estima una regresión.
+
+**a y b · Intercepto y pendiente**
+
+abline(a = 0, b = 0.5) dibuja y = 0 + 0.5x. a fija el corte con el eje vertical; b, el cambio de y por unidad de x.
+
+**h y v · Referencias horizontales y verticales**
+
+abline(h = mean(y)) marca el promedio de y. abline(v = 12) marca x = 12. Aceptan varios valores: h = c(4, 8).
+
+**reg y coef · Dibujar un ajuste calculado**
+
+abline(reg = modelo) toma intercepto y pendiente del ajuste simple; abline(modelo) es su abreviatura. También puedes usar coef = c(intercepto, pendiente).
+
+**col, lty y lwd · Aspecto de la recta**
+
+col define el color; lty, el trazo (1 continuo, 2 discontinuo); lwd, el grosor. Ejemplo: abline(a = 0, b = 0.5, col = "#D6A600", lty = 2, lwd = 3).
+
 ### Esperanza y esperanza condicional en los datos
 
 Compara el salario promedio de toda la muestra con el promedio dentro de cada nivel educativo. Son promedios muestrales que aproximan esperanzas; no son la función poblacional conocida.
 
 ```r
+par(mfrow = c(1, 1))
 promedio <- mean(datos$wage)
 por_educ <- aggregate(wage ~ educ, data = datos, FUN = mean)
 print(promedio)
@@ -89,11 +111,31 @@ abline(h = promedio, lty = 2)
 
 **Lectura del resultado:** Cada punto dorado resume personas con el mismo educ; la línea horizontal resume a todas. Los tamaños de los grupos son diferentes. Bajo E[u | educ] = 0, la regresión poblacional es E[wage | educ] = β₀ + β₁ educ.
 
+**aggregate(y ~ x, data = tabla, FUN = mean) · Resumir por grupos**
+
+Divide y según los valores de x y calcula FUN para cada grupo. Aquí no estima una recta: aggregate(wage ~ educ, data = datos, FUN = mean) obtiene el salario promedio por nivel educativo.
+
+**y ~ x · Qué resumir y cómo agrupar**
+
+y identifica los valores a resumir; x define los grupos. Puedes agrupar por dos columnas: y ~ x1 + x2. El resultado incluye una fila por combinación observada.
+
+**data · ¿data.frame, lista o matriz?**
+
+Con la interfaz de fórmula usa un data.frame o una lista con nombres de columnas. Si tienes una matriz, conviértela con tabla <- as.data.frame(mi_matriz) y comprueba names(tabla). Así puedes referir sus columnas en la fórmula.
+
+**Otra interfaz · Matriz como primer argumento**
+
+Sí puede resumirse una matriz mediante aggregate(mi_matriz, by = list(grupo = grupos), FUN = mean). Aquí la matriz es el primer argumento y grupos debe tener un valor por fila. No es la misma forma que usar una matriz en data dentro de la interfaz de fórmula.
+
+**FUN y ... · La operación del resumen**
+
+FUN = mean calcula promedios; median, medianas; sum, sumas. Se escribe el nombre de la función, sin ejecutarla con paréntesis vacíos. Los argumentos adicionales se pasan en ... . La interfaz de fórmula omite por defecto filas incompletas en las variables utilizadas.
+
 ### Conoce lm(): sintaxis y parámetros
 
 La función nativa de R para ajustar modelos lineales es lm(), abreviatura de Linear Model, del paquete stats. No necesitas indicar todos sus argumentos: para este taller bastan formula y data. Pulsa cada parámetro para explorar su función; los argumentos avanzados se presentan como referencia y no amplían el modelo simple que trabajaremos.
 
-**Firma oficial de lm() — referencia, no ejecutar como llamada completa**
+**Firma de lm() - referencia, no ejecutar como llamada completa**
 
 ```r
 lm(formula,
@@ -120,6 +162,30 @@ args(stats::lm)
 # Ver la configuración actual para valores faltantes:
 getOption("na.action")
 ```
+
+**¿Qué significa getOption("na.action") = "na.omit"?**
+
+La opción indica que, si no especificas otra acción, lm() omitirá las filas con NA en las variables que utiliza. No borra filas del dataset original ni sustituye valores por cero. Comprueba colSums(is.na(datos[c("wage", "educ")])) y nobs(modelo) para saber qué muestra se analizó.
+
+**na.omit · Ajustar con casos completos**
+
+Ejemplo: lm(wage ~ educ, data = datos, na.action = na.omit). Puede usarse cuando está justificado analizar sólo casos completos. Informa cuántas filas se excluyeron: omitir faltantes no garantiza evitar sesgos.
+
+**na.exclude · Conservar alineadas las salidas**
+
+Ajusta con las mismas filas completas que na.omit, pero funciones como resid() y predict() sobre la muestra original reinsertan NA en las posiciones excluidas. Es útil al unir los resultados con el orden original de las filas.
+
+**na.fail · Detenerse para revisar**
+
+Produce un error si hay faltantes. Úsalo cuando prefieres comprobar y resolver el problema antes de permitir que el programa cambie la muestra silenciosamente.
+
+**na.pass · Dejar pasar los NA**
+
+No elimina ni modifica faltantes. No es una forma de ajustar lm() con NA: el cálculo normalmente fallará si llegan a la respuesta o a la matriz de predictores. Es útil sólo cuando la función posterior sabe tratarlos; predict() tiene un comportamiento distinto para nuevas filas con NA.
+
+**Elegir por modelo, sin cambiar toda la sesión**
+
+Especifica na.action en la llamada a lm() para hacer la decisión explícita. options(na.action = "na.exclude") modifica el valor general de la sesión; no es necesario hacerlo para estos ejemplos. Ninguna de estas opciones imputa datos.
 
 **El código, paso a paso**
 
@@ -181,11 +247,88 @@ Permite pasar argumentos adicionales a las funciones internas de ajuste. No sign
 
 **Lectura del resultado:** La firma muestra los argumentos disponibles, no una llamada que debas ejecutar con todos ellos. TRUE y FALSE controlan qué componentes se conservan; no añaden variables explicativas. En la siguiente lámina aplicaremos lm(wage ~ educ, data = datos).
 
-### Aplicar lm() a wage1: educación y salario
+### Conoce predict(): del modelo a nuevos casos
 
-Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 08.
+predict() utiliza un modelo ya estimado. Si recibe un ajuste lm, aplica su método predict.lm. Explora sus argumentos; en el taller usaremos principalmente object y newdata. Los intervalos y controles avanzados quedan como referencia.
+
+**Firma de predict() para modelos lm - referencia, no ejecutar como llamada completa**
 
 ```r
+predict(object, newdata, se.fit = FALSE, scale = NULL, df = Inf,
+        interval = c("none", "confidence", "prediction"),
+        level = 0.95, type = c("response", "terms"),
+        terms = NULL, na.action = na.pass,
+        pred.var = res.var/weights, weights = 1,
+        rankdeficient = c("warnif", "simple", "non-estim", "NA", "NAwarn"),
+        tol = 1e-6, verbose = FALSE, ...)
+```
+
+[Documentación oficial de R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/predict.lm.html)
+
+```r
+# El modelo debe existir antes de predecir.
+modelo_predict <- lm(wage ~ educ, data = datos)
+nuevos <- data.frame(educ = c(12, 16))
+print(predict(modelo_predict, newdata = nuevos))
+
+# Consulta los argumentos de la versión de R que estás usando.
+args(getS3method("predict", "lm"))
+```
+
+**El código, paso a paso**
+
+**object · Modelo estimado**
+
+El ajuste lm guardado, por ejemplo modelo_predict.
+
+**newdata · Casos nuevos**
+
+Un data.frame con los predictores y sus nombres originales. Sin newdata, usa las observaciones del ajuste.
+
+**se.fit = FALSE · Incertidumbre del promedio**
+
+TRUE solicita errores estándar de las medias ajustadas.
+
+**interval · Qué intervalo devolver**
+
+"none": sólo ajustes; "confidence": media; "prediction": observación nueva. Los últimos requieren supuestos inferenciales.
+
+**level = 0.95 · Nivel del intervalo**
+
+Fija el nivel solicitado; sólo actúa si pides intervalos.
+
+**type y terms · Forma de la salida**
+
+"response" devuelve la respuesta; "terms", contribuciones por término. terms selecciona cuáles.
+
+**na.action = na.pass · NA en newdata**
+
+Con el valor habitual conserva esas filas y devuelve NA donde no pueda predecir.
+
+**scale y df · Controles de incertidumbre**
+
+Controlan la escala residual y sus grados de libertad. Normalmente se obtienen del ajuste.
+
+**pred.var y weights · Varianza futura**
+
+Modulan la incertidumbre de observaciones futuras; se mantienen los valores habituales aquí.
+
+**rankdeficient, tol y verbose · Casos no estimables**
+
+Controlan detección y avisos cuando faltan parámetros identificables. Dependen de la versión de R.
+
+**... · Argumentos adicionales**
+
+Se pasan al método correspondiente. No debes completarlos.
+
+**Lectura del resultado:** El ejemplo produce aproximadamente 5.591 y 7.757 USD/h. Coinciden con evaluar la recta estimada en 12 y 16 años de educación. Una predicción ajustada no garantiza el salario individual. Usa nombres y tipos de columnas compatibles con el modelo y evita extrapolar sin justificarlo.
+
+### Aplicar lm() a wage1: educación y salario
+
+Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 09.
+
+```r
+par(mfrow = c(1, 1))
 modelo_pos <- lm(wage ~ educ, data = datos)
 print(nobs(modelo_pos))
 print(coef(modelo_pos))
@@ -283,6 +426,7 @@ data.frame() coloca los tres vectores como columnas de una tabla; head() selecci
 Consulta summary(modelo_pos) y anova(modelo_pos). Despliega cada salida e interpreta sus componentes con los botones. El modelo explica salario por hora a partir de educación. Predice para 12 y 16 años: ¿es un salario individual garantizado?
 
 ```r
+par(mfrow = c(1, 1))
 modelo_pos <- lm(wage ~ educ, data = datos)
 print(summary(modelo_pos))
 print(anova(modelo_pos))
@@ -376,6 +520,7 @@ Para educ = 12 y 16, predict() entrega aproximadamente 5.591 y 7.757 USD/h. Son 
 Usaremos mtcars, 32 automóviles de modelos 1973–1974, con datos publicados por Motor Trend en 1974. La respuesta es qsec: segundos para recorrer un cuarto de milla (aproximadamente 402 m). hp es potencia bruta en caballos de fuerza; drat es la relación de transmisión del eje trasero, sin unidades. Alterna entre ambos predictores y anticipa el signo. La base viene incluida en R: no necesitas instalar paquetes.
 
 ```r
+par(mfrow = c(1, 1))
 autos <- datasets::mtcars
 head(autos[, c("qsec", "hp", "drat")])
 
@@ -436,10 +581,11 @@ Potencia: F ≈ 30.190 y p ≈ 0.00000577; rechazamos pendiente cero al 5 % bajo
 
 ### Comprobar el caso no significativo con un intervalo
 
-Continúa con mtcars y el modelo qsec ~ drat de la lámina 09. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
+Continúa con mtcars y el modelo qsec ~ drat de la lámina 10. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
 
 ```r
-# Ejecuta primero la lámina 09 para crear autos y modelo_plano.
+par(mfrow = c(1, 1))
+# Ejecuta primero la lámina 10 para crear autos y modelo_plano.
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
@@ -472,6 +618,7 @@ La tabla da F ≈ 0.252 con 1 y 30 grados de libertad y p ≈ 0.620. En una regr
 Activa la animación para dibujar las distancias verticales de los datos a su recta. Comprueba las propiedades algebraicas de MCO con intercepto.
 
 ```r
+par(mfrow = c(1, 1))
 modelo <- modelo_pos
 x <- datos$educ
 y <- datos$wage
@@ -491,6 +638,7 @@ abline(modelo, col = "#D6A600", lwd = 3)
 Compara los tres casos con la misma definición que la cátedra: SST total, SSE explicada y SSR residual. En MCO con intercepto, SST = SSE + SSR.
 
 ```r
+par(mfrow = c(1, 1))
 modelos <- list(positivo = modelo_pos, negativo = modelo_neg, plano = modelo_plano)
 resumen <- do.call(rbind, lapply(modelos, function(m) {
   y <- model.response(model.frame(m))
@@ -576,7 +724,7 @@ Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una r
 
 ### Práctica 2 · Estimar e interpretar su propia regresión
 
-21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.
+21:12–21:20 · Ejecuta primero la carga de datos de la lámina 14. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.
 
 **Ejercicio 1 · Estimar la regresión y obtener coeficientes**
 
@@ -710,6 +858,7 @@ Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST �
 21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV. El modelo se guarda como fit: las consultas summary(fit) y anova(fit) se refieren al mismo ajuste.
 
 ```r
+par(mfrow = c(1, 1))
 # 1. Descargar el paquete del libro y cargar ceosal1.
 # Colab: selecciona R como tipo de entorno y ejecuta esta celda.
 if (!requireNamespace("wooldridge", quietly = TRUE)) {

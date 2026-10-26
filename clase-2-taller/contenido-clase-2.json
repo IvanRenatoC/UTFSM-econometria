@@ -31,27 +31,27 @@
     [
       "20:15–20:45",
       "Tres regresiones e interpretación",
-      "C2-08"
+      "C2-09"
     ],
     [
       "20:45–21:05",
       "Residuos, descomposición y R²",
-      "C2-11"
+      "C2-12"
     ],
     [
       "21:05–21:12",
       "Práctica: descargar y explorar ceosal1",
-      "C2-13"
+      "C2-14"
     ],
     [
       "21:12–21:20",
       "Práctica: construir e interpretar la regresión",
-      "C2-14"
+      "C2-15"
     ],
     [
       "21:20–21:25",
       "Código completo y puesta en común",
-      "C2-15"
+      "C2-16"
     ]
   ],
   "bloques": [
@@ -71,25 +71,71 @@
           "id": "C2-02",
           "titulo": "Nube de puntos: salario y educación",
           "texto": "Observa la nube de salario y educación. Antes de mostrar la recta, anticipa la dirección de la tendencia. Luego ejecuta los otros gráficos en R para explorar salario frente a experiencia potencial y número de dependientes.",
-          "codigo": "# Salario vs Educación\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9080\")\n\n# Otros gráficos:\npar(mfrow = c(1, 3))\nplot(wage ~ exper, data = datos, pch = 19, col = \"#005E9080\")\nplot(wage ~ numdep, data = datos, pch = 19, col = \"#005E9080\")\npar(mfrow = c(1, 1))",
-          "lectura": "La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra.",
+          "codigo": "# Salario vs Educación\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9080\")\n\n# Otros gráficos:\npar(mfrow = c(2, 1))\nplot(wage ~ exper, data = datos, pch = 19, col = \"#005E9080\")\nplot(wage ~ numdep, data = datos, pch = 19, col = \"#005E9080\")\n#par(mfrow = c(1, 1))",
+          "lectura": "La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra. La disposición de dos gráficos verticales permanece activa porque la última línea está comentada. Cada ejemplo gráfico posterior restablece su propia disposición para verse completo.",
           "interactivo": "explore-positive"
         },
         {
           "id": "C2-03",
           "titulo": "Modelo, error y factores que no observamos",
           "texto": "Trabaja con wage = β₀ + β₁ educ + u. Propón factores que podrían integrar u: habilidad, ocupación o condiciones del empleo. Mueve la recta y observa las distancias verticales. El error poblacional u no se observa; los residuos se calculan después de estimar.",
-          "codigo": "x <- datos$educ\ny <- datos$wage\nplot(x, y, pch = 19, col = \"#005E9080\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(a = 0, b = 0.5, col = \"#D6A600\", lwd = 3)",
+          "codigo": "par(mfrow = c(1, 1))\nx <- datos$educ\ny <- datos$wage\nplot(x, y, pch = 19, col = \"#005E9080\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(a = 0, b = 0.5, col = \"#D6A600\", lwd = 3)",
           "lectura": "La recta dibujada es una propuesta inicial, no una estimación. La linealidad es en los parámetros. E[u | x] = 0 es un supuesto sobre la población: esta nube no permite comprobarlo. Una asociación salarial no basta para concluir causalidad.",
-          "interactivo": "fit"
+          "interactivo": "fit",
+          "despues_lectura": [
+            [
+              "abline() · Añadir rectas a un gráfico existente",
+              "Primero crea la nube con plot(). Después abline() dibuja líneas sobre esos mismos ejes; por sí sola no estima una regresión."
+            ],
+            [
+              "a y b · Intercepto y pendiente",
+              "abline(a = 0, b = 0.5) dibuja y = 0 + 0.5x. a fija el corte con el eje vertical; b, el cambio de y por unidad de x."
+            ],
+            [
+              "h y v · Referencias horizontales y verticales",
+              "abline(h = mean(y)) marca el promedio de y. abline(v = 12) marca x = 12. Aceptan varios valores: h = c(4, 8)."
+            ],
+            [
+              "reg y coef · Dibujar un ajuste calculado",
+              "abline(reg = modelo) toma intercepto y pendiente del ajuste simple; abline(modelo) es su abreviatura. También puedes usar coef = c(intercepto, pendiente)."
+            ],
+            [
+              "col, lty y lwd · Aspecto de la recta",
+              "col define el color; lty, el trazo (1 continuo, 2 discontinuo); lwd, el grosor. Ejemplo: abline(a = 0, b = 0.5, col = \"#D6A600\", lty = 2, lwd = 3)."
+            ]
+          ],
+          "fuente_conceptos": "https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html"
         },
         {
           "id": "C2-04",
           "titulo": "Esperanza y esperanza condicional en los datos",
           "texto": "Compara el salario promedio de toda la muestra con el promedio dentro de cada nivel educativo. Son promedios muestrales que aproximan esperanzas; no son la función poblacional conocida.",
-          "codigo": "promedio <- mean(datos$wage)\npor_educ <- aggregate(wage ~ educ, data = datos, FUN = mean)\nprint(promedio)\nprint(por_educ)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9040\")\npoints(por_educ$educ, por_educ$wage, pch = 19, col = \"#D6A600\", cex = 1.4)\nabline(h = promedio, lty = 2)",
+          "codigo": "par(mfrow = c(1, 1))\npromedio <- mean(datos$wage)\npor_educ <- aggregate(wage ~ educ, data = datos, FUN = mean)\nprint(promedio)\nprint(por_educ)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9040\")\npoints(por_educ$educ, por_educ$wage, pch = 19, col = \"#D6A600\", cex = 1.4)\nabline(h = promedio, lty = 2)",
           "lectura": "Cada punto dorado resume personas con el mismo educ; la línea horizontal resume a todas. Los tamaños de los grupos son diferentes. Bajo E[u | educ] = 0, la regresión poblacional es E[wage | educ] = β₀ + β₁ educ.",
-          "interactivo": "means"
+          "interactivo": "means",
+          "despues_lectura": [
+            [
+              "aggregate(y ~ x, data = tabla, FUN = mean) · Resumir por grupos",
+              "Divide y según los valores de x y calcula FUN para cada grupo. Aquí no estima una recta: aggregate(wage ~ educ, data = datos, FUN = mean) obtiene el salario promedio por nivel educativo."
+            ],
+            [
+              "y ~ x · Qué resumir y cómo agrupar",
+              "y identifica los valores a resumir; x define los grupos. Puedes agrupar por dos columnas: y ~ x1 + x2. El resultado incluye una fila por combinación observada."
+            ],
+            [
+              "data · ¿data.frame, lista o matriz?",
+              "Con la interfaz de fórmula usa un data.frame o una lista con nombres de columnas. Si tienes una matriz, conviértela con tabla <- as.data.frame(mi_matriz) y comprueba names(tabla). Así puedes referir sus columnas en la fórmula."
+            ],
+            [
+              "Otra interfaz · Matriz como primer argumento",
+              "Sí puede resumirse una matriz mediante aggregate(mi_matriz, by = list(grupo = grupos), FUN = mean). Aquí la matriz es el primer argumento y grupos debe tener un valor por fila. No es la misma forma que usar una matriz en data dentro de la interfaz de fórmula."
+            ],
+            [
+              "FUN y ... · La operación del resumen",
+              "FUN = mean calcula promedios; median, medianas; sum, sumas. Se escribe el nombre de la función, sin ejecutarla con paréntesis vacíos. Los argumentos adicionales se pasan en ... . La interfaz de fórmula omite por defecto filas incompletas en las variables utilizadas."
+            ]
+          ],
+          "fuente_conceptos": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/aggregate.html"
         },
         {
           "id": "C2-05",
@@ -155,13 +201,96 @@
               "... · otros argumentos",
               "Permite pasar argumentos adicionales a las funciones internas de ajuste. No significa que falte completar algo: puedes omitirlo, igual que los demás argumentos opcionales."
             ]
-          ]
+          ],
+          "despues_codigo": [
+            [
+              "¿Qué significa getOption(\"na.action\") = \"na.omit\"?",
+              "La opción indica que, si no especificas otra acción, lm() omitirá las filas con NA en las variables que utiliza. No borra filas del dataset original ni sustituye valores por cero. Comprueba colSums(is.na(datos[c(\"wage\", \"educ\")])) y nobs(modelo) para saber qué muestra se analizó."
+            ],
+            [
+              "na.omit · Ajustar con casos completos",
+              "Ejemplo: lm(wage ~ educ, data = datos, na.action = na.omit). Puede usarse cuando está justificado analizar sólo casos completos. Informa cuántas filas se excluyeron: omitir faltantes no garantiza evitar sesgos."
+            ],
+            [
+              "na.exclude · Conservar alineadas las salidas",
+              "Ajusta con las mismas filas completas que na.omit, pero funciones como resid() y predict() sobre la muestra original reinsertan NA en las posiciones excluidas. Es útil al unir los resultados con el orden original de las filas."
+            ],
+            [
+              "na.fail · Detenerse para revisar",
+              "Produce un error si hay faltantes. Úsalo cuando prefieres comprobar y resolver el problema antes de permitir que el programa cambie la muestra silenciosamente."
+            ],
+            [
+              "na.pass · Dejar pasar los NA",
+              "No elimina ni modifica faltantes. No es una forma de ajustar lm() con NA: el cálculo normalmente fallará si llegan a la respuesta o a la matriz de predictores. Es útil sólo cuando la función posterior sabe tratarlos; predict() tiene un comportamiento distinto para nuevas filas con NA."
+            ],
+            [
+              "Elegir por modelo, sin cambiar toda la sesión",
+              "Especifica na.action en la llamada a lm() para hacer la decisión explícita. options(na.action = \"na.exclude\") modifica el valor general de la sesión; no es necesario hacerlo para estos ejemplos. Ninguna de estas opciones imputa datos."
+            ]
+          ],
+          "fuente_despues_codigo": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/na.fail.html"
         },
         {
           "id": "C2-06",
+          "titulo": "Conoce predict(): del modelo a nuevos casos",
+          "texto": "predict() utiliza un modelo ya estimado. Si recibe un ajuste lm, aplica su método predict.lm. Explora sus argumentos; en el taller usaremos principalmente object y newdata. Los intervalos y controles avanzados quedan como referencia.",
+          "nombre_funcion": "predict() para modelos lm",
+          "fuente_sintaxis": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/predict.lm.html",
+          "sintaxis": "predict(object, newdata, se.fit = FALSE, scale = NULL, df = Inf,\n        interval = c(\"none\", \"confidence\", \"prediction\"),\n        level = 0.95, type = c(\"response\", \"terms\"),\n        terms = NULL, na.action = na.pass,\n        pred.var = res.var/weights, weights = 1,\n        rankdeficient = c(\"warnif\", \"simple\", \"non-estim\", \"NA\", \"NAwarn\"),\n        tol = 1e-6, verbose = FALSE, ...)",
+          "codigo": "# El modelo debe existir antes de predecir.\nmodelo_predict <- lm(wage ~ educ, data = datos)\nnuevos <- data.frame(educ = c(12, 16))\nprint(predict(modelo_predict, newdata = nuevos))\n\n# Consulta los argumentos de la versión de R que estás usando.\nargs(getS3method(\"predict\", \"lm\"))",
+          "lectura": "El ejemplo produce aproximadamente 5.591 y 7.757 USD/h. Coinciden con evaluar la recta estimada en 12 y 16 años de educación. Una predicción ajustada no garantiza el salario individual. Usa nombres y tipos de columnas compatibles con el modelo y evita extrapolar sin justificarlo.",
+          "explicaciones": [
+            [
+              "object · Modelo estimado",
+              "El ajuste lm guardado, por ejemplo modelo_predict."
+            ],
+            [
+              "newdata · Casos nuevos",
+              "Un data.frame con los predictores y sus nombres originales. Sin newdata, usa las observaciones del ajuste."
+            ],
+            [
+              "se.fit = FALSE · Incertidumbre del promedio",
+              "TRUE solicita errores estándar de las medias ajustadas."
+            ],
+            [
+              "interval · Qué intervalo devolver",
+              "\"none\": sólo ajustes; \"confidence\": media; \"prediction\": observación nueva. Los últimos requieren supuestos inferenciales."
+            ],
+            [
+              "level = 0.95 · Nivel del intervalo",
+              "Fija el nivel solicitado; sólo actúa si pides intervalos."
+            ],
+            [
+              "type y terms · Forma de la salida",
+              "\"response\" devuelve la respuesta; \"terms\", contribuciones por término. terms selecciona cuáles."
+            ],
+            [
+              "na.action = na.pass · NA en newdata",
+              "Con el valor habitual conserva esas filas y devuelve NA donde no pueda predecir."
+            ],
+            [
+              "scale y df · Controles de incertidumbre",
+              "Controlan la escala residual y sus grados de libertad. Normalmente se obtienen del ajuste."
+            ],
+            [
+              "pred.var y weights · Varianza futura",
+              "Modulan la incertidumbre de observaciones futuras; se mantienen los valores habituales aquí."
+            ],
+            [
+              "rankdeficient, tol y verbose · Casos no estimables",
+              "Controlan detección y avisos cuando faltan parámetros identificables. Dependen de la versión de R."
+            ],
+            [
+              "... · Argumentos adicionales",
+              "Se pasan al método correspondiente. No debes completarlos."
+            ]
+          ]
+        },
+        {
+          "id": "C2-07",
           "titulo": "Aplicar lm() a wage1: educación y salario",
-          "texto": "Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 08.",
-          "codigo": "modelo_pos <- lm(wage ~ educ, data = datos)\nprint(nobs(modelo_pos))\nprint(coef(modelo_pos))\nprint(predict(modelo_pos, newdata = data.frame(educ = c(12, 16))))\nprint(sum(resid(modelo_pos)^2))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)",
+          "texto": "Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 09.",
+          "codigo": "par(mfrow = c(1, 1))\nmodelo_pos <- lm(wage ~ educ, data = datos)\nprint(nobs(modelo_pos))\nprint(coef(modelo_pos))\nprint(predict(modelo_pos, newdata = data.frame(educ = c(12, 16))))\nprint(sum(resid(modelo_pos)^2))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)",
           "lectura": "MCO minimiza SSR = Σ(yᵢ − ŷᵢ)². El ajuste observado es aproximadamente ŷ = −0.905 + 0.541 educ. Un año adicional de educación se asocia con 0.541 USD/h más, en promedio. El intercepto no debe interpretarse fuera del contexto y soporte de los datos.",
           "codigo_abierto": true,
           "explicaciones": [
@@ -192,7 +321,7 @@
           ]
         },
         {
-          "id": "C2-07",
+          "id": "C2-08",
           "titulo": "De la fórmula a lm(): regresión muestral",
           "texto": "Calcula los parámetros con vectores y compara con lm(). Esta es una estimación en la muestra, no los parámetros poblacionales conocidos.",
           "codigo": "x <- datos$educ\ny <- datos$wage\nb1 <- sum((x - mean(x)) * (y - mean(y))) / sum((x - mean(x))^2)\nb0 <- mean(y) - b1 * mean(x)\nprint(c(b0 = b0, b1 = b1))\nprint(coef(modelo_pos))\ny_ajustado <- b0 + b1 * x\nresiduos <- y - y_ajustado\nprint(head(data.frame(y, y_ajustado, residuos)))",
@@ -240,10 +369,10 @@
       "titulo": "Tres casos, diagnóstico y comparación",
       "laminas": [
         {
-          "id": "C2-08",
+          "id": "C2-09",
           "titulo": "Caso positivo: educación y salario",
           "texto": "Consulta summary(modelo_pos) y anova(modelo_pos). Despliega cada salida e interpreta sus componentes con los botones. El modelo explica salario por hora a partir de educación. Predice para 12 y 16 años: ¿es un salario individual garantizado?",
-          "codigo": "modelo_pos <- lm(wage ~ educ, data = datos)\nprint(summary(modelo_pos))\nprint(anova(modelo_pos))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)\npredict(modelo_pos, newdata = data.frame(educ = c(12, 16)))",
+          "codigo": "par(mfrow = c(1, 1))\nmodelo_pos <- lm(wage ~ educ, data = datos)\nprint(summary(modelo_pos))\nprint(anova(modelo_pos))\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005E9060\",\n     xlab = \"Educación (años)\", ylab = \"Salario por hora (USD de 1976)\")\nabline(modelo_pos, col = \"#D6A600\", lwd = 3)\npredict(modelo_pos, newdata = data.frame(educ = c(12, 16)))",
           "lectura": "La pendiente es aproximadamente 0.541. Las predicciones son valores medios ajustados, no salarios individuales garantizados. Factores omitidos pueden estar relacionados con educación.",
           "interactivo": "positive",
           "explicaciones": [
@@ -322,10 +451,10 @@
           "nota_anova": "Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados."
         },
         {
-          "id": "C2-09",
+          "id": "C2-10",
           "titulo": "Tiempo de aceleración: casos negativo y no significativo",
           "texto": "Usaremos mtcars, 32 automóviles de modelos 1973–1974, con datos publicados por Motor Trend en 1974. La respuesta es qsec: segundos para recorrer un cuarto de milla (aproximadamente 402 m). hp es potencia bruta en caballos de fuerza; drat es la relación de transmisión del eje trasero, sin unidades. Alterna entre ambos predictores y anticipa el signo. La base viene incluida en R: no necesitas instalar paquetes.",
-          "codigo": "autos <- datasets::mtcars\nhead(autos[, c(\"qsec\", \"hp\", \"drat\")])\n\n# Caso negativo: potencia y tiempo de aceleración\nmodelo_neg <- lm(qsec ~ hp, data = autos)\nprint(summary(modelo_neg))\nprint(anova(modelo_neg))\n\n# Caso no significativo: relación de transmisión y tiempo\nmodelo_plano <- lm(qsec ~ drat, data = autos)\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\n\npar(mfrow = c(1, 2))\nplot(qsec ~ hp, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Potencia bruta (hp)\", ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_neg, col = \"#D6A600\", lwd = 3)\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)\npar(mfrow = c(1, 1))",
+          "codigo": "par(mfrow = c(1, 1))\nautos <- datasets::mtcars\nhead(autos[, c(\"qsec\", \"hp\", \"drat\")])\n\n# Caso negativo: potencia y tiempo de aceleración\nmodelo_neg <- lm(qsec ~ hp, data = autos)\nprint(summary(modelo_neg))\nprint(anova(modelo_neg))\n\n# Caso no significativo: relación de transmisión y tiempo\nmodelo_plano <- lm(qsec ~ drat, data = autos)\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\n\npar(mfrow = c(1, 2))\nplot(qsec ~ hp, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Potencia bruta (hp)\", ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_neg, col = \"#D6A600\", lwd = 3)\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9080\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)\npar(mfrow = c(1, 1))",
           "lectura": "Con hp, la pendiente es aproximadamente −0.01846 segundos por hp (R² ≈ 0.5016; p ≈ 0.00000577): los autos más potentes tienden a completar la distancia en menos tiempo. Con drat, la pendiente es ≈ 0.3048 segundos por unidad (R² ≈ 0.0083; p ≈ 0.6196): no rechazamos pendiente poblacional cero al 5 %. Este segundo caso es el ejemplo “neutro” en sentido de falta de evidencia lineal, no de pendiente exactamente cero. Son asociaciones entre automóviles distintos; peso, diseño y otras diferencias impiden una conclusión causal.",
           "interactivo": "cars",
           "explicaciones": [
@@ -409,10 +538,10 @@
           "nota_anova": "Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados."
         },
         {
-          "id": "C2-10",
+          "id": "C2-11",
           "titulo": "Comprobar el caso no significativo con un intervalo",
-          "texto": "Continúa con mtcars y el modelo qsec ~ drat de la lámina 09. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?",
-          "codigo": "# Ejecuta primero la lámina 09 para crear autos y modelo_plano.\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\nprint(confint(modelo_plano, \"drat\", level = 0.95))\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9060\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)",
+          "texto": "Continúa con mtcars y el modelo qsec ~ drat de la lámina 10. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?",
+          "codigo": "par(mfrow = c(1, 1))\n# Ejecuta primero la lámina 10 para crear autos y modelo_plano.\nprint(summary(modelo_plano))\nprint(anova(modelo_plano))\nprint(confint(modelo_plano, \"drat\", level = 0.95))\nplot(qsec ~ drat, data = autos, pch = 19, col = \"#005E9060\",\n     xlab = \"Relación de transmisión (sin unidades)\",\n     ylab = \"Tiempo de 1/4 de milla (s)\")\nabline(modelo_plano, col = \"#D6A600\", lwd = 3)",
           "lectura": "El intervalo del 95 % para la pendiente es aproximadamente [−0.936, 1.546] segundos por unidad de drat. Incluye cero, en concordancia con p ≈ 0.620. La pendiente estimada es positiva, pero no significativa al 5 %. El intervalo también incluye asociaciones de magnitudes relevantes: no podemos concluir equivalencia a cero. Se aplica la inferencia clásica de lm(), condicionada a sus supuestos.",
           "interactivo": "flat",
           "tablas_anova": [
@@ -457,23 +586,23 @@
           ]
         },
         {
-          "id": "C2-11",
+          "id": "C2-12",
           "titulo": "Residuos y propiedades del ajuste",
           "texto": "Activa la animación para dibujar las distancias verticales de los datos a su recta. Comprueba las propiedades algebraicas de MCO con intercepto.",
-          "codigo": "modelo <- modelo_pos\nx <- datos$educ\ny <- datos$wage\najuste <- fitted(modelo)\ne <- resid(modelo)\nprint(c(suma_residuos = sum(e), suma_x_residuos = sum(x * e),\n        media_y = mean(y), media_ajustada = mean(ajuste)))\nplot(x, y, pch = 19, col = \"#005E9060\")\nsegments(x, ajuste, x, y, col = \"#D6A60060\")\nabline(modelo, col = \"#D6A600\", lwd = 3)",
+          "codigo": "par(mfrow = c(1, 1))\nmodelo <- modelo_pos\nx <- datos$educ\ny <- datos$wage\najuste <- fitted(modelo)\ne <- resid(modelo)\nprint(c(suma_residuos = sum(e), suma_x_residuos = sum(x * e),\n        media_y = mean(y), media_ajustada = mean(ajuste)))\nplot(x, y, pch = 19, col = \"#005E9060\")\nsegments(x, ajuste, x, y, col = \"#D6A60060\")\nabline(modelo, col = \"#D6A600\", lwd = 3)",
           "lectura": "Las sumas son prácticamente cero por redondeo de la computadora. Son propiedades del ajuste, no una prueba de E[u | x] = 0 ni del cumplimiento de los supuestos.",
           "interactivo": "residuals"
         },
         {
-          "id": "C2-12",
+          "id": "C2-13",
           "titulo": "SST, SSE, SSR y R²: ¿cuánto explica la recta?",
           "texto": "Compara los tres casos con la misma definición que la cátedra: SST total, SSE explicada y SSR residual. En MCO con intercepto, SST = SSE + SSR.",
-          "codigo": "modelos <- list(positivo = modelo_pos, negativo = modelo_neg, plano = modelo_plano)\nresumen <- do.call(rbind, lapply(modelos, function(m) {\n  y <- model.response(model.frame(m))\n  SST <- sum((y - mean(y))^2)\n  SSE <- sum((fitted(m) - mean(y))^2)\n  SSR <- sum(resid(m)^2)\n  c(SST = SST, SSE = SSE, SSR = SSR, R2 = 1 - SSR / SST)\n}))\nprint(resumen)\nbarplot(t(cbind(resumen[, \"R2\"], 1 - resumen[, \"R2\"])),\n        col = c(\"#D6A600\", \"#005E90\"),\n        legend.text = c(\"Explicada\", \"Residual\"),\n        names.arg = rownames(resumen), ylab = \"Fracción de SST\")",
+          "codigo": "par(mfrow = c(1, 1))\nmodelos <- list(positivo = modelo_pos, negativo = modelo_neg, plano = modelo_plano)\nresumen <- do.call(rbind, lapply(modelos, function(m) {\n  y <- model.response(model.frame(m))\n  SST <- sum((y - mean(y))^2)\n  SSE <- sum((fitted(m) - mean(y))^2)\n  SSR <- sum(resid(m)^2)\n  c(SST = SST, SSE = SSE, SSR = SSR, R2 = 1 - SSR / SST)\n}))\nprint(resumen)\nbarplot(t(cbind(resumen[, \"R2\"], 1 - resumen[, \"R2\"])),\n        col = c(\"#D6A600\", \"#005E90\"),\n        legend.text = c(\"Explicada\", \"Residual\"),\n        names.arg = rownames(resumen), ylab = \"Fracción de SST\")",
           "lectura": "R² = SSE/SST = 1 − SSR/SST. El ajuste salarial explica cerca del 16.48 %; potencia y tiempo, 50.16 %; transmisión y tiempo, 0.83 %. Salario y tiempo son respuestas con unidades y muestras diferentes: compara las fracciones explicadas, no sus SST brutas. El R² no demuestra causalidad.",
           "interactivo": "variance"
         },
         {
-          "id": "C2-13",
+          "id": "C2-14",
           "titulo": "Práctica 1 · Preparar una nueva base de Wooldridge",
           "texto": "21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Al terminar la exploración, ejecuta el ejercicio 4: crea fit y consulta tanto summary(fit) como anova(fit).",
           "codigo": "# Colab: selecciona R como tipo de entorno y ejecuta esta celda.\nif (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n  install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n}\ndatos_practica <- wooldridge::ceosal1",
@@ -512,9 +641,9 @@
           ]
         },
         {
-          "id": "C2-14",
+          "id": "C2-15",
           "titulo": "Práctica 2 · Estimar e interpretar su propia regresión",
-          "texto": "21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.",
+          "texto": "21:12–21:20 · Ejecuta primero la carga de datos de la lámina 14. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.",
           "codigo": "",
           "lectura": "Entregable de la pareja: un gráfico con su recta, la ecuación estimada, una interpretación de la pendiente con unidades, la lectura de R² y p-valor, dos predicciones y una limitación. La base es observacional; una asociación no demuestra causalidad.",
           "explicaciones": [
@@ -564,10 +693,10 @@
           ]
         },
         {
-          "id": "C2-15",
+          "id": "C2-16",
           "titulo": "Práctica 3 · Código completo y explicación de la solución",
           "texto": "21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV. El modelo se guarda como fit: las consultas summary(fit) y anova(fit) se refieren al mismo ajuste.",
-          "codigo": "# 1. Descargar el paquete del libro y cargar ceosal1.\n# Colab: selecciona R como tipo de entorno y ejecuta esta celda.\nif (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n  install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n}\ndatos_practica <- wooldridge::ceosal1\n\n# 2. Explorar y comprobar faltantes en las dos variables del modelo.\nprint(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\n\n# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\n\n# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.\nfit <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(fit))\nprint(coef(fit))\nsummary(fit)\nanova(fit)\nabline(fit, col = \"#D6A600\", lwd = 3)\n\n# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.\nnuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(fit, nuevos_casos)))\n\n# 6. Descomponer la variación usando las filas efectivas del modelo.\ny_practica <- model.response(model.frame(fit))\najustados_practica <- fitted(fit)\nresiduos_practica <- resid(fit)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n# 7. En una celda Markdown, escribe tu interpretación con unidades.\n# Distingue signo, significancia, R2 y asociación frente a causalidad.",
+          "codigo": "par(mfrow = c(1, 1))\n# 1. Descargar el paquete del libro y cargar ceosal1.\n# Colab: selecciona R como tipo de entorno y ejecuta esta celda.\nif (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n  install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n}\ndatos_practica <- wooldridge::ceosal1\n\n# 2. Explorar y comprobar faltantes en las dos variables del modelo.\nprint(head(datos_practica))\nstr(datos_practica)\nprint(summary(datos_practica[, c(\"salary\", \"roe\")]))\nprint(colSums(is.na(datos_practica[, c(\"salary\", \"roe\")])))\n\n# 3. Dibujar la nube: salary está en miles de dólares; roe, en porcentaje.\nplot(salary ~ roe, data = datos_practica, pch = 19, col = \"#005E9080\",\n     xlab = \"Rentabilidad del patrimonio: roe (%)\",\n     ylab = \"Salario del director ejecutivo (miles de USD, 1990)\",\n     main = \"Rentabilidad y salario del director ejecutivo\")\n\n# 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.\nfit <- lm(salary ~ roe, data = datos_practica)\nprint(nobs(fit))\nprint(coef(fit))\nsummary(fit)\nanova(fit)\nabline(fit, col = \"#D6A600\", lwd = 3)\n\n# 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.\nnuevos_casos <- data.frame(roe = c(10, 20))\nprint(data.frame(nuevos_casos,\n                 salario_ajustado = predict(fit, nuevos_casos)))\n\n# 6. Descomponer la variación usando las filas efectivas del modelo.\ny_practica <- model.response(model.frame(fit))\najustados_practica <- fitted(fit)\nresiduos_practica <- resid(fit)\nSST_practica <- sum((y_practica - mean(y_practica))^2)\nSSE_practica <- sum((ajustados_practica - mean(y_practica))^2)\nSSR_practica <- sum(residuos_practica^2)\nprint(c(SST = SST_practica, SSE = SSE_practica, SSR = SSR_practica,\n        R2 = 1 - SSR_practica / SST_practica))\nprint(all.equal(SST_practica, SSE_practica + SSR_practica))\n\n# 7. En una celda Markdown, escribe tu interpretación con unidades.\n# Distingue signo, significancia, R2 y asociación frente a causalidad.",
           "lectura": "Resultados de control: 209 observaciones; salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional de roe se asocia con 18.501 miles de USD más de salario ajustado. R² ≈ 0.0132 (1.32 %) y p ≈ 0.0978: al 5 % no rechazamos pendiente cero. Para roe de 10 % y 20 %, los ajustes son aproximadamente 1148.203 y 1333.215 miles de USD. La pendiente positiva no implica un buen ajuste ni demuestra causalidad. Los salarios extremos merecen revisión; no los borramos automáticamente.",
           "explicaciones": [
             [
