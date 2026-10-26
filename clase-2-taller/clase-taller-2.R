@@ -71,6 +71,10 @@ y_ajustado <- b0 + b1 * x
 residuos <- y - y_ajustado
 print(head(data.frame(y, y_ajustado, residuos)))
 
+modelo_pos <- lm(wage ~ educ, data = datos)
+summary(modelo_pos)
+anova(modelo_pos)
+
 par(mfrow = c(1, 1))
 modelo_pos <- lm(wage ~ educ, data = datos)
 print(summary(modelo_pos))
@@ -80,9 +84,10 @@ plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 predict(modelo_pos, newdata = data.frame(educ = c(12, 16)))
 
-par(mfrow = c(1, 1))
 autos <- datasets::mtcars
 head(autos[, c("qsec", "hp", "drat")])
+
+par(mfrow = c(1, 1))
 
 # Caso negativo: potencia y tiempo de aceleración
 modelo_neg <- lm(qsec ~ hp, data = autos)
@@ -104,8 +109,11 @@ plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9080",
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 par(mfrow = c(1, 1))
 
+autos <- datasets::mtcars
+head(autos[, c("qsec", "hp", "drat")])
+
 par(mfrow = c(1, 1))
-# Ejecuta primero la lámina 10 para crear autos y modelo_plano.
+modelo_plano <- lm(qsec ~ drat, data = autos)
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
