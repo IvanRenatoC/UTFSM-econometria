@@ -510,7 +510,7 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
 
 ### Práctica 1 · Preparar una nueva base de Wooldridge
 
-21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos?
+21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Al terminar la exploración, ejecuta el ejercicio 4: crea fit y consulta tanto summary(fit) como anova(fit).
 
 ```r
 # Colab: selecciona R como tipo de entorno y ejecuta esta celda.
@@ -543,6 +543,21 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
 
 La respuesta salary va en el eje vertical; roe, en el horizontal. Observa dispersión y salarios extremos antes de ajustar.
 
+**Ejercicio 4 · Primer ajuste: fit, summary y ANOVA**
+
+```r
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+```
+
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja.
+
 **El código, paso a paso**
 
 **Tu tarea · Conseguir y reconocer los datos**
@@ -561,43 +576,78 @@ Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una r
 
 ### Práctica 2 · Estimar e interpretar su propia regresión
 
-21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Aquí tienes la solución de cada ejercicio, en orden. Puedes copiar cada bloque en su propia celda de R, ejecutarlo y comparar su salida con la explicación.
+21:12–21:20 · Ejecuta primero la carga de datos de la lámina 13. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.
 
 **Ejercicio 1 · Estimar la regresión y obtener coeficientes**
 
 ```r
-modelo_practica <- lm(salary ~ roe, data = datos_practica)
-print(nobs(modelo_practica))
-print(coef(modelo_practica))
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
+print(nobs(fit))
+print(coef(fit))
 ```
 
-Se usan 209 observaciones. Salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional se asocia con 18.501 miles de USD más de salario ajustado.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: Se usan 209 observaciones. Salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional se asocia con 18.501 miles de USD más de salario ajustado.
 
 **Ejercicio 2 · Obtener summary y ANOVA**
 
 ```r
-print(summary(modelo_practica))
-print(anova(modelo_practica))
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
 ```
 
-R² ≈ 0.0132 y p ≈ 0.0978. La pendiente estimada es positiva, pero no significativa al 5 %. Se explica cerca de 1.32 % de la variación salarial.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: R² ≈ 0.0132 y p ≈ 0.0978. La pendiente estimada es positiva, pero no significativa al 5 %. Se explica cerca de 1.32 % de la variación salarial.
 
 **Ejercicio 3 · Predecir para roe de 10 % y 20 %**
 
 ```r
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
 nuevos_casos <- data.frame(roe = c(10, 20))
 print(data.frame(nuevos_casos,
-                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+                 salario_ajustado = predict(fit, nuevos_casos)))
 ```
 
-Los valores ajustados son aproximadamente 1148.203 y 1333.215 miles de USD, respectivamente; no son salarios individuales garantizados.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: Los valores ajustados son aproximadamente 1148.203 y 1333.215 miles de USD, respectivamente; no son salarios individuales garantizados.
 
 **Ejercicio 4 · Descomponer la variación y agregar la recta**
 
 ```r
-y_practica <- model.response(model.frame(modelo_practica))
-ajustados_practica <- fitted(modelo_practica)
-residuos_practica <- resid(modelo_practica)
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
+y_practica <- model.response(model.frame(fit))
+ajustados_practica <- fitted(fit)
+residuos_practica <- resid(fit)
 SST_practica <- sum((y_practica - mean(y_practica))^2)
 SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
 SSR_practica <- sum(residuos_practica^2)
@@ -610,20 +660,30 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
      xlab = "Rentabilidad del patrimonio: roe (%)",
      ylab = "Salario del director ejecutivo (miles de USD, 1990)",
      main = "Rentabilidad y salario del director ejecutivo")
-abline(modelo_practica, col = "#D6A600", lwd = 3)
+abline(fit, col = "#D6A600", lwd = 3)
 ```
 
-all.equal() devuelve TRUE: SST ≈ SSE + SSR. La recta resume una asociación de baja capacidad explicativa. No demuestra causalidad.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: all.equal() devuelve TRUE: SST ≈ SSE + SSR. La recta resume una asociación de baja capacidad explicativa. No demuestra causalidad.
 
 **Ejercicio 5 · Redactar una conclusión en R**
 
 ```r
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
 cat("La asociación estimada es positiva: 18.501 miles de USD por punto porcentual de roe.\n")
 cat("El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\n")
 cat("Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\n")
 ```
 
-Usa esta redacción como referencia y escribe tu propia explicación en una celda Markdown.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: Usa esta redacción como referencia y escribe tu propia explicación en una celda Markdown.
 
 **El código, paso a paso**
 
@@ -647,7 +707,7 @@ Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST �
 
 ### Práctica 3 · Código completo y explicación de la solución
 
-21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV.
+21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV. El modelo se guarda como fit: las consultas summary(fit) y anova(fit) se refieren al mismo ajuste.
 
 ```r
 # 1. Descargar el paquete del libro y cargar ceosal1.
@@ -670,22 +730,22 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
      main = "Rentabilidad y salario del director ejecutivo")
 
 # 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.
-modelo_practica <- lm(salary ~ roe, data = datos_practica)
-print(nobs(modelo_practica))
-print(coef(modelo_practica))
-print(summary(modelo_practica))
-print(anova(modelo_practica))
-abline(modelo_practica, col = "#D6A600", lwd = 3)
+fit <- lm(salary ~ roe, data = datos_practica)
+print(nobs(fit))
+print(coef(fit))
+summary(fit)
+anova(fit)
+abline(fit, col = "#D6A600", lwd = 3)
 
 # 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.
 nuevos_casos <- data.frame(roe = c(10, 20))
 print(data.frame(nuevos_casos,
-                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+                 salario_ajustado = predict(fit, nuevos_casos)))
 
 # 6. Descomponer la variación usando las filas efectivas del modelo.
-y_practica <- model.response(model.frame(modelo_practica))
-ajustados_practica <- fitted(modelo_practica)
-residuos_practica <- resid(modelo_practica)
+y_practica <- model.response(model.frame(fit))
+ajustados_practica <- fitted(fit)
+residuos_practica <- resid(fit)
 SST_practica <- sum((y_practica - mean(y_practica))^2)
 SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
 SSR_practica <- sum(residuos_practica^2)
@@ -711,9 +771,9 @@ head() muestra las primeras filas; str(), los tipos de columnas; summary(), un r
 
 La fórmula salary ~ roe coloca el salario en el eje vertical. Los títulos conservan las unidades. La nube ayuda a anticipar la tendencia y detectar dispersión y observaciones extremas antes de leer una prueba estadística.
 
-**Paso 4 · Ajustar y consultar**
+**Paso 4 · fit <- lm(...), summary(fit) y anova(fit)**
 
-lm() estima intercepto y pendiente. nobs() comprueba el tamaño utilizado; coef() extrae la ecuación; summary() presenta errores estándar, p-valores y R²; anova() muestra la partición explicada/residual y F. abline() añade exactamente la recta estimada.
+lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. nobs(fit) comprueba el tamaño utilizado, coef(fit) extrae los coeficientes y abline(fit) añade la recta a la nube.
 
 **Paso 5 · Predecir en las mismas unidades**
 
