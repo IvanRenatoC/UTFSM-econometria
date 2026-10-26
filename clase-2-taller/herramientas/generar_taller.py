@@ -22,9 +22,11 @@ def generar():
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
             if lamina.get('sintaxis'):
-                md('**Firma oficial de lm() — referencia, no ejecutar como llamada completa**\n\n```r\n'+lamina['sintaxis']+'\n```\n\n[Documentación oficial de R](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html)', lamina['id'].lower()+'-sintaxis')
+                md('**Firma de '+lamina.get('nombre_funcion','lm()')+' - referencia, no ejecutar como llamada completa**\n\n```r\n'+lamina['sintaxis']+'\n```\n\n[Documentación oficial de R]('+lamina.get('fuente_sintaxis','https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html')+')', lamina['id'].lower()+'-sintaxis')
             if lamina.get('codigo'):
                 r(lamina['codigo'], lamina['id'].lower()+'-r')
+            if lamina.get('despues_codigo'):
+                md('\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['despues_codigo']), lamina['id'].lower()+'-despues-codigo')
             for index, block in enumerate(lamina.get('bloques_codigo', []), 1):
                 md('**'+block['titulo']+'**', lamina['id'].lower()+'-ejercicio-'+str(index))
                 r(block['codigo'], lamina['id'].lower()+'-ejercicio-'+str(index)+'-r')
@@ -39,6 +41,8 @@ def generar():
             if lamina.get('explicaciones'):
                 md('**El código, paso a paso**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-explicaciones')
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
+            if lamina.get('despues_lectura'):
+                md('\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['despues_lectura']), lamina['id'].lower()+'-despues-lectura')
     nb = {'nbformat': 4, 'nbformat_minor': 5, 'metadata': {'kernelspec': {'display_name': 'R', 'language': 'R', 'name': 'ir'}, 'language_info': {'name': 'R', 'file_extension': '.r', 'mimetype': 'text/x-r-source'}}, 'cells': cells}
     (ROOT / 'clase-taller-2.ipynb').write_text(json.dumps(nb, ensure_ascii=False, indent=1)+'\n')
     (ROOT / 'clase-taller-2.R').write_text(''.join(script).rstrip()+'\n')

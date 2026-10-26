@@ -16,17 +16,19 @@ summary(datos)
 plot(wage ~ educ, data = datos, pch = 19, col = "#005E9080")
 
 # Otros gráficos:
-par(mfrow = c(1, 3))
+par(mfrow = c(2, 1))
 plot(wage ~ exper, data = datos, pch = 19, col = "#005E9080")
 plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
-par(mfrow = c(1, 1))
+#par(mfrow = c(1, 1))
 
+par(mfrow = c(1, 1))
 x <- datos$educ
 y <- datos$wage
 plot(x, y, pch = 19, col = "#005E9080",
      xlab = "Educación (años)", ylab = "Salario por hora (USD de 1976)")
 abline(a = 0, b = 0.5, col = "#D6A600", lwd = 3)
 
+par(mfrow = c(1, 1))
 promedio <- mean(datos$wage)
 por_educ <- aggregate(wage ~ educ, data = datos, FUN = mean)
 print(promedio)
@@ -41,6 +43,15 @@ args(stats::lm)
 # Ver la configuración actual para valores faltantes:
 getOption("na.action")
 
+# El modelo debe existir antes de predecir.
+modelo_predict <- lm(wage ~ educ, data = datos)
+nuevos <- data.frame(educ = c(12, 16))
+print(predict(modelo_predict, newdata = nuevos))
+
+# Consulta los argumentos de la versión de R que estás usando.
+args(getS3method("predict", "lm"))
+
+par(mfrow = c(1, 1))
 modelo_pos <- lm(wage ~ educ, data = datos)
 print(nobs(modelo_pos))
 print(coef(modelo_pos))
@@ -60,6 +71,7 @@ y_ajustado <- b0 + b1 * x
 residuos <- y - y_ajustado
 print(head(data.frame(y, y_ajustado, residuos)))
 
+par(mfrow = c(1, 1))
 modelo_pos <- lm(wage ~ educ, data = datos)
 print(summary(modelo_pos))
 print(anova(modelo_pos))
@@ -68,6 +80,7 @@ plot(wage ~ educ, data = datos, pch = 19, col = "#005E9060",
 abline(modelo_pos, col = "#D6A600", lwd = 3)
 predict(modelo_pos, newdata = data.frame(educ = c(12, 16)))
 
+par(mfrow = c(1, 1))
 autos <- datasets::mtcars
 head(autos[, c("qsec", "hp", "drat")])
 
@@ -91,7 +104,8 @@ plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9080",
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 par(mfrow = c(1, 1))
 
-# Ejecuta primero la lámina 09 para crear autos y modelo_plano.
+par(mfrow = c(1, 1))
+# Ejecuta primero la lámina 10 para crear autos y modelo_plano.
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
@@ -100,6 +114,7 @@ plot(qsec ~ drat, data = autos, pch = 19, col = "#005E9060",
      ylab = "Tiempo de 1/4 de milla (s)")
 abline(modelo_plano, col = "#D6A600", lwd = 3)
 
+par(mfrow = c(1, 1))
 modelo <- modelo_pos
 x <- datos$educ
 y <- datos$wage
@@ -111,6 +126,7 @@ plot(x, y, pch = 19, col = "#005E9060")
 segments(x, ajuste, x, y, col = "#D6A60060")
 abline(modelo, col = "#D6A600", lwd = 3)
 
+par(mfrow = c(1, 1))
 modelos <- list(positivo = modelo_pos, negativo = modelo_neg, plano = modelo_plano)
 resumen <- do.call(rbind, lapply(modelos, function(m) {
   y <- model.response(model.frame(m))
@@ -228,6 +244,7 @@ cat("La asociación estimada es positiva: 18.501 miles de USD por punto porcentu
 cat("El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\n")
 cat("Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\n")
 
+par(mfrow = c(1, 1))
 # 1. Descargar el paquete del libro y cargar ceosal1.
 # Colab: selecciona R como tipo de entorno y ejecuta esta celda.
 if (!requireNamespace("wooldridge", quietly = TRUE)) {
