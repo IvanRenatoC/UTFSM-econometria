@@ -38,3 +38,5 @@ Reservar 21:05–21:25: siete minutos para preparar datos, ocho para estimar y c
 Nueva base del libro: ceosal1, 209 observaciones de directores ejecutivos y sus empresas, publicada en Businessweek (1991). salary es salario de 1990 en miles de USD; roe es rentabilidad del patrimonio promedio 1988–1990, en porcentaje. Fuente: https://justinmshea.github.io/wooldridge/reference/ceosal1.html . Se conserva una copia CSV exportada sin modificar desde el archivo RData del repositorio del paquete.
 
 Resultados de control de salary ~ roe: intercepto 963.191, pendiente 18.501, R² 0.01319, p 0.09777. No adelantar estos valores durante la actividad. Usar la diferencia entre signo positivo y significancia como cierre. No se eliminan salarios extremos.
+
+En la práctica se usa el nombre fit. Cada ejercicio de regresión crea fit <- lm(salary ~ roe, data = datos_practica), seguido de summary(fit) y anova(fit), con interpretación contextual de ambas salidas. No confundir la función lm() con ml().

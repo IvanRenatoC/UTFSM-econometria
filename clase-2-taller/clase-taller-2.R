@@ -142,20 +142,64 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
      ylab = "Salario del director ejecutivo (miles de USD, 1990)",
      main = "Rentabilidad y salario del director ejecutivo")
 
-modelo_practica <- lm(salary ~ roe, data = datos_practica)
-print(nobs(modelo_practica))
-print(coef(modelo_practica))
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
 
-print(summary(modelo_practica))
-print(anova(modelo_practica))
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
 
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
+print(nobs(fit))
+print(coef(fit))
+
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
 nuevos_casos <- data.frame(roe = c(10, 20))
 print(data.frame(nuevos_casos,
-                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+                 salario_ajustado = predict(fit, nuevos_casos)))
 
-y_practica <- model.response(model.frame(modelo_practica))
-ajustados_practica <- fitted(modelo_practica)
-residuos_practica <- resid(modelo_practica)
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
+y_practica <- model.response(model.frame(fit))
+ajustados_practica <- fitted(fit)
+residuos_practica <- resid(fit)
 SST_practica <- sum((y_practica - mean(y_practica))^2)
 SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
 SSR_practica <- sum(residuos_practica^2)
@@ -168,8 +212,18 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
      xlab = "Rentabilidad del patrimonio: roe (%)",
      ylab = "Salario del director ejecutivo (miles de USD, 1990)",
      main = "Rentabilidad y salario del director ejecutivo")
-abline(modelo_practica, col = "#D6A600", lwd = 3)
+abline(fit, col = "#D6A600", lwd = 3)
 
+# 1. Ajustar y guardar el modelo con el nombre fit.
+fit <- lm(salary ~ roe, data = datos_practica)
+
+# 2. Ver coeficientes, incertidumbre y bondad de ajuste.
+summary(fit)
+
+# 3. Ver la tabla ANOVA del mismo modelo.
+anova(fit)
+
+# Aplicar el resultado al ejercicio.
 cat("La asociación estimada es positiva: 18.501 miles de USD por punto porcentual de roe.\n")
 cat("El ajuste es bajo (R2 ≈ 1.32 %) y la pendiente no es significativa al 5 % (p ≈ 0.0978).\n")
 cat("Estos datos observacionales no permiten concluir que aumentar roe cause un aumento salarial.\n")
@@ -194,22 +248,22 @@ plot(salary ~ roe, data = datos_practica, pch = 19, col = "#005E9080",
      main = "Rentabilidad y salario del director ejecutivo")
 
 # 4. Estimar la regresión y consultar coeficientes, resumen y ANOVA.
-modelo_practica <- lm(salary ~ roe, data = datos_practica)
-print(nobs(modelo_practica))
-print(coef(modelo_practica))
-print(summary(modelo_practica))
-print(anova(modelo_practica))
-abline(modelo_practica, col = "#D6A600", lwd = 3)
+fit <- lm(salary ~ roe, data = datos_practica)
+print(nobs(fit))
+print(coef(fit))
+summary(fit)
+anova(fit)
+abline(fit, col = "#D6A600", lwd = 3)
 
 # 5. Predecir para dos empresas hipotéticas; resultados en miles de USD.
 nuevos_casos <- data.frame(roe = c(10, 20))
 print(data.frame(nuevos_casos,
-                 salario_ajustado = predict(modelo_practica, nuevos_casos)))
+                 salario_ajustado = predict(fit, nuevos_casos)))
 
 # 6. Descomponer la variación usando las filas efectivas del modelo.
-y_practica <- model.response(model.frame(modelo_practica))
-ajustados_practica <- fitted(modelo_practica)
-residuos_practica <- resid(modelo_practica)
+y_practica <- model.response(model.frame(fit))
+ajustados_practica <- fitted(fit)
+residuos_practica <- resid(fit)
 SST_practica <- sum((y_practica - mean(y_practica))^2)
 SSE_practica <- sum((ajustados_practica - mean(y_practica))^2)
 SSR_practica <- sum(residuos_practica^2)
