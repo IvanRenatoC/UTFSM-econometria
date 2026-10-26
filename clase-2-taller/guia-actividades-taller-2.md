@@ -325,7 +325,7 @@ Se pasan al método correspondiente. No debes completarlos.
 
 ### Aplicar lm() a wage1: educación y salario
 
-Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 09.
+Ahora usa la función con una pregunta concreta: ¿cómo se relacionan los años de educación y el salario por hora? Ajusta con las 526 personas de wage1, interpreta la pendiente y compara las predicciones para 12 y 16 años de educación. Aquí nos concentramos en la aplicación; el resumen estadístico y la ANOVA se revisarán en la lámina 10.
 
 ```r
 par(mfrow = c(1, 1))
@@ -418,6 +418,103 @@ Restamos, persona por persona, salario observado menos salario ajustado. Un resi
 data.frame() coloca los tres vectores como columnas de una tabla; head() selecciona las primeras seis filas y print() las muestra. Compara cada salario real con su ajuste y verifica la resta. En la primera fila: 3.10 − 5.050 ≈ −1.950 USD por hora.
 
 **Lectura del resultado:** Los dos métodos coinciden salvo redondeo numérico. La recta pasa por (x̄, ȳ). No confundas β₁ poblacional con b₁ estimado.
+
+### Conoce summary() y anova(): interpretar el modelo
+
+El modelo ya está estimado con lm(). summary() y anova() consultan el mismo ajuste desde dos perspectivas: coeficientes y bondad de ajuste, o descomposición de la variación. Ejecuta el bloque y usa los botones para interpretar lo que aparece.
+
+```r
+modelo_pos <- lm(wage ~ educ, data = datos)
+summary(modelo_pos)
+anova(modelo_pos)
+```
+
+**ANOVA · Salario y educación · wage ~ educ · n = 526**
+
+| Fuente de variación | Suma de cuadrados | Grados de libertad | Cuadrado medio | F | p-valor |
+|---|---:|---:|---:|---:|---:|
+| Regresión · SSE = Σ(ŷᵢ − ȳ)² | 1179.732 | 1 | 1179.732 | 103.363 | 2.78e-22 |
+| Error · SSR = Σ(yᵢ − ŷᵢ)² | 5980.682 | 524 | 11.414 | — | — |
+| Total · SST = Σ(yᵢ − ȳ)² | 7160.414 | 525 | — | — | — |
+
+Con intercepto: SST = SSE + SSR. Cuadrado medio = suma de cuadrados / grados de libertad; F = CM de regresión / CM del error. Las siglas siguen la cátedra: SSE explicada, SSR residual. En otras fuentes se intercambian; identifica siempre qué suma representa cada fila. La fila Total es una adición didáctica a la salida de anova() de R. Valores redondeados.
+
+**Resultados de referencia calculados en R**
+
+**Ver summary(modelo_pos)**
+
+```text
+Call:
+lm(formula = wage ~ educ, data = datos)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-5.3396 -2.1501 -0.9674  1.1921 16.6085
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.90485    0.68497  -1.321    0.187
+educ         0.54136    0.05325  10.167   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 3.378 on 524 degrees of freedom
+Multiple R-squared:  0.1648,	Adjusted R-squared:  0.1632
+F-statistic: 103.4 on 1 and 524 DF,  p-value: < 2.2e-16
+```
+
+**Ver anova(modelo_pos)**
+
+```text
+Analysis of Variance Table
+
+Response: wage
+           Df Sum Sq Mean Sq F value    Pr(>F)
+educ        1 1179.7 1179.73  103.36 < 2.2e-16 ***
+Residuals 524 5980.7   11.41
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+```
+
+**El código, paso a paso**
+
+**summary(modelo_pos) · Resumen del ajuste**
+
+Recibe el modelo guardado, no las columnas sueltas. Devuelve un resumen con coeficientes, errores estándar, pruebas t, dispersión residual, R² y prueba F. No modifica los datos ni cambia los parámetros.
+
+**anova(modelo_pos) · Tabla de análisis de varianza**
+
+Recibe el mismo modelo. Su tabla separa la variación explicada por educ de la residual; muestra grados de libertad, sumas y cuadrados medios y contraste F. Aquí hay un único predictor; no estamos comparando dos regresiones diferentes.
+
+**summary · Estimate: intercepto y pendiente**
+
+Estimate contiene los coeficientes: intercepto ≈ −0.905 y pendiente de educ ≈ 0.541. Un año adicional de educación se asocia con 0.541 USD/h más de salario ajustado. El intercepto es la altura de la recta cuando educ = 0; no es un salario observado negativo.
+
+**summary · Std. Error, t value y Pr(>|t|)**
+
+El error estándar mide la incertidumbre del coeficiente estimado. Para educ es ≈ 0.05325; t = 0.54136/0.05325 ≈ 10.167. Su p-valor ≈ 2.78 × 10⁻²² contrasta H₀: β₁ = 0 bajo los supuestos clásicos. No es la probabilidad de que H₀ sea verdadera ni una medida del tamaño del efecto.
+
+**summary · Residual standard error y R²**
+
+El error estándar residual es ≈ 3.378 USD/h: raíz de SSR/(n−2). R² ≈ 0.1648 indica que la recta explica aproximadamente el 16.48 % de la variación salarial en esta muestra; el R² ajustado es ≈ 0.1632. Una pendiente significativa puede coexistir con baja capacidad explicativa.
+
+**ANOVA · Df: grados de libertad**
+
+La fila educ tiene 1 grado de libertad porque incorporamos una pendiente. Residuals tiene 524 = 526 − 2: estimamos intercepto y pendiente. Los grados de libertad totales son 525 = n − 1.
+
+**ANOVA · Sum Sq: variación explicada y residual**
+
+En la fila educ, Sum Sq ≈ 1179.732 es la suma explicada SSE. En Residuals, Sum Sq ≈ 5980.682 es la suma residual SSR. Ambas suman SST ≈ 7160.414. R² = 1179.732/7160.414 ≈ 0.1648. Seguimos la notación de la cátedra.
+
+**ANOVA · Mean Sq, F value y Pr(>F)**
+
+Mean Sq divide Sum Sq por Df: 1179.732/1 ≈ 1179.732 y 5980.682/524 ≈ 11.4135. F divide ambos cuadrados medios: ≈ 103.36. Pr(>F) es el p-valor del contraste global contra un modelo con sólo intercepto. En esta regresión simple, contrasta β₁ = 0; F = t² y su p-valor coincide con el de la pendiente.
+
+**Predicciones y límites de interpretación**
+
+Para educ = 12 y 16, predict() entrega aproximadamente 5.591 y 7.757 USD/h. Son puntos sobre la recta. Ni la ANOVA ni el p-valor prueban que estudiar cause un cambio salarial; la interpretación inferencial requiere supuestos sobre el error y la muestra.
+
+**Lectura del resultado:** summary() y anova() no estiman dos modelos diferentes. En esta regresión simple, F ≈ 103.363 coincide con t² para la pendiente y ambos contrastes tienen el mismo p-valor. R² ≈ 0.1648: cerca del 16.48 % de la variación salarial queda explicada por la recta. Significancia no equivale a causalidad ni a predicción individual exacta.
 
 ## Parte 2 · Taller · Tres casos, diagnóstico y comparación
 
@@ -519,10 +616,17 @@ Para educ = 12 y 16, predict() entrega aproximadamente 5.591 y 7.757 USD/h. Son 
 
 Usaremos mtcars, 32 automóviles de modelos 1973–1974, con datos publicados por Motor Trend en 1974. La respuesta es qsec: segundos para recorrer un cuarto de milla (aproximadamente 402 m). hp es potencia bruta en caballos de fuerza; drat es la relación de transmisión del eje trasero, sin unidades. Alterna entre ambos predictores y anticipa el signo. La base viene incluida en R: no necesitas instalar paquetes.
 
+**Preparar los datos: ejecuta sólo este bloque**
+
 ```r
-par(mfrow = c(1, 1))
 autos <- datasets::mtcars
 head(autos[, c("qsec", "hp", "drat")])
+```
+
+Ejecuta únicamente este bloque para disponer de autos y ver las tres columnas. mtcars viene incluida en R: no requiere instalación ni una descarga externa. El ajuste del modelo está separado más abajo.
+
+```r
+par(mfrow = c(1, 1))
 
 # Caso negativo: potencia y tiempo de aceleración
 modelo_neg <- lm(qsec ~ hp, data = autos)
@@ -581,11 +685,20 @@ Potencia: F ≈ 30.190 y p ≈ 0.00000577; rechazamos pendiente cero al 5 % bajo
 
 ### Comprobar el caso no significativo con un intervalo
 
-Continúa con mtcars y el modelo qsec ~ drat de la lámina 10. Obtén el intervalo de confianza de la pendiente y compáralo con el p-valor. ¿Incluye el cero? ¿Qué valores positivos y negativos siguen siendo compatibles con estos datos?
+Primero prepara autos con el bloque inicial. Después ejecuta el ajuste qsec ~ drat y obtén el intervalo de confianza de la pendiente. Compáralo con el p-valor: ¿incluye cero? ¿Qué asociaciones positivas y negativas siguen siendo compatibles con estos datos?
+
+**Preparar los datos: ejecuta sólo este bloque**
+
+```r
+autos <- datasets::mtcars
+head(autos[, c("qsec", "hp", "drat")])
+```
+
+Ejecuta únicamente este bloque para disponer de autos y ver las tres columnas. mtcars viene incluida en R: no requiere instalación ni una descarga externa. El ajuste del modelo está separado más abajo.
 
 ```r
 par(mfrow = c(1, 1))
-# Ejecuta primero la lámina 10 para crear autos y modelo_plano.
+modelo_plano <- lm(qsec ~ drat, data = autos)
 print(summary(modelo_plano))
 print(anova(modelo_plano))
 print(confint(modelo_plano, "drat", level = 0.95))
@@ -658,7 +771,21 @@ barplot(t(cbind(resumen[, "R2"], 1 - resumen[, "R2"])),
 
 ### Práctica 1 · Preparar una nueva base de Wooldridge
 
-21:05–21:12 · En Colab, selecciona R como tipo de entorno. Copia y ejecuta primero el bloque de carga: descarga el paquete del libro desde CRAN si hace falta y deja ceosal1 lista en datos_practica. Después ejecuta las soluciones de exploración y gráfico. Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Al terminar la exploración, ejecuta el ejercicio 4: crea fit y consulta tanto summary(fit) como anova(fit).
+21:05–21:12 · Pregunta: ¿las empresas con mayor rentabilidad del patrimonio pagan salarios más altos a sus directores ejecutivos? Sigue el ejercicio guiado de arriba hacia abajo y escribe el código en tus propias celdas de R. Los bloques de código quedan como referencia para contrastar tu trabajo.
+
+**Ejercicio guiado**
+
+**Tu tarea · Conseguir y reconocer los datos**
+
+Usen install.packages("wooldridge", repos = "https://cloud.r-project.org/") si el paquete no está disponible; después carguen wooldridge::ceosal1 en datos_practica. Examinen head(), str() y summary(). No cambien la base datos usada anteriormente en el taller.
+
+**Tu tarea · Definir respuesta y predictor**
+
+Escriban en Markdown qué variable quieren explicar y con cuál la relacionarán. Identifiquen las unidades y revisen cuántas filas tienen NA en salary o roe. Indiquen cuántas observaciones podrán usar.
+
+**Tu tarea · Predecir antes de ajustar**
+
+Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una recta, propongan el signo de la pendiente. ¿La nube es estrecha o dispersa? ¿Hay salarios muy alejados del resto? No eliminen observaciones sólo porque sean extremas.
 
 ```r
 # Colab: selecciona R como tipo de entorno y ejecuta esta celda.
@@ -706,25 +833,29 @@ anova(fit)
 
 lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja.
 
-**El código, paso a paso**
-
-**Tu tarea · Conseguir y reconocer los datos**
-
-Usen install.packages("wooldridge", repos = "https://cloud.r-project.org/") si el paquete no está disponible; después carguen wooldridge::ceosal1 en datos_practica. Examinen head(), str() y summary(). No cambien la base datos usada anteriormente en el taller.
-
-**Tu tarea · Definir respuesta y predictor**
-
-Escriban en Markdown qué variable quieren explicar y con cuál la relacionarán. Identifiquen las unidades y revisen cuántas filas tienen NA en salary o roe. Indiquen cuántas observaciones podrán usar.
-
-**Tu tarea · Predecir antes de ajustar**
-
-Dibujen salary en el eje vertical y roe en el horizontal. Antes de agregar una recta, propongan el signo de la pendiente. ¿La nube es estrecha o dispersa? ¿Hay salarios muy alejados del resto? No eliminen observaciones sólo porque sean extremas.
-
 **Lectura del resultado:** La base contiene 209 observaciones y 12 variables, a partir de datos publicados por Businessweek en 1991. salary es el salario de 1990 en miles de dólares; roe es la rentabilidad del patrimonio promedio de 1988–1990, expresada en porcentaje. Cada fila vincula a un director ejecutivo con su empresa. No son mediciones sucesivas de una sola persona.
 
 ### Práctica 2 · Estimar e interpretar su propia regresión
 
-21:12–21:20 · Ejecuta primero la carga de datos de la lámina 14. Cada solución crea explícitamente fit con lm(), consulta summary(fit) y anova(fit), y luego resuelve la tarea. Así cada bloque utiliza un ajuste identificado y no depende de haber creado el modelo en otro ejercicio. Todos requieren datos_practica cargado.
+21:12–21:20 · Con datos_practica cargado, escribe la regresión y sus consultas en tu Colab. Sigue primero las consignas del ejercicio guiado; después contrasta con las soluciones de cada tarea.
+
+**Ejercicio guiado**
+
+**Reto 1 · Ajustar y escribir la ecuación**
+
+Usen lm() y guarden el resultado en fit. Extraigan los coeficientes con coef(). Escriban la ecuación de salario ajustado en función de roe. ¿Qué significa aumentar roe en un punto porcentual? ¿Cuánto cambia el ajuste si aumenta diez puntos porcentuales?
+
+**Reto 2 · Leer summary() y ANOVA**
+
+Obtengan summary() y anova(). Identifiquen pendiente, error estándar, p-valor y R². Apliquen el umbral del 5 %: ¿pueden rechazar pendiente poblacional cero? ¿Es lo mismo una pendiente positiva que una pendiente significativa?
+
+**Reto 3 · Predecir y explicar**
+
+Con predict(), calculen los salarios ajustados para roe = 10 y roe = 20. El nombre de la columna de newdata debe coincidir con el predictor. Recuerden expresar el resultado en miles de dólares y distinguir valor ajustado de salario individual garantizado.
+
+**Reto 4 · Comprobar y comunicar**
+
+Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST ≈ SSE + SSR. Agreguen la recta a la nube. Escriban una conclusión de tres frases: dirección de la asociación, capacidad explicativa y limitación de interpretación.
 
 **Ejercicio 1 · Estimar la regresión y obtener coeficientes**
 
@@ -833,29 +964,33 @@ cat("Estos datos observacionales no permiten concluir que aumentar roe cause un 
 
 lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. En este ejercicio: Usa esta redacción como referencia y escribe tu propia explicación en una celda Markdown.
 
-**El código, paso a paso**
-
-**Reto 1 · Ajustar y escribir la ecuación**
-
-Usen lm() y guarden el resultado en modelo_practica. Extraigan los coeficientes con coef(). Escriban la ecuación de salario ajustado en función de roe. ¿Qué significa aumentar roe en un punto porcentual? ¿Cuánto cambia el ajuste si aumenta diez puntos porcentuales?
-
-**Reto 2 · Leer summary() y ANOVA**
-
-Obtengan summary() y anova(). Identifiquen pendiente, error estándar, p-valor y R². Apliquen el umbral del 5 %: ¿pueden rechazar pendiente poblacional cero? ¿Es lo mismo una pendiente positiva que una pendiente significativa?
-
-**Reto 3 · Predecir y explicar**
-
-Con predict(), calculen los salarios ajustados para roe = 10 y roe = 20. El nombre de la columna de newdata debe coincidir con el predictor. Recuerden expresar el resultado en miles de dólares y distinguir valor ajustado de salario individual garantizado.
-
-**Reto 4 · Comprobar y comunicar**
-
-Calculen SST, SSE y SSR según la convención de la cátedra y verifiquen SST ≈ SSE + SSR. Agreguen la recta a la nube. Escriban una conclusión de tres frases: dirección de la asociación, capacidad explicativa y limitación de interpretación.
-
 **Lectura del resultado:** Entregable de la pareja: un gráfico con su recta, la ecuación estimada, una interpretación de la pendiente con unidades, la lectura de R² y p-valor, dos predicciones y una limitación. La base es observacional; una asociación no demuestra causalidad.
 
 ### Práctica 3 · Código completo y explicación de la solución
 
-21:20–21:25 · Si prefieres ejecutar todo de una vez en Colab, copia este único bloque completo. Incluye instalación y carga, exploración, gráfico, regresión, resumen, ANOVA, predicciones y comprobación de las sumas de cuadrados. No requiere subir archivos CSV. El modelo se guarda como fit: las consultas summary(fit) y anova(fit) se refieren al mismo ajuste.
+21:20–21:25 · Integra lo trabajado en un programa completo: desde la carga de ceosal1 hasta la interpretación. Escribe tu versión siguiendo el ejercicio guiado y compárala al final con el código de referencia.
+
+**Ejercicio guiado**
+
+**Preparar el programa**
+
+Escribe la instalación condicional de wooldridge y carga ceosal1 como datos_practica. Mantén los datos anteriores del taller sin sobrescribir.
+
+**Revisar antes de ajustar**
+
+Muestra las primeras filas, tipos y resúmenes de salary y roe. Comprueba los faltantes y escribe las unidades de ambas variables.
+
+**Estimar y consultar**
+
+Crea fit con lm(salary ~ roe, data = datos_practica). Escribe summary(fit) y anova(fit). Identifica intercepto, pendiente, p-valor y R² en tus salidas.
+
+**Aplicar y comprobar**
+
+Dibuja la nube y agrega la recta. Predice para roe de 10 % y 20 %. Calcula SST, SSE y SSR y comprueba la igualdad.
+
+**Comunicar el resultado**
+
+Escribe tres frases en Markdown sobre dirección de la asociación, bondad de ajuste y límites causales. Contrasta tu programa con el bloque completo de referencia.
 
 ```r
 par(mfrow = c(1, 1))
@@ -905,35 +1040,5 @@ print(all.equal(SST_practica, SSE_practica + SSR_practica))
 # 7. En una celda Markdown, escribe tu interpretación con unidades.
 # Distingue signo, significancia, R2 y asociación frente a causalidad.
 ```
-
-**El código, paso a paso**
-
-**Paso 1 · Obtener datos sin sobrescribir el trabajo anterior**
-
-Instala wooldridge desde CRAN sólo si el paquete no está disponible y carga ceosal1 con el nombre datos_practica. La instalación inicial necesita conexión. No hace falta buscar ni subir un archivo CSV a Colab.
-
-**Paso 2 · Revisar antes de modelar**
-
-head() muestra las primeras filas; str(), los tipos de columnas; summary(), un resumen de salary y roe. is.na() identifica faltantes y colSums() cuenta cuántos hay por variable. En esta base ambas columnas están completas.
-
-**Paso 3 · Mirar las observaciones**
-
-La fórmula salary ~ roe coloca el salario en el eje vertical. Los títulos conservan las unidades. La nube ayuda a anticipar la tendencia y detectar dispersión y observaciones extremas antes de leer una prueba estadística.
-
-**Paso 4 · fit <- lm(...), summary(fit) y anova(fit)**
-
-lm() estima salary ~ roe y guarda el resultado en fit; summary(fit) resume ese ajuste: intercepto ≈ 963.191, pendiente ≈ 18.501, error estándar de la pendiente ≈ 11.12, p ≈ 0.0978 y R² ≈ 0.0132. anova(fit) muestra los grados de libertad (1 y 207), las sumas de cuadrados, los cuadrados medios y F ≈ 2.767, con el mismo p-valor de la pendiente porque hay un solo predictor. La pendiente es positiva, pero no significativa al 5 %; la capacidad explicativa es baja. nobs(fit) comprueba el tamaño utilizado, coef(fit) extrae los coeficientes y abline(fit) añade la recta a la nube.
-
-**Paso 5 · Predecir en las mismas unidades**
-
-data.frame(roe = c(10, 20)) contiene dos casos con el nombre esperado por el modelo. predict() entrega valores sobre la recta, en miles de dólares. La diferencia entre los ajustes es diez veces la pendiente: aproximadamente 185.012 miles de USD.
-
-**Paso 6 · Verificar las sumas de cuadrados**
-
-Se usan las filas efectivas de model.frame(). SST mide variación total; SSE, variación de los ajustes respecto al promedio; SSR, variación residual. all.equal() comprueba la igualdad con tolerancia numérica. No necesitamos que una igualdad de decimales sea exacta bit por bit.
-
-**Paso 7 · Redactar una conclusión**
-
-Relaciona la pendiente con sus unidades, indica que la capacidad explicativa es baja y distingue no rechazar β₁ = 0 de demostrar β₁ = 0. Reconoce factores omitidos, la naturaleza observacional y el alcance histórico de la base.
 
 **Lectura del resultado:** Resultados de control: 209 observaciones; salario ajustado ≈ 963.191 + 18.501 × roe, en miles de USD. Un punto porcentual adicional de roe se asocia con 18.501 miles de USD más de salario ajustado. R² ≈ 0.0132 (1.32 %) y p ≈ 0.0978: al 5 % no rechazamos pendiente cero. Para roe de 10 % y 20 %, los ajustes son aproximadamente 1148.203 y 1333.215 miles de USD. La pendiente positiva no implica un buen ajuste ni demuestra causalidad. Los salarios extremos merecen revisión; no los borramos automáticamente.

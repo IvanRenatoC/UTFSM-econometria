@@ -2,7 +2,7 @@
 
 [Página del taller](https://ivanrenatoc.github.io/UTFSM-econometria/clase-2-taller/).
 
-Material disponible: 16 láminas prácticas, gráficos interactivos, animación de residuos, agenda con descanso y notebook con kernel R.
+Material disponible: 17 láminas prácticas, gráficos interactivos, animación de residuos, agenda con descanso y notebook con kernel R.
 
 - `clase-taller-2.ipynb`: ejecutar en orden con R (extensión estándar .ipynb).
 - `clase-taller-2.R`: los mismos ejemplos como script.
@@ -15,4 +15,4 @@ Desde esta carpeta: `python3 herramientas/generar_web.py`. El notebook conserva 
 
 Las plantillas LaTeX heredadas continúan disponibles para una futura guía impresa; no forman parte de esta publicación de actividades.
 
-Las láminas 14–16 incorporan una práctica guiada con ceosal1 de Wooldridge. La 14 incluye la carga directa en Colab; la 15, las soluciones de cada ejercicio; la 16, una celda con el programa completo.
+Las láminas 15–17 incorporan una práctica guiada con ceosal1 de Wooldridge. La 15 incluye la carga directa en Colab; la 16, las soluciones de cada ejercicio; la 17, una celda con el programa completo.

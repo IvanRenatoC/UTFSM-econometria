@@ -21,6 +21,12 @@ def generar():
         md('## '+bloque['etiqueta']+' · '+bloque['titulo'], bloque['id'].lower())
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
+            if lamina.get('explicaciones_al_inicio'):
+                md('**Ejercicio guiado**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-ejercicio-guiado')
+            if lamina.get('codigo_inicial'):
+                md('**Preparar los datos: ejecuta sólo este bloque**', lamina['id'].lower()+'-preparar-datos')
+                r(lamina['codigo_inicial'], lamina['id'].lower()+'-carga-r')
+                md(lamina['lectura_codigo_inicial'], lamina['id'].lower()+'-carga-lectura')
             if lamina.get('sintaxis'):
                 md('**Firma de '+lamina.get('nombre_funcion','lm()')+' - referencia, no ejecutar como llamada completa**\n\n```r\n'+lamina['sintaxis']+'\n```\n\n[Documentación oficial de R]('+lamina.get('fuente_sintaxis','https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html')+')', lamina['id'].lower()+'-sintaxis')
             if lamina.get('codigo'):
@@ -38,7 +44,7 @@ def generar():
                 md('\n\n'.join(table_text)+'\n\n'+lamina['nota_anova'], lamina['id'].lower()+'-anova')
             if lamina.get('salidas_r'):
                 md('**Resultados de referencia calculados en R**\n\n'+'\n\n'.join('**'+t+'**\n\n```text\n'+out+'\n```' for t,out in lamina['salidas_r']), lamina['id'].lower()+'-salidas')
-            if lamina.get('explicaciones'):
+            if lamina.get('explicaciones') and not lamina.get('explicaciones_al_inicio'):
                 md('**El código, paso a paso**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-explicaciones')
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
             if lamina.get('despues_lectura'):
