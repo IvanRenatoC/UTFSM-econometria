@@ -21,6 +21,23 @@ plot(wage ~ exper, data = datos, pch = 19, col = "#005E9080")
 plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
 #par(mfrow = c(1, 1))
 
+# Tamaño del gráfico en un notebook con kernel R
+options(repr.plot.width = 16, repr.plot.height = 10)
+par(mfrow = c(1, 1))
+
+# Fórmula: variable vertical ~ variable horizontal
+plot(wage ~ educ, data = datos,
+     main = "Salario y educación",
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     col = "#005E9080",
+     lwd = 2,
+     cex = 1.3,
+     pch = 19)
+
+# Alternativa equivalente usando coordenadas:
+# plot(datos$educ, datos$wage, pch = 19, col = "#005E9080")
+
 par(mfrow = c(1, 1))
 x <- datos$educ
 y <- datos$wage

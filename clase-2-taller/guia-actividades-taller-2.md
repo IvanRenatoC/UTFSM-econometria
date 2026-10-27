@@ -57,7 +57,62 @@ plot(wage ~ numdep, data = datos, pch = 19, col = "#005E9080")
 #par(mfrow = c(1, 1))
 ```
 
+**plot() · Ejemplo completo para ejecutar en Colab**
+
+```r
+# Tamaño del gráfico en un notebook con kernel R
+options(repr.plot.width = 16, repr.plot.height = 10)
+par(mfrow = c(1, 1))
+
+# Fórmula: variable vertical ~ variable horizontal
+plot(wage ~ educ, data = datos,
+     main = "Salario y educación",
+     xlab = "Educación (años)",
+     ylab = "Salario por hora (USD de 1976)",
+     col = "#005E9080",
+     lwd = 2,
+     cex = 1.3,
+     pch = 19)
+
+# Alternativa equivalente usando coordenadas:
+# plot(datos$educ, datos$wage, pch = 19, col = "#005E9080")
+```
+
+Ejecuta después de cargar datos en la lámina 01. Cambia un parámetro a la vez y observa su efecto. El gráfico usa las mismas observaciones; personalizar su apariencia no cambia la asociación entre salario y educación.
+
 **Lectura del resultado:** La nube de salario y educación muestra una tendencia creciente, con dispersión entre personas de un mismo nivel educativo. Recordemos que la recta resume la asociación promedio. La bondad de ajuste es baja: el R² es aproximadamente 16 %, es decir, el modelo explica cerca del 16 % de la variación observada del salario en esta muestra. La disposición de dos gráficos verticales permanece activa porque la última línea está comentada. Cada ejemplo gráfico posterior restablece su propia disposición para verse completo.
+
+**plot() · Crear y personalizar la nube de puntos**
+
+Puedes escribir plot(y ~ x, data = datos) o entregar dos vectores de igual longitud: plot(x, y). En la fórmula, y va en el eje vertical y x en el horizontal; en la llamada con coordenadas se escribe primero x y luego y.
+
+**options(repr.plot.width = 16, repr.plot.height = 10) · Tamaño del gráfico**
+
+En notebooks con kernel R (IRkernel), estas opciones fijan el ancho y el alto de la imagen en pulgadas: 16 por 10. Se ejecutan antes de plot(); no son argumentos de plot() ni cambian los valores de los datos. En RStudio, el tamaño se controla desde el panel gráfico o al exportar.
+
+**main, xlab y ylab · Título y nombres de ejes**
+
+main = "Salario y educación" define el título. xlab = "Educación (años)" y ylab = "Salario por hora (USD de 1976)" identifican las variables y sus unidades. Los textos se escriben entre comillas.
+
+**col · Color**
+
+col = "#005E9080" usa el azul institucional con transparencia. Los últimos dos dígitos del código hexadecimal regulan la opacidad; los puntos superpuestos se distinguen mejor. También puedes usar nombres como "blue".
+
+**lwd · Grosor del trazo**
+
+lwd = 2 aumenta el grosor de las líneas y de los bordes de símbolos que los tengan. No agranda los puntos: eso lo hace cex. Con pch = 19, un círculo sólido, el efecto puede ser poco visible; se aprecia mejor con símbolos abiertos o type = "l".
+
+**cex · Tamaño de los puntos**
+
+cex = 1 es el tamaño base; cex = 1.3 lo aumenta y cex = 0.7 lo reduce. Para cambiar el tamaño de los textos se usan opciones diferentes, como cex.main y cex.lab.
+
+**pch · Símbolo de cada observación**
+
+pch = 19 dibuja círculos sólidos; pch = 1, círculos vacíos; pch = 17, triángulos sólidos; pch = 15, cuadrados sólidos. Cada símbolo representa una persona de la muestra.
+
+**... · Otros argumentos gráficos**
+
+Los puntos suspensivos indican que se admiten más opciones; no debes copiarlos literalmente en el ejemplo. type = "p" muestra puntos (opción predeterminada), xlim = c(0, 20) fija el rango horizontal y ylim = c(0, 30), el vertical. Cambiar límites no modifica los datos.
 
 ### Modelo, error y factores que no observamos
 
