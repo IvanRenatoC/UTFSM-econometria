@@ -31,7 +31,17 @@ def generar():
             md('\n\n'.join('**'+t+'**\n\n'+x for t,x in lamina['definiciones']),key+'-definiciones')
         for i,t in enumerate(lamina.get('tablas_didacticas',[])):
             cols=t['columnas']
-            md('**'+t['titulo']+'**\n\n| '+' | '.join(cols)+' |\n| '+' | '.join('---' for _ in cols)+' |\n'+'\n'.join('| '+' | '.join(row)+' |' for row in t['filas']),key+'-tabla-'+str(i))
+            counter = {tuple(c) for c in t.get('contrafactuales', [])}
+            focus = {tuple(c) for c in t.get('contrafactuales_foco', [])}
+            rows = []
+            for ri,row in enumerate(t['filas']):
+                vals = []
+                for ci,c in enumerate(row):
+                    if (ri,ci) in focus: c = '<mark><b>'+c+'</b></mark>'
+                    elif (ri,ci) in counter: c = '<mark>'+c+'</mark>'
+                    vals.append(c)
+                rows.append('| '+' | '.join(vals)+' |')
+            md('**'+t['titulo']+'**\n\n| '+' | '.join(cols)+' |\n| '+' | '.join('---' for _ in cols)+' |\n'+'\n'.join(rows)+('\n\n'+t['leyenda'] if t.get('leyenda') else ''),key+'-tabla-'+str(i))
         if lamina.get('pizarra'):
             md('**Para desarrollar en la pizarra**\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina['pizarra']),key+'-pizarra')
         if lamina.get('desarrollo'):
@@ -39,7 +49,11 @@ def generar():
         if lamina.get('reflexion'):
             md('**Pausa de discusión: 2–3 minutos**\n\n'+'\n'.join(str(i+1)+'. '+q for i,q in enumerate(lamina['reflexion'])),key+'-reflexion')
         if lamina.get('respuesta_plegada'):
-            md('<details><summary>Mostrar respuesta</summary>\n\n'+lamina['respuesta_texto']+'\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina.get('pizarra_respuesta',[]))+'\n\n</details>',key+'-respuesta')
+            response = lamina['respuesta_texto']+'\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina.get('pizarra_respuesta',[]))
+            response += '\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina.get('formulas_grafica',[]))
+            for scenario in lamina.get('escenarios',[]):
+                response += '\n\n**'+scenario['titulo']+'**\n\n'+scenario['interpretacion']+'\n\n'+'\n\n'.join('$$'+f['latex']+'$$' for f in scenario.get('formulas',[]))
+            md('<details><summary>Mostrar respuesta</summary>\n\n'+response+'\n\n</details>',key+'-respuesta')
     def steps(lamina, suffix, title):
         key=lamina['id'].lower()
         md('**'+title+'**',key+suffix)

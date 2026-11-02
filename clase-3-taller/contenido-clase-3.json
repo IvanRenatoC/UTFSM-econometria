@@ -111,14 +111,14 @@
           ],
           "tablas_didacticas": [
             {
-              "titulo": "La misma población artificial de cinco personas",
+              "titulo": "Resultados observados, potenciales y efectos del mismo ejemplo",
               "columnas": [
                 "Persona",
                 "T",
                 "Y observado",
                 "$Y^{NT}$",
                 "$Y^{T}$",
-                "Efecto supuesto"
+                "Efecto $Y^{T}$ − $Y^{NT}$"
               ],
               "filas": [
                 [
@@ -183,39 +183,44 @@
             [
               "Qué significa el cálculo",
               "La resta o suma completa un mundo que nosotros construimos al fijar los efectos. Sin ese supuesto no podríamos conocer los valores faltantes. No debemos confundir completar esta tabla artificial con recuperar contrafactuales reales."
+            ],
+            [
+              "Una sola tabla para seguir el cálculo",
+              "La tabla reúne Y observado, $Y^{NT}$, $Y^{T}$ y la diferencia de cada fila. El dorado identifica un resultado contrafactual. Puedes ocultar esos valores para volver al escenario en que solo observamos un resultado por persona."
             ]
-          ]
+          ],
+          "tabla_en_interactivo": true
         },
         {
           "id": "C3-03",
           "titulo": "ATE y ATT: promediar efectos diferentes",
           "texto": "Calculemos los dos promedios usando la tabla completa de esta misma lámina. La diferencia individual es $Y^{T}$ − $Y^{NT}$. ATE promedia a las cinco personas; ATT promedia solo a Sofía, Ezequiel y Caro, porque recibieron el tratamiento (T = 1).",
-          "codigo": "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nATE <- mean(personas$efecto)\nATT <- mean(personas$efecto[personas$T == 1])\nprint(personas[, c(\"nombre\", \"T\", \"Y_NT\", \"Y_T\", \"efecto\")])\nprint(c(ATE = ATE, ATT = ATT))",
+          "codigo": "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nATE <- mean(personas$efecto)\nATT <- mean(personas$efecto[personas$T == 1])\nprint(personas[, c(\"nombre\", \"T\", \"Y\", \"Y_NT\", \"Y_T\", \"efecto\")])\nprint(c(ATE = ATE, ATT = ATT))",
           "lectura": "ATE = 17 y ATT = 20 en esta población artificial. Son promedios de efectos individuales distintos: 85/5 frente a 60/3. El botón que modifica el resultado con tratamiento de Juan es un reto posterior: ATE pasa a 23 y ATT sigue en 20, porque Juan no es tratado. El código principal conserva la tabla original para obtener 17 y 20.",
           "explicaciones": [
             [
               "Crear en R la tabla del ejemplo",
               "Este código es independiente de la lámina anterior: crea las cinco personas, calcula $Y^{NT}$ y $Y^{T}$ y muestra sus efectos individuales.",
-              "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nprint(personas[, c(\"nombre\", \"T\", \"Y_NT\", \"Y_T\", \"efecto\")])"
+              "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nprint(personas[, c(\"nombre\", \"T\", \"Y\", \"Y_NT\", \"Y_T\", \"efecto\")])"
             ],
             [
               "Calcular ATE = 17 y ATT = 20 en R",
               "Puedes ejecutar esta viñeta por sí sola: incluye la tabla completa. mean() sobre las cinco diferencias calcula ATE; el filtro T == 1 conserva las tres diferencias necesarias para ATT.",
-              "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nATE <- mean(personas$efecto)\nATT <- mean(personas$efecto[personas$T == 1])\nprint(personas[, c(\"nombre\", \"T\", \"Y_NT\", \"Y_T\", \"efecto\")])\nprint(c(ATE = ATE, ATT = ATT))"
+              "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nATE <- mean(personas$efecto)\nATT <- mean(personas$efecto[personas$T == 1])\nprint(personas[, c(\"nombre\", \"T\", \"Y\", \"Y_NT\", \"Y_T\", \"efecto\")])\nprint(c(ATE = ATE, ATT = ATT))"
             ]
           ],
           "interactivo": "effects",
           "referencia": "Tema 2 · ATE y ATT",
           "tablas_didacticas": [
             {
-              "titulo": "La misma población artificial de cinco personas",
+              "titulo": "Resultados observados, potenciales y efectos del mismo ejemplo",
               "columnas": [
                 "Persona",
                 "T",
                 "Y observado",
                 "$Y^{NT}$",
                 "$Y^{T}$",
-                "Efecto supuesto"
+                "Efecto $Y^{T}$ − $Y^{NT}$"
               ],
               "filas": [
                 [
@@ -291,9 +296,14 @@
             [
               "Después: elegir a quiénes promediamos",
               "ATE usa las cinco diferencias y divide por 5. ATT usa únicamente las diferencias de las filas con T = 1 y divide por 3. No se calcula restando el promedio observado de tratados y no tratados."
+            ],
+            [
+              "Usa la columna de efectos de esta misma tabla",
+              "Para ATE suma las cinco filas; para ATT usa únicamente las filas con T = 1. Si cambias el resultado con tratamiento de Juan, su efecto se actualiza en la misma tabla: no es necesario comparar dos tablas distintas."
             ]
           ],
-          "reto_codigo": "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nalternativa <- personas\nalternativa$Y_T[alternativa$nombre == \"Juan\"] <- 60\nalternativa$efecto <- alternativa$Y_T - alternativa$Y_NT\nprint(c(ATE = mean(alternativa$efecto),\n        ATT = mean(alternativa$efecto[alternativa$T == 1])))"
+          "reto_codigo": "personas <- data.frame(\n  nombre = c(\"Sofía\", \"Paula\", \"Ezequiel\", \"Juan\", \"Caro\"),\n  T = c(1, 0, 1, 0, 1),\n  Y = c(100, 40, 80, 20, 60),\n  efecto_supuesto = c(25, 15, 20, 10, 15)\n)\n# Solo para completar este ejemplo artificial: fijamos los efectos.\npersonas$Y_NT <- ifelse(personas$T == 0, personas$Y,\n                        personas$Y - personas$efecto_supuesto)\npersonas$Y_T <- ifelse(personas$T == 1, personas$Y,\n                       personas$Y + personas$efecto_supuesto)\npersonas$efecto <- personas$Y_T - personas$Y_NT\nalternativa <- personas\nalternativa$Y_T[alternativa$nombre == \"Juan\"] <- 60\nalternativa$efecto <- alternativa$Y_T - alternativa$Y_NT\nprint(c(ATE = mean(alternativa$efecto),\n        ATT = mean(alternativa$efecto[alternativa$T == 1])))",
+          "tabla_en_interactivo": true
         },
         {
           "id": "C3-04",
@@ -324,6 +334,10 @@
             [
               "Definición · Grupo de control",
               "Es el grupo que no recibe el tratamiento (T = 0): Paula y Juan. Sirve como grupo de comparación, pero no constituye automáticamente un buen contrafactual del grupo tratado. Aquí control nombra un grupo de personas, no una variable añadida a la regresión."
+            ],
+            [
+              "El contrafactual que necesitamos para separar el ATT",
+              "Para las personas tratadas (T = 1), $Y^{NT}$ responde qué resultado habrían tenido sin tratamiento. Su media, (75 + 60 + 45)/3 = 60, es la que usamos para distinguir el ATT de la selección. Mira las tres celdas doradas con borde en la tabla."
             ]
           ],
           "tablas_didacticas": [
@@ -378,7 +392,44 @@
                   "60",
                   "15"
                 ]
-              ]
+              ],
+              "contrafactuales": [
+                [
+                  0,
+                  3
+                ],
+                [
+                  1,
+                  4
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  3,
+                  4
+                ],
+                [
+                  4,
+                  3
+                ]
+              ],
+              "contrafactuales_foco": [
+                [
+                  0,
+                  3
+                ],
+                [
+                  2,
+                  3
+                ],
+                [
+                  4,
+                  3
+                ]
+              ],
+              "leyenda": "Dorado: resultado contrafactual. El borde resalta los valores de $Y^{NT}$ cuando T = 1: 75, 60 y 45. Son los resultados sin tratamiento de Sofía, Ezequiel y Caro; no los observaríamos en datos reales y aquí se conocen por construcción del ejemplo."
             }
           ],
           "pizarra": [
@@ -471,7 +522,7 @@
           "titulo": "Autoselección frente a asignación aleatoria",
           "texto": "Imagina un programa de capacitación que, por construcción de esta simulación, aumenta exactamente 10 puntos la productividad de cada persona. Comparamos dos formas de asignar el mismo programa a la misma población: participan quienes tienen mayor habilidad o se sortean 500 cupos entre 1000 personas. El efecto verdadero sigue siendo 10 en ambos escenarios; lo que cambia es quién participa.",
           "codigo": "set.seed(2026)\nn <- 1000\nhabilidad <- rnorm(n)\nY_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)\nY_T <- Y_NT + 10\n# Escenario 1: participan las personas con habilidad mayor que cero.\nT_auto <- as.numeric(habilidad > 0)\nY_auto <- ifelse(T_auto == 1, Y_T, Y_NT)\n# Escenario 2: se sortean 500 cupos, sin cambiar los resultados potenciales.\nT_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))\nY_azar <- ifelse(T_azar == 1, Y_T, Y_NT)\nbrecha_auto <- mean(Y_auto[T_auto == 1]) - mean(Y_auto[T_auto == 0])\nbrecha_azar <- mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0])\ncomparacion <- data.frame(\n  asignacion = c(\"Autoselección\", \"Sorteo\"),\n  efecto_verdadero = c(10, 10),\n  diferencia_observada = c(brecha_auto, brecha_azar)\n)\nprint(comparacion)\nprint(aggregate(habilidad, list(T = T_auto), mean))\nprint(aggregate(habilidad, list(T = T_azar), mean))",
-          "lectura": "La capacitación suma 10 puntos en ambos casos. Con autoselección, la brecha observada de 33.525 también recoge diferencias de habilidad previas. Con este sorteo, la brecha es 10.965: está cerca de 10, pero no es idéntica porque los grupos de una asignación finita pueden diferir por azar. La siguiente lámina comprobará qué ocurre al repetir el sorteo.",
+          "lectura": "En la autoselección, los participantes tienen una productividad media 33,525 puntos mayor, aunque la capacitación solo suma 10 por persona en este mecanismo. Esa comparación mezcla el efecto del programa con diferencias previas de productividad: las personas con más habilidad son quienes participan. Al sortear, la brecha del ejemplo baja a 10,965, cerca del efecto verdadero de 10. El gráfico muestra cómo cambia quién integra cada grupo, no un cambio en la eficacia del programa. Se dibujan 120 personas para facilitar la lectura, pero las medias se calculan con las 1000.",
           "explicaciones": [
             [
               "Construir los dos resultados potenciales",
@@ -609,6 +660,64 @@
               "titulo": "Pendiente poblacional al omitir x₂",
               "latex": "\\widetilde{\\beta}_1=2+3\\times0.5=3.5",
               "mathml": "<math display=\"block\"><mrow><msub><mover><mi>β</mi><mo>~</mo></mover><mn>1</mn></msub><mo>=</mo><mn>2</mn><mo>+</mo><mn>3</mn><mo>×</mo><mn>0.5</mn><mo>=</mo><mn>3.5</mn></mrow></math>"
+            }
+          ],
+          "formulas_grafica": [
+            {
+              "titulo": "Modelo con control: utiliza x₁ y x₂",
+              "latex": "\\widehat y=\\widehat b_0+\\widehat b_1x_1+\\widehat b_2x_2",
+              "mathml": "<math display=\"block\"><mrow><mover><mi>y</mi><mo>^</mo></mover><mo>=</mo><msub><mover><mi>b</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>b</mi><mo>^</mo></mover><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><msub><mover><mi>b</mi><mo>^</mo></mover><mn>2</mn></msub><msub><mi>x</mi><mn>2</mn></msub></mrow></math>"
+            },
+            {
+              "titulo": "Recta azul: predicción con control, fijando x₂ = 0",
+              "latex": "\\widehat y\\big|_{x_2=0}=\\widehat b_0+\\widehat b_1x_1",
+              "mathml": "<math display=\"block\"><mrow><mover><mi>y</mi><mo>^</mo></mover><mo>(</mo><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn><mo>)</mo><mo>=</mo><msub><mover><mi>b</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>b</mi><mo>^</mo></mover><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub></mrow></math>"
+            },
+            {
+              "titulo": "Recta dorada: ajuste corto que omite x₂",
+              "latex": "\\widehat y_{\\mathrm{corta}}=\\widetilde b_0+\\widetilde b_1x_1",
+              "mathml": "<math display=\"block\"><mrow><msub><mover><mi>y</mi><mo>^</mo></mover><mtext>corta</mtext></msub><mo>=</mo><msub><mover><mi>b</mi><mo>~</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>b</mi><mo>~</mo></mover><mn>1</mn></msub><msub><mi>x</mi><mn>1</mn></msub></mrow></math>"
+            }
+          ],
+          "escenarios": [
+            {
+              "titulo": "X₂ relacionado y relevante",
+              "delta": 0.5,
+              "beta2": 3,
+              "interpretacion": "x₂ aumenta, en promedio, con x₁ y además aumenta y. Si lo omitimos, la recta dorada atribuye a x₁ parte de esa contribución adicional. La pendiente poblacional corta es 2 + 3 × 0.5 = 3.5, superior al efecto directo 2. La recta azul separa ambas contribuciones y representa el ajuste con x₂ fijo en 0.",
+              "formulas": [
+                {
+                  "titulo": "Ecuaciones de este escenario",
+                  "latex": "x_2=0.5x_1+v,\\qquad y=1+2x_1+3x_2+u",
+                  "mathml": "<math display=\"block\"><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>0.5</mn><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><mi>v</mi><mo>,</mo><mspace width=\"1em\"/><mi>y</mi><mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><mn>3</mn><msub><mi>x</mi><mn>2</mn></msub><mo>+</mo><mi>u</mi></mrow></math>"
+                }
+              ]
+            },
+            {
+              "titulo": "X₂ sin relación con X₁",
+              "delta": 0,
+              "beta2": 3,
+              "interpretacion": "x₂ sigue influyendo en y, pero ya no se relaciona con x₁ en el mecanismo poblacional. Omitirla deja más variación sin explicar, pero no añade un componente sistemático a la pendiente de x₁: 2 + 3 × 0 = 2. Las pendientes de esta muestra pueden diferir de 2 o entre sí por asociaciones accidentales de una muestra finita.",
+              "formulas": [
+                {
+                  "titulo": "Ecuaciones de este escenario",
+                  "latex": "x_2=v,\\qquad y=1+2x_1+3x_2+u",
+                  "mathml": "<math display=\"block\"><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mi>v</mi><mo>,</mo><mspace width=\"1em\"/><mi>y</mi><mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><mn>3</mn><msub><mi>x</mi><mn>2</mn></msub><mo>+</mo><mi>u</mi></mrow></math>"
+                }
+              ]
+            },
+            {
+              "titulo": "X₂ no influye en Y",
+              "delta": 0.5,
+              "beta2": 0,
+              "interpretacion": "x₂ continúa relacionada con x₁, pero su coeficiente en la ecuación del resultado es 0. Por eso no hay una contribución de x₂ que trasladar a la pendiente corta: 2 + 0 × 0.5 = 2. En este escenario omitir x₂ no genera sesgo poblacional por esta vía; incluirla tampoco garantiza una estimación más precisa.",
+              "formulas": [
+                {
+                  "titulo": "Ecuaciones de este escenario",
+                  "latex": "x_2=0.5x_1+v,\\qquad y=1+2x_1+u",
+                  "mathml": "<math display=\"block\"><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>=</mo><mn>0.5</mn><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><mi>v</mi><mo>,</mo><mspace width=\"1em\"/><mi>y</mi><mo>=</mo><mn>1</mn><mo>+</mo><mn>2</mn><msub><mi>x</mi><mn>1</mn></msub><mo>+</mo><mi>u</mi></mrow></math>"
+                }
+              ]
             }
           ]
         },

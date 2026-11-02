@@ -14,6 +14,7 @@ version_css = sha256((shared / 'identidad-utfsm.css').read_bytes()).hexdigest()[
 version_js = sha256((shared / 'navegacion-utfsm.js').read_bytes()).hexdigest()[:12]
 interactive_js = (ROOT / 'herramientas/interactivos.js').read_text()
 data_json = (ROOT / 'datos/resultados-interactivos.json').read_text()
+guide_json = json.dumps({'escenarios_omision': next(a for b in contenido['bloques'] for a in b['laminas'] if a['id']=='C3-08')['escenarios'], 'formulas_omision': next(a for b in contenido['bloques'] for a in b['laminas'] if a['id']=='C3-08')['formulas_grafica']}, ensure_ascii=False)
 agenda = '<section id="agenda"><h2>Agenda y tabla de contenidos</h2><table class="agenda"><thead><tr><th>Horario</th><th>Actividad</th></tr></thead><tbody>'+''.join('<tr><td>'+e(h)+'</td><td>'+('<a href="#'+e(i)+'">'+e(t)+'</a>' if i else e(t))+'</td></tr>' for h,t,i in contenido['agenda'])+'</tbody></table><p>140 minutos de trabajo y 15 minutos de descanso. Predice, ejecuta en R y explica con tus palabras.</p></section>'
 def rich(text):
     # Nombres R entre backticks; resultados potenciales con superíndice real.
@@ -33,7 +34,21 @@ def render_teaching(a):
     defs = ''.join('<aside class="definition"><h4>'+e(t)+'</h4><p>'+rich(x)+'</p></aside>' for t,x in a.get('definiciones',[]))
     tables = []
     for t in a.get('tablas_didacticas',[]):
-        tables.append('<div class="potential-wrap"><table class="potential-table"><caption>'+e(t['titulo'])+'</caption><thead><tr>'+''.join('<th scope="col">'+rich(c)+'</th>' for c in t['columnas'])+'</tr></thead><tbody>'+''.join('<tr>'+''.join(('<th scope="row">' if i==0 else '<td>')+rich(c)+('</th>' if i==0 else '</td>') for i,c in enumerate(row))+'</tr>' for row in t['filas'])+'</tbody></table></div>')
+        if a.get('tabla_en_interactivo'):
+            continue
+        counter = {tuple(c) for c in t.get('contrafactuales', [])}
+        focus = {tuple(c) for c in t.get('contrafactuales_foco', [])}
+        rows = []
+        for i,row in enumerate(t['filas']):
+            cells = []
+            for j,c in enumerate(row):
+                tag = 'th' if j == 0 else 'td'
+                classes = ('counterfactual ' if (i,j) in counter else '')+('cf-focus' if (i,j) in focus else '')
+                attrs = (' scope="row"' if j == 0 else '')+(' class="'+classes.strip()+'" title="Resultado contrafactual"' if classes else '')
+                cells.append('<'+tag+attrs+'>'+rich(c)+'</'+tag+'>')
+            rows.append('<tr>'+''.join(cells)+'</tr>')
+        legend = '<p class="table-legend">'+rich(t['leyenda'])+'</p>' if t.get('leyenda') else ''
+        tables.append('<div class="potential-wrap"><table class="potential-table"><caption>'+e(t['titulo'])+'</caption><thead><tr>'+''.join('<th scope="col">'+rich(c)+'</th>' for c in t['columnas'])+'</tr></thead><tbody>'+''.join(rows)+'</tbody></table></div>'+legend)
     board = '<section class="board-work"><h4>Para desarrollar en la pizarra</h4>'+''.join('<div class="board-line"><p>'+e(f['titulo'])+'</p>'+f['mathml']+'</div>' for f in a['pizarra'])+'</section>' if a.get('pizarra') else ''
     development = ''.join('<section class="worked-explanation"><h4>'+e(t)+'</h4><p>'+rich(x)+'</p></section>' for t,x in a.get('desarrollo',[]))
     return purpose+defs, ''.join(tables)+board+development
@@ -58,6 +73,8 @@ for bloque in contenido['bloques']:
         widget = '<div class="lab" data-kind="'+e(a['interactivo'])+'"></div>' if a.get('interactivo') else ''
         prompt_widget = '<div class="lab" data-kind="'+e(a['interactivo_previo'])+'"></div>' if a.get('interactivo_previo') else ''
         reflection = '<section class="reflection"><h4>Pausa de discusión · 2–3 minutos</h4><p>Antes de abrir la respuesta, propongan una predicción y justifíquenla en conjunto.</p><ol>'+''.join('<li>'+rich(q)+'</li>' for q in a['reflexion'])+'</ol></section>' if a.get('reflexion') else ''
+        leading_table = widget if a.get('tabla_en_interactivo') else ''
+        if leading_table: widget = ''
         explanations = ''
         if a.get('explicaciones'):
             steps = []
@@ -90,7 +107,7 @@ for bloque in contenido['bloques']:
         if a.get('respuesta_plegada'):
             answer_math = ''.join('<div class="board-line"><p>'+e(f['titulo'])+'</p>'+f['mathml']+'</div>' for f in a.get('pizarra_respuesta',[]))
             resolution = '<details class="answer-reveal"><summary>Mostrar respuesta y comprobar en R</summary><div class="answer-content"><p>'+rich(a['respuesta_texto'])+'</p>'+answer_math+resolution+'</div></details>'
-        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p>{teaching_intro}<p>{rich(a['texto'])}</p>{teaching_body}{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{reflection}{prompt_widget}{resolution}</div></article>''')
+        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p>{teaching_intro}<p>{rich(a['texto'])}</p>{leading_table}{teaching_body}{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{reflection}{prompt_widget}{resolution}</div></article>''')
     sections.append(f'''<section class="chapter" id="{e(bloque['id'])}"><div class="chapter-intro"><p class="eyebrow">{e(bloque['etiqueta'])}</p><h2>{e(bloque['titulo'])}</h2></div>{''.join(cards)}</section>''')
 html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(contenido['titulo'])} · UTFSM</title><style>{css}\n{(ROOT / "herramientas/taller3.css").read_text()}
 .lab {{border:1px solid #b8c8d8;border-radius:12px;padding:16px;margin:20px 0;background:var(--paper,transparent)}}
@@ -102,7 +119,7 @@ html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../identidad-utfsm.css?v={version_css}"></head><body><a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="topbar"><div class="header-inner"><a class="brand" href="#inicio"><img src="../Logo_UTFSM.png" width="36" height="36" alt="Escudo de la Universidad Técnica Federico Santa María"><span>Econometría ICS-294</span></a><div class="header-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">◐</button><div class="search-wrap"><label class="search-label" for="class-search"><input id="class-search" type="search" placeholder="Búsqueda" aria-label="Buscar en las láminas" aria-controls="search-results" autocomplete="off"></label><div id="search-results" role="region" aria-label="Resultados de búsqueda" hidden></div></div><button id="present" type="button" aria-pressed="false">Modo presentación</button></div></div><nav class="header-tabs" aria-label="Navegación principal"><div><a href="../">Home</a><a href="../#clases">Clases</a><a href="../clase-1-taller/">Clase 1</a><a href="../clase-2-taller/">Clase 2</a><a href="#inicio" aria-current="page">Clase 3</a></div></nav></header>
 <div class="page-layout"><aside class="class-sidebar"><nav aria-label="Clases"><p class="sidebar-title">Clases</p><a href="../clase-1-taller/">Clase 1 · Computación estadística en R</a><a href="../clase-2-taller/">Clase 2 · Regresión lineal simple en R</a><a href="#inicio" class="current" aria-current="page">Clase 3 · Causalidad y variable omitida en R</a></nav></aside><main id="contenido"><div class="hero" id="inicio"><h1>{e(contenido['titulo'])}</h1><div class="session-meta"><span>Taller presencial · {e(contenido['docente'])}</span><span class="tag-gold">18:50–21:25 · Descanso 20:00–20:15</span></div><section class="official-info"><h2>Contenido del taller</h2><div><p>{e(contenido['estado'])}</p><p>Recorremos los ocho temas de la cátedra de Sebastián, en su orden. Predice, escribe el código en Colab y explica lo observado. Los contrafactuales y mecanismos causales son simulados; wage1 y wage2 son datos observacionales reales. Los gráficos web usan los datos generados por los mismos ejemplos R del notebook.</p></div></section><div class="downloads"><a href="clase-taller-3.ipynb" download>Descargar notebook R ↓</a><a href="clase-taller-3.R" download>Script R ↓</a><a href="guia-docente-taller-3.md">Guía docente ↗</a></div></div><div class="content">{agenda}<section class="brief" id="preparar-colab"><h2>Antes de comenzar</h2><p>Abre el notebook con kernel R en Google Colab. No necesitas %%R ni rpy2. Ejecuta en orden; cada ejemplo de datos reales también tiene una carga lista para copiar. Si necesitas preparar el entorno, consulta <a href="../clase-1-taller/#preparar-colab">la guía visual de Colab</a>.</p><p>Objetivos: distinguir asociación y efecto causal; calcular ATE, ATT y selección en una simulación; comparar asignación voluntaria y aleatoria; verificar la fórmula de variable omitida e interpretar controles.</p></section>{''.join(sections)}<footer class="footer"><p>{e(contenido['docente'])} · Taller de Econometría ICS-294 · UTFSM</p><p>Fuentes: <a href="https://hizocar.github.io/econometria-usm/clases/clase3/">Cátedra 3</a> · <a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">Wooldridge · wage1</a> · <a href="https://justinmshea.github.io/wooldridge/reference/wage2.html">Wooldridge · wage2</a></p><p><a href="README.md">Guía del material</a> · <a href="instruccion-clase-taller-3.md">Instrucciones de desarrollo</a></p></footer></div></main><aside class="contents-sidebar"><nav aria-label="Tabla de contenidos"><p class="sidebar-title">Tabla de contenidos</p><a href="#preparar-colab">Preparación de Colab</a>{''.join(links)}</nav></aside></div>
-<nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>window.datosC3={data_json};</script><script>{interactive_js}</script><script>
+<nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>window.datosC3={data_json};window.guiaC3={guide_json};</script><script>{interactive_js}</script><script>
 document.querySelectorAll('.explain-toggle').forEach(button => {{
   button.addEventListener('click', () => {{
     const expanded = button.getAttribute('aria-expanded') === 'true';
