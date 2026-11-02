@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def generar():
     contenido = json.loads((ROOT / 'contenido-clase-3.json').read_text())
     acts = [a for b in contenido['bloques'] for a in b['laminas']]
-    code = '\n\n'.join(a['id']+'\n'+a.get('codigo_inicial','')+'\n'+a['codigo'] for a in acts)
+    code = '\n\n'.join(a['id']+'\n'+a.get('codigo_inicial','')+'\n'+a['codigo']+'\n'+a.get('reto_codigo','')+'\n'+'\n'.join(x[2] for x in a.get('explicaciones',[]) if len(x)>2) for a in acts)
     verification = json.loads((ROOT / 'datos/verificacion.json').read_text())
     if hashlib.sha256(code.encode()).hexdigest() != verification['codigo_sha256']:
         raise ValueError('El código cambió: ejecutar verificar_en_R.mjs antes de regenerar las salidas.')
@@ -23,15 +23,36 @@ def generar():
         cells.append({'cell_type': 'code', 'id': id, 'metadata': {}, 'source': (codigo+'\n').splitlines(True), 'outputs': [], 'execution_count': None})
         script.append(codigo+'\n\n')
         guia.append('```r\n'+codigo+'\n```')
+    def teaching(lamina):
+        key = lamina['id'].lower()
+        if lamina.get('proposito'):
+            md('**Propósito del ejemplo**\n\n'+lamina['proposito'], key+'-proposito')
+        if lamina.get('definiciones'):
+            md('\n\n'.join('**'+t+'**\n\n'+x for t,x in lamina['definiciones']),key+'-definiciones')
+        for i,t in enumerate(lamina.get('tablas_didacticas',[])):
+            cols=t['columnas']
+            md('**'+t['titulo']+'**\n\n| '+' | '.join(cols)+' |\n| '+' | '.join('---' for _ in cols)+' |\n'+'\n'.join('| '+' | '.join(row)+' |' for row in t['filas']),key+'-tabla-'+str(i))
+        if lamina.get('pizarra'):
+            md('**Para desarrollar en la pizarra**\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina['pizarra']),key+'-pizarra')
+        if lamina.get('desarrollo'):
+            md('\n\n'.join('**'+t+'**\n\n'+x for t,x in lamina['desarrollo']),key+'-desarrollo')
+    def steps(lamina, suffix, title):
+        key=lamina['id'].lower()
+        md('**'+title+'**',key+suffix)
+        for i,item in enumerate(lamina['explicaciones'],1):
+            md('**'+item[0]+'**\n\n'+item[1],key+suffix+'-'+str(i))
+            if len(item)>2:
+                r(item[2],key+suffix+'-'+str(i)+'-r')
     md('# '+contenido['titulo']+'\n\n'+contenido['estado']+'\n\nDocente: '+contenido['docente']+'\n\nEjecuta las celdas en orden con kernel R. En Colab selecciona R en el tipo de entorno; no uses %%R ni rpy2.', 'inicio')
     md('## Agenda\n\n'+'\n'.join('- '+hora+': '+tema for hora,tema,_ in contenido['agenda']), 'agenda')
     for bloque in contenido['bloques']:
         md('## '+bloque['etiqueta']+' · '+bloque['titulo'], bloque['id'].lower())
         for lamina in bloque['laminas']:
             md('### '+lamina['titulo']+'\n\n'+lamina['texto'], lamina['id'].lower()+'-consigna')
+            teaching(lamina)
             md('**Referencia en la cátedra:** '+lamina.get('referencia',''), lamina['id'].lower()+'-referencia')
             if lamina.get('explicaciones_al_inicio'):
-                md('**Ejercicio guiado**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-ejercicio-guiado')
+                steps(lamina,'-ejercicio-guiado','Ejercicio guiado')
             if lamina.get('codigo_inicial'):
                 md('**Preparar los datos: ejecuta sólo este bloque**', lamina['id'].lower()+'-preparar-datos')
                 r(lamina['codigo_inicial'], lamina['id'].lower()+'-carga-r')
@@ -54,8 +75,11 @@ def generar():
             if lamina.get('salidas_r'):
                 md('**Resultados de referencia calculados en R**\n\n'+'\n\n'.join('**'+t+'**\n\n```text\n'+out+'\n```' for t,out in lamina['salidas_r']), lamina['id'].lower()+'-salidas')
             if lamina.get('explicaciones') and not lamina.get('explicaciones_al_inicio'):
-                md('**El código, paso a paso**\n\n'+'\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['explicaciones']), lamina['id'].lower()+'-explicaciones')
+                steps(lamina,'-explicaciones','El código, paso a paso')
             md('**Lectura del resultado:** '+lamina['lectura'], lamina['id'].lower()+'-lectura')
+            if lamina.get('reto_codigo'):
+                md('**Reto adicional: cambiar solo a Juan**',lamina['id'].lower()+'-reto')
+                r(lamina['reto_codigo'],lamina['id'].lower()+'-reto-r')
             if lamina.get('despues_lectura'):
                 md('\n\n'.join('**'+t+'**\n\n'+d for t,d in lamina['despues_lectura']), lamina['id'].lower()+'-despues-lectura')
             if lamina.get('quiz'):

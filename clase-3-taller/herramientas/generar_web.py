@@ -1,6 +1,6 @@
 """Construye la plantilla web de clase 3 y sincroniza el notebook y las guías."""
 from pathlib import Path
-import json, csv
+import json, csv, re
 from html import escape as e
 from hashlib import sha256
 from generar_taller import generar, ROOT
@@ -15,6 +15,29 @@ version_js = sha256((shared / 'navegacion-utfsm.js').read_bytes()).hexdigest()[:
 interactive_js = (ROOT / 'herramientas/interactivos.js').read_text()
 data_json = (ROOT / 'datos/resultados-interactivos.json').read_text()
 agenda = '<section id="agenda"><h2>Agenda y tabla de contenidos</h2><table class="agenda"><thead><tr><th>Horario</th><th>Actividad</th></tr></thead><tbody>'+''.join('<tr><td>'+e(h)+'</td><td>'+('<a href="#'+e(i)+'">'+e(t)+'</a>' if i else e(t))+'</td></tr>' for h,t,i in contenido['agenda'])+'</tbody></table><p>140 minutos de trabajo y 15 minutos de descanso. Predice, ejecuta en R y explica con tus palabras.</p></section>'
+def rich(text):
+    # Nombres R entre backticks; resultados potenciales con superíndice real.
+    parts = re.split(r'(`[^`]+`)', str(text))
+    out = []
+    for part in parts:
+        if part.startswith('`') and part.endswith('`'):
+            out.append('<code>'+e(part[1:-1])+'</code>')
+        else:
+            t = e(part)
+            t = re.sub(r'\$Y\^\{(NT|T)\}\$', lambda m: '<span class="math-inline"><var>Y</var><sup>'+m[1]+'</sup></span>', t)
+            out.append(t)
+    return ''.join(out)
+
+def render_teaching(a):
+    purpose = '<aside class="purpose"><h4>Propósito del ejemplo</h4><p>'+rich(a['proposito'])+'</p></aside>' if a.get('proposito') else ''
+    defs = ''.join('<aside class="definition"><h4>'+e(t)+'</h4><p>'+rich(x)+'</p></aside>' for t,x in a.get('definiciones',[]))
+    tables = []
+    for t in a.get('tablas_didacticas',[]):
+        tables.append('<div class="potential-wrap"><table class="potential-table"><caption>'+e(t['titulo'])+'</caption><thead><tr>'+''.join('<th scope="col">'+rich(c)+'</th>' for c in t['columnas'])+'</tr></thead><tbody>'+''.join('<tr>'+''.join(('<th scope="row">' if i==0 else '<td>')+rich(c)+('</th>' if i==0 else '</td>') for i,c in enumerate(row))+'</tr>' for row in t['filas'])+'</tbody></table></div>')
+    board = '<section class="board-work"><h4>Para desarrollar en la pizarra</h4>'+''.join('<div class="board-line"><p>'+e(f['titulo'])+'</p>'+f['mathml']+'</div>' for f in a['pizarra'])+'</section>' if a.get('pizarra') else ''
+    development = ''.join('<section class="worked-explanation"><h4>'+e(t)+'</h4><p>'+rich(x)+'</p></section>' for t,x in a.get('desarrollo',[]))
+    return purpose+defs, ''.join(tables)+board+development
+
 def render_concepts(items, source=''):
     if not items:
         return ''
@@ -36,9 +59,11 @@ for bloque in contenido['bloques']:
         explanations = ''
         if a.get('explicaciones'):
             steps = []
-            for step, (line, description) in enumerate(a['explicaciones'], 1):
+            for step, item in enumerate(a['explicaciones'], 1):
+                line, description = item[:2]
+                step_code = '<div class="solution-body"><div class="code-head"><span>R · Ejemplo de esta viñeta</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(item[2])+'</code></pre></div>' if len(item)>2 else ''
                 key = a['id']+'-paso-'+str(step)
-                steps.append(f'<div class="code-step"><button type="button" class="explain-toggle" id="btn-{key}" aria-expanded="false" aria-controls="{key}"><span class="step-badge">{step:02d}</span><code>{e(line)}</code><span class="step-symbol" aria-hidden="true">+</span></button><div class="step-description" id="{key}" role="region" aria-labelledby="btn-{key}" hidden><p>{e(description)}</p></div></div>')
+                steps.append(f'<div class="code-step"><button type="button" class="explain-toggle" id="btn-{key}" aria-expanded="false" aria-controls="{key}"><span class="step-badge">{step:02d}</span><code>{e(line)}</code><span class="step-symbol" aria-hidden="true">+</span></button><div class="step-description" id="{key}" role="region" aria-labelledby="btn-{key}" hidden><p>{rich(description)}</p>{step_code}</div></div>')
             explanations = '<section class="explanations"><h4>'+e(a.get('titulo_explicaciones','Explora el código, paso a paso'))+'</h4><p>'+('Abre las consignas y escribe tu código en Colab antes de consultar la solución.' if a.get('explicaciones_al_inicio') else 'Pulsa una instrucción para descubrir qué hace. Puedes abrir varias y comparar sus funciones.')+'</p><div class="code-explorer">'+''.join(steps)+'</div></section>'
         function_name = a.get('nombre_funcion', 'lm()')
         syntax_source = a.get('fuente_sintaxis', 'https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html')
@@ -49,15 +74,17 @@ for bloque in contenido['bloques']:
         anova_tables = render_anova(a)
         code_open = ' open' if a.get('codigo_abierto') else ''
         links.append('<a href="#'+e(a['id'])+'">'+str(n).zfill(2)+' · '+e(a['titulo'])+'</a>')
-        solution = f'''<details class="solution"{code_open}><summary>Ver código y solución en R</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code>{e(a['codigo'])}</code></pre>{after_code}<p>{e(a['lectura'])}</p></div></details>''' if a.get('codigo') else ''
+        solution = f'''<details class="solution"{code_open}><summary>Ver código y solución en R</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code>{e(a['codigo'])}</code></pre>{after_code}<p>{rich(a['lectura'])}</p></div></details>''' if a.get('codigo') else ''
         leading_solution = solution if a.get('codigo_al_inicio') else ''
         trailing_solution = '' if a.get('codigo_al_inicio') else solution
         top_explanations = explanations if a.get('explicaciones_al_inicio') else ''
         later_explanations = '' if a.get('explicaciones_al_inicio') else explanations
         starter = '<section class="starter-code"><h4>Preparar los datos · Ejecuta sólo este bloque</h4><div class="solution-body"><div class="code-head"><span>R · Carga de datos</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(a['codigo_inicial'])+'</code></pre><p>'+e(a['lectura_codigo_inicial'])+'</p></div></section>' if a.get('codigo_inicial') else ''
         exercise_code = ''.join('<section class="exercise-code"><h4>'+e(block['titulo'])+'</h4><div class="solution-body"><div class="code-head"><span>R · Solución</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(block['codigo'])+'</code></pre><p>'+e(block['lectura'])+'</p></div></section>' for block in a.get('bloques_codigo', []))
+        teaching_intro, teaching_body = render_teaching(a)
+        challenge = '<details class="solution"><summary>Reto adicional · Cambiar solo a Juan</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(a['reto_codigo'])+'</code></pre></div></details>' if a.get('reto_codigo') else ''
         quiz = ''.join('<section class="quiz"><h4>'+e(q)+'</h4>'+''.join('<button type="button" data-correct="'+str(i==correct).lower()+'">'+e(opt)+'</button>' for i,opt in enumerate(opts))+'<p class="quiz-feedback" role="status" data-reason="'+e(reason)+'"></p></section>' for q,opts,correct,reason in a.get('quiz',[]))
-        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p><p>{e(a['texto'])}</p>{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{widget}{anova_tables}{outputs}{later_explanations}<div class="reading"><h4>Cómo leer el resultado</h4><p>{e(a['lectura'])}</p></div>{after_reading}{trailing_solution}{quiz}</div></article>''')
+        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p>{teaching_intro}<p>{rich(a['texto'])}</p>{teaching_body}{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{widget}{anova_tables}{outputs}{later_explanations}<div class="reading"><h4>Cómo leer el resultado</h4><p>{rich(a['lectura'])}</p></div>{after_reading}{trailing_solution}{challenge}{quiz}</div></article>''')
     sections.append(f'''<section class="chapter" id="{e(bloque['id'])}"><div class="chapter-intro"><p class="eyebrow">{e(bloque['etiqueta'])}</p><h2>{e(bloque['titulo'])}</h2></div>{''.join(cards)}</section>''')
 html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(contenido['titulo'])} · UTFSM</title><style>{css}\n{(ROOT / "herramientas/taller3.css").read_text()}
 .lab {{border:1px solid #b8c8d8;border-radius:12px;padding:16px;margin:20px 0;background:var(--paper,transparent)}}

@@ -19,26 +19,125 @@ abline(modelo_asociacion, col = "#D6A600", lwd = 3)
 personas <- data.frame(
   nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
   T = c(1, 0, 1, 0, 1),
-  Y_NT = c(75, 40, 60, 20, 45),
-  Y_T = c(100, 55, 80, 30, 60)
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
 )
-personas$Y <- ifelse(personas$T == 1, personas$Y_T, personas$Y_NT)
-observado <- personas[, c("nombre", "T", "Y")]
-print(observado)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
+
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+Y_recuperado <- ifelse(personas$T == 1, personas$Y_T, personas$Y_NT)
+print(Y_recuperado)
+print(all(Y_recuperado == personas$Y))
+
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "efecto")])
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
 
-# Reto: Juan no pertenece al grupo tratado.
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+ATE <- mean(personas$efecto)
+ATT <- mean(personas$efecto[personas$T == 1])
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(c(ATE = ATE, ATT = ATT))
+
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
 alternativa <- personas
 alternativa$Y_T[alternativa$nombre == "Juan"] <- 60
 alternativa$efecto <- alternativa$Y_T - alternativa$Y_NT
 print(c(ATE = mean(alternativa$efecto),
         ATT = mean(alternativa$efecto[alternativa$T == 1])))
 
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
 tratados <- personas$T == 1
 brecha <- mean(personas$Y[tratados]) - mean(personas$Y[!tratados])
 ATT <- mean(personas$efecto[tratados])
@@ -47,24 +146,83 @@ print(c(brecha = brecha, ATT = ATT, seleccion = seleccion,
         suma = ATT + seleccion))
 modelo_T <- lm(Y ~ T, data = personas)
 print(coef(modelo_T))
-barplot(c(ATT = ATT, Seleccion = seleccion),
-        col = c("#005E90", "#D6A600"),
-        ylab = "Unidades artificiales del resultado")
+
+media_tratados <- mean(c(100, 80, 60))
+media_control <- mean(c(40, 20))
+print(c(tratados = media_tratados, control = media_control,
+        brecha = media_tratados - media_control))
+
+ATT <- mean(c(100 - 75, 80 - 60, 60 - 45))
+seleccion <- mean(c(75, 60, 45)) - mean(c(40, 20))
+print(c(ATT = ATT, seleccion = seleccion, suma = ATT + seleccion))
+
+observado <- data.frame(T = c(1, 0, 1, 0, 1),
+                        Y = c(100, 40, 80, 20, 60))
+print(coef(lm(Y ~ T, data = observado)))
 
 casas <- data.frame(
   grupo = c("Instalan alarma", "No instalan"),
-  robos_sin_alarma = c(12, 4),
-  efecto_alarma = c(-5, -2),
-  T = c(1, 0)
+  T = c(1, 0),
+  Y_NT = c(12, 4),
+  efecto_supuesto = c(-5, -2)
 )
-casas$robos_con_alarma <- casas$robos_sin_alarma + casas$efecto_alarma
-casas$observado <- ifelse(casas$T == 1,
-                         casas$robos_con_alarma, casas$robos_sin_alarma)
+casas$Y_T <- casas$Y_NT + casas$efecto_supuesto
+casas$Y <- ifelse(casas$T == 1, casas$Y_T, casas$Y_NT)
+tratadas <- casas$T == 1
+brecha_alarmas <- casas$Y[tratadas] - casas$Y[!tratadas]
+ATT_alarmas <- casas$Y_T[tratadas] - casas$Y_NT[tratadas]
+seleccion_alarmas <- casas$Y_NT[tratadas] - casas$Y_NT[!tratadas]
 print(casas)
-print(c(brecha = 7 - 4, ATT = -5, seleccion = 12 - 4))
-barplot(casas$observado, names.arg = casas$grupo,
+print(c(brecha = brecha_alarmas, ATT = ATT_alarmas,
+        seleccion = seleccion_alarmas, suma = ATT_alarmas + seleccion_alarmas))
+barplot(casas$Y, names.arg = casas$grupo,
         col = c("#005E90", "#D6A600"),
         ylab = "Robos por cada 100 casas (ejemplo hipotético)")
+
+casas <- data.frame(
+  grupo = c("Instalan alarma", "No instalan"),
+  T = c(1, 0),
+  Y_NT = c(12, 4),
+  efecto_supuesto = c(-5, -2)
+)
+casas$Y_T <- casas$Y_NT + casas$efecto_supuesto
+casas$Y <- ifelse(casas$T == 1, casas$Y_T, casas$Y_NT)
+print(casas)
+
+ATT_alarmas <- 7 - 12
+seleccion_alarmas <- 12 - 4
+brecha_alarmas <- 7 - 4
+print(c(ATT = ATT_alarmas, seleccion = seleccion_alarmas,
+        brecha = brecha_alarmas, suma = ATT_alarmas + seleccion_alarmas))
+
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+# Escenario 1: participan las personas con habilidad mayor que cero.
+T_auto <- as.numeric(habilidad > 0)
+Y_auto <- ifelse(T_auto == 1, Y_T, Y_NT)
+# Escenario 2: se sortean 500 cupos, sin cambiar los resultados potenciales.
+T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+Y_azar <- ifelse(T_azar == 1, Y_T, Y_NT)
+brecha_auto <- mean(Y_auto[T_auto == 1]) - mean(Y_auto[T_auto == 0])
+brecha_azar <- mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0])
+comparacion <- data.frame(
+  asignacion = c("Autoselección", "Sorteo"),
+  efecto_verdadero = c(10, 10),
+  diferencia_observada = c(brecha_auto, brecha_azar)
+)
+print(comparacion)
+print(aggregate(habilidad, list(T = T_auto), mean))
+print(aggregate(habilidad, list(T = T_azar), mean))
+
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+print(head(data.frame(Y_NT, Y_T, efecto = Y_T - Y_NT)))
 
 set.seed(2026)
 n <- 1000
@@ -72,13 +230,27 @@ habilidad <- rnorm(n)
 Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
 Y_T <- Y_NT + 10
 T_auto <- as.numeric(habilidad > 0)
-T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
 Y_auto <- ifelse(T_auto == 1, Y_T, Y_NT)
+print(mean(Y_auto[T_auto == 1]) - mean(Y_auto[T_auto == 0]))
+print(aggregate(habilidad, list(T = T_auto), mean))
+
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
 Y_azar <- ifelse(T_azar == 1, Y_T, Y_NT)
-print(coef(lm(Y_auto ~ T_auto)))
-print(coef(lm(Y_azar ~ T_azar)))
+print(mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0]))
 print(aggregate(habilidad, list(T = T_azar), mean))
 
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+
+# Repetir la asignación sobre la población que acabamos de construir.
 set.seed(2027)
 estimaciones <- numeric(200)
 for (b in seq_along(estimaciones)) {
@@ -86,10 +258,46 @@ for (b in seq_along(estimaciones)) {
   Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
   estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
 }
+print(head(estimaciones))
 print(c(promedio = mean(estimaciones), dispersion = sd(estimaciones)))
 hist(estimaciones, col = "#005E90", border = "white",
      main = "200 sorteos sobre la misma población",
-     xlab = "Diferencia de promedios estimada")
+     xlab = "Efecto estimado: diferencia de productividades medias (puntos)")
+abline(v = 10, col = "#D6A600", lwd = 3)
+
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+set.seed(2027)
+estimaciones <- numeric(200)
+for (b in seq_along(estimaciones)) {
+  T_b <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+  Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
+  estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
+}
+print(head(estimaciones))
+
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+
+# Repetir la asignación sobre la población que acabamos de construir.
+set.seed(2027)
+estimaciones <- numeric(200)
+for (b in seq_along(estimaciones)) {
+  T_b <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+  Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
+  estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
+}
+print(head(estimaciones))
+print(c(promedio = mean(estimaciones), dispersion = sd(estimaciones)))
+hist(estimaciones, col = "#005E90", border = "white",
+     main = "200 sorteos sobre la misma población",
+     xlab = "Efecto estimado: diferencia de productividades medias (puntos)")
 abline(v = 10, col = "#D6A600", lwd = 3)
 
 set.seed(3)
