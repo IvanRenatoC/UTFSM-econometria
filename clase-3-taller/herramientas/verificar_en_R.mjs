@@ -18,7 +18,7 @@ for(const a of content.bloques.flatMap(b=>b.laminas)){
   if(item.length>2)await webR.evalRVoid('eval(parse(text='+JSON.stringify(item[2])+'), envir=new.env(parent=as.environment("package:stats")))');
  }
  if(a.reto_codigo)await webR.evalRVoid('eval(parse(text='+JSON.stringify(a.reto_codigo)+'), envir=new.env(parent=as.environment("package:stats")))');
- if(['C3-02','C3-03','C3-04','C3-05','C3-06','C3-07'].includes(a.id)) {
+ if(['C3-02','C3-03','C3-04','C3-05','C3-06','C3-07','C3-08','C3-09','C3-10','C3-11','C3-12','C3-13'].includes(a.id)) {
   await webR.evalRVoid('eval(parse(text='+JSON.stringify(a.codigo)+'), envir=new.env(parent=as.environment("package:stats")))');
  }
 
@@ -26,6 +26,7 @@ for(const a of content.bloques.flatMap(b=>b.laminas)){
 await webR.evalRVoid(`
 stopifnot(nrow(salarios)==526,nrow(trabajo)==935,ATE==17,ATT==20,brecha==50,seleccion==30)
 stopifnot(isTRUE(all.equal(b_corta,b1_mas_b2_delta <- unname(coef(larga)["x1"] + coef(larga)["x2"] * coef(auxiliar)["x1"]))))
+stopifnot(sum(table(fumar_datos$grupo_edad))==100, length(levels(fumar_datos$grupo_edad))==3)
 stopifnot(coef(sin_edad)["fumar"]<0,coef(con_edad)["fumar"]>0)
 stopifnot(sd(pendientes[,2])>sd(pendientes[,1]))
 stopifnot(coef(modelo_corto)["educ"]>coef(modelo_control)["educ"])

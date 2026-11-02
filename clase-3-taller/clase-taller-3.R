@@ -312,9 +312,23 @@ corta <- lm(y ~ x1, data = sim_ov)
 larga <- lm(y ~ x1 + x2, data = sim_ov)
 print(coef(corta))
 print(coef(larga))
-plot(y ~ x1, data = sim_ov, pch = 19, col = "#005E9060")
+plot(y ~ x1, data = sim_ov, pch = 19, col = "#005E9060",
+     xlab = "x1 simulada", ylab = "y simulada")
 abline(corta, col = "#D6A600", lwd = 3)
+# Recta del modelo con control, manteniendo x2 = 0.
+abline(a = coef(larga)["(Intercept)"], b = coef(larga)["x1"],
+       col = "#005E90", lwd = 3, lty = 2)
 
+set.seed(3)
+n_ov <- 250
+x1 <- rnorm(n_ov)
+v <- rnorm(n_ov)
+u <- rnorm(n_ov)
+x2 <- 0.5 * x1 + v
+y <- 1 + 2 * x1 + 3 * x2 + u
+sim_ov <- data.frame(x1, x2, y)
+corta <- lm(y ~ x1, data = sim_ov)
+larga <- lm(y ~ x1 + x2, data = sim_ov)
 auxiliar <- lm(x2 ~ x1, data = sim_ov)
 b_corta <- unname(coef(corta)["x1"])
 b1 <- unname(coef(larga)["x1"])
@@ -325,6 +339,18 @@ print(c(pendiente_corta = b_corta,
         cambio_por_omitir = b2 * delta1))
 print(all.equal(b_corta, b1 + b2 * delta1))
 
+set.seed(3)
+n_ov <- 250
+x1 <- rnorm(n_ov)
+v <- rnorm(n_ov)
+u <- rnorm(n_ov)
+x2 <- 0.5 * x1 + v
+y <- 1 + 2 * x1 + 3 * x2 + u
+sim_ov <- data.frame(x1, x2, y)
+corta <- lm(y ~ x1, data = sim_ov)
+larga <- lm(y ~ x1 + x2, data = sim_ov)
+
+# Cambiar únicamente los dos parámetros de cada escenario.
 casos <- data.frame(delta1 = c(0.8, -0.8, -0.8, 0.8, 0),
                     beta2 = c(2, -2, 2, -2, 2))
 casos$sesgo_teorico <- casos$delta1 * casos$beta2
@@ -341,26 +367,59 @@ fumar_datos <- data.frame(edad = runif(100, min = 20, max = 80))
 fumar_datos$fumar <- 30 - 0.3 * fumar_datos$edad + rnorm(100, sd = 2.3)
 fumar_datos$Y <- 13 + 0.94 * fumar_datos$fumar +
                 0.98 * fumar_datos$edad + rnorm(100)
+fumar_datos$persona <- seq_len(nrow(fumar_datos))
+fumar_datos$grupo_edad <- cut(fumar_datos$edad,
+  breaks = c(20, 40, 60, 80), right = FALSE, include.lowest = TRUE,
+  labels = c("20 a <40", "40 a <60", "60 a 80"))
 sin_edad <- lm(Y ~ fumar, data = fumar_datos)
 con_edad <- lm(Y ~ fumar + edad, data = fumar_datos)
-print(coef(sin_edad))
-print(coef(con_edad))
-plot(Y ~ fumar, data = fumar_datos, pch = 19,
-     col = ifelse(fumar_datos$edad > 50, "#D6A600", "#005E90"),
+print(table(fumar_datos$grupo_edad))
+print(aggregate(cbind(edad, fumar, Y) ~ grupo_edad,
+                data = fumar_datos, FUN = mean))
+# Cambia este texto por "20 a <40", "40 a <60" o "60 a 80".
+grupo_elegido <- "Todos"
+observados <- if (grupo_elegido == "Todos") fumar_datos else
+  fumar_datos[fumar_datos$grupo_edad == grupo_elegido, ]
+print(head(observados[, c("persona", "edad", "fumar", "Y", "grupo_edad")], 10))
+colores_edad <- c("#005E90", "#D6A600", "#B83B45")
+plot(Y ~ fumar, data = observados, pch = 19,
+     col = colores_edad[as.integer(observados$grupo_edad)],
+     xlim = range(fumar_datos$fumar), ylim = range(fumar_datos$Y),
      xlab = "Intensidad simulada de fumar", ylab = "Índice Y artificial")
 abline(sin_edad, col = "#1B2A5E", lwd = 3)
-legend("topright", c("Edad > 50", "Edad <= 50"),
-       col = c("#D6A600", "#005E90"), pch = 19)
+print(coef(sin_edad))
+print(coef(con_edad))
 
+set.seed(2026)
+fumar_datos <- data.frame(edad = runif(100, min = 20, max = 80))
+fumar_datos$fumar <- 30 - 0.3 * fumar_datos$edad + rnorm(100, sd = 2.3)
+fumar_datos$Y <- 13 + 0.94 * fumar_datos$fumar +
+                0.98 * fumar_datos$edad + rnorm(100)
+fumar_datos$persona <- seq_len(nrow(fumar_datos))
+fumar_datos$grupo_edad <- cut(fumar_datos$edad,
+  breaks = c(20, 40, 60, 80), right = FALSE, include.lowest = TRUE,
+  labels = c("20 a <40", "40 a <60", "60 a 80"))
+sin_edad <- lm(Y ~ fumar, data = fumar_datos)
+con_edad <- lm(Y ~ fumar + edad, data = fumar_datos)
+# El filtro cambia los puntos mostrados, no la muestra que ajustó con_edad.
+grupo_elegido <- "Todos"
+observados <- if (grupo_elegido == "Todos") fumar_datos else
+  fumar_datos[fumar_datos$grupo_edad == grupo_elegido, ]
+print(head(observados[, c("persona", "edad", "fumar", "Y", "grupo_edad")], 10))
+print(aggregate(cbind(edad, fumar, Y) ~ grupo_edad,
+                data = fumar_datos, FUN = mean))
 grid_fumar <- seq(min(fumar_datos$fumar), max(fumar_datos$fumar), length.out = 50)
 a30 <- data.frame(fumar = grid_fumar, edad = 30)
 a60 <- data.frame(fumar = grid_fumar, edad = 60)
-plot(Y ~ fumar, data = fumar_datos, pch = 19, col = "#005E9040",
+colores_edad <- c("#005E90", "#D6A600", "#B83B45")
+plot(Y ~ fumar, data = observados, pch = 19,
+     col = colores_edad[as.integer(observados$grupo_edad)],
+     xlim = range(fumar_datos$fumar), ylim = range(fumar_datos$Y),
      xlab = "Intensidad simulada de fumar", ylab = "Índice Y artificial")
-lines(grid_fumar, predict(con_edad, newdata = a30), col = "#005E90", lwd = 3)
-lines(grid_fumar, predict(con_edad, newdata = a60), col = "#D6A600", lwd = 3)
+lines(grid_fumar, predict(con_edad, newdata = a30), col = "#1B2A5E", lwd = 3)
+lines(grid_fumar, predict(con_edad, newdata = a60), col = "#1B2A5E", lwd = 3, lty = 2)
 legend("topright", c("Edad fija: 30", "Edad fija: 60"),
-       col = c("#005E90", "#D6A600"), lwd = 3)
+       col = "#1B2A5E", lwd = 3, lty = c(1, 2))
 print(summary(con_edad))
 
 set.seed(10)
@@ -373,6 +432,10 @@ for (b in seq_len(nrow(pendientes))) {
   pendientes[b, 1] <- coef(lm(resultado ~ a))["a"]
   pendientes[b, 2] <- coef(lm(resultado ~ a + x3))["a"]
 }
+print(pendientes[1, ])
+barplot(pendientes[1, ], col = c("#005E90", "#D6A600"),
+        ylab = "Pendiente estimada", main = "Una sola muestra")
+abline(h = 2, lty = 2)
 print(colMeans(pendientes))
 print(apply(pendientes, 2, sd))
 boxplot(pendientes, col = c("#005E90", "#D6A600"),

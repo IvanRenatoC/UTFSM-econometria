@@ -745,7 +745,45 @@ abline(v = 10, col = "#D6A600", lwd = 3)
 
 ### Variable omitida: construir un sesgo conocido
 
-Pasamos de selección a omisión. Simula el modelo y = 1 + 2x1 + 3x2 + u, con x2 = 0.5x1 + v. x2 influye en y y se relaciona con x1. Antes de estimar, predice la pendiente del modelo que omite x2: 2 + 3 × 0.5 = 3.5.
+Piensa en x₁ como un índice estandarizado de formación y en x₂ como otra característica relacionada con ella. Son índices simulados, que pueden tomar valores negativos; no son años de educación ni salarios observados. Primero conoce las dos ecuaciones. Después observa la nube sin recta y dedica 2–3 minutos a discutir las preguntas antes de desplegar la respuesta.
+
+**Propósito del ejemplo**
+
+Queremos observar si una regresión atribuye a x₁ parte de lo que corresponde a x₂ cuando dejamos x₂ fuera del modelo. Conocemos el efecto directo verdadero de x₁ porque nosotros construimos estos datos: es 2.
+
+**Para desarrollar en la pizarra**
+
+**Ecuación que genera el resultado**
+
+$$y=1+2x_1+3x_2+u$$
+
+**Relación entre las variables explicativas**
+
+$$x_2=0.5x_1+v$$
+
+**Qué sabemos antes de ajustar**
+
+En la primera ecuación, aumentar x₁ en una unidad, manteniendo x₂ fijo, aumenta y en 2. Además, x₂ influye en y y tiende a aumentar cuando x₁ aumenta. Los términos u y v agregan variación aleatoria independiente en esta simulación.
+
+**Pausa de discusión: 2–3 minutos**
+
+1. Si ajustamos y ~ x1 y ocultamos x₂, ¿la pendiente debería ser 2, mayor que 2 o menor que 2? ¿Por qué?
+2. ¿Qué podría recoger la pendiente de x₁ además de su efecto directo?
+3. Si x₂ dejara de relacionarse con x₁, ¿esperarían el mismo problema?
+
+<details><summary>Mostrar respuesta</summary>
+
+Al omitir x₂, el modelo no separa su contribución de la de x₁. Sustituir la segunda ecuación en la primera permite ver qué parte adicional recoge la pendiente. Esta respuesta se refiere al mecanismo que construimos; no es una regla para atribuir causalidad a cualquier regresión observacional.
+
+**Sustituir y reunir los términos de x₁**
+
+$$y=1+2x_1+3(0.5x_1+v)+u=1+3.5x_1+3v+u$$
+
+**Pendiente poblacional al omitir x₂**
+
+$$\widetilde{\beta}_1=2+3\times0.5=3.5$$
+
+</details>
 
 **Referencia en la cátedra:** Tema 5 · De la selección a la variable omitida
 
@@ -762,8 +800,12 @@ corta <- lm(y ~ x1, data = sim_ov)
 larga <- lm(y ~ x1 + x2, data = sim_ov)
 print(coef(corta))
 print(coef(larga))
-plot(y ~ x1, data = sim_ov, pch = 19, col = "#005E9060")
+plot(y ~ x1, data = sim_ov, pch = 19, col = "#005E9060",
+     xlab = "x1 simulada", ylab = "y simulada")
 abline(corta, col = "#D6A600", lwd = 3)
+# Recta del modelo con control, manteniendo x2 = 0.
+abline(a = coef(larga)["(Intercept)"], b = coef(larga)["x1"],
+       col = "#005E90", lwd = 3, lty = 2)
 ```
 
 **Resultados de referencia calculados en R**
@@ -779,23 +821,45 @@ abline(corta, col = "#D6A600", lwd = 3)
 
 **El código, paso a paso**
 
-**lm(y ~ x1 + x2, data = sim_ov)**
+**rnorm(n, mean = 0, sd = 1)**
 
-El signo + añade x2 como control, no suma ambas columnas antes de estimar. El coeficiente de x1 representa su asociación con y manteniendo x2 constante dentro de este modelo.
+Función: genera valores normales simulados. `n` es cuántos valores se generan; `mean` es su media y `sd` su desviación estándar. En `rnorm(n_ov)` se usan media 0 y desviación 1. No descarga ni modifica una base real.
 
-**corta y larga**
+**lm(formula, data)**
 
-Son nombres que elegimos para guardar dos ajustes. Un R² más alto del modelo largo no prueba por sí mismo que hayamos identificado causalidad.
+Función: ajusta un modelo lineal. `formula` indica la respuesta a la izquierda de ~ y los predictores a la derecha; `data` es la tabla donde están las columnas. En `y ~ x1 + x2`, + agrega un predictor separado. El intercepto se incluye por defecto.
 
-**Lectura del resultado:** El coeficiente corto suele acercarse a 3.5 y el de x1 en el modelo con control, a 2; no serán idénticos a los valores poblacionales en cada muestra. Omitir x2 traslada su componente relacionado con x1 a la pendiente corta. Este efecto causal es conocido solo porque definimos el mecanismo de la simulación.
+**abline(a, b, col, lwd, lty)**
+
+Función: añade una recta a los ejes existentes. `a` es intercepto; `b`, pendiente; `col`, color; `lwd`, grosor; `lty = 2`, trazo discontinuo. La línea azul del ejemplo fija x₂ = 0 en el modelo con control: no es una segunda nube de personas.
+
+**Lectura del resultado:** En esta muestra de 250 observaciones, la pendiente sin x₂ es aproximadamente 3.158 y con x₂ es 1.998. Los valores poblacionales del mecanismo son 3.5 y 2: una muestra contiene ruido. El cambio no significa que el efecto directo haya cambiado: cambia lo que recoge la regresión al omitir o incluir x₂. Usa los botones para quitar la relación entre x₁ y x₂ o hacer irrelevante a x₂.
 
 ### Comprobar la fórmula con tres regresiones
 
-La teoría propone una regresión corta, una con control y otra auxiliar. Comprueba la identidad con coeficientes estimados sobre las mismas 250 observaciones. Distingue esta igualdad algebraica de la aproximación a los parámetros verdaderos.
+Ejecuta los tres ajustes sobre las mismas 250 filas: el modelo corto, el modelo con control y la regresión auxiliar x₂ ~ x₁. Luego extrae los coeficientes por su nombre y verifica la identidad numérica. El código completo de esta lámina incluye la simulación para ejecutarlo sin depender de otra celda.
+
+**Propósito del ejemplo**
+
+Comprobar de dónde sale el cambio de pendiente: necesitamos el coeficiente de x₂ en el modelo con control y la relación estimada entre x₂ y x₁.
+
+**Qué representa cada número**
+
+b1 es la pendiente de x₁ al incluir x₂. b2 es el coeficiente de x₂ en ese mismo ajuste. delta1 es la pendiente de x₂ ~ x₁. El producto b2 × delta1 reconstruye la diferencia entre la pendiente corta y b1; no es una cuarta regresión.
 
 **Referencia en la cátedra:** Tema 5 · Regresión auxiliar y fórmula del sesgo
 
 ```r
+set.seed(3)
+n_ov <- 250
+x1 <- rnorm(n_ov)
+v <- rnorm(n_ov)
+u <- rnorm(n_ov)
+x2 <- 0.5 * x1 + v
+y <- 1 + 2 * x1 + 3 * x2 + u
+sim_ov <- data.frame(x1, x2, y)
+corta <- lm(y ~ x1, data = sim_ov)
+larga <- lm(y ~ x1 + x2, data = sim_ov)
 auxiliar <- lm(x2 ~ x1, data = sim_ov)
 b_corta <- unname(coef(corta)["x1"])
 b1 <- unname(coef(larga)["x1"])
@@ -819,27 +883,77 @@ print(all.equal(b_corta, b1 + b2 * delta1))
 
 **El código, paso a paso**
 
-**coef(larga)["x2"]**
+**lm(formula, data) · Regresión auxiliar**
 
-Extrae el coeficiente por su nombre. Evita confundir el intercepto con la pendiente o depender del orden de columnas.
+`formula = x2 ~ x1` pone x₂ como respuesta y x₁ como predictor. `data = sim_ov` busca ambas columnas en esa tabla. Guardamos el ajuste en `auxiliar`; su pendiente mide cuánto varía x₂, en promedio, por unidad de x₁.
 
-**unname(...)**
+**coef(object, ...) · Extraer los coeficientes**
 
-Quita el nombre del número extraído. No cambia su valor y permite comparar números sin diferencias de etiquetas.
+`object` es un modelo ya ajustado, por ejemplo `larga`. `coef(larga)` devuelve un vector con nombres: intercepto, x1 y x2. `coef(larga)["x2"]` selecciona la entrada llamada x2. Los corchetes seleccionan; no vuelven a estimar.
 
-**all.equal(a, b)**
+**unname(obj, force = FALSE) · Quitar etiquetas**
 
-Comprueba igualdad numérica con tolerancia al redondeo. Un TRUE confirma la identidad calculada; no valida un supuesto causal.
+`obj` es el valor o vector al que quitamos su nombre; `force` se deja en FALSE. `unname(coef(larga)["x2"])` conserva el número y elimina su etiqueta x2. Esto evita que una comparación falle solo porque los números tienen nombres distintos.
+
+**all.equal(target, current, tolerance, check.attributes)**
+
+`target` es el valor de referencia; `current`, el valor que lo debería reproducir. `tolerance` permite pequeñas diferencias de redondeo (por defecto, aproximadamente 1.49e-8); `check.attributes` controla si se comparan también atributos como nombres. La función devuelve TRUE si coinciden dentro de la tolerancia o un texto que describe la diferencia. No comprueba supuestos causales.
+
+**print(x, digits = 6) · Mostrar sin alterar los cálculos**
+
+`x` es lo que se imprime. `digits` pide cifras significativas para mostrar: no cambia el valor almacenado ni fija necesariamente seis decimales. En el ejemplo imprimimos un vector nombrado con la pendiente corta, su reconstrucción y la diferencia por omitir x₂.
 
 **Lectura del resultado:** Con intercepto y las mismas filas, b_corta = b1 + b2 × delta1, salvo redondeo de la computadora. El producto estimado mide la diferencia entre pendientes corta y larga. Llamarlo sesgo causal requiere que el modelo largo cumpla los supuestos necesarios; en la simulación conocemos el modelo generador.
 
 ### Predecir el signo: cuatro combinaciones
 
-Usa las mismas x1, v y u para cambiar únicamente delta1 y beta2. En cada caso, predice si omitir x2 sube o baja la pendiente respecto del efecto verdadero 2. Después añade un caso con delta1 = 0.
+Hay dos relaciones distintas. delta1 (δ₁) indica cómo se relaciona x₂ con x₁; beta2 (β₂) indica cómo afecta x₂ a y dentro del mecanismo simulado. El signo del producto β₂ × δ₁ indica si la pendiente del modelo corto queda por encima o por debajo de 2 en la población. No es el signo de la pendiente completa.
+
+**Propósito del ejemplo**
+
+Aprender a anticipar la dirección del cambio antes de ejecutar R. La pendiente directa de x₁ sigue siendo 2 en todos los casos; cambia únicamente el componente que se le atribuye por omitir x₂.
+
+**δ₁ · Relación de x₂ con x₁**
+
+δ₁ > 0: al aumentar x₁, x₂ tiende a aumentar. δ₁ < 0: x₂ tiende a disminuir. δ₁ = 0: no hay esa relación lineal en el mecanismo poblacional.
+
+**β₂ · Contribución de x₂ al resultado**
+
+β₂ > 0: x₂ aumenta y, manteniendo x₁ fijo. β₂ < 0: x₂ disminuye y. β₂ = 0: x₂ no interviene en la ecuación del resultado.
+
+**Para desarrollar en la pizarra**
+
+**Dos ecuaciones, dos parámetros con funciones diferentes**
+
+$$x_2=\delta_1x_1+v,\qquad y=1+2x_1+\beta_2x_2+u$$
+
+**Paso 1 · Mira δ₁**
+
+Pregunta si las personas con más x₁ tienden a tener más o menos x₂.
+
+**Paso 2 · Mira β₂**
+
+Pregunta si ese x₂ adicional empuja el resultado hacia arriba o hacia abajo.
+
+**Paso 3 · Multiplica y suma**
+
+Mismos signos: el producto es positivo; distintos signos: negativo. Después se suma a 2. Por ejemplo, un componente negativo puede reducir la pendiente sin hacerla necesariamente negativa. Elige un caso, predice y recién después muestra el resultado.
 
 **Referencia en la cátedra:** Tema 6 · El signo del sesgo
 
 ```r
+set.seed(3)
+n_ov <- 250
+x1 <- rnorm(n_ov)
+v <- rnorm(n_ov)
+u <- rnorm(n_ov)
+x2 <- 0.5 * x1 + v
+y <- 1 + 2 * x1 + 3 * x2 + u
+sim_ov <- data.frame(x1, x2, y)
+corta <- lm(y ~ x1, data = sim_ov)
+larga <- lm(y ~ x1 + x2, data = sim_ov)
+
+# Cambiar únicamente los dos parámetros de cada escenario.
 casos <- data.frame(delta1 = c(0.8, -0.8, -0.8, 0.8, 0),
                     beta2 = c(2, -2, 2, -2, 2))
 casos$sesgo_teorico <- casos$delta1 * casos$beta2
@@ -867,19 +981,43 @@ print(casos)
 
 **El código, paso a paso**
 
-**seq_len(nrow(casos))**
+**data.frame(...) y c(...) · Preparar los escenarios**
 
-nrow() cuenta filas; seq_len() genera 1, 2, … hasta ese número. Cada vuelta estima uno de los escenarios de la tabla.
+Cada vector creado con c() forma una columna: `delta1` y `beta2`. La fila j contiene los dos parámetros del escenario j; no son cinco personas ni cinco estimaciones de la misma muestra.
 
-**casos$pendiente_estimada[j] <- ...**
+**numeric(length) · Reservar resultados**
 
-Almacena la pendiente del escenario j. Cambiar el signo de la omitida no cambia el efecto directo que fijamos en 2.
+`length` indica cuántos ceros tendrá el vector. `numeric(nrow(casos))` reserva una posición por escenario. Después el ciclo reemplaza cada cero con una pendiente estimada.
+
+**nrow(x) y seq_len(length.out) · Contar e indexar**
+
+`x` es la tabla casos. nrow(casos) cuenta sus filas; `seq_len(nrow(casos))` crea los índices del 1 al número de escenarios. Así el ciclo se adapta si añades otra fila.
+
+**for (j in indices) · Repetir un procedimiento**
+
+`j` es el índice actual. En cada vuelta se usan `delta1[j]` y `beta2[j]` para generar x₂ e y; se conservan las mismas x₁, v y u. Solo modificamos los parámetros que queremos comparar.
+
+**lm(y_j ~ x1) y coef(modelo)["x1"]**
+
+En esta llamada, `formula = y_j ~ x1` omite x₂. No pasamos data porque x1 e y_j son vectores del entorno actual. coef() extrae los coeficientes del ajuste y ["x1"] elige la pendiente que guardamos en la fila j.
 
 **Lectura del resultado:** Dos signos iguales producen un sesgo poblacional positivo; signos distintos, uno negativo. Si beta2 o delta1 es cero, el sesgo poblacional por esta omisión es cero. Aun así, la estimación de una muestra puede diferir de 2 por variación muestral.
 
 ### Fumar y edad: una pendiente que cambia de signo
 
-Reproduce el mecanismo didáctico de la cátedra: en la simulación las personas mayores fuman menos, y la edad aumenta el resultado Y. Y es un índice artificial, no una probabilidad de muerte. No usaremos esta simulación como evidencia médica ni como reproducción exacta del estudio citado.
+Los 100 registros son artificiales. edad se mide en años; fumar es una intensidad simulada y Y un índice artificial. Usa los botones para ver todas las personas o solo un grupo etario, inspeccionar sus filas y comparar sus promedios. Filtrar por grupos amplios sirve para explorar; no equivale a mantener la edad exactamente constante.
+
+**Propósito del ejemplo**
+
+Ver quiénes forman la nube agregada. Al separar edades, podremos observar que las personas mayores tienden a fumar menos y a tener un Y mayor en este ejemplo; mezclar ambos patrones puede producir una asociación engañosa.
+
+**Qué observar antes de ajustar**
+
+Compara dónde se ubica cada grupo en los ejes, su edad media, la intensidad media de fumar y el promedio de Y. Las edades son continuas: los grupos son 20 a menos de 40, 40 a menos de 60 y 60 a 80.
+
+**Qué comparación hacemos**
+
+La recta agregada usa a las 100 personas y mezcla sus edades. Los botones filtran puntos y filas; no cambian el mecanismo ni recalculan un efecto causal por grupo. La lámina siguiente mantendrá fija una edad dentro del modelo.
 
 **Referencia en la cátedra:** Tema 7 · Controles: fumar y edad
 
@@ -889,16 +1027,28 @@ fumar_datos <- data.frame(edad = runif(100, min = 20, max = 80))
 fumar_datos$fumar <- 30 - 0.3 * fumar_datos$edad + rnorm(100, sd = 2.3)
 fumar_datos$Y <- 13 + 0.94 * fumar_datos$fumar +
                 0.98 * fumar_datos$edad + rnorm(100)
+fumar_datos$persona <- seq_len(nrow(fumar_datos))
+fumar_datos$grupo_edad <- cut(fumar_datos$edad,
+  breaks = c(20, 40, 60, 80), right = FALSE, include.lowest = TRUE,
+  labels = c("20 a <40", "40 a <60", "60 a 80"))
 sin_edad <- lm(Y ~ fumar, data = fumar_datos)
 con_edad <- lm(Y ~ fumar + edad, data = fumar_datos)
-print(coef(sin_edad))
-print(coef(con_edad))
-plot(Y ~ fumar, data = fumar_datos, pch = 19,
-     col = ifelse(fumar_datos$edad > 50, "#D6A600", "#005E90"),
+print(table(fumar_datos$grupo_edad))
+print(aggregate(cbind(edad, fumar, Y) ~ grupo_edad,
+                data = fumar_datos, FUN = mean))
+# Cambia este texto por "20 a <40", "40 a <60" o "60 a 80".
+grupo_elegido <- "Todos"
+observados <- if (grupo_elegido == "Todos") fumar_datos else
+  fumar_datos[fumar_datos$grupo_edad == grupo_elegido, ]
+print(head(observados[, c("persona", "edad", "fumar", "Y", "grupo_edad")], 10))
+colores_edad <- c("#005E90", "#D6A600", "#B83B45")
+plot(Y ~ fumar, data = observados, pch = 19,
+     col = colores_edad[as.integer(observados$grupo_edad)],
+     xlim = range(fumar_datos$fumar), ylim = range(fumar_datos$Y),
      xlab = "Intensidad simulada de fumar", ylab = "Índice Y artificial")
 abline(sin_edad, col = "#1B2A5E", lwd = 3)
-legend("topright", c("Edad > 50", "Edad <= 50"),
-       col = c("#D6A600", "#005E90"), pch = 19)
+print(coef(sin_edad))
+print(coef(con_edad))
 ```
 
 **Resultados de referencia calculados en R**
@@ -906,6 +1056,24 @@ legend("topright", c("Edad > 50", "Edad <= 50"),
 **Salida del ejemplo ejecutado en R**
 
 ```text
+
+20 a <40 40 a <60  60 a 80
+      33       37       30
+  grupo_edad     edad     fumar        Y
+1   20 a <40 29.21002 20.767396 61.45481
+2   40 a <60 49.25415 15.333587 75.67854
+3    60 a 80 70.59683  8.997309 90.67541
+   persona     edad     fumar        Y grupo_edad
+1        1 61.92041  8.733111 81.91545    60 a 80
+2        2 53.39183 13.508191 78.35633   40 a <60
+3        3 28.40840 19.337077 60.00649   20 a <40
+4        4 37.14340 19.890595 68.59806   20 a <40
+5        5 53.32214 12.520303 77.60169   40 a <60
+6        6 21.50787 23.015367 56.85485   20 a <40
+7        7 47.97383 12.764204 71.30526   40 a <60
+8        8 71.66064  6.291610 88.52298    60 a 80
+9        9 35.15007 19.763078 66.01605   20 a <40
+10      10 54.84838 11.247665 77.66314   40 a <60
 (Intercept)       fumar
  103.104478   -1.814066
 (Intercept)       fumar        edad
@@ -914,32 +1082,81 @@ legend("topright", c("Edad > 50", "Edad <= 50"),
 
 **El código, paso a paso**
 
-**runif(100, min = 20, max = 80)**
+**runif(n, min, max) y rnorm(n, mean, sd)**
 
-Genera 100 edades simuladas entre 20 y 80. min y max son los límites, no la media y la desviación.
+runif() genera edades uniformes: `n = 100` registros y límites `min = 20`, `max = 80`. rnorm() agrega variación normal: usamos `sd = 2.3` en fumar. Una semilla fija permite volver a crear los mismos 100 registros.
 
-**col = ifelse(edad > 50, ... , ...)**
+**cut(x, breaks, labels, right, include.lowest)**
 
-Colorea cada punto según su grupo de edad. Los colores ayudan a reconocer la variable que estaba oculta en la primera regresión.
+`x` es el vector de edades; `breaks` fija los límites 20, 40, 60 y 80; `labels` nombra los tres grupos. `right = FALSE` usa intervalos cerrados a la izquierda y abiertos a la derecha; `include.lowest = TRUE` incluye también el límite superior extremo en este caso. El resultado es una variable categórica o factor: una etiqueta de grupo por persona.
 
-**Lectura del resultado:** La nube agregada puede tener pendiente negativa, aunque el efecto de fumar fijado en el mecanismo sea positivo (+0.94). La edad genera un sesgo negativo porque aumenta Y y se relaciona negativamente con fumar. Ajustar por edad cambia la comparación; no significa que el efecto poblacional haya cambiado.
+**table(x) · Contar personas por grupo**
+
+`x = fumar_datos$grupo_edad` contiene las etiquetas. table() cuenta cuántas veces aparece cada una. No calcula promedios ni efectos. La suma de los tres conteos debe ser 100.
+
+**aggregate(formula, data, FUN) y cbind(...)**
+
+`formula = cbind(edad, fumar, Y) ~ grupo_edad` pide resumir tres columnas por grupo; cbind() las reúne para esta operación. `data` indica la tabla y `FUN = mean` la función aplicada a cada columna en cada grupo. No se escribe mean() porque aquí pasamos la función, no su resultado.
+
+**tabla[condición, columnas] y head(x, n = 10)**
+
+La condición `grupo_edad == "20 a <40"` elige filas; dejar vacío lo que está después de la coma conserva todas las columnas. `head(x, n = 10)` muestra las primeras diez filas del resultado; no toma una muestra aleatoria.
+
+**as.integer(x) y col = colores_edad[...]**
+
+`x` es el factor de grupos. as.integer() obtiene sus códigos 1, 2 y 3; se usan como posiciones del vector de colores. Esto conserva el mismo color para cada grupo aunque filtremos la tabla.
+
+**Lectura del resultado:** La pendiente agregada es aproximadamente −1.814, mientras que el coeficiente de fumar al incluir edad es +0.947. No son efectos que cambiaron en la población: cambió la comparación. Separar los datos en tres intervalos etarios no garantiza eliminar la confusión por edad dentro de cada intervalo. Este ejemplo ilustra un mecanismo, no es evidencia sanitaria.
 
 ### Comparar manteniendo la edad fija
 
-Usa el modelo con edad para dibujar dos líneas ajustadas: una a los 30 años y otra a los 60. Son comparaciones del modelo a una edad fija, no dos nuevas regresiones ni nuevas observaciones. Explica por qué no debemos conectar todos los puntos como una serie temporal.
+Explora otra vez las filas y los promedios de cada grupo etario. Luego activa las dos líneas de edad fija. Ambas provienen del ajuste Y ~ fumar + edad estimado sobre todas las personas; no son regresiones separadas de cada grupo. La línea continua fija edad = 30 y la discontinua edad = 60.
+
+**Propósito del ejemplo**
+
+Distinguir mirar un grupo de edades de comparar manteniendo la edad fija. Usamos los mismos 100 registros y el mismo modelo; los filtros muestran personas, mientras las líneas representan predicciones a los 30 y 60 años.
+
+**Por qué las dos líneas tienen la misma pendiente**
+
+En este modelo aditivo, fumar tiene un único coeficiente. Cambiar la edad fija modifica el nivel de la línea, no su pendiente. No hemos añadido una interacción entre fumar y edad.
+
+**Qué no hace el filtro**
+
+Mostrar solo a quienes tienen 60–80 años no vuelve a ajustar el modelo ni fija a todos en 60. Las líneas siguen usando el modelo de las 100 personas. Algunas combinaciones extremas de fumar y edad tienen poco apoyo en los datos: dibujarlas no crea observaciones.
 
 **Referencia en la cátedra:** Tema 7 · Soluciones mediante controles
 
 ```r
+set.seed(2026)
+fumar_datos <- data.frame(edad = runif(100, min = 20, max = 80))
+fumar_datos$fumar <- 30 - 0.3 * fumar_datos$edad + rnorm(100, sd = 2.3)
+fumar_datos$Y <- 13 + 0.94 * fumar_datos$fumar +
+                0.98 * fumar_datos$edad + rnorm(100)
+fumar_datos$persona <- seq_len(nrow(fumar_datos))
+fumar_datos$grupo_edad <- cut(fumar_datos$edad,
+  breaks = c(20, 40, 60, 80), right = FALSE, include.lowest = TRUE,
+  labels = c("20 a <40", "40 a <60", "60 a 80"))
+sin_edad <- lm(Y ~ fumar, data = fumar_datos)
+con_edad <- lm(Y ~ fumar + edad, data = fumar_datos)
+# El filtro cambia los puntos mostrados, no la muestra que ajustó con_edad.
+grupo_elegido <- "Todos"
+observados <- if (grupo_elegido == "Todos") fumar_datos else
+  fumar_datos[fumar_datos$grupo_edad == grupo_elegido, ]
+print(head(observados[, c("persona", "edad", "fumar", "Y", "grupo_edad")], 10))
+print(aggregate(cbind(edad, fumar, Y) ~ grupo_edad,
+                data = fumar_datos, FUN = mean))
 grid_fumar <- seq(min(fumar_datos$fumar), max(fumar_datos$fumar), length.out = 50)
 a30 <- data.frame(fumar = grid_fumar, edad = 30)
 a60 <- data.frame(fumar = grid_fumar, edad = 60)
-plot(Y ~ fumar, data = fumar_datos, pch = 19, col = "#005E9040",
+colores_edad <- c("#005E90", "#D6A600", "#B83B45")
+plot(Y ~ fumar, data = observados, pch = 19,
+     col = colores_edad[as.integer(observados$grupo_edad)],
+     xlim = range(fumar_datos$fumar), ylim = range(fumar_datos$Y),
      xlab = "Intensidad simulada de fumar", ylab = "Índice Y artificial")
-lines(grid_fumar, predict(con_edad, newdata = a30), col = "#005E90", lwd = 3)
-lines(grid_fumar, predict(con_edad, newdata = a60), col = "#D6A600", lwd = 3)
+lines(grid_fumar, predict(con_edad, newdata = a30), col = "#1B2A5E", lwd = 3)
+lines(grid_fumar, predict(con_edad, newdata = a60), col = "#1B2A5E", lwd = 3, lty = 2)
 legend("topright", c("Edad fija: 30", "Edad fija: 60"),
-       col = c("#005E90", "#D6A600"), lwd = 3)
+       col = "#1B2A5E", lwd = 3, lty = c(1, 2))
 print(summary(con_edad))
 ```
 
@@ -948,6 +1165,21 @@ print(summary(con_edad))
 **Salida del ejemplo ejecutado en R**
 
 ```text
+   persona     edad     fumar        Y grupo_edad
+1        1 61.92041  8.733111 81.91545    60 a 80
+2        2 53.39183 13.508191 78.35633   40 a <60
+3        3 28.40840 19.337077 60.00649   20 a <40
+4        4 37.14340 19.890595 68.59806   20 a <40
+5        5 53.32214 12.520303 77.60169   40 a <60
+6        6 21.50787 23.015367 56.85485   20 a <40
+7        7 47.97383 12.764204 71.30526   40 a <60
+8        8 71.66064  6.291610 88.52298    60 a 80
+9        9 35.15007 19.763078 66.01605   20 a <40
+10      10 54.84838 11.247665 77.66314   40 a <60
+  grupo_edad     edad     fumar        Y
+1   20 a <40 29.21002 20.767396 61.45481
+2   40 a <60 49.25415 15.333587 75.67854
+3    60 a 80 70.59683  8.997309 90.67541
 
 Call:
 lm(formula = Y ~ fumar + edad, data = fumar_datos)
@@ -972,23 +1204,61 @@ F-statistic:  9250 on 2 and 97 DF,  p-value: < 2.2e-16
 
 **El código, paso a paso**
 
-**seq(..., length.out = 50)**
+**seq(from, to, length.out) · Preparar una rejilla**
 
-Genera 50 puntos ordenados entre dos límites; sirve para dibujar una línea continua. No son 50 personas nuevas.
+`from` y `to` son el mínimo y máximo de fumar; `length.out = 50` pide 50 valores ordenados entre ellos. Esta rejilla sirve para trazar predicciones: no representa 50 personas nuevas.
 
-**predict(con_edad, newdata = a30)**
+**data.frame(fumar = grid_fumar, edad = 30)**
 
-Ya vimos predict() en el taller 2. newdata incluye ahora ambas columnas que necesita el modelo: fumar y edad.
+Crea la tabla de escenarios a predecir. La columna fumar varía en 50 posiciones y la edad 30 se repite en todas. La tabla a60 hace lo mismo con edad 60. Los nombres de columnas deben coincidir con los predictores del modelo.
 
-**lines(x, y, col = ..., lwd = ...)**
+**predict(object, newdata, interval = "none")**
 
-Añade puntos unidos por segmentos sobre un gráfico ya creado. A diferencia de abline(), permite dibujar predicciones calculadas en una rejilla.
+`object = con_edad` es el ajuste ya estimado; `newdata = a30` entrega los valores de fumar y edad para los que queremos predecir. Con `interval = "none"` (por defecto) obtenemos predicciones puntuales; no bandas ni nuevos datos observados. El cálculo usa los coeficientes del modelo original, no lo vuelve a estimar.
 
-**Lectura del resultado:** Las dos líneas tienen la misma pendiente de fumar porque este modelo es aditivo y no incluye interacción. Su separación refleja el coeficiente de edad. Las combinaciones extremas pueden estar poco respaldadas por la muestra: fijar una edad no crea observaciones. Controlar corrige la omisión en este mecanismo conocido, no en cualquier base real.
+**lines(x, y, col, lwd, lty)**
+
+`x = grid_fumar` y `y = predict(...)` deben tener igual longitud. `col` fija el color, `lwd = 3` el grosor y `lty = 2` la línea discontinua. lines() añade segmentos al gráfico existente; plot() crea los ejes y la nube inicial.
+
+**legend(x, legend, col, lwd, lty)**
+
+`x = "topright"` ubica la leyenda; `legend` contiene los textos. Los vectores `lty = c(1, 2)` y los colores deben corresponder a las líneas dibujadas. Una etiqueta debe describir la predicción, no presentarla como una persona observada.
+
+**Lectura del resultado:** Los puntos son personas simuladas; las líneas son resultados medios predichos al fijar una edad exacta. Su pendiente de fumar es aproximadamente +0.947 y la separación entre líneas refleja el coeficiente de edad. No debemos interpretar filtrar por un intervalo amplio como si fuera controlar exactamente por edad.
 
 ### ¿Más controles siempre es mejor?
 
-En una simulación repetida, x3 se relaciona con x1 pero no forma parte del modelo verdadero de Y. Compara 200 pendientes con y sin ese control. No confundas una variable irrelevante con una variable omitida que sí afecta al resultado.
+Construimos un resultado con efecto verdadero 2 para la variable a. Creamos también x₃, muy relacionada con a, pero no la usamos para generar el resultado. Ajustamos el modelo sin x₃ y con x₃ en 200 muestras nuevas de 80 observaciones cada una. La pregunta es si el segundo ajuste queda más cerca de 2 de manera estable o si sus pendientes fluctúan más.
+
+**Propósito del ejemplo**
+
+Mostrar que añadir una variable que no explica y puede hacer menos precisa la pendiente que nos interesa, aunque no introduzca un sesgo sistemático. Compararemos la variación del estimador entre muchas muestras, no solo dos números de una muestra.
+
+**Variable irrelevante en este ejercicio**
+
+x₃ no aparece en la ecuación que genera y: su coeficiente poblacional es 0. Esto no significa que no esté correlacionada con a, ni que podamos identificar una variable irrelevante solo porque su p-valor sea alto en una muestra.
+
+**Precisión del estimador**
+
+Aquí se mide por cuánto varían las 200 pendientes estimadas. Menor dispersión entre muestras significa mayor precisión; no es lo mismo que una pendiente mayor, un R² mayor o un error estándar de las observaciones.
+
+**Para desarrollar en la pizarra**
+
+**Modelo generador y variable añadida**
+
+$$y=1+2a+u,\qquad x_3=0.9a+v$$
+
+**1. Mira una muestra**
+
+Las dos pendientes pueden ser diferentes y cualquiera podría quedar más cerca de 2 en esa ocasión. Una sola muestra no permite observar el sesgo o la varianza del procedimiento.
+
+**2. Mira las 200 muestras**
+
+La media de las pendientes es aproximadamente 1.999 sin x₃ y 1.993 con x₃: ambas se aproximan al valor verdadero 2.
+
+**3. Compara la dispersión**
+
+La desviación entre estimaciones aumenta aproximadamente de 0.105 a 0.261 al añadir x₃. En este diseño, incluir una variable irrelevante que repite información de a hace más difícil separar sus contribuciones y reduce precisión. Un control relevante puede tener otro efecto; no concluimos que todos los controles perjudican.
 
 **Referencia en la cátedra:** Tema 8 · Variables irrelevantes y conclusiones
 
@@ -1003,6 +1273,10 @@ for (b in seq_len(nrow(pendientes))) {
   pendientes[b, 1] <- coef(lm(resultado ~ a))["a"]
   pendientes[b, 2] <- coef(lm(resultado ~ a + x3))["a"]
 }
+print(pendientes[1, ])
+barplot(pendientes[1, ], col = c("#005E90", "#D6A600"),
+        ylab = "Pendiente estimada", main = "Una sola muestra")
+abline(h = 2, lty = 2)
 print(colMeans(pendientes))
 print(apply(pendientes, 2, sd))
 boxplot(pendientes, col = c("#005E90", "#D6A600"),
@@ -1016,6 +1290,8 @@ abline(h = 2, lty = 2)
 
 ```text
   Sin x3   Con x3
+1.945225 2.005996
+  Sin x3   Con x3
 1.998904 1.993283
    Sin x3    Con x3
 0.1047310 0.2606908
@@ -1023,19 +1299,31 @@ abline(h = 2, lty = 2)
 
 **El código, paso a paso**
 
-**colMeans(pendientes)**
+**matrix(data = 0, nrow = 200, ncol = 2)**
 
-Calcula una media por columna de la matriz: aquí, el promedio de las pendientes de cada modelo.
+`data = 0` llena inicialmente con ceros. `nrow = 200` reserva una fila por muestra simulada y `ncol = 2` una columna por modelo. `colnames(pendientes) <- ...` nombra esas dos columnas; no modifica sus valores.
 
-**apply(pendientes, 2, sd)**
+**for (b in seq_len(nrow(pendientes)))**
 
-Aplica sd a cada columna (2). Con 1 operaría por filas. Resume la dispersión entre muestras de cada estimador.
+En cada vuelta se generan 80 observaciones nuevas y se ajustan dos modelos a esa misma muestra. La fila b guarda las dos pendientes. A diferencia de la lámina 07, aquí cambia la muestra completa, no solo la asignación del tratamiento.
 
-**boxplot(pendientes)**
+**colMeans(x, na.rm = FALSE) · Promedio por columna**
 
-Compara las distribuciones de ambas columnas. La referencia horizontal 2 es el efecto definido en la simulación.
+`x = pendientes` es una matriz numérica. colMeans() calcula una media de sus 200 valores en cada columna. `na.rm = FALSE` conserva el tratamiento predeterminado de faltantes; aquí no los hay. Estas medias describen dónde se centran los estimadores, no su dispersión.
 
-**Lectura del resultado:** Ambos promedios se aproximan a 2, pero el ajuste con x3 muestra mayor dispersión en este diseño: el control irrelevante está correlacionado con a. Añadir un predictor que sí explica Y puede mejorar precisión; aumentar R² o la cantidad de columnas no es una regla para identificar efectos causales.
+**apply(X, MARGIN, FUN, ...) · Aplicar una función**
+
+`X = pendientes` es la matriz; `MARGIN = 2` selecciona columnas (1 seleccionaría filas); `FUN = sd` es la función que aplicamos a cada columna. Se escribe sd sin paréntesis porque pasamos la función. Devuelve dos desviaciones entre estimaciones, una por modelo.
+
+**sd(x, na.rm = FALSE) · Dispersión muestral**
+
+`x` es un vector de pendientes. sd() calcula su desviación estándar con denominador n − 1. Aquí compara cuánto se alejan las estimaciones entre muestras; no es el efecto de a ni la desviación de las observaciones originales.
+
+**boxplot(x, col, ylab, main) y abline(h, lty)**
+
+`x = pendientes` produce una caja por columna. `col` asigna los dos colores; `ylab`, el nombre del eje vertical; `main`, el título. La caja resume cuartiles y mediana; los puntos extremos no son automáticamente errores. `abline(h = 2, lty = 2)` añade una referencia horizontal discontinua en la pendiente verdadera.
+
+**Lectura del resultado:** La demostración busca separar dos conceptos: centrarse cerca de 2 en promedio y ser preciso en una muestra. Ambos ajustes se centran aproximadamente en 2, pero el que añade x₃ fluctúa más en este diseño. No estamos demostrando que una variable deba eliminarse solo por significancia ni que agregar controles siempre aumente la incertidumbre.
 
 ## Parte 3 · Práctica guiada · Aplicar controles a datos reales
 
