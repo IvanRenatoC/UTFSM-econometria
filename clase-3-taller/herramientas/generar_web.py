@@ -1,0 +1,83 @@
+"""Construye la plantilla web de clase 3 y sincroniza el notebook y las guías."""
+from pathlib import Path
+import json, csv
+from html import escape as e
+from hashlib import sha256
+from generar_taller import generar, ROOT
+
+contenido = generar()
+# Estructura gráfica copiada de la clase 1; recursos institucionales compartidos.
+css = (ROOT / 'herramientas/estructura-base.css').read_text()
+js = (ROOT / 'herramientas/presentacion-base.js').read_text()
+shared = ROOT.parent
+version_css = sha256((shared / 'identidad-utfsm.css').read_bytes()).hexdigest()[:12]
+version_js = sha256((shared / 'navegacion-utfsm.js').read_bytes()).hexdigest()[:12]
+interactive_js = (ROOT / 'herramientas/interactivos.js').read_text()
+data_json = (ROOT / 'datos/resultados-interactivos.json').read_text()
+agenda = '<section id="agenda"><h2>Agenda y tabla de contenidos</h2><table class="agenda"><thead><tr><th>Horario</th><th>Actividad</th></tr></thead><tbody>'+''.join('<tr><td>'+e(h)+'</td><td>'+('<a href="#'+e(i)+'">'+e(t)+'</a>' if i else e(t))+'</td></tr>' for h,t,i in contenido['agenda'])+'</tbody></table><p>140 minutos de trabajo y 15 minutos de descanso. Predice, ejecuta en R y explica con tus palabras.</p></section>'
+def render_concepts(items, source=''):
+    if not items:
+        return ''
+    return '<section class="concept-notes">'+''.join('<details class="solution"><summary>'+e(title)+'</summary><div class="solution-body"><p>'+e(description)+'</p></div></details>' for title,description in items)+('<p><a href="'+e(source)+'">Documentación oficial de R ↗</a></p>' if source else '')+'</section>'
+def render_anova(activity):
+    tables = []
+    for t in activity.get('tablas_anova', []):
+        body = ''.join('<tr><th scope="row">'+e(row[0])+'</th>'+''.join('<td>'+e(value)+'</td>' for value in row[1:])+'</tr>' for row in t['filas'])
+        tables.append('<div class="anova-scroll" role="region" aria-label="'+e(t['titulo'])+'" tabindex="0"><table class="anova-table"><caption>'+e(t['titulo'])+' · '+e(t['modelo'])+' · n = '+str(t['n'])+'</caption><thead><tr><th scope="col">Fuente de variación</th><th scope="col">Suma de cuadrados</th><th scope="col">Grados de libertad</th><th scope="col">Cuadrado medio</th><th scope="col">F</th><th scope="col">p-valor</th></tr></thead><tbody>'+body+'</tbody></table></div>')
+    return '<section class="anova-section"><h4>Tabla ANOVA</h4><p class="anova-equation">SST = SSE + SSR</p>'+''.join(tables)+'<p>'+e(activity['nota_anova'])+'</p></section>' if tables else ''
+sections = []
+links = []
+for bloque in contenido['bloques']:
+    cards = []
+    links.append('<a href="#'+e(bloque['id'])+'">'+e(bloque['etiqueta'])+' · '+e(bloque['titulo'])+'</a>')
+    for a in bloque['laminas']:
+        n = int(a['id'].split('-')[1])
+        widget = '<div class="lab" data-kind="'+e(a['interactivo'])+'"></div>' if a.get('interactivo') else ''
+        explanations = ''
+        if a.get('explicaciones'):
+            steps = []
+            for step, (line, description) in enumerate(a['explicaciones'], 1):
+                key = a['id']+'-paso-'+str(step)
+                steps.append(f'<div class="code-step"><button type="button" class="explain-toggle" id="btn-{key}" aria-expanded="false" aria-controls="{key}"><span class="step-badge">{step:02d}</span><code>{e(line)}</code><span class="step-symbol" aria-hidden="true">+</span></button><div class="step-description" id="{key}" role="region" aria-labelledby="btn-{key}" hidden><p>{e(description)}</p></div></div>')
+            explanations = '<section class="explanations"><h4>'+e(a.get('titulo_explicaciones','Explora el código, paso a paso'))+'</h4><p>'+('Abre las consignas y escribe tu código en Colab antes de consultar la solución.' if a.get('explicaciones_al_inicio') else 'Pulsa una instrucción para descubrir qué hace. Puedes abrir varias y comparar sus funciones.')+'</p><div class="code-explorer">'+''.join(steps)+'</div></section>'
+        function_name = a.get('nombre_funcion', 'lm()')
+        syntax_source = a.get('fuente_sintaxis', 'https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html')
+        syntax = '<section class="lm-syntax"><h4>Firma de '+e(function_name)+'</h4><p>Referencia de argumentos; no ejecutar esta firma como ejemplo con datos.</p><pre><code>'+e(a['sintaxis'])+'</code></pre><p><a href="'+e(syntax_source)+'" target="_blank" rel="noopener">Documentación oficial de R ↗</a></p></section>' if a.get('sintaxis') else ''
+        after_reading = render_concepts(a.get('despues_lectura', []), a.get('fuente_conceptos', ''))
+        after_code = render_concepts(a.get('despues_codigo', []), a.get('fuente_despues_codigo', ''))
+        outputs = '<section class="r-outputs"><h4>Resultados calculados en R</h4>'+''.join('<details class="solution"><summary>'+e(t)+'</summary><div class="solution-body"><pre><code>'+e(out)+'</code></pre></div></details>' for t,out in a.get('salidas_r',[]))+'</section>' if a.get('salidas_r') else ''
+        anova_tables = render_anova(a)
+        code_open = ' open' if a.get('codigo_abierto') else ''
+        links.append('<a href="#'+e(a['id'])+'">'+str(n).zfill(2)+' · '+e(a['titulo'])+'</a>')
+        solution = f'''<details class="solution"{code_open}><summary>Ver código y solución en R</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code>{e(a['codigo'])}</code></pre>{after_code}<p>{e(a['lectura'])}</p></div></details>''' if a.get('codigo') else ''
+        leading_solution = solution if a.get('codigo_al_inicio') else ''
+        trailing_solution = '' if a.get('codigo_al_inicio') else solution
+        top_explanations = explanations if a.get('explicaciones_al_inicio') else ''
+        later_explanations = '' if a.get('explicaciones_al_inicio') else explanations
+        starter = '<section class="starter-code"><h4>Preparar los datos · Ejecuta sólo este bloque</h4><div class="solution-body"><div class="code-head"><span>R · Carga de datos</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(a['codigo_inicial'])+'</code></pre><p>'+e(a['lectura_codigo_inicial'])+'</p></div></section>' if a.get('codigo_inicial') else ''
+        exercise_code = ''.join('<section class="exercise-code"><h4>'+e(block['titulo'])+'</h4><div class="solution-body"><div class="code-head"><span>R · Solución</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(block['codigo'])+'</code></pre><p>'+e(block['lectura'])+'</p></div></section>' for block in a.get('bloques_codigo', []))
+        quiz = ''.join('<section class="quiz"><h4>'+e(q)+'</h4>'+''.join('<button type="button" data-correct="'+str(i==correct).lower()+'">'+e(opt)+'</button>' for i,opt in enumerate(opts))+'<p class="quiz-feedback" role="status" data-reason="'+e(reason)+'"></p></section>' for q,opts,correct,reason in a.get('quiz',[]))
+        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p><p>{e(a['texto'])}</p>{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{widget}{anova_tables}{outputs}{later_explanations}<div class="reading"><h4>Cómo leer el resultado</h4><p>{e(a['lectura'])}</p></div>{after_reading}{trailing_solution}{quiz}</div></article>''')
+    sections.append(f'''<section class="chapter" id="{e(bloque['id'])}"><div class="chapter-intro"><p class="eyebrow">{e(bloque['etiqueta'])}</p><h2>{e(bloque['titulo'])}</h2></div>{''.join(cards)}</section>''')
+html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(contenido['titulo'])} · UTFSM</title><style>{css}\n{(ROOT / "herramientas/taller3.css").read_text()}
+.lab {{border:1px solid #b8c8d8;border-radius:12px;padding:16px;margin:20px 0;background:var(--paper,transparent)}}
+@keyframes trazar {{from {{stroke-dashoffset:1000}} to {{stroke-dashoffset:0}}}} .fitted-line {{stroke-dasharray:1000;animation:trazar 1.2s ease-out both}} @media (prefers-reduced-motion:reduce) {{.fitted-line {{animation:none}}}} .lab svg {{width:100%;height:auto;display:block}} .lab-controls {{display:flex;flex-wrap:wrap;gap:10px;align-items:center}} .lab-controls button {{padding:10px;border:1px solid #005e90;border-radius:6px;cursor:pointer;background:#1b2a5e;color:white}} .lab-controls button[aria-pressed="true"] {{background:#d6a600;color:#111}} .lab-controls label {{display:flex;gap:6px;align-items:center}} .lab-result {{font-variant-numeric:tabular-nums}} .agenda {{border-collapse:collapse;width:100%;margin:20px 0}} .agenda td,.agenda th {{text-align:left;padding:12px;border-bottom:1px solid #aab6c6}} .reading {{border-left:4px solid #d6a600;padding:4px 16px;margin:16px 0}}
+
+.explanations {{margin:24px 0}} .code-explorer {{display:grid;gap:12px}} .code-step {{border:1px solid #b8c8d8;border-radius:10px;overflow:hidden}} .explain-toggle {{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border:0;background:#edf2f7;color:#1b2a5e;cursor:pointer;font-size:15px}} .explain-toggle:hover {{background:#e0e9f3}} .explain-toggle:focus-visible {{outline:3px solid #d6a600;outline-offset:-3px}} .explain-toggle[aria-expanded="true"] {{background:#1b2a5e;color:white}} .explain-toggle code {{white-space:normal;overflow-wrap:anywhere;background:transparent;color:inherit;flex:1;padding:0}} .step-badge {{display:inline-grid;place-items:center;min-width:34px;height:34px;border-radius:50%;background:#d6a600;color:#15234b;font-weight:700}} .step-symbol {{font-size:24px}} .step-description {{padding:6px 20px;border-left:4px solid #d6a600;animation:abrir-paso .2s ease-out}} .step-description[hidden] {{display:none}} @keyframes abrir-paso {{from {{opacity:0;transform:translateY(-4px)}} to {{opacity:1;transform:translateY(0)}}}} @media(prefers-reduced-motion:reduce) {{.step-description {{animation:none}}}} html[data-theme="dark"] .explain-toggle:not([aria-expanded="true"]) {{background:#202c44;color:#eef3fa}}
+
+.anova-section {{margin:28px 0}} .anova-equation {{font-size:1.2em;font-weight:700;color:#005e90}} .anova-scroll {{overflow-x:auto;margin:20px 0;border:1px solid #b8c8d8;border-radius:10px}} .anova-table {{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}} .anova-table caption {{text-align:left;padding:14px;background:#edf2f7;color:#1b2a5e;font-weight:700}} .anova-table th,.anova-table td {{padding:12px 10px;border-bottom:1px solid #b8c8d8;text-align:right}} .anova-table td {{white-space:nowrap}} .anova-table th:first-child {{text-align:left;min-width:185px}} .anova-table thead {{background:#1b2a5e;color:white}} .anova-table tbody tr:last-child {{border-top:2px solid #d6a600;font-weight:700}} .anova-table tbody tr:hover {{background:rgba(0,94,144,.08)}}
+</style><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="../identidad-utfsm.css?v={version_css}"></head><body><a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="topbar"><div class="header-inner"><a class="brand" href="#inicio"><img src="../Logo_UTFSM.png" width="36" height="36" alt="Escudo de la Universidad Técnica Federico Santa María"><span>Econometría ICS-294</span></a><div class="header-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Cambiar a modo oscuro" aria-pressed="false">◐</button><div class="search-wrap"><label class="search-label" for="class-search"><input id="class-search" type="search" placeholder="Búsqueda" aria-label="Buscar en las láminas" aria-controls="search-results" autocomplete="off"></label><div id="search-results" role="region" aria-label="Resultados de búsqueda" hidden></div></div><button id="present" type="button" aria-pressed="false">Modo presentación</button></div></div><nav class="header-tabs" aria-label="Navegación principal"><div><a href="../">Home</a><a href="../#clases">Clases</a><a href="../clase-1-taller/">Clase 1</a><a href="../clase-2-taller/">Clase 2</a><a href="#inicio" aria-current="page">Clase 3</a></div></nav></header>
+<div class="page-layout"><aside class="class-sidebar"><nav aria-label="Clases"><p class="sidebar-title">Clases</p><a href="../clase-1-taller/">Clase 1 · Computación estadística en R</a><a href="../clase-2-taller/">Clase 2 · Regresión lineal simple en R</a><a href="#inicio" class="current" aria-current="page">Clase 3 · Causalidad y variable omitida en R</a></nav></aside><main id="contenido"><div class="hero" id="inicio"><h1>{e(contenido['titulo'])}</h1><div class="session-meta"><span>Taller presencial · {e(contenido['docente'])}</span><span class="tag-gold">18:50–21:25 · Descanso 20:00–20:15</span></div><section class="official-info"><h2>Contenido del taller</h2><div><p>{e(contenido['estado'])}</p><p>Recorremos los ocho temas de la cátedra de Sebastián, en su orden. Predice, escribe el código en Colab y explica lo observado. Los contrafactuales y mecanismos causales son simulados; wage1 y wage2 son datos observacionales reales. Los gráficos web usan los datos generados por los mismos ejemplos R del notebook.</p></div></section><div class="downloads"><a href="clase-taller-3.ipynb" download>Descargar notebook R ↓</a><a href="clase-taller-3.R" download>Script R ↓</a><a href="guia-docente-taller-3.md">Guía docente ↗</a></div></div><div class="content">{agenda}<section class="brief" id="preparar-colab"><h2>Antes de comenzar</h2><p>Abre el notebook con kernel R en Google Colab. No necesitas %%R ni rpy2. Ejecuta en orden; cada ejemplo de datos reales también tiene una carga lista para copiar. Si necesitas preparar el entorno, consulta <a href="../clase-1-taller/#preparar-colab">la guía visual de Colab</a>.</p><p>Objetivos: distinguir asociación y efecto causal; calcular ATE, ATT y selección en una simulación; comparar asignación voluntaria y aleatoria; verificar la fórmula de variable omitida e interpretar controles.</p></section>{''.join(sections)}<footer class="footer"><p>{e(contenido['docente'])} · Taller de Econometría ICS-294 · UTFSM</p><p>Fuentes: <a href="https://hizocar.github.io/econometria-usm/clases/clase3/">Cátedra 3</a> · <a href="https://justinmshea.github.io/wooldridge/reference/wage1.html">Wooldridge · wage1</a> · <a href="https://justinmshea.github.io/wooldridge/reference/wage2.html">Wooldridge · wage2</a></p><p><a href="README.md">Guía del material</a> · <a href="instruccion-clase-taller-3.md">Instrucciones de desarrollo</a></p></footer></div></main><aside class="contents-sidebar"><nav aria-label="Tabla de contenidos"><p class="sidebar-title">Tabla de contenidos</p><a href="#preparar-colab">Preparación de Colab</a>{''.join(links)}</nav></aside></div>
+<nav class="present-controls" aria-label="Navegación de láminas"><button id="prev" type="button">← Anterior</button><span class="counter" aria-live="polite"></span><button id="next" type="button">Siguiente →</button></nav><script>window.datosC3={data_json};</script><script>{interactive_js}</script><script>
+document.querySelectorAll('.explain-toggle').forEach(button => {{
+  button.addEventListener('click', () => {{
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', String(!expanded));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = expanded;
+    button.querySelector('.step-symbol').textContent = expanded ? '+' : '−';
+  }});
+}});
+</script><script>{js}</script><script src="../navegacion-utfsm.js?v={version_js}"></script></body></html>'''
+(ROOT / 'index.html').write_text('\n'.join(line.rstrip() for line in html.splitlines())+'\n')
+print('Clase 3: web, notebook, script y guía sincronizados.')

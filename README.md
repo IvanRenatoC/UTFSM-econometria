@@ -28,6 +28,15 @@ Base de trabajo preparada en [clase-2-taller/](clase-2-taller/).
 - [Notebook de R](clase-2-taller/clase-taller-2.ipynb)
 - [Instrucciones para desarrollar la clase](clase-2-taller/instruccion-clase-taller-2.md)
 
+## Clase 3
+
+Taller de causalidad y variable omitida, con 16 láminas y notebook sincronizado.
+
+- [Página de la clase](clase-3-taller/index.html)
+- [Notebook de R](clase-3-taller/clase-taller-3.ipynb)
+- [Guía docente](clase-3-taller/guia-docente-taller-3.md)
+- [Guía del material](clase-3-taller/README.md)
+
 ## Recursos compartidos del curso
 
 El logo `Logo_UTFSM.png`, los estilos `identidad-utfsm.css`, la navegación `navegacion-utfsm.js`, la especificación `IDENTIDAD-VISUAL.md` y el documento general `Econometria_USM_2026_3.pdf` permanecen en la raíz.
@@ -37,8 +46,9 @@ El archivo `index.html` de la raíz es el menú del curso. Cada clase se publica
 - Portada: https://ivanrenatoc.github.io/UTFSM-econometria/
 - Clase 1: https://ivanrenatoc.github.io/UTFSM-econometria/clase-1-taller/
 - Clase 2: https://ivanrenatoc.github.io/UTFSM-econometria/clase-2-taller/
+- Clase 3: https://ivanrenatoc.github.io/UTFSM-econometria/clase-3-taller/
 
-Los enlaces antiguos a láminas de la clase 1 conservan su destino mediante redirección desde la portada. El antiguo `#clase-2` abre ahora la página independiente de la clase 2. La clase 2 está señalada como material en preparación.
+Los enlaces antiguos a láminas de la clase 1 conservan su destino mediante redirección desde la portada. El antiguo `#clase-2` abre ahora la página independiente de la clase 2. El enlace `#clase-3` abre la página independiente del taller 3.
 
 
 ## Sincronización con GitHub
