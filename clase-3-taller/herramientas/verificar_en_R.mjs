@@ -14,6 +14,14 @@ for(const a of content.bloques.flatMap(b=>b.laminas)){
  console.log('Ejecutando',a.id);
  if(a.codigo_inicial)await webR.evalRVoid(a.codigo_inicial);
  outputs[a.id]=await webR.evalRString(`paste(capture.output({${a.codigo}\n}),collapse="\\n")`);
+ for (const item of a.explicaciones||[]) {
+  if(item.length>2)await webR.evalRVoid('eval(parse(text='+JSON.stringify(item[2])+'), envir=new.env(parent=as.environment("package:stats")))');
+ }
+ if(a.reto_codigo)await webR.evalRVoid('eval(parse(text='+JSON.stringify(a.reto_codigo)+'), envir=new.env(parent=as.environment("package:stats")))');
+ if(['C3-02','C3-03','C3-04','C3-05','C3-06','C3-07'].includes(a.id)) {
+  await webR.evalRVoid('eval(parse(text='+JSON.stringify(a.codigo)+'), envir=new.env(parent=as.environment("package:stats")))');
+ }
+
 }
 await webR.evalRVoid(`
 stopifnot(nrow(salarios)==526,nrow(trabajo)==935,ATE==17,ATT==20,brecha==50,seleccion==30)
@@ -43,7 +51,7 @@ await fs.writeFile(path.join(root,'datos/resultados-interactivos.json'),JSON.str
 await fs.writeFile(path.join(root,'datos/salidas-verificadas-r.json'),JSON.stringify(outputs,null,2)+'\n');
 // Los gráficos se generan en el sistema de archivos temporal de R durante esta comprobación.
 const acts=content.bloques.flatMap(b=>b.laminas);
-const code=acts.map(a=>a.id+'\n'+(a.codigo_inicial||'')+'\n'+a.codigo).join('\n\n');
+const code=acts.map(a=>a.id+'\n'+(a.codigo_inicial||'')+'\n'+a.codigo+'\n'+(a.reto_codigo||'')+'\n'+(a.explicaciones||[]).filter(x=>x.length>2).map(x=>x[2]).join('\n')).join('\n\n');
 await fs.writeFile(path.join(root,'datos/verificacion.json'),JSON.stringify({codigo_sha256:createHash('sha256').update(code).digest('hex'),motor:'webR 0.6.0',ejemplos_ejecutados:acts.length},null,2)+'\n');
 console.log('Todos los ejemplos R ejecutados y comprobados.');
 await webR.close();

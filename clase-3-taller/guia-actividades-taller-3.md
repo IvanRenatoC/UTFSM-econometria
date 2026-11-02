@@ -69,7 +69,43 @@ No es simplemente el salario pasado ni el promedio de otra persona. Es el result
 
 ### Resultados potenciales: solo observamos un mundo
 
-Usaremos las cinco personas del ejemplo de la cátedra. T = 1 indica tratamiento y T = 0, control. Y_NT es el resultado sin tratamiento; Y_T, con tratamiento. Los resultados contrafactuales que revelaremos son inventados con fines didácticos: no son salarios observados ni imputaciones de una base real.
+Cada fila corresponde a una persona. $Y^{NT}$ es su resultado potencial sin tratamiento y $Y^{T}$, con tratamiento. Observamos $Y^{T}$ si T = 1 y $Y^{NT}$ si T = 0. Para completar la tabla didáctica fijaremos efectos individuales de 25, 15, 20, 10 y 15 unidades. Son supuestos del ejemplo: no se estiman con los datos observados ni son efectos causales identificados.
+
+**Tratamiento y grupo de control**
+
+T = 1 indica que la persona recibe el tratamiento; T = 0 indica que no lo recibe y pertenece al grupo de control o no tratado. Cada persona tiene un solo resultado observado.
+
+**Nomenclatura de la cátedra y nombres en R**
+
+En las explicaciones usamos $Y^{NT}$ y $Y^{T}$. En el código escribimos `Y_NT` y `Y_T` como nombres de columnas para almacenar esos mismos resultados.
+
+**La misma población artificial de cinco personas**
+
+| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
+| --- | --- | --- | --- | --- | --- |
+| Sofía | 1 | 100 | 75 | 100 | 25 |
+| Paula | 0 | 40 | 40 | 55 | 15 |
+| Ezequiel | 1 | 80 | 60 | 80 | 20 |
+| Juan | 0 | 20 | 20 | 30 | 10 |
+| Caro | 1 | 60 | 45 | 60 | 15 |
+
+**Para desarrollar en la pizarra**
+
+**Cómo se completa el ejemplo**
+
+$$Y^{T}=Y^{NT}+\text{efecto supuesto}$$
+
+**Si T = 1: observamos el resultado con tratamiento**
+
+Sofía: $Y^{T}$ = 100 y $Y^{NT}$ = 100 − 25 = 75. Ezequiel: $Y^{T}$ = 80 y $Y^{NT}$ = 80 − 20 = 60. Caro: $Y^{T}$ = 60 y $Y^{NT}$ = 60 − 15 = 45.
+
+**Si T = 0: observamos el resultado sin tratamiento**
+
+Paula: $Y^{NT}$ = 40 y $Y^{T}$ = 40 + 15 = 55. Juan: $Y^{NT}$ = 20 y $Y^{T}$ = 20 + 10 = 30.
+
+**Qué significa el cálculo**
+
+La resta o suma completa un mundo que nosotros construimos al fijar los efectos. Sin ese supuesto no podríamos conocer los valores faltantes. No debemos confundir completar esta tabla artificial con recuperar contrafactuales reales.
 
 **Referencia en la cátedra:** Tema 2 · Marco de Rubin y resultados observados/no observados
 
@@ -77,12 +113,16 @@ Usaremos las cinco personas del ejemplo de la cátedra. T = 1 indica tratamiento
 personas <- data.frame(
   nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
   T = c(1, 0, 1, 0, 1),
-  Y_NT = c(75, 40, 60, 20, 45),
-  Y_T = c(100, 55, 80, 30, 60)
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
 )
-personas$Y <- ifelse(personas$T == 1, personas$Y_T, personas$Y_NT)
-observado <- personas[, c("nombre", "T", "Y")]
-print(observado)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 ```
 
 **Resultados de referencia calculados en R**
@@ -90,44 +130,198 @@ print(observado)
 **Salida del ejemplo ejecutado en R**
 
 ```text
-    nombre T   Y
-1    Sofía 1 100
-2    Paula 0  40
-3 Ezequiel 1  80
-4     Juan 0  20
-5     Caro 1  60
+    nombre T   Y Y_NT Y_T efecto
+1    Sofía 1 100   75 100     25
+2    Paula 0  40   40  55     15
+3 Ezequiel 1  80   60  80     20
+4     Juan 0  20   20  30     10
+5     Caro 1  60   45  60     15
 ```
 
 **El código, paso a paso**
 
-**data.frame(...)**
+**Crear la tabla y calcular sus dos columnas potenciales**
 
-Construye una tabla: cada vector es una columna y cada fila es una persona. Todas las columnas deben tener la misma cantidad de valores.
+Ejecuta el bloque completo de esta viñeta. Para los tratados restamos el efecto supuesto al resultado observado; para los no tratados lo sumamos. Las columnas de R representan $Y^{NT}$ y $Y^{T}$.
 
-**ifelse(condición, valor_si_verdadero, valor_si_falso)**
+```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
+```
 
-Evalúa cada posición. Si T == 1, toma Y_T; en caso contrario, toma Y_NT. A diferencia de if, actúa sobre un vector completo.
+**Comprobar que recuperamos los resultados observados**
 
-**personas[, c("nombre", "T", "Y")]**
+ifelse() elige el resultado que corresponde al tratamiento recibido. El vector obtenido debe coincidir con Y.
 
-Antes de la coma se seleccionan filas; después, columnas. Dejar el primer espacio vacío conserva todas las filas.
+```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+Y_recuperado <- ifelse(personas$T == 1, personas$Y_T, personas$Y_NT)
+print(Y_recuperado)
+print(all(Y_recuperado == personas$Y))
+```
 
-**Lectura del resultado:** ifelse() selecciona el resultado del estado realmente asignado a cada persona. En datos reales no disponemos de ambas columnas potenciales; aquí las conocemos porque construimos el ejemplo. Las unidades del resultado son artificiales.
+**Lectura del resultado:** Los valores completados son $Y^{NT}$ = (75, 40, 60, 20, 45) y $Y^{T}$ = (100, 55, 80, 30, 60). Al seleccionar el estado observado recuperamos (100, 40, 80, 20, 60). Los efectos supuestos permiten construir el ejemplo; los resultados observados, por sí solos, no permiten calcular esos contrafactuales.
 
 ### ATE y ATT: promediar efectos diferentes
 
-En este mundo construido podemos calcular el efecto individual Y_T − Y_NT. Primero predice si ATE y ATT serán iguales. Después cambia solo el resultado potencial tratado de Juan: ¿cuál de los dos promedios debería cambiar?
+Calculemos los dos promedios usando la tabla completa de esta misma lámina. La diferencia individual es $Y^{T}$ − $Y^{NT}$. ATE promedia a las cinco personas; ATT promedia solo a Sofía, Ezequiel y Caro, porque recibieron el tratamiento (T = 1).
+
+**La misma población artificial de cinco personas**
+
+| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
+| --- | --- | --- | --- | --- | --- |
+| Sofía | 1 | 100 | 75 | 100 | 25 |
+| Paula | 0 | 40 | 40 | 55 | 15 |
+| Ezequiel | 1 | 80 | 60 | 80 | 20 |
+| Juan | 0 | 20 | 20 | 30 | 10 |
+| Caro | 1 | 60 | 45 | 60 | 15 |
+
+**Para desarrollar en la pizarra**
+
+**Fórmula · ATE en una población de N personas**
+
+$$ATE=\frac{1}{N}\sum_{i=1}^{N}(Y_i^{T}-Y_i^{NT})$$
+
+**Fórmula · ATT entre las personas tratadas**
+
+$$ATT=\frac{1}{N_T}\sum_{i:T_i=1}(Y_i^{T}-Y_i^{NT})$$
+
+**ATE · Efecto promedio en las cinco personas**
+
+$$ATE=\frac{1}{5}\sum_{i=1}^{5}(Y_i^{T}-Y_i^{NT})=\frac{25+15+20+10+15}{5}=\frac{85}{5}=17$$
+
+**ATT · Efecto promedio entre los tres tratados**
+
+$$ATT=\frac{1}{3}\sum_{i:T_i=1}(Y_i^{T}-Y_i^{NT})=\frac{25+20+15}{3}=\frac{60}{3}=20$$
+
+**Primero: restar los dos resultados de cada fila**
+
+Sofía: 100 − 75 = 25; Paula: 55 − 40 = 15; Ezequiel: 80 − 60 = 20; Juan: 30 − 20 = 10; Caro: 60 − 45 = 15.
+
+**Después: elegir a quiénes promediamos**
+
+ATE usa las cinco diferencias y divide por 5. ATT usa únicamente las diferencias de las filas con T = 1 y divide por 3. No se calcula restando el promedio observado de tratados y no tratados.
 
 **Referencia en la cátedra:** Tema 2 · ATE y ATT
 
 ```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "efecto")])
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
+```
 
-# Reto: Juan no pertenece al grupo tratado.
+**Resultados de referencia calculados en R**
+
+**Salida del ejemplo ejecutado en R**
+
+```text
+    nombre T Y_NT Y_T efecto
+1    Sofía 1   75 100     25
+2    Paula 0   40  55     15
+3 Ezequiel 1   60  80     20
+4     Juan 0   20  30     10
+5     Caro 1   45  60     15
+ATE ATT
+ 17  20
+```
+
+**El código, paso a paso**
+
+**Crear en R la tabla del ejemplo**
+
+Este código es independiente de la lámina anterior: crea las cinco personas, calcula $Y^{NT}$ y $Y^{T}$ y muestra sus efectos individuales.
+
+```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+```
+
+**Calcular ATE = 17 y ATT = 20 en R**
+
+Puedes ejecutar esta viñeta por sí sola: incluye la tabla completa. mean() sobre las cinco diferencias calcula ATE; el filtro T == 1 conserva las tres diferencias necesarias para ATT.
+
+```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
+ATE <- mean(personas$efecto)
+ATT <- mean(personas$efecto[personas$T == 1])
+print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(c(ATE = ATE, ATT = ATT))
+```
+
+**Lectura del resultado:** ATE = 17 y ATT = 20 en esta población artificial. Son promedios de efectos individuales distintos: 85/5 frente a 60/3. El botón que modifica el resultado con tratamiento de Juan es un reto posterior: ATE pasa a 23 y ATT sigue en 20, porque Juan no es tratado. El código principal conserva la tabla original para obtener 17 y 20.
+
+**Reto adicional: cambiar solo a Juan**
+
+```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
 alternativa <- personas
 alternativa$Y_T[alternativa$nombre == "Juan"] <- 60
 alternativa$efecto <- alternativa$Y_T - alternativa$Y_NT
@@ -135,42 +329,53 @@ print(c(ATE = mean(alternativa$efecto),
         ATT = mean(alternativa$efecto[alternativa$T == 1])))
 ```
 
-**Resultados de referencia calculados en R**
-
-**Salida del ejemplo ejecutado en R**
-
-```text
-    nombre T efecto
-1    Sofía 1     25
-2    Paula 0     15
-3 Ezequiel 1     20
-4     Juan 0     10
-5     Caro 1     15
-ATE ATT
- 17  20
-ATE ATT
- 23  20
-```
-
-**El código, paso a paso**
-
-**efecto[personas$T == 1]**
-
-Filtra el vector de efectos y conserva solo a los tratados. mean() sobre el vector completo calcula ATE; sobre este subconjunto, ATT.
-
-**alternativa <- personas**
-
-Permite hacer el reto sobre otra tabla y conservar personas para las actividades siguientes.
-
-**Lectura del resultado:** En la tabla original, ATE = 17 y ATT = 20. Son promedios de esta población didáctica de cinco personas. Al cambiar Y_T de Juan, ATE pasa a 23 y ATT sigue en 20: Juan no está entre los tratados. En una población real estos efectos no se calculan directamente porque faltan los contrafactuales.
-
 ### Diferencia observada = ATT + selección
 
-Compara los promedios que sí observaríamos y separa la diferencia en dos componentes. ¿Cuánto de la brecha habría existido aunque nadie hubiera recibido tratamiento? La regresión con T binaria calcula la misma diferencia de promedios.
+La media observada de los tratados es 80 y la del grupo no tratado es 30. ¿Las 50 unidades de diferencia son todas efecto del tratamiento? Usemos la tabla completa para separar el ATT de la diferencia que ya habría existido en ausencia del tratamiento.
+
+**Definición · Grupo de control**
+
+Es el grupo que no recibe el tratamiento (T = 0): Paula y Juan. Sirve como grupo de comparación, pero no constituye automáticamente un buen contrafactual del grupo tratado. Aquí control nombra un grupo de personas, no una variable añadida a la regresión.
+
+**La misma población artificial de cinco personas**
+
+| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
+| --- | --- | --- | --- | --- | --- |
+| Sofía | 1 | 100 | 75 | 100 | 25 |
+| Paula | 0 | 40 | 40 | 55 | 15 |
+| Ezequiel | 1 | 80 | 60 | 80 | 20 |
+| Juan | 0 | 20 | 20 | 30 | 10 |
+| Caro | 1 | 60 | 45 | 60 | 15 |
+
+**Para desarrollar en la pizarra**
+
+**Diferencia observada**
+
+$$\bar Y_{T=1}-\bar Y_{T=0}=\frac{100+80+60}{3}-\frac{40+20}{2}=80-30=50$$
+
+**Selección · Comparar el mundo sin tratamiento**
+
+$$\frac{75+60+45}{3}-\frac{40+20}{2}=60-30=30$$
+
+**Reconstruir la diferencia observada**
+
+$$\text{Brecha}=ATT+\text{selección}=20+30=50$$
 
 **Referencia en la cátedra:** Tema 3 · ATT y sesgo de selección
 
 ```r
+personas <- data.frame(
+  nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
+  T = c(1, 0, 1, 0, 1),
+  Y = c(100, 40, 80, 20, 60),
+  efecto_supuesto = c(25, 15, 20, 10, 15)
+)
+# Solo para completar este ejemplo artificial: fijamos los efectos.
+personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
+                        personas$Y - personas$efecto_supuesto)
+personas$Y_T <- ifelse(personas$T == 1, personas$Y,
+                       personas$Y + personas$efecto_supuesto)
+personas$efecto <- personas$Y_T - personas$Y_NT
 tratados <- personas$T == 1
 brecha <- mean(personas$Y[tratados]) - mean(personas$Y[!tratados])
 ATT <- mean(personas$efecto[tratados])
@@ -179,9 +384,6 @@ print(c(brecha = brecha, ATT = ATT, seleccion = seleccion,
         suma = ATT + seleccion))
 modelo_T <- lm(Y ~ T, data = personas)
 print(coef(modelo_T))
-barplot(c(ATT = ATT, Seleccion = seleccion),
-        col = c("#005E90", "#D6A600"),
-        ylab = "Unidades artificiales del resultado")
 ```
 
 **Resultados de referencia calculados en R**
@@ -197,35 +399,83 @@ barplot(c(ATT = ATT, Seleccion = seleccion),
 
 **El código, paso a paso**
 
-**!tratados**
+**Calcular la diferencia que observamos**
 
-El signo ! invierte una condición lógica: selecciona a quienes no recibieron tratamiento. No resta valores.
+Estos son los resultados observados de los tratados y no tratados del ejemplo. La brecha no necesita conocer contrafactuales.
 
-**lm(Y ~ T)**
+```r
+media_tratados <- mean(c(100, 80, 60))
+media_control <- mean(c(40, 20))
+print(c(tratados = media_tratados, control = media_control,
+        brecha = media_tratados - media_control))
+```
 
-Cuando T es 0/1 y se incluye intercepto, la pendiente equivale a la media de Y en T = 1 menos la media en T = 0. No corrige por selección.
+**Calcular ATT y selección en el ejemplo construido**
+
+El ATT usa los efectos de los tratados; la selección compara sus resultados sin tratamiento con los de Paula y Juan. Solo podemos hacer esta separación porque fijamos los contrafactuales del ejemplo.
+
+```r
+ATT <- mean(c(100 - 75, 80 - 60, 60 - 45))
+seleccion <- mean(c(75, 60, 45)) - mean(c(40, 20))
+print(c(ATT = ATT, seleccion = seleccion, suma = ATT + seleccion))
+```
+
+**Comprobar la pendiente de lm() sin buscar otra lámina**
+
+Esta viñeta vuelve a crear los datos observados. El intercepto es 30 y la pendiente es 50: lm() entrega la diferencia de medias, no el ATT de 20.
+
+```r
+observado <- data.frame(T = c(1, 0, 1, 0, 1),
+                        Y = c(100, 40, 80, 20, 60))
+print(coef(lm(Y ~ T, data = observado)))
+```
 
 **Lectura del resultado:** La brecha observada es 50: ATT = 20 más selección = 30. Incluso sin tratamiento, los tratados tendrían un resultado medio 30 unidades mayor. El intercepto de lm(Y ~ T) es 30 y su pendiente es 50. Esa pendiente no es el efecto causal de 20.
 
 ### Alarmas: una comparación que puede engañar
 
-El ejemplo de las alarmas de la cátedra permite invertir la intuición. Construiremos dos grupos de casas: las de mayor riesgo instalan alarma. Los valores siguientes son tasas hipotéticas por 100 casas; no son datos de delitos reales.
+Queremos mostrar por qué más robos observados en las casas con alarma no implica que la alarma cause robos. En este ejemplo hipotético, las casas que instalan alarma ya tenían mayor riesgo. $Y^{NT}$ es la tasa que tendría cada grupo sin alarma; $Y^{T}$, la que tendría con alarma. Todas las tasas son por cada 100 casas.
+
+**Definición · Tratados y grupo de control en este ejemplo**
+
+Las casas con alarma son el grupo tratado (T = 1); las casas sin alarma son el grupo de control o no tratado (T = 0). Los grupos pueden tener riesgos iniciales distintos. Cada fila de la tabla resume una tasa de un grupo, no una casa individual.
+
+**Tasas hipotéticas por cada 100 casas**
+
+| Grupo | T | $Y^{NT}$ | $Y^{T}$ | Y observado |
+| --- | --- | --- | --- | --- |
+| Con alarma | 1 | 12 | 7 | 7 |
+| Sin alarma | 0 | 4 | 2 | 4 |
+
+**Para desarrollar en la pizarra**
+
+**La alarma protege en el grupo tratado**
+
+$$ATT=Y^{T}-Y^{NT}=7-12=-5$$
+
+**La comparación observada mezcla efecto y selección**
+
+$$7-4=(-5)+(12-4)=-5+8=3$$
 
 **Referencia en la cátedra:** Tema 3 · Ejemplo de las alarmas
 
 ```r
 casas <- data.frame(
   grupo = c("Instalan alarma", "No instalan"),
-  robos_sin_alarma = c(12, 4),
-  efecto_alarma = c(-5, -2),
-  T = c(1, 0)
+  T = c(1, 0),
+  Y_NT = c(12, 4),
+  efecto_supuesto = c(-5, -2)
 )
-casas$robos_con_alarma <- casas$robos_sin_alarma + casas$efecto_alarma
-casas$observado <- ifelse(casas$T == 1,
-                         casas$robos_con_alarma, casas$robos_sin_alarma)
+casas$Y_T <- casas$Y_NT + casas$efecto_supuesto
+casas$Y <- ifelse(casas$T == 1, casas$Y_T, casas$Y_NT)
+tratadas <- casas$T == 1
+brecha_alarmas <- casas$Y[tratadas] - casas$Y[!tratadas]
+ATT_alarmas <- casas$Y_T[tratadas] - casas$Y_NT[tratadas]
+seleccion_alarmas <- casas$Y_NT[tratadas] - casas$Y_NT[!tratadas]
 print(casas)
-print(c(brecha = 7 - 4, ATT = -5, seleccion = 12 - 4))
-barplot(casas$observado, names.arg = casas$grupo,
+print(c(brecha = brecha_alarmas, ATT = ATT_alarmas,
+        seleccion = seleccion_alarmas, suma = ATT_alarmas + seleccion_alarmas))
+barplot(casas$Y, names.arg = casas$grupo,
         col = c("#005E90", "#D6A600"),
         ylab = "Robos por cada 100 casas (ejemplo hipotético)")
 ```
@@ -235,24 +485,64 @@ barplot(casas$observado, names.arg = casas$grupo,
 **Salida del ejemplo ejecutado en R**
 
 ```text
-            grupo robos_sin_alarma efecto_alarma T robos_con_alarma observado
-1 Instalan alarma               12            -5 1                7         7
-2     No instalan                4            -2 0                2         4
-   brecha       ATT seleccion
-        3        -5         8
+            grupo T Y_NT efecto_supuesto Y_T Y
+1 Instalan alarma 1   12              -5   7 7
+2     No instalan 0    4              -2   2 4
+   brecha       ATT seleccion      suma
+        3        -5         8         3
 ```
 
 **El código, paso a paso**
 
-**Tasas y efecto**
+**Crear la tabla y sus resultados observados**
 
-El efecto se expresa en puntos de la tasa: 12 − 5 = 7 robos por 100 casas. No significa una reducción de 5 % relativa.
+El efecto supuesto −5 reduce la tasa de las casas tratadas de 12 a 7. El valor 2 de las casas no tratadas es otro contrafactual supuesto; no se observa.
+
+```r
+casas <- data.frame(
+  grupo = c("Instalan alarma", "No instalan"),
+  T = c(1, 0),
+  Y_NT = c(12, 4),
+  efecto_supuesto = c(-5, -2)
+)
+casas$Y_T <- casas$Y_NT + casas$efecto_supuesto
+casas$Y <- ifelse(casas$T == 1, casas$Y_T, casas$Y_NT)
+print(casas)
+```
+
+**Calcular efecto, selección y brecha**
+
+Cada operación usa los valores de la tabla de esta misma lámina. Un efecto negativo significa menos robos; la selección positiva refleja el mayor riesgo inicial.
+
+```r
+ATT_alarmas <- 7 - 12
+seleccion_alarmas <- 12 - 4
+brecha_alarmas <- 7 - 4
+print(c(ATT = ATT_alarmas, seleccion = seleccion_alarmas,
+        brecha = brecha_alarmas, suma = ATT_alarmas + seleccion_alarmas))
+```
 
 **Lectura del resultado:** Observamos 7 frente a 4 robos por 100 casas: brecha = +3. Sin alarma, las casas que la instalaron habrían tenido 12: selección = +8. El efecto en ellas es −5; por tanto, +3 = −5 + 8. Una brecha positiva no demuestra que la alarma aumente los robos.
 
 ### Autoselección frente a asignación aleatoria
 
-Construye una población simulada en la que el tratamiento suma exactamente 10 unidades. En un escenario participan quienes tienen mayor habilidad; en otro se sortea el tratamiento. La población y los resultados potenciales permanecen iguales: solo cambia la asignación.
+Imagina un programa de capacitación que, por construcción de esta simulación, aumenta exactamente 10 puntos la productividad de cada persona. Comparamos dos formas de asignar el mismo programa a la misma población: participan quienes tienen mayor habilidad o se sortean 500 cupos entre 1000 personas. El efecto verdadero sigue siendo 10 en ambos escenarios; lo que cambia es quién participa.
+
+**Propósito del ejemplo**
+
+Qué queremos mostrar: una comparación puede sobreestimar mucho un efecto conocido si participan personas que ya eran distintas. Al sortear el tratamiento, esa diferencia de origen deja de ser sistemática.
+
+**1. Fijar una respuesta conocida**
+
+Para cada persona construimos $Y^{T}$ = $Y^{NT}$ + 10. Por eso conocemos el efecto verdadero antes de hacer cualquier regresión o comparación.
+
+**2. Comparar dos reglas de asignación**
+
+En la autoselección, los participantes tienen más habilidad y ya serían más productivos sin el programa. En el sorteo, recibirlo no depende de la habilidad.
+
+**3. Interpretar lo que cambia**
+
+La diferencia observada es aproximadamente 33.525 con autoselección y 10.965 con el sorteo ilustrado. El programa no se volvió mejor o peor: cambió la comparación entre grupos.
 
 **Referencia en la cátedra:** Tema 4 · Aleatorización
 
@@ -262,12 +552,21 @@ n <- 1000
 habilidad <- rnorm(n)
 Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
 Y_T <- Y_NT + 10
+# Escenario 1: participan las personas con habilidad mayor que cero.
 T_auto <- as.numeric(habilidad > 0)
-T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
 Y_auto <- ifelse(T_auto == 1, Y_T, Y_NT)
+# Escenario 2: se sortean 500 cupos, sin cambiar los resultados potenciales.
+T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
 Y_azar <- ifelse(T_azar == 1, Y_T, Y_NT)
-print(coef(lm(Y_auto ~ T_auto)))
-print(coef(lm(Y_azar ~ T_azar)))
+brecha_auto <- mean(Y_auto[T_auto == 1]) - mean(Y_auto[T_auto == 0])
+brecha_azar <- mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0])
+comparacion <- data.frame(
+  asignacion = c("Autoselección", "Sorteo"),
+  efecto_verdadero = c(10, 10),
+  diferencia_observada = c(brecha_auto, brecha_azar)
+)
+print(comparacion)
+print(aggregate(habilidad, list(T = T_auto), mean))
 print(aggregate(habilidad, list(T = T_azar), mean))
 ```
 
@@ -276,10 +575,12 @@ print(aggregate(habilidad, list(T = T_azar), mean))
 **Salida del ejemplo ejecutado en R**
 
 ```text
-(Intercept)      T_auto
-   88.15001    33.52474
-(Intercept)      T_azar
-   99.59459    10.96493
+     asignacion efecto_verdadero diferencia_observada
+1 Autoselección               10             33.52474
+2        Sorteo               10             10.96493
+  T          x
+1 0 -0.7859066
+2 1  0.7913583
   T           x
 1 0 0.005629664
 2 1 0.021903777
@@ -287,31 +588,83 @@ print(aggregate(habilidad, list(T = T_azar), mean))
 
 **El código, paso a paso**
 
-**set.seed(2026)**
+**Construir los dos resultados potenciales**
 
-Fija el estado del generador para repetir el ejemplo. 2026 es una elección arbitraria; otra semilla produce otro sorteo.
+rnorm() genera una población artificial. La línea Y_T <- Y_NT + 10 impone el efecto conocido de 10 puntos; no lo estima.
 
-**rnorm(n, mean = 0, sd = 1)**
+```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+print(head(data.frame(Y_NT, Y_T, efecto = Y_T - Y_NT)))
+```
 
-Genera n valores de una distribución normal. sd mide dispersión; las variables son simuladas, no mediciones de personas reales.
+**Autoselección: elegir según habilidad**
 
-**as.numeric(habilidad > 0)**
+La regla habilidad > 0 favorece a personas que ya tendrían mayor productividad sin el programa. Ejecuta el ejemplo completo de esta viñeta.
 
-Convierte TRUE en 1 y FALSE en 0. La selección por habilidad es deliberada y no es aleatoria.
+```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+T_auto <- as.numeric(habilidad > 0)
+Y_auto <- ifelse(T_auto == 1, Y_T, Y_NT)
+print(mean(Y_auto[T_auto == 1]) - mean(Y_auto[T_auto == 0]))
+print(aggregate(habilidad, list(T = T_auto), mean))
+```
 
-**sample(c(rep(1, n / 2), rep(0, n / 2)))**
+**Sorteo: la asignación no depende de habilidad**
 
-Mezcla sin reemplazo 500 unos y 500 ceros. Todos tienen la misma probabilidad de ser tratados.
+sample() mezcla 500 unos y 500 ceros. En una asignación concreta puede quedar un pequeño desequilibrio, aunque todos tengan la misma probabilidad de recibir el programa.
 
-**Lectura del resultado:** En la simulación el ATE y el ATT verdaderos son 10. La autoselección mezcla tratamiento y habilidad. El sorteo hace comparables los grupos en promedio sobre las asignaciones, pero una muestra puede conservar desequilibrios. No garantiza que cada estimación sea exactamente 10. En el sorteo ilustrado, usa los valores calculados que muestra la botonera para comparar los dos escenarios.
+```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+T_azar <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+Y_azar <- ifelse(T_azar == 1, Y_T, Y_NT)
+print(mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0]))
+print(aggregate(habilidad, list(T = T_azar), mean))
+```
+
+**Lectura del resultado:** La capacitación suma 10 puntos en ambos casos. Con autoselección, la brecha observada de 33.525 también recoge diferencias de habilidad previas. Con este sorteo, la brecha es 10.965: está cerca de 10, pero no es idéntica porque los grupos de una asignación finita pueden diferir por azar. La siguiente lámina comprobará qué ocurre al repetir el sorteo.
 
 ### Un sorteo no elimina el ruido muestral
 
-Repite 200 asignaciones aleatorias sobre la misma población de la lámina anterior. En cada una calcula la diferencia de promedios. ¿Las estimaciones se concentran alrededor de 10? Esta es una demostración guiada; no hace falta transcribir las 200 repeticiones.
+Imagina que reiniciamos el mismo experimento 200 veces: son las mismas 1000 personas y el mismo efecto de 10 puntos, pero cada vez sorteamos de nuevo quién recibe la capacitación. Cada sorteo produce una diferencia de medias. El histograma no muestra personas ni sus productividades: muestra esas 200 estimaciones.
+
+**Propósito del ejemplo**
+
+Qué queremos mostrar: el resultado de un solo sorteo puede quedar por encima o por debajo de 10 sin que el método tenga sesgo sistemático. Repetir la asignación permite ver esa fluctuación y separarla del sesgo de selección.
+
+**Cómo leer cada elemento del histograma**
+
+Una estimación es la productividad media de tratados menos la de no tratados en un sorteo. Cada barra cuenta cuántas estimaciones cayeron en ese intervalo.
+
+**Qué representa la línea dorada**
+
+Marca 10: el efecto verdadero que fijamos. Esperamos que las diferencias fluctúen alrededor de esa referencia, no que las 200 sean exactamente iguales a ella.
+
+**Qué conclusión buscamos**
+
+El promedio de esta serie es aproximadamente 9.892 y la desviación entre sorteos, 1.050. Es variación muestral: otro conjunto de sorteos daría otras cifras. No revela el contrafactual individual ni asegura exactitud en cada asignación.
 
 **Referencia en la cátedra:** Tema 4 · Aleatorización y variabilidad de muestras
 
 ```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+
+# Repetir la asignación sobre la población que acabamos de construir.
 set.seed(2027)
 estimaciones <- numeric(200)
 for (b in seq_along(estimaciones)) {
@@ -319,10 +672,11 @@ for (b in seq_along(estimaciones)) {
   Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
   estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
 }
+print(head(estimaciones))
 print(c(promedio = mean(estimaciones), dispersion = sd(estimaciones)))
 hist(estimaciones, col = "#005E90", border = "white",
      main = "200 sorteos sobre la misma población",
-     xlab = "Diferencia de promedios estimada")
+     xlab = "Efecto estimado: diferencia de productividades medias (puntos)")
 abline(v = 10, col = "#D6A600", lwd = 3)
 ```
 
@@ -331,25 +685,61 @@ abline(v = 10, col = "#D6A600", lwd = 3)
 **Salida del ejemplo ejecutado en R**
 
 ```text
+[1] 10.588405  9.915662  9.362470 11.134671 10.007067 12.078062
   promedio dispersion
   9.892482   1.050358
 ```
 
 **El código, paso a paso**
 
-**numeric(200) y for**
+**Reservar un vector y guardar una estimación por sorteo**
 
-Reserva un vector; el ciclo guarda una estimación por posición. Reutiliza lo aprendido en el taller 1.
+Esta viñeta vuelve a construir la población y ejecuta todo el ciclo; no necesita objetos de otra lámina. numeric(200) reserva las posiciones y el for guarda una diferencia de medias en cada una.
 
-**seq_along(estimaciones)**
+```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
+set.seed(2027)
+estimaciones <- numeric(200)
+for (b in seq_along(estimaciones)) {
+  T_b <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+  Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
+  estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
+}
+print(head(estimaciones))
+```
 
-Produce los índices válidos del vector. Así el ciclo se adapta si cambias la cantidad de repeticiones.
+**Resumir y graficar las 200 estimaciones**
 
-**sd(estimaciones)**
+mean() resume las diferencias estimadas y sd() mide su dispersión entre sorteos. hist() cuenta estimaciones por intervalo y abline(v = 10) marca el efecto verdadero.
 
-Mide cuánto varían las estimaciones entre sorteos. No es el efecto del tratamiento.
+```r
+set.seed(2026)
+n <- 1000
+habilidad <- rnorm(n)
+Y_NT <- 100 + 15 * habilidad + rnorm(n, sd = 8)
+Y_T <- Y_NT + 10
 
-**Lectura del resultado:** La referencia dorada es el efecto verdadero de 10 unidades. Las estimaciones fluctúan alrededor de él. Aleatorizar elimina el sesgo sistemático en el diseño; no borra la variabilidad de una asignación concreta ni revela el contrafactual individual.
+# Repetir la asignación sobre la población que acabamos de construir.
+set.seed(2027)
+estimaciones <- numeric(200)
+for (b in seq_along(estimaciones)) {
+  T_b <- sample(c(rep(1, n / 2), rep(0, n / 2)))
+  Y_b <- ifelse(T_b == 1, Y_T, Y_NT)
+  estimaciones[b] <- mean(Y_b[T_b == 1]) - mean(Y_b[T_b == 0])
+}
+print(head(estimaciones))
+print(c(promedio = mean(estimaciones), dispersion = sd(estimaciones)))
+hist(estimaciones, col = "#005E90", border = "white",
+     main = "200 sorteos sobre la misma población",
+     xlab = "Efecto estimado: diferencia de productividades medias (puntos)")
+abline(v = 10, col = "#D6A600", lwd = 3)
+```
+
+**Lectura del resultado:** Los 200 sorteos producen estimaciones distintas, centradas aproximadamente en el efecto verdadero de 10 puntos. El promedio de esta serie es 9.892, no 10 exacto. La desviación 1.050 describe cuánto cambian las estimaciones entre sorteos; no es el efecto de la capacitación. La diferencia con la lámina 06 es que aquí observamos muchas asignaciones y no una sola.
 
 ## Parte 2 · Variable omitida · Entender qué captura una pendiente
 

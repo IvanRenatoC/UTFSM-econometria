@@ -31,3 +31,7 @@ WEBR_MODULE=/ruta/a/node_modules/webr/dist/webr.mjs node clase-3-taller/herramie
 ```
 
 La verificación usa los CSV locales, no instala paquetes R ni modifica las fuentes. Regenera las salidas y los datos de las figuras; después ejecutar el generador web para sincronizar los artefactos.
+
+## Apoyo para las láminas 02–07
+
+La notación explicativa utiliza $Y^{NT}$ y $Y^{T}$; los identificadores `Y_NT` y `Y_T` se conservan solo en el código y en sus salidas. Los contrafactuales de las cinco personas se construyen fijando efectos supuestos, nunca se deducen de las observaciones. La lámina 03 incluye tabla y fórmulas para la pizarra. Las viñetas 02–07 contienen código independiente, comprobado también en entornos R sin acceso a los objetos de las otras láminas. El notebook incorpora esas celdas y el reto de Juan por separado.
