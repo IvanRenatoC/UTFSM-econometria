@@ -35,3 +35,6 @@ La verificación usa los CSV locales, no instala paquetes R ni modifica las fuen
 ## Apoyo para las láminas 02–07
 
 La notación explicativa utiliza $Y^{NT}$ y $Y^{T}$; los identificadores `Y_NT` y `Y_T` se conservan solo en el código y en sus salidas. Los contrafactuales de las cinco personas se construyen fijando efectos supuestos, nunca se deducen de las observaciones. La lámina 03 incluye tabla y fórmulas para la pizarra. Las viñetas 02–07 contienen código independiente, comprobado también en entornos R sin acceso a los objetos de las otras láminas. El notebook incorpora esas celdas y el reto de Juan por separado.
+
+
+La lámina 08 incorpora una pausa de discusión con respuesta plegada; la 10 revela cada caso después de la predicción. Las láminas 11 y 12 permiten filtrar y paginar los 100 registros simulados por tres grupos etarios; los filtros no cambian el ajuste del modelo. La 13 separa la primera muestra, las distribuciones, sus medias y su dispersión. Los argumentos de las funciones usadas en 09–13 están explicados en sus viñetas.

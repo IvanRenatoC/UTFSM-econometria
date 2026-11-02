@@ -36,6 +36,10 @@ def generar():
             md('**Para desarrollar en la pizarra**\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina['pizarra']),key+'-pizarra')
         if lamina.get('desarrollo'):
             md('\n\n'.join('**'+t+'**\n\n'+x for t,x in lamina['desarrollo']),key+'-desarrollo')
+        if lamina.get('reflexion'):
+            md('**Pausa de discusión: 2–3 minutos**\n\n'+'\n'.join(str(i+1)+'. '+q for i,q in enumerate(lamina['reflexion'])),key+'-reflexion')
+        if lamina.get('respuesta_plegada'):
+            md('<details><summary>Mostrar respuesta</summary>\n\n'+lamina['respuesta_texto']+'\n\n'+'\n\n'.join('**'+f['titulo']+'**\n\n$$'+f['latex']+'$$' for f in lamina.get('pizarra_respuesta',[]))+'\n\n</details>',key+'-respuesta')
     def steps(lamina, suffix, title):
         key=lamina['id'].lower()
         md('**'+title+'**',key+suffix)

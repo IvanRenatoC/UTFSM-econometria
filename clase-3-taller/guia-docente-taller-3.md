@@ -41,3 +41,12 @@ Nuevas sentencias: `ifelse`, `rnorm`, `runif`, `as.numeric` sobre una condición
 ## Referencias
 
 [Cátedra 3 de Sebastián Azócar](https://hizocar.github.io/econometria-usm/clases/clase3/), consultada el 2 de noviembre de 2026. Se sigue su orden temático; los ejemplos se adaptan para el taller. La tabla de cinco personas y los mecanismos de simulación se identifican expresamente como didácticos. Referencia de lectura: Wooldridge, sección 3.3 y las indicaciones de la cátedra.
+
+
+## Apoyo para las láminas 08–13
+
+- **08:** leer las dos ecuaciones, mirar la nube sin recta y dejar 2–3 minutos para discutir las tres preguntas. No abrir «Mostrar respuesta y comprobar en R» hasta que el grupo formule una predicción. El bloque incluye el desarrollo algebraico, los ajustes y la explicación de por qué 3.5 es poblacional y 3.158 una estimación concreta.
+- **09:** recorrer fórmula, tabla de datos, extracción de coeficientes y tolerancia numérica. Las viñetas explican la función y los argumentos de cada llamada; una identidad no valida causalidad.
+- **10:** distinguir δ₁ (relación de x₂ con x₁) de β₂ (contribución de x₂ al resultado). Elegir un caso, pedir un signo y revelar después. El signo del componente omitido no es necesariamente el de la pendiente total.
+- **11–12:** grupos de edad 20 a <40, 40 a <60 y 60 a 80. La población simulada tiene 33, 37 y 30 registros, respectivamente. Los filtros y la paginación permiten consultar las mismas filas que R; los modelos siguen ajustados con las 100 observaciones. Filtrar no equivale a fijar una edad ni a volver a ajustar dentro del grupo.
+- **13:** empezar por la primera muestra y pasar a las 200. Comparar por separado medias y dispersión. No concluir que todos los controles aumentan varianza o que un p-valor alto identifica irrelevancia poblacional.

@@ -56,6 +56,8 @@ for bloque in contenido['bloques']:
     for a in bloque['laminas']:
         n = int(a['id'].split('-')[1])
         widget = '<div class="lab" data-kind="'+e(a['interactivo'])+'"></div>' if a.get('interactivo') else ''
+        prompt_widget = '<div class="lab" data-kind="'+e(a['interactivo_previo'])+'"></div>' if a.get('interactivo_previo') else ''
+        reflection = '<section class="reflection"><h4>Pausa de discusión · 2–3 minutos</h4><p>Antes de abrir la respuesta, propongan una predicción y justifíquenla en conjunto.</p><ol>'+''.join('<li>'+rich(q)+'</li>' for q in a['reflexion'])+'</ol></section>' if a.get('reflexion') else ''
         explanations = ''
         if a.get('explicaciones'):
             steps = []
@@ -84,7 +86,11 @@ for bloque in contenido['bloques']:
         teaching_intro, teaching_body = render_teaching(a)
         challenge = '<details class="solution"><summary>Reto adicional · Cambiar solo a Juan</summary><div class="solution-body"><div class="code-head"><span>R</span><button type="button" class="copy">Copiar código</button></div><pre><code>'+e(a['reto_codigo'])+'</code></pre></div></details>' if a.get('reto_codigo') else ''
         quiz = ''.join('<section class="quiz"><h4>'+e(q)+'</h4>'+''.join('<button type="button" data-correct="'+str(i==correct).lower()+'">'+e(opt)+'</button>' for i,opt in enumerate(opts))+'<p class="quiz-feedback" role="status" data-reason="'+e(reason)+'"></p></section>' for q,opts,correct,reason in a.get('quiz',[]))
-        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p>{teaching_intro}<p>{rich(a['texto'])}</p>{teaching_body}{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{widget}{anova_tables}{outputs}{later_explanations}<div class="reading"><h4>Cómo leer el resultado</h4><p>{rich(a['lectura'])}</p></div>{after_reading}{trailing_solution}{challenge}{quiz}</div></article>''')
+        resolution = widget+anova_tables+outputs+later_explanations+'<div class="reading"><h4>Cómo leer el resultado</h4><p>'+rich(a['lectura'])+'</p></div>'+after_reading+trailing_solution+challenge+quiz
+        if a.get('respuesta_plegada'):
+            answer_math = ''.join('<div class="board-line"><p>'+e(f['titulo'])+'</p>'+f['mathml']+'</div>' for f in a.get('pizarra_respuesta',[]))
+            resolution = '<details class="answer-reveal"><summary>Mostrar respuesta y comprobar en R</summary><div class="answer-content"><p>'+rich(a['respuesta_texto'])+'</p>'+answer_math+resolution+'</div></details>'
+        cards.append(f'''<article class="slide" id="{e(a['id'])}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{e(a['id'])}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {n:02d}</span></header><div class="slide-body" id="body-{e(a['id'])}" hidden><p class="data-note">{e(a.get("referencia", ""))}</p>{teaching_intro}<p>{rich(a['texto'])}</p>{teaching_body}{top_explanations}{starter}{syntax}{leading_solution}{exercise_code}{reflection}{prompt_widget}{resolution}</div></article>''')
     sections.append(f'''<section class="chapter" id="{e(bloque['id'])}"><div class="chapter-intro"><p class="eyebrow">{e(bloque['etiqueta'])}</p><h2>{e(bloque['titulo'])}</h2></div>{''.join(cards)}</section>''')
 html = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{e(contenido['titulo'])} · UTFSM</title><style>{css}\n{(ROOT / "herramientas/taller3.css").read_text()}
 .lab {{border:1px solid #b8c8d8;border-radius:12px;padding:16px;margin:20px 0;background:var(--paper,transparent)}}
