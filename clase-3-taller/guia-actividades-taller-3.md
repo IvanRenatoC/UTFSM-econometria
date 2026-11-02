@@ -79,9 +79,9 @@ T = 1 indica que la persona recibe el tratamiento; T = 0 indica que no lo recibe
 
 En las explicaciones usamos $Y^{NT}$ y $Y^{T}$. En el código escribimos `Y_NT` y `Y_T` como nombres de columnas para almacenar esos mismos resultados.
 
-**La misma población artificial de cinco personas**
+**Resultados observados, potenciales y efectos del mismo ejemplo**
 
-| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
+| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto $Y^{T}$ − $Y^{NT}$ |
 | --- | --- | --- | --- | --- | --- |
 | Sofía | 1 | 100 | 75 | 100 | 25 |
 | Paula | 0 | 40 | 40 | 55 | 15 |
@@ -106,6 +106,10 @@ Paula: $Y^{NT}$ = 40 y $Y^{T}$ = 40 + 15 = 55. Juan: $Y^{NT}$ = 20 y $Y^{T}$ = 2
 **Qué significa el cálculo**
 
 La resta o suma completa un mundo que nosotros construimos al fijar los efectos. Sin ese supuesto no podríamos conocer los valores faltantes. No debemos confundir completar esta tabla artificial con recuperar contrafactuales reales.
+
+**Una sola tabla para seguir el cálculo**
+
+La tabla reúne Y observado, $Y^{NT}$, $Y^{T}$ y la diferencia de cada fila. El dorado identifica un resultado contrafactual. Puedes ocultar esos valores para volver al escenario en que solo observamos un resultado por persona.
 
 **Referencia en la cátedra:** Tema 2 · Marco de Rubin y resultados observados/no observados
 
@@ -188,9 +192,9 @@ print(all(Y_recuperado == personas$Y))
 
 Calculemos los dos promedios usando la tabla completa de esta misma lámina. La diferencia individual es $Y^{T}$ − $Y^{NT}$. ATE promedia a las cinco personas; ATT promedia solo a Sofía, Ezequiel y Caro, porque recibieron el tratamiento (T = 1).
 
-**La misma población artificial de cinco personas**
+**Resultados observados, potenciales y efectos del mismo ejemplo**
 
-| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
+| Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto $Y^{T}$ − $Y^{NT}$ |
 | --- | --- | --- | --- | --- | --- |
 | Sofía | 1 | 100 | 75 | 100 | 25 |
 | Paula | 0 | 40 | 40 | 55 | 15 |
@@ -224,6 +228,10 @@ Sofía: 100 − 75 = 25; Paula: 55 − 40 = 15; Ezequiel: 80 − 60 = 20; Juan: 
 
 ATE usa las cinco diferencias y divide por 5. ATT usa únicamente las diferencias de las filas con T = 1 y divide por 3. No se calcula restando el promedio observado de tratados y no tratados.
 
+**Usa la columna de efectos de esta misma tabla**
+
+Para ATE suma las cinco filas; para ATT usa únicamente las filas con T = 1. Si cambias el resultado con tratamiento de Juan, su efecto se actualiza en la misma tabla: no es necesario comparar dos tablas distintas.
+
 **Referencia en la cátedra:** Tema 2 · ATE y ATT
 
 ```r
@@ -241,7 +249,7 @@ personas$Y_T <- ifelse(personas$T == 1, personas$Y,
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
 ```
 
@@ -250,12 +258,12 @@ print(c(ATE = ATE, ATT = ATT))
 **Salida del ejemplo ejecutado en R**
 
 ```text
-    nombre T Y_NT Y_T efecto
-1    Sofía 1   75 100     25
-2    Paula 0   40  55     15
-3 Ezequiel 1   60  80     20
-4     Juan 0   20  30     10
-5     Caro 1   45  60     15
+    nombre T   Y Y_NT Y_T efecto
+1    Sofía 1 100   75 100     25
+2    Paula 0  40   40  55     15
+3 Ezequiel 1  80   60  80     20
+4     Juan 0  20   20  30     10
+5     Caro 1  60   45  60     15
 ATE ATT
  17  20
 ```
@@ -279,7 +287,7 @@ personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
 personas$Y_T <- ifelse(personas$T == 1, personas$Y,
                        personas$Y + personas$efecto_supuesto)
 personas$efecto <- personas$Y_T - personas$Y_NT
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 ```
 
 **Calcular ATE = 17 y ATT = 20 en R**
@@ -301,7 +309,7 @@ personas$Y_T <- ifelse(personas$T == 1, personas$Y,
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
 ```
 
@@ -337,15 +345,21 @@ La media observada de los tratados es 80 y la del grupo no tratado es 30. ¿Las 
 
 Es el grupo que no recibe el tratamiento (T = 0): Paula y Juan. Sirve como grupo de comparación, pero no constituye automáticamente un buen contrafactual del grupo tratado. Aquí control nombra un grupo de personas, no una variable añadida a la regresión.
 
+**El contrafactual que necesitamos para separar el ATT**
+
+Para las personas tratadas (T = 1), $Y^{NT}$ responde qué resultado habrían tenido sin tratamiento. Su media, (75 + 60 + 45)/3 = 60, es la que usamos para distinguir el ATT de la selección. Mira las tres celdas doradas con borde en la tabla.
+
 **La misma población artificial de cinco personas**
 
 | Persona | T | Y observado | $Y^{NT}$ | $Y^{T}$ | Efecto supuesto |
 | --- | --- | --- | --- | --- | --- |
-| Sofía | 1 | 100 | 75 | 100 | 25 |
-| Paula | 0 | 40 | 40 | 55 | 15 |
-| Ezequiel | 1 | 80 | 60 | 80 | 20 |
-| Juan | 0 | 20 | 20 | 30 | 10 |
-| Caro | 1 | 60 | 45 | 60 | 15 |
+| Sofía | 1 | 100 | <mark><b>75</b></mark> | 100 | 25 |
+| Paula | 0 | 40 | 40 | <mark>55</mark> | 15 |
+| Ezequiel | 1 | 80 | <mark><b>60</b></mark> | 80 | 20 |
+| Juan | 0 | 20 | 20 | <mark>30</mark> | 10 |
+| Caro | 1 | 60 | <mark><b>45</b></mark> | 60 | 15 |
+
+Dorado: resultado contrafactual. El borde resalta los valores de $Y^{NT}$ cuando T = 1: 75, 60 y 45. Son los resultados sin tratamiento de Sofía, Ezequiel y Caro; no los observaríamos en datos reales y aquí se conocen por construcción del ejemplo.
 
 **Para desarrollar en la pizarra**
 
@@ -633,7 +647,7 @@ print(mean(Y_azar[T_azar == 1]) - mean(Y_azar[T_azar == 0]))
 print(aggregate(habilidad, list(T = T_azar), mean))
 ```
 
-**Lectura del resultado:** La capacitación suma 10 puntos en ambos casos. Con autoselección, la brecha observada de 33.525 también recoge diferencias de habilidad previas. Con este sorteo, la brecha es 10.965: está cerca de 10, pero no es idéntica porque los grupos de una asignación finita pueden diferir por azar. La siguiente lámina comprobará qué ocurre al repetir el sorteo.
+**Lectura del resultado:** En la autoselección, los participantes tienen una productividad media 33,525 puntos mayor, aunque la capacitación solo suma 10 por persona en este mecanismo. Esa comparación mezcla el efecto del programa con diferencias previas de productividad: las personas con más habilidad son quienes participan. Al sortear, la brecha del ejemplo baja a 10,965, cerca del efecto verdadero de 10. El gráfico muestra cómo cambia quién integra cada grupo, no un cambio en la eficacia del programa. Se dibujan 120 personas para facilitar la lectura, pero las medias se calculan con las 1000.
 
 ### Un sorteo no elimina el ruido muestral
 
@@ -782,6 +796,36 @@ $$y=1+2x_1+3(0.5x_1+v)+u=1+3.5x_1+3v+u$$
 **Pendiente poblacional al omitir x₂**
 
 $$\widetilde{\beta}_1=2+3\times0.5=3.5$$
+
+**Modelo con control: utiliza x₁ y x₂**
+
+$$\widehat y=\widehat b_0+\widehat b_1x_1+\widehat b_2x_2$$
+
+**Recta azul: predicción con control, fijando x₂ = 0**
+
+$$\widehat y\big|_{x_2=0}=\widehat b_0+\widehat b_1x_1$$
+
+**Recta dorada: ajuste corto que omite x₂**
+
+$$\widehat y_{\mathrm{corta}}=\widetilde b_0+\widetilde b_1x_1$$
+
+**X₂ relacionado y relevante**
+
+x₂ aumenta, en promedio, con x₁ y además aumenta y. Si lo omitimos, la recta dorada atribuye a x₁ parte de esa contribución adicional. La pendiente poblacional corta es 2 + 3 × 0.5 = 3.5, superior al efecto directo 2. La recta azul separa ambas contribuciones y representa el ajuste con x₂ fijo en 0.
+
+$$x_2=0.5x_1+v,\qquad y=1+2x_1+3x_2+u$$
+
+**X₂ sin relación con X₁**
+
+x₂ sigue influyendo en y, pero ya no se relaciona con x₁ en el mecanismo poblacional. Omitirla deja más variación sin explicar, pero no añade un componente sistemático a la pendiente de x₁: 2 + 3 × 0 = 2. Las pendientes de esta muestra pueden diferir de 2 o entre sí por asociaciones accidentales de una muestra finita.
+
+$$x_2=v,\qquad y=1+2x_1+3x_2+u$$
+
+**X₂ no influye en Y**
+
+x₂ continúa relacionada con x₁, pero su coeficiente en la ecuación del resultado es 0. Por eso no hay una contribución de x₂ que trasladar a la pendiente corta: 2 + 0 × 0.5 = 2. En este escenario omitir x₂ no genera sesgo poblacional por esta vía; incluirla tampoco garantiza una estimación más precisa.
+
+$$x_2=0.5x_1+v,\qquad y=1+2x_1+u$$
 
 </details>
 

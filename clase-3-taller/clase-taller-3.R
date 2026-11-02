@@ -74,7 +74,7 @@ personas$Y_T <- ifelse(personas$T == 1, personas$Y,
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
 
 personas <- data.frame(
@@ -89,7 +89,7 @@ personas$Y_NT <- ifelse(personas$T == 0, personas$Y,
 personas$Y_T <- ifelse(personas$T == 1, personas$Y,
                        personas$Y + personas$efecto_supuesto)
 personas$efecto <- personas$Y_T - personas$Y_NT
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 
 personas <- data.frame(
   nombre = c("Sofía", "Paula", "Ezequiel", "Juan", "Caro"),
@@ -105,7 +105,7 @@ personas$Y_T <- ifelse(personas$T == 1, personas$Y,
 personas$efecto <- personas$Y_T - personas$Y_NT
 ATE <- mean(personas$efecto)
 ATT <- mean(personas$efecto[personas$T == 1])
-print(personas[, c("nombre", "T", "Y_NT", "Y_T", "efecto")])
+print(personas[, c("nombre", "T", "Y", "Y_NT", "Y_T", "efecto")])
 print(c(ATE = ATE, ATT = ATT))
 
 personas <- data.frame(
