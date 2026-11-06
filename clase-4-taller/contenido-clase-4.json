@@ -1,0 +1,497 @@
+{
+  "titulo": "Clase 4 · Regresión lineal múltiple en R",
+  "fuente": "https://hizocar.github.io/econometria-usm/clases/clase4/",
+  "agenda": [
+    [
+      "18:50–19:10",
+      "Del modelo simple al múltiple",
+      "C4-01"
+    ],
+    [
+      "19:10–19:25",
+      "MCO con dos regresores",
+      "C4-04"
+    ],
+    [
+      "19:25–19:45",
+      "Notación y operaciones matriciales",
+      "C4-05"
+    ],
+    [
+      "19:45–20:00",
+      "Fórmula de MCO y propiedades",
+      "C4-07"
+    ],
+    [
+      "20:00–20:15",
+      "Descanso",
+      ""
+    ],
+    [
+      "20:15–20:35",
+      "R² y R² ajustado",
+      "C4-10"
+    ],
+    [
+      "20:35–20:55",
+      "Ejemplo y lectura de resultados",
+      "C4-12"
+    ],
+    [
+      "20:55–21:20",
+      "Inversa por cofactores",
+      "C4-14"
+    ],
+    [
+      "21:20–21:25",
+      "Síntesis y cierre",
+      "C4-16"
+    ]
+  ],
+  "temas": [
+    [
+      "tema1",
+      "Parte 1 · Del simple al múltiple",
+      1,
+      3
+    ],
+    [
+      "tema2",
+      "Parte 1 · MCO con k variables",
+      4,
+      4
+    ],
+    [
+      "tema3",
+      "Parte 1 · Notación matricial",
+      5,
+      6
+    ],
+    [
+      "tema4",
+      "Parte 1 · Fórmula de MCO y propiedades",
+      7,
+      9
+    ],
+    [
+      "tema5",
+      "Parte 1 · R² y R² ajustado",
+      10,
+      11
+    ],
+    [
+      "tema6",
+      "Parte 1 · Ejemplo y salida en R",
+      12,
+      13
+    ],
+    [
+      "tema7",
+      "Parte 2 · Ayudantía · Inversa por cofactores",
+      14,
+      16
+    ]
+  ],
+  "laminas": [
+    {
+      "id": "C4-01",
+      "titulo": "Preparar wage2 y reconocer las unidades",
+      "texto": "Comenzamos con datos reales de salarios, educación e IQ. La copia local permite trabajar sin conexión; en Colab se carga el paquete cuando no está el CSV.",
+      "codigo": "if (file.exists(\"datos/wage2.csv\")) {\n  original <- read.csv(\"datos/wage2.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  original <- as.data.frame(wooldridge::wage2)\n}\nvariables <- c(\"wage\", \"educ\", \"IQ\")\nprint(colSums(is.na(original[variables])))\ndatos <- original[complete.cases(original[variables]), variables]\nprint(c(filas_originales = nrow(original), filas_usadas = nrow(datos)))\nstr(datos)\nsummary(datos)\nhead(datos)",
+      "lectura": "wage es salario mensual en dólares; educ son años de educación; IQ es una puntuación de inteligencia. wage2 contiene 935 hombres trabajadores de Estados Unidos en 1980. Cada fila es una persona. Se informa el número de filas para comparar modelos sobre la misma muestra.",
+      "pasos": [
+        [
+          "complete.cases(original[variables])",
+          "Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos."
+        ],
+        [
+          "original[filas, columnas]",
+          "Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar."
+        ],
+        [
+          "str() y summary()",
+          "str(datos) describe la estructura; summary(datos) resume cada columna. No ajustan una regresión."
+        ]
+      ],
+      "interactivo": "",
+      "pregunta": "¿La columna IQ es un porcentaje?",
+      "respuesta": "No: es una puntuación. Un punto de IQ y un año de educación son unidades diferentes.",
+      "formula": ""
+    },
+    {
+      "id": "C4-02",
+      "titulo": "Del modelo simple al múltiple",
+      "texto": "Compara la pendiente de educación antes y después de incluir IQ. El signo + en una fórmula añade una variable explicativa; no suma sus columnas previamente.",
+      "codigo": "simple <- lm(wage ~ educ, data = datos)\nmultiple <- lm(wage ~ educ + IQ, data = datos)\nprint(coef(simple))\nprint(coef(multiple))\ncomparacion <- data.frame(\n  modelo = c(\"Simple\", \"Con IQ\"),\n  pendiente_educ = c(coef(simple)[\"educ\"], coef(multiple)[\"educ\"])\n)\nprint(comparacion)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\")\nabline(simple, col = \"#D6A600\", lwd = 3)",
+      "lectura": "Al incluir IQ cambia la asociación estimada de educación con salario. La pendiente múltiple se interpreta manteniendo IQ fijo. Ninguna de las dos regresiones demuestra por sí sola un efecto causal.",
+      "pasos": [
+        [
+          "lm(wage ~ educ + IQ, data = datos)",
+          "Estima intercepto y dos pendientes. La variable dependiente está a la izquierda de ~."
+        ],
+        [
+          "coef(multiple)[\"educ\"]",
+          "Extrae por su nombre la pendiente de educación del modelo múltiple."
+        ],
+        [
+          "data.frame(modelo = ..., pendiente_educ = ...)",
+          "Organiza los coeficientes en una tabla para comparar las mismas unidades."
+        ]
+      ],
+      "interactivo": "comparar",
+      "pregunta": "¿Agregar un control siempre reduce la pendiente de educación?",
+      "respuesta": "No. Aquí cambia según la relación entre las variables. Puede aumentar, disminuir o mantener su valor.",
+      "formula": "\\widehat{wage}=\\widehat\\beta_0+\\widehat\\beta_1\\,educ+\\widehat\\beta_2\\,IQ"
+    },
+    {
+      "id": "C4-03",
+      "titulo": "Ceteris paribus: mover educación y dejar IQ fijo",
+      "texto": "Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.",
+      "codigo": "nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))\npredicciones <- predict(multiple, newdata = nuevos)\nprint(data.frame(nuevos, salario_predicho = predicciones))\nprint(diff(predicciones))\nprint(coef(multiple)[\"educ\"])\nrejilla <- data.frame(educ = seq(9, 18, length.out = 50), IQ = 100)\nplot(rejilla$educ, predict(multiple, newdata = rejilla), type = \"l\",\n     col = \"#005F96\", lwd = 3, xlab = \"Educación (años)\",\n     ylab = \"Salario mensual predicho (USD)\")",
+      "lectura": "La diferencia entre 13 y 12 años, manteniendo IQ = 100, coincide con la pendiente de educación. Es una diferencia de predicciones del modelo, no una comparación causal garantizada entre personas.",
+      "pasos": [
+        [
+          "predict(multiple, newdata = nuevos)",
+          "Calcula predicciones para cada fila de nuevos. Debe contener las variables explicativas con los mismos nombres que el modelo."
+        ],
+        [
+          "diff(predicciones)",
+          "Resta valores consecutivos: aquí, la segunda predicción menos la primera."
+        ],
+        [
+          "seq(9, 18, length.out = 50)",
+          "Genera 50 valores equidistantes para dibujar una línea suave."
+        ]
+      ],
+      "interactivo": "condicional",
+      "pregunta": "¿Qué se mantiene constante cuando se interpreta la pendiente de educación?",
+      "respuesta": "Las otras variables incluidas: aquí, IQ.",
+      "formula": "\\Delta\\widehat{wage}=\\widehat\\beta_1\\Delta educ\\quad\\text{con IQ fijo}"
+    },
+    {
+      "id": "C4-04",
+      "titulo": "MCO: elegir el plano que reduce los residuos",
+      "texto": "En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.",
+      "codigo": "ejemplo <- data.frame(\n  persona = c(\"Juan\", \"Pedro\", \"Sofía\", \"Caro\", \"Alex\"),\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nmodelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)\nprint(coef(modelo5))\nprint(data.frame(ejemplo, ajustado = fitted(modelo5), residuo = resid(modelo5)))\nprint(sum(resid(modelo5)^2))",
+      "lectura": "fitted() entrega los valores ajustados; resid() calcula observado menos ajustado. Los residuos pueden ser positivos o negativos, pero sus cuadrados son no negativos. Los valores de educación 74 a 119 se conservan como valores del ejemplo numérico de cátedra, sin interpretarlos como años reales.",
+      "pasos": [
+        [
+          "fitted(modelo5)",
+          "Devuelve una predicción para cada observación usada en el ajuste."
+        ],
+        [
+          "resid(modelo5)",
+          "Calcula los residuos: salario observado menos salario ajustado."
+        ],
+        [
+          "sum(resid(modelo5)^2)",
+          "Eleva cada residuo al cuadrado y suma. Esta es la función objetivo de MCO."
+        ]
+      ],
+      "interactivo": "residuos",
+      "pregunta": "¿Minimizar residuos al cuadrado obliga a que todos los residuos sean cero?",
+      "respuesta": "No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variación sin explicar.",
+      "formula": "\\min_{b_0,b_1,b_2}\\sum_i(y_i-b_0-b_1x_{i1}-b_2x_{i2})^2"
+    },
+    {
+      "id": "C4-05",
+      "titulo": "Construir X, y y el vector de parámetros",
+      "texto": "Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.",
+      "codigo": "X <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(identical(as.vector(X), as.vector(X_manual)))",
+      "lectura": "Hay n = 5 observaciones y k = 2 variables explicativas: X tiene dimensión 5 × 3; el vector de parámetros tiene 3 elementos. Las columnas son intercepto, experiencia y educación. El vector y tiene 5 valores.",
+      "pasos": [
+        [
+          "model.matrix(modelo5)",
+          "Construye la matriz de diseño según la fórmula y las observaciones del modelo; incluye una columna de unos si hay intercepto."
+        ],
+        [
+          "cbind(unos = 1, ...)",
+          "Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores."
+        ],
+        [
+          "dim(X), colnames(X) y as.vector(X)",
+          "dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos."
+        ]
+      ],
+      "interactivo": "matriz",
+      "pregunta": "¿Por qué X tiene tres columnas si hay dos variables explicativas?",
+      "respuesta": "La tercera columna es la de unos para el intercepto.",
+      "formula": "y=X\\beta+u,\\quad X:\\ n\\times(k+1),\\quad\\beta:\\ (k+1)\\times1"
+    },
+    {
+      "id": "C4-06",
+      "titulo": "Transpuesta y producto matricial: t() y %*%",
+      "texto": "Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.",
+      "codigo": "XtX <- t(X) %*% X\nXty <- t(X) %*% y\nprint(XtX)\nprint(Xty)\nprint(dim(XtX))\nprint(sum(X[, 2] * X[, 3]))\nprint(XtX[2, 3])\nprint(head(X * X))",
+      "lectura": "La entrada (2,3) de XᵀX es la suma de experiencia × educación. %*% multiplica matrices mediante sumas de productos; * multiplica elemento a elemento. XᵀX es 3 × 3; Xᵀy es 3 × 1.",
+      "pasos": [
+        [
+          "t(X)",
+          "Intercambia filas y columnas: de 5 × 3 pasa a 3 × 5."
+        ],
+        [
+          "t(X) %*% X",
+          "Producto matricial. Las dimensiones interiores deben coincidir: (3 × 5)(5 × 3) da 3 × 3."
+        ],
+        [
+          "X[, 2] * X[, 3]",
+          "Multiplica las dos columnas elemento a elemento. sum() produce el producto interno que aparece en XtX[2,3]."
+        ]
+      ],
+      "interactivo": "producto",
+      "pregunta": "¿X * X es lo mismo que t(X) %*% X?",
+      "respuesta": "No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.",
+      "formula": "(X^\\top X)_{23}=\\sum_{i=1}^5x_{i1}x_{i2}"
+    },
+    {
+      "id": "C4-07",
+      "titulo": "Calcular los coeficientes con solve() y compararlos con lm()",
+      "texto": "Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.",
+      "codigo": "beta_formula <- solve(XtX) %*% Xty\nbeta_sistema <- solve(XtX, Xty)\nprint(beta_formula)\nprint(beta_sistema)\nprint(coef(modelo5))\nprint(isTRUE(all.equal(as.numeric(beta_sistema), unname(coef(modelo5)))))\ny_ajustado <- X %*% beta_sistema\nprint(cbind(observado = y, ajustado = y_ajustado))",
+      "lectura": "Los tres métodos coinciden salvo diferencias de redondeo: aproximadamente 140,586; −16,790; 8,237. solve(A) calcula la inversa; solve(A,b) resuelve A·x = b. Para ajustar regresiones en la práctica usamos lm(), que evita formar las ecuaciones normales explícitamente y utiliza QR.",
+      "pasos": [
+        [
+          "solve(XtX)",
+          "Devuelve la inversa de XtX si es invertible. Aquí permite reproducir la fórmula teórica."
+        ],
+        [
+          "solve(XtX, Xty)",
+          "Resuelve XtX · beta = Xty sin pedir una inversa explícita. No elimina los problemas de condicionamiento de las ecuaciones normales."
+        ],
+        [
+          "all.equal(...), as.numeric(...) e isTRUE(...)",
+          "as.numeric convierte a vector; all.equal compara con tolerancia numérica; isTRUE produce un único TRUE o FALSE."
+        ]
+      ],
+      "interactivo": "estimacion",
+      "pregunta": "¿Conviene redondear la inversa antes de multiplicar?",
+      "respuesta": "No. Redondea solo al mostrar; conserva precisión durante los cálculos.",
+      "formula": "\\widehat\\beta=(X^\\top X)^{-1}X^\\top y"
+    },
+    {
+      "id": "C4-08",
+      "titulo": "Verificar las propiedades algebraicas de MCO",
+      "texto": "Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.",
+      "codigo": "u_hat <- y - as.numeric(y_ajustado)\nprint(round(t(X) %*% u_hat, 8))\nprint(c(media_y = mean(y), media_ajustada = mean(y_ajustado)))\nmedias <- data.frame(experiencia = mean(ejemplo$experiencia),\n                     educacion = mean(ejemplo$educacion))\nprint(predict(modelo5, newdata = medias))\nprint(mean(y))",
+      "lectura": "La suma de residuos y la suma de cada regresor multiplicado por los residuos son cercanas a cero. La media observada coincide con la ajustada. El plano pasa por el punto de medias. Un valor como 10⁻¹⁰ es un residuo de precisión numérica, no una contradicción.",
+      "pasos": [
+        [
+          "round(t(X) %*% u_hat, 8)",
+          "Muestra con ocho decimales la ortogonalidad de los residuos con cada columna de X."
+        ],
+        [
+          "mean(y_ajustado)",
+          "Promedia los salarios ajustados; con intercepto coincide con mean(y)."
+        ],
+        [
+          "predict(modelo5, newdata = medias)",
+          "Evalúa el plano en la media de cada variable explicativa."
+        ]
+      ],
+      "interactivo": "propiedades",
+      "pregunta": "¿Estas igualdades prueban que no hay variables omitidas?",
+      "respuesta": "No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especificación sea inadecuada.",
+      "formula": "X^\\top\\widehat u=0,\\quad\\bar y=\\overline{\\widehat y}"
+    },
+    {
+      "id": "C4-09",
+      "titulo": "Rango completo: cuándo falla la inversa",
+      "texto": "Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.",
+      "codigo": "X_duplicada <- cbind(unos = 1, experiencia = ejemplo$experiencia,\n                      repetida = ejemplo$experiencia)\nprint(c(columnas = ncol(X_duplicada), rango = qr(X_duplicada)$rank))\nproblema <- tryCatch(solve(t(X_duplicada) %*% X_duplicada),\n                     error = function(e) conditionMessage(e))\nprint(problema)\nejemplo$repetida <- ejemplo$experiencia\nprint(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))",
+      "lectura": "Hay tres columnas, pero solo dos independientes. No se pueden identificar dos pendientes separadas para columnas idénticas. solve() informa el problema y lm() marca un coeficiente redundante con NA. No se trata de un dato faltante del dataset.",
+      "pasos": [
+        [
+          "qr(X_duplicada)$rank",
+          "Obtiene el número de columnas linealmente independientes. Debe coincidir con el número de parámetros para invertir XᵀX."
+        ],
+        [
+          "tryCatch(..., error = function(e) conditionMessage(e))",
+          "Captura el error esperado y lo muestra como texto para que el notebook continúe. e contiene la información del error."
+        ],
+        [
+          "coef(lm(...))",
+          "Una pendiente puede aparecer como NA porque es redundante; no porque haya una fila con valor faltante."
+        ]
+      ],
+      "interactivo": "rango",
+      "pregunta": "¿Tener más filas que columnas garantiza rango completo?",
+      "respuesta": "No. Puede haber columnas duplicadas o combinaciones lineales exactas.",
+      "formula": ""
+    },
+    {
+      "id": "C4-10",
+      "titulo": "R² y R² ajustado: comparar sobre la misma muestra",
+      "texto": "Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.",
+      "codigo": "medidas <- function(modelo) {\n  s <- summary(modelo)\n  c(n = nobs(modelo), R2 = s$r.squared,\n    R2_ajustado = s$adj.r.squared, SSR = sum(resid(modelo)^2))\n}\nprint(rbind(simple = medidas(simple), multiple = medidas(multiple)))\nSSR <- sum(resid(multiple)^2)\nSST <- sum((datos$wage - mean(datos$wage))^2)\nSSE <- sum((fitted(multiple) - mean(datos$wage))^2)\nn <- nobs(multiple)\nk <- length(coef(multiple)) - 1\nprint(c(R2 = 1 - SSR/SST,\n        R2_ajustado = 1 - (SSR/(n-k-1))/(SST/(n-1))))\nprint(c(SST = SST, SSE_mas_SSR = SSE + SSR))",
+      "lectura": "Seguimos la nomenclatura de cátedra: SSR es residual; SSE es explicada; SST es total. En modelos anidados con intercepto sobre la misma muestra, R² no disminuye al agregar regresores; el ajustado sí puede disminuir. Ninguno mide por sí solo causalidad o desempeño fuera de muestra.",
+      "pasos": [
+        [
+          "summary(modelo)$adj.r.squared",
+          "Extrae el R² ajustado del resumen; r.squared entrega el R² sin penalización."
+        ],
+        [
+          "nobs(modelo) y length(coef(modelo)) - 1",
+          "nobs cuenta observaciones usadas. Restamos el intercepto para contar k en este modelo de rango completo."
+        ],
+        [
+          "function(modelo) y rbind(...)",
+          "Define una función reutilizable y apila sus resultados como filas para comparar."
+        ]
+      ],
+      "interactivo": "ajuste",
+      "pregunta": "¿Se puede comparar R² directamente si cambia la variable dependiente o la muestra?",
+      "respuesta": "La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la muestra como wage.",
+      "formula": "R^2=1-\\frac{SSR}{SST},\\quad\\overline R^2=1-\\frac{n-1}{n-k-1}\\frac{SSR}{SST}"
+    },
+    {
+      "id": "C4-11",
+      "titulo": "La trampa de agregar variables de ruido",
+      "texto": "Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.",
+      "codigo": "set.seed(5)\nn_sim <- 30\nx_sim <- rnorm(n_sim)\ny_sim <- 1 + 2*x_sim + rnorm(n_sim, sd = 2)\nruido <- matrix(rnorm(n_sim*10), nrow = n_sim, ncol = 10)\ntrayectoria <- data.frame(k_ruido = 0:10, R2 = NA, R2_ajustado = NA)\nfor (j in 0:10) {\n  if (j == 0) {\n    modelo_ruido <- lm(y_sim ~ x_sim)\n  } else {\n    z <- ruido[, seq_len(j), drop = FALSE]\n    modelo_ruido <- lm(y_sim ~ x_sim + z)\n  }\n  s <- summary(modelo_ruido)\n  trayectoria$R2[j+1] <- s$r.squared\n  trayectoria$R2_ajustado[j+1] <- s$adj.r.squared\n}\nprint(trayectoria)\nmatplot(trayectoria$k_ruido, trayectoria[, c(\"R2\", \"R2_ajustado\")],\n        type = \"l\", lty = 1, col = c(\"#005F96\", \"#D6A600\"),\n        xlab = \"Variables de ruido añadidas\", ylab = \"Bondad de ajuste\")\nlegend(\"bottomright\", c(\"R²\", \"R² ajustado\"), lty = 1,\n       col = c(\"#005F96\", \"#D6A600\"))",
+      "lectura": "Las variables añadidas se generaron sin relación poblacional con y, pero pueden ajustar variación accidental de esta muestra. R² sube o se mantiene; el ajustado puede subir o bajar. No es una prueba definitiva de relevancia ni una medida de validación fuera de muestra.",
+      "pasos": [
+        [
+          "matrix(..., nrow = ..., ncol = ...)",
+          "Ordena los valores aleatorios en una matriz de 30 filas y 10 columnas."
+        ],
+        [
+          "ruido[, seq_len(j), drop = FALSE]",
+          "Conserva las primeras j columnas; drop = FALSE evita convertir la selección de una sola columna en un vector."
+        ],
+        [
+          "matplot(x, y, type = \"l\", lty = 1)",
+          "Dibuja una línea por columna de y. type elige líneas y lty su estilo."
+        ]
+      ],
+      "interactivo": "ruido",
+      "pregunta": "¿El R² ajustado siempre baja al agregar ruido?",
+      "respuesta": "No. Puede subir por una asociación accidental en una muestra. La simulación muestra por qué no basta con mirar R².",
+      "formula": ""
+    },
+    {
+      "id": "C4-12",
+      "titulo": "Interpretar summary() y ANOVA en el ejemplo de cátedra",
+      "texto": "Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.",
+      "codigo": "resumen5 <- summary(modelo5)\nprint(resumen5)\nprint(resumen5$coefficients)\nprint(anova(modelo5))\nprint(c(R2 = resumen5$r.squared, R2_ajustado = resumen5$adj.r.squared))\nprint(df.residual(modelo5))",
+      "lectura": "Los coeficientes coinciden con el cálculo matricial. Un coeficiente estimado negativo no implica una relación conocida con certeza: hay mucha incertidumbre con cinco datos. anova(modelo5) muestra sumas de cuadrados secuenciales, que pueden cambiar de asignación si cambia el orden de los regresores.",
+      "pasos": [
+        [
+          "summary(modelo5)$coefficients",
+          "Estimate es el coeficiente; Std. Error su error estándar; t value contrasta coeficiente cero y Pr(>|t|) es su p-valor bajo los supuestos del contraste."
+        ],
+        [
+          "anova(modelo5)",
+          "Da ANOVA secuencial: cada fila incorpora el regresor después de los anteriores. El orden puede afectar estas contribuciones cuando están correlacionados."
+        ],
+        [
+          "df.residual(modelo5)",
+          "Entrega n menos el rango de X: aquí 5 − 3 = 2. La prueba F global de summary contrasta conjuntamente las dos pendientes iguales a cero."
+        ]
+      ],
+      "interactivo": "salida",
+      "pregunta": "¿La ANOVA secuencial de experiencia equivale a su prueba t controlando educación?",
+      "respuesta": "No en general. La primera fila entra antes de educación; la prueba t del modelo completo controla ambas variables.",
+      "formula": ""
+    },
+    {
+      "id": "C4-13",
+      "titulo": "Ejercicio guiado: estimar y explicar una regresión múltiple real",
+      "texto": "Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.",
+      "codigo": "fit <- lm(wage ~ educ + IQ, data = datos)\nprint(summary(fit))\nprint(anova(fit))\nprint(coef(fit))\nprint(predict(fit, newdata = data.frame(educ = 12, IQ = 100)))\nX_real <- model.matrix(fit)\ny_real <- model.response(model.frame(fit))\nbeta_real <- solve(t(X_real) %*% X_real, t(X_real) %*% y_real)\nprint(beta_real)\nprint(isTRUE(all.equal(as.numeric(beta_real), unname(coef(fit)))))\nprint(head(data.frame(observado = y_real, predicho = fitted(fit),\n                      residuo = resid(fit))))",
+      "lectura": "Interpreta educación en USD mensuales por un año adicional, manteniendo IQ constante; IQ en USD mensuales por un punto adicional, manteniendo educación constante. El intercepto puede quedar fuera de una situación económicamente plausible.",
+      "pasos": [
+        [
+          "model.frame(fit)",
+          "Recupera las filas y variables que efectivamente utilizó el ajuste."
+        ],
+        [
+          "model.response(model.frame(fit))",
+          "Extrae de esas filas la respuesta, alineada con model.matrix(fit). Evita comparar matrices con observaciones distintas."
+        ],
+        [
+          "summary(fit), anova(fit) y coef(fit)",
+          "Resumen completo, descomposición secuencial y coeficientes. Responde con unidades y distingue asociación de causalidad."
+        ]
+      ],
+      "interactivo": "practica",
+      "pregunta": "¿Qué debes reportar además del signo de una pendiente?",
+      "respuesta": "Su valor, sus unidades, qué variables se mantienen constantes y la incertidumbre de la estimación.",
+      "formula": ""
+    },
+    {
+      "id": "C4-14",
+      "titulo": "Inversa por cofactores: elegir un menor",
+      "texto": "Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.",
+      "codigo": "A <- t(X) %*% X\nprint(A)\ni <- 1\nj <- 2\nmenor <- A[-i, -j]\nprint(menor)\nprint(det(menor))\nprint((-1)^(i+j) * det(menor))",
+      "lectura": "Para (i,j) = (1,2), el menor tiene determinante −6518 y el cofactor cambia el signo, por lo que vale 6518. Un menor es un determinante; la submatriz es el bloque que queda al eliminar fila y columna.",
+      "pasos": [
+        [
+          "A[-i, -j]",
+          "Los índices negativos excluyen una fila y una columna. Aquí se elimina la fila 1 y la columna 2."
+        ],
+        [
+          "det(menor)",
+          "Calcula el determinante de la submatriz. En 2 × 2 equivale a a·d − b·c."
+        ],
+        [
+          "(-1)^(i+j)",
+          "Aplica el patrón de signos del cofactor: positivo si i+j es par, negativo si es impar."
+        ]
+      ],
+      "interactivo": "cofactor",
+      "pregunta": "¿Un menor negativo siempre produce un cofactor negativo?",
+      "respuesta": "No. Depende también del factor (−1)^(i+j).",
+      "formula": "C_{ij}=(-1)^{i+j}\\det(A_{-i,-j})"
+    },
+    {
+      "id": "C4-15",
+      "titulo": "Cofactores, adjunta, determinante e inversa",
+      "texto": "Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.",
+      "codigo": "cofactores <- matrix(0, nrow = 3, ncol = 3)\nfor (i in 1:3) {\n  for (j in 1:3) {\n    cofactores[i, j] <- (-1)^(i+j) * det(A[-i, -j])\n  }\n}\nadjunta <- t(cofactores)\ndeterminante <- sum(A[1, ] * cofactores[1, ])\ninversa <- adjunta / determinante\nprint(round(cofactores))\nprint(determinante)\nprint(round(inversa, 6))\nprint(isTRUE(all.equal(inversa, unname(solve(A)), check.attributes = FALSE)))\nprint(round(A %*% inversa, 8))",
+      "lectura": "El determinante es 34276. La matriz producto A·A⁻¹ es la identidad. La adjunta coincide con los cofactores en este ejemplo simétrico, pero la definición general exige transponer. El procedimiento es didáctico; para sistemas reales se prefieren algoritmos numéricos.",
+      "pasos": [
+        [
+          "for (i in 1:3) y for (j in 1:3)",
+          "Recorren las nueve celdas: una fila y, dentro de ella, las tres columnas."
+        ],
+        [
+          "sum(A[1, ] * cofactores[1, ])",
+          "Expande el determinante por la primera fila. No es la suma simple de los elementos de A."
+        ],
+        [
+          "adjunta / determinante",
+          "Divide cada elemento de la adjunta por un escalar. Solo se puede hacer si el determinante no es cero."
+        ]
+      ],
+      "interactivo": "inversa",
+      "pregunta": "¿La adjunta es siempre igual a la matriz de cofactores?",
+      "respuesta": "No. Es su transpuesta; aquí coinciden por simetría.",
+      "formula": "A^{-1}=\\frac{C^\\top}{\\det(A)}"
+    },
+    {
+      "id": "C4-16",
+      "titulo": "Cerrar el recorrido: de los datos a la predicción",
+      "texto": "Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.",
+      "codigo": "ejercicio <- data.frame(\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nfit_final <- lm(salario ~ experiencia + educacion, data = ejercicio)\nX_final <- model.matrix(fit_final)\ny_final <- ejercicio$salario\nbeta_final <- solve(t(X_final) %*% X_final, t(X_final) %*% y_final)\nprint(beta_final)\nprint(summary(fit_final))\nprint(anova(fit_final))\nprint(data.frame(ejercicio, ajustado = as.numeric(X_final %*% beta_final),\n                 residuo = resid(fit_final)))\nprint(round(t(X_final) %*% resid(fit_final), 8))",
+      "lectura": "La fórmula matricial y lm() llegan al mismo ajuste. Antes de interpretar: identifica respuesta, unidades, regresores, muestra y grados de libertad. Al agregar variables, recuerda que un mejor ajuste muestral no demuestra causalidad ni asegura mejores predicciones nuevas.",
+      "pasos": [
+        [
+          "lm(salario ~ experiencia + educacion, data = ejercicio)",
+          "Especifica la relación que se estima: dos pendientes e intercepto."
+        ],
+        [
+          "X_final %*% beta_final",
+          "Reconstruye las predicciones con las mismas columnas y en el mismo orden."
+        ],
+        [
+          "t(X_final) %*% resid(fit_final)",
+          "Comprueba las tres condiciones de ortogonalidad del ajuste."
+        ]
+      ],
+      "interactivo": "cierre",
+      "pregunta": "¿Qué conecta los siete temas de la clase?",
+      "respuesta": "La matriz X organiza el modelo; MCO estima sus coeficientes; los residuos verifican propiedades y las medidas de ajuste resumen cuánto se explica.",
+      "formula": ""
+    }
+  ]
+}

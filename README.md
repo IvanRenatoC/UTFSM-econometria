@@ -37,6 +37,14 @@ Taller de causalidad y variable omitida, con 16 láminas y notebook sincronizado
 - [Guía docente](clase-3-taller/guia-docente-taller-3.md)
 - [Guía del material](clase-3-taller/README.md)
 
+## Clase 4
+
+Regresión lineal múltiple, 16 láminas en el orden de la cátedra y notebook R sincronizado.
+
+- [Página de la clase](clase-4-taller/index.html)
+- [Notebook R](clase-4-taller/clase-taller-4.ipynb)
+- [Guía del material](clase-4-taller/README.md)
+
 ## Recursos compartidos del curso
 
 El logo `Logo_UTFSM.png`, los estilos `identidad-utfsm.css`, la navegación `navegacion-utfsm.js`, la especificación `IDENTIDAD-VISUAL.md` y el documento general `Econometria_USM_2026_3.pdf` permanecen en la raíz.
@@ -47,6 +55,7 @@ El archivo `index.html` de la raíz es el menú del curso. Cada clase se publica
 - Clase 1: https://ivanrenatoc.github.io/UTFSM-econometria/clase-1-taller/
 - Clase 2: https://ivanrenatoc.github.io/UTFSM-econometria/clase-2-taller/
 - Clase 3: https://ivanrenatoc.github.io/UTFSM-econometria/clase-3-taller/
+- Clase 4: https://ivanrenatoc.github.io/UTFSM-econometria/clase-4-taller/
 
 Los enlaces antiguos a láminas de la clase 1 conservan su destino mediante redirección desde la portada. El antiguo `#clase-2` abre ahora la página independiente de la clase 2. El enlace `#clase-3` abre la página independiente del taller 3.
 
