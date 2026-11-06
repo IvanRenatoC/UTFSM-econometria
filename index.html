@@ -11,7 +11,8 @@
 <script>
 // Conserva enlaces de láminas compartidos antes de separar las clases.
 const hash=location.hash;
-if(hash==='#clase-3'){location.replace('clase-3-taller/'+location.search+'#inicio');}
+if(hash==='#clase-4'){location.replace('clase-4-taller/'+location.search+'#inicio');}
+else if(hash==='#clase-3'){location.replace('clase-3-taller/'+location.search+'#inicio');}
 else if(hash==='#clase-2'){location.replace('clase-2-taller/'+location.search+'#inicio');}
 else if(/^#(?:NIV(?:-|$)|P[123](?:-|$)|objetivos$|agenda$|cierre$|ejercitacion$|preparar-colab$|colab-paso-)/.test(hash)){location.replace('clase-1-taller/'+location.search+hash);}
 </script>
@@ -23,6 +24,7 @@ else if(/^#(?:NIV(?:-|$)|P[123](?:-|$)|objetivos$|agenda$|cierre$|ejercitacion$|
 <article class="card"><span class="number">CLASE 01</span><h3>Introducción a la computación estadística usando R</h3><span class="status">Material disponible</span><p>Nivelación de programación, introducción a la econometría y repaso de estadística descriptiva e inferencial.</p><div class="actions"><a class="button" href="clase-1-taller/">Entrar a la clase 1 →</a><a class="button secondary" href="clase-1-taller/clase-taller-1.ipynb" download>Notebook R ↓</a></div></article>
 <article class="card"><span class="number">CLASE 02</span><h3>Regresión lineal simple en R</h3><span class="status">Material disponible</span><p>Tres casos prácticos con Wooldridge: pendientes positiva, negativa y no significativa. Gráficos interactivos, mínimos cuadrados y R².</p><div class="actions"><a class="button" href="clase-2-taller/">Entrar a la clase 2 →</a><a class="button secondary" href="clase-2-taller/clase-taller-2.ipynb" download>Notebook R ↓</a></div></article>
 <article class="card"><span class="number">CLASE 03</span><h3>Causalidad y variable omitida en R</h3><span class="status">Material disponible</span><p>Contrafactuales, ATE y ATT, selección, aleatorización y controles. Simulaciones interactivas y práctica guiada con wage2.</p><div class="actions"><a class="button" href="clase-3-taller/">Entrar a la clase 3 →</a><a class="button secondary" href="clase-3-taller/clase-taller-3.ipynb" download>Notebook R ↓</a></div></article>
+<article class="card"><span class="number">CLASE 04</span><h3>Regresión lineal múltiple en R</h3><span class="status">Material disponible</span><p>Modelo múltiple, MCO matricial, propiedades, R² ajustado y cofactores. Ejemplos interactivos con wage2 y notebook sincronizado.</p><div class="actions"><a class="button" href="clase-4-taller/">Entrar a la clase 4 →</a><a class="button secondary" href="clase-4-taller/clase-taller-4.ipynb" download>Notebook R ↓</a></div></article>
 </div></section>
 <section class="resources"><h2>Cómo usar el material</h2><p>Cada clase tiene su propia página, notebook y recursos. Puedes compartir esta portada o el enlace directo a una clase. Los notebooks se ejecutan con R; en la clase 1 encontrarás la guía visual para preparar Google Colab.</p></section>
 <footer>Iván Canales · Taller de Econometría · UTFSM<a href="https://github.com/IvanRenatoC/UTFSM-econometria">Repositorio del curso ↗</a></footer>

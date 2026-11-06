@@ -1,0 +1,13 @@
+{
+  "codigo_sha256": "345c57c899cfb84b097270234af39228a601162e4ba173906bdd6d2b0144422e",
+  "ejemplos_ejecutados": 16,
+  "motor": "webR 0.6.0",
+  "pruebas": [
+    "Muestra común de 935 observaciones",
+    "lm coincide con cálculo matricial",
+    "Ortogonalidad de residuos",
+    "Determinante 34276",
+    "Inversa por cofactores e identidad",
+    "R² no decrece en modelos anidados"
+  ]
+}

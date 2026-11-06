@@ -186,3 +186,13 @@ for(const demo of document.querySelectorAll('.inference-demo')){
  const repeat=demo.querySelector('.inf-repeat');if(repeat)repeat.addEventListener('click',()=>{zDemo=Array.from({length:20},()=>Number((Math.sqrt(-2*Math.log(Math.max(Number.MIN_VALUE,Math.random())))*Math.cos(2*Math.PI*Math.random())).toFixed(6)));draw();});
  draw();
 }
+
+// La cuarta clase queda disponible también desde los talleres anteriores.
+for (const nav of document.querySelectorAll('.header-tabs > div, .class-sidebar nav')) {
+  if (nav.querySelector('a[href*="clase-4-taller"], a[aria-current="page"][href="#inicio"]') && location.pathname.includes('/clase-4-taller/')) continue;
+  if (nav.querySelector('a[href*="clase-4-taller"]')) continue;
+  const link = document.createElement('a');
+  link.href = '../clase-4-taller/';
+  link.textContent = nav.closest('.class-sidebar') ? 'Clase 4 · Regresión lineal múltiple en R' : 'Clase 4';
+  nav.append(link);
+}
