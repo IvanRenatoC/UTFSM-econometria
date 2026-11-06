@@ -57,7 +57,7 @@ print(dim(X))
 print(length(y))
 print(colnames(X))
 X_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
-print(all.equal(unname(X), unname(X_manual)))
+print(identical(as.vector(X), as.vector(X_manual)))
 
 XtX <- t(X) %*% X
 Xty <- t(X) %*% y

@@ -197,7 +197,7 @@
       "id": "C4-05",
       "titulo": "Construir X, y y el vector de parámetros",
       "texto": "Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.",
-      "codigo": "X <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(all.equal(unname(X), unname(X_manual)))",
+      "codigo": "X <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(identical(as.vector(X), as.vector(X_manual)))",
       "lectura": "Hay n = 5 observaciones y k = 2 variables explicativas: X tiene dimensión 5 × 3; el vector de parámetros tiene 3 elementos. Las columnas son intercepto, experiencia y educación. El vector y tiene 5 valores.",
       "pasos": [
         [
@@ -209,8 +209,8 @@
           "Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores."
         ],
         [
-          "dim(X), colnames(X) y unname(X)",
-          "dim entrega filas y columnas; colnames muestra nombres; unname los quita para comparar solo valores."
+          "dim(X), colnames(X) y as.vector(X)",
+          "dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos."
         ]
       ],
       "interactivo": "matriz",

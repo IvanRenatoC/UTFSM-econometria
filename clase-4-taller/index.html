@@ -32,10 +32,10 @@ datos &lt;- original[complete.cases(original[variables]), variables]
 print(c(filas_originales = nrow(original), filas_usadas = nrow(datos)))
 str(datos)
 summary(datos)
-head(datos)</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>complete.cases(original[variables])</code></summary><p>Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos.</p></details><details class="step"><summary><code>original[filas, columnas]</code></summary><p>Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar.</p></details><details class="step"><summary><code>str() y summary()</code></summary><p>str(datos) describe la estructura; summary(datos) resume cada columna. No ajustan una regresión.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>wage es salario mensual en dólares; educ son años de educación; IQ es una puntuación de inteligencia. wage2 contiene 935 hombres trabajadores de Estados Unidos en 1980. Cada fila es una persona. Se informa el número de filas para comparar modelos sobre la misma muestra.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>wage educ   IQ 
-   0    0    0 
-filas_originales     filas_usadas 
-             935              935 
+head(datos)</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>complete.cases(original[variables])</code></summary><p>Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos.</p></details><details class="step"><summary><code>original[filas, columnas]</code></summary><p>Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar.</p></details><details class="step"><summary><code>str() y summary()</code></summary><p>str(datos) describe la estructura; summary(datos) resume cada columna. No ajustan una regresión.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>wage es salario mensual en dólares; educ son años de educación; IQ es una puntuación de inteligencia. wage2 contiene 935 hombres trabajadores de Estados Unidos en 1980. Cada fila es una persona. Se informa el número de filas para comparar modelos sobre la misma muestra.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>wage educ   IQ
+   0    0    0
+filas_originales     filas_usadas
+             935              935
 &#x27;data.frame&#x27;:	935 obs. of  3 variables:
  $ wage: int  769 808 825 650 562 1400 600 1081 1154 1000 ...
  $ educ: int  12 18 14 12 11 16 10 18 15 12 ...
@@ -56,10 +56,10 @@ comparacion &lt;- data.frame(
 )
 print(comparacion)
 plot(wage ~ educ, data = datos, pch = 19, col = &quot;#005F9640&quot;)
-abline(simple, col = &quot;#D6A600&quot;, lwd = 3)</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>lm(wage ~ educ + IQ, data = datos)</code></summary><p>Estima intercepto y dos pendientes. La variable dependiente está a la izquierda de ~.</p></details><details class="step"><summary><code>coef(multiple)[&quot;educ&quot;]</code></summary><p>Extrae por su nombre la pendiente de educación del modelo múltiple.</p></details><details class="step"><summary><code>data.frame(modelo = ..., pendiente_educ = ...)</code></summary><p>Organiza los coeficientes en una tabla para comparar las mismas unidades.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Al incluir IQ cambia la asociación estimada de educación con salario. La pendiente múltiple se interpreta manteniendo IQ fijo. Ninguna de las dos regresiones demuestra por sí sola un efecto causal.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept)        educ 
-  146.95244    60.21428 
-(Intercept)        educ          IQ 
--128.889881   42.057619    5.137958 
+abline(simple, col = &quot;#D6A600&quot;, lwd = 3)</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>lm(wage ~ educ + IQ, data = datos)</code></summary><p>Estima intercepto y dos pendientes. La variable dependiente está a la izquierda de ~.</p></details><details class="step"><summary><code>coef(multiple)[&quot;educ&quot;]</code></summary><p>Extrae por su nombre la pendiente de educación del modelo múltiple.</p></details><details class="step"><summary><code>data.frame(modelo = ..., pendiente_educ = ...)</code></summary><p>Organiza los coeficientes en una tabla para comparar las mismas unidades.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Al incluir IQ cambia la asociación estimada de educación con salario. La pendiente múltiple se interpreta manteniendo IQ fijo. Ninguna de las dos regresiones demuestra por sí sola un efecto causal.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept)        educ
+  146.95244    60.21428
+(Intercept)        educ          IQ
+-128.889881   42.057619    5.137958
   modelo pendiente_educ
 1 Simple       60.21428
 2 Con IQ       42.05762</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Agregar un control siempre reduce la pendiente de educación?</p><details><summary>Mostrar respuesta</summary><p>No. Aquí cambia según la relación entre las variables. Puede aumentar, disminuir o mantener su valor.</p></details></div></details><p class="data-note"><a href="#C4-02">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-03" data-title="Ceteris paribus: mover educación y dejar IQ fijo"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-03"><span class="slide-chevron" aria-hidden="true">▶</span><span>Ceteris paribus: mover educación y dejar IQ fijo</span></button></h3><span class="number">LÁMINA 03</span></header><div class="slide-body" id="body-C4-03" hidden><p class="data-note">Tema 1 · Cátedra 4 · Aplicación en R</p><p>Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.</p><div class="formula"><math display="block"><mrow><mi>Δŷ</mi><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>Δeduc</mi><mtext> con IQ fijo</mtext></mrow></math></div><section class="lab" data-kind="condicional" aria-label="Ejemplo interactivo: Ceteris paribus: mover educación y dejar IQ fijo"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>nuevos &lt;- data.frame(educ = c(12, 13), IQ = c(100, 100))
@@ -73,9 +73,9 @@ plot(rejilla$educ, predict(multiple, newdata = rejilla), type = &quot;l&quot;,
      ylab = &quot;Salario mensual predicho (USD)&quot;)</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>predict(multiple, newdata = nuevos)</code></summary><p>Calcula predicciones para cada fila de nuevos. Debe contener las variables explicativas con los mismos nombres que el modelo.</p></details><details class="step"><summary><code>diff(predicciones)</code></summary><p>Resta valores consecutivos: aquí, la segunda predicción menos la primera.</p></details><details class="step"><summary><code>seq(9, 18, length.out = 50)</code></summary><p>Genera 50 valores equidistantes para dibujar una línea suave.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>La diferencia entre 13 y 12 años, manteniendo IQ = 100, coincide con la pendiente de educación. Es una diferencia de predicciones del modelo, no una comparación causal garantizada entre personas.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>  educ  IQ salario_predicho
 1   12 100         889.5973
 2   13 100         931.6549
-       2 
-42.05762 
-    educ 
+       2
+42.05762
+    educ
 42.05762 </code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Qué se mantiene constante cuando se interpreta la pendiente de educación?</p><details><summary>Mostrar respuesta</summary><p>Las otras variables incluidas: aquí, IQ.</p></details></div></details><p class="data-note"><a href="#C4-03">Enlace a esta lámina ↗</a></p></div></article></section><section id="tema2"><div class="chapter-intro"><p class="eyebrow">Tema 2</p><h2>Parte 1 · MCO con k variables</h2></div><article class="slide" id="C4-04" data-title="MCO: elegir el plano que reduce los residuos"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-04"><span class="slide-chevron" aria-hidden="true">▶</span><span>MCO: elegir el plano que reduce los residuos</span></button></h3><span class="number">LÁMINA 04</span></header><div class="slide-body" id="body-C4-04" hidden><p class="data-note">Tema 2 · Cátedra 4 · Aplicación en R</p><p>En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.</p><div class="formula"><math display="block"><mrow><mi>SSR</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></math></div><section class="lab" data-kind="residuos" aria-label="Ejemplo interactivo: MCO: elegir el plano que reduce los residuos"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>ejemplo &lt;- data.frame(
   persona = c(&quot;Juan&quot;, &quot;Pedro&quot;, &quot;Sofía&quot;, &quot;Caro&quot;, &quot;Alex&quot;),
   experiencia = c(12, 18, 14, 12, 11),
@@ -85,8 +85,8 @@ plot(rejilla$educ, predict(multiple, newdata = rejilla), type = &quot;l&quot;,
 modelo5 &lt;- lm(salario ~ experiencia + educacion, data = ejemplo)
 print(coef(modelo5))
 print(data.frame(ejemplo, ajustado = fitted(modelo5), residuo = resid(modelo5)))
-print(sum(resid(modelo5)^2))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>fitted(modelo5)</code></summary><p>Devuelve una predicción para cada observación usada en el ajuste.</p></details><details class="step"><summary><code>resid(modelo5)</code></summary><p>Calcula los residuos: salario observado menos salario ajustado.</p></details><details class="step"><summary><code>sum(resid(modelo5)^2)</code></summary><p>Eleva cada residuo al cuadrado y suma. Esta es la función objetivo de MCO.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>fitted() entrega los valores ajustados; resid() calcula observado menos ajustado. Los residuos pueden ser positivos o negativos, pero sus cuadrados son no negativos. Los valores de educación 74 a 119 se conservan como valores del ejemplo numérico de cátedra, sin interpretarlos como años reales.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept) experiencia   educacion 
- 140.586358  -16.789532    8.236667 
+print(sum(resid(modelo5)^2))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>fitted(modelo5)</code></summary><p>Devuelve una predicción para cada observación usada en el ajuste.</p></details><details class="step"><summary><code>resid(modelo5)</code></summary><p>Calcula los residuos: salario observado menos salario ajustado.</p></details><details class="step"><summary><code>sum(resid(modelo5)^2)</code></summary><p>Eleva cada residuo al cuadrado y suma. Esta es la función objetivo de MCO.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>fitted() entrega los valores ajustados; resid() calcula observado menos ajustado. Los residuos pueden ser positivos o negativos, pero sus cuadrados son no negativos. Los valores de educación 74 a 119 se conservan como valores del ejemplo numérico de cátedra, sin interpretarlos como años reales.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept) experiencia   educacion
+ 140.586358  -16.789532    8.236667
   persona experiencia educacion salario ajustado    residuo
 1    Juan          12        93     769 705.1220  63.877990
 2   Pedro          18       119     808 818.5382 -10.538161
@@ -101,7 +101,7 @@ print(dim(X))
 print(length(y))
 print(colnames(X))
 X_manual &lt;- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
-print(all.equal(unname(X), unname(X_manual)))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>model.matrix(modelo5)</code></summary><p>Construye la matriz de diseño según la fórmula y las observaciones del modelo; incluye una columna de unos si hay intercepto.</p></details><details class="step"><summary><code>cbind(unos = 1, ...)</code></summary><p>Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.</p></details><details class="step"><summary><code>dim(X), colnames(X) y unname(X)</code></summary><p>dim entrega filas y columnas; colnames muestra nombres; unname los quita para comparar solo valores.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Hay n = 5 observaciones y k = 2 variables explicativas: X tiene dimensión 5 × 3; el vector de parámetros tiene 3 elementos. Las columnas son intercepto, experiencia y educación. El vector y tiene 5 valores.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>  (Intercept) experiencia educacion
+print(identical(as.vector(X), as.vector(X_manual)))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>model.matrix(modelo5)</code></summary><p>Construye la matriz de diseño según la fórmula y las observaciones del modelo; incluye una columna de unos si hay intercepto.</p></details><details class="step"><summary><code>cbind(unos = 1, ...)</code></summary><p>Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.</p></details><details class="step"><summary><code>dim(X), colnames(X) y as.vector(X)</code></summary><p>dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Hay n = 5 observaciones y k = 2 variables explicativas: X tiene dimensión 5 × 3; el vector de parámetros tiene 3 elementos. Las columnas son intercepto, experiencia y educación. El vector y tiene 5 valores.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>  (Intercept) experiencia educacion
 1           1          12        93
 2           1          18       119
 3           1          14       108
@@ -112,10 +112,8 @@ attr(,&quot;assign&quot;)
 [1] 769 808 825 650 562
 [1] 5 3
 [1] 5
-[1] &quot;(Intercept)&quot; &quot;experiencia&quot; &quot;educacion&quot;  
-[1] &quot;Attributes: &lt; Names: 1 string mismatch &gt;&quot;                         
-[2] &quot;Attributes: &lt; Length mismatch: comparison on first 1 components &gt;&quot;
-[3] &quot;Attributes: &lt; Component 1: Numeric: lengths (3, 2) differ &gt;&quot;      </code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Por qué X tiene tres columnas si hay dos variables explicativas?</p><details><summary>Mostrar respuesta</summary><p>La tercera columna es la de unos para el intercepto.</p></details></div></details><p class="data-note"><a href="#C4-05">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-06" data-title="Transpuesta y producto matricial: t() y %*%"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-06"><span class="slide-chevron" aria-hidden="true">▶</span><span>Transpuesta y producto matricial: t() y %*%</span></button></h3><span class="number">LÁMINA 06</span></header><div class="slide-body" id="body-C4-06" hidden><p class="data-note">Tema 3 · Cátedra 4 · Aplicación en R</p><p>Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.</p><div class="formula"><math display="block"><mrow><msub><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>23</mn></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i1</mi></msub><msub><mi>x</mi><mi>i2</mi></msub></mrow></math></div><section class="lab" data-kind="producto" aria-label="Ejemplo interactivo: Transpuesta y producto matricial: t() y %*%"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>XtX &lt;- t(X) %*% X
+[1] &quot;(Intercept)&quot; &quot;experiencia&quot; &quot;educacion&quot;
+[1] TRUE</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Por qué X tiene tres columnas si hay dos variables explicativas?</p><details><summary>Mostrar respuesta</summary><p>La tercera columna es la de unos para el intercepto.</p></details></div></details><p class="data-note"><a href="#C4-05">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-06" data-title="Transpuesta y producto matricial: t() y %*%"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-06"><span class="slide-chevron" aria-hidden="true">▶</span><span>Transpuesta y producto matricial: t() y %*%</span></button></h3><span class="number">LÁMINA 06</span></header><div class="slide-body" id="body-C4-06" hidden><p class="data-note">Tema 3 · Cátedra 4 · Aplicación en R</p><p>Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.</p><div class="formula"><math display="block"><mrow><msub><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>23</mn></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i1</mi></msub><msub><mi>x</mi><mi>i2</mi></msub></mrow></math></div><section class="lab" data-kind="producto" aria-label="Ejemplo interactivo: Transpuesta y producto matricial: t() y %*%"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>XtX &lt;- t(X) %*% X
 Xty &lt;- t(X) %*% y
 print(XtX)
 print(Xty)
@@ -153,10 +151,10 @@ educacion     8.236667
 (Intercept) 140.586358
 experiencia -16.789532
 educacion     8.236667
-(Intercept) experiencia   educacion 
- 140.586358  -16.789532    8.236667 
+(Intercept) experiencia   educacion
+ 140.586358  -16.789532    8.236667
 [1] TRUE
-  observado         
+  observado
 1       769 705.1220
 2       808 818.5382
 3       825 795.0930
@@ -171,10 +169,10 @@ print(mean(y))</code></pre></div></details><h4>El código, paso a paso</h4><div 
 (Intercept)    0
 experiencia    0
 educacion      0
-       media_y media_ajustada 
-         722.8          722.8 
-    1 
-722.8 
+       media_y media_ajustada
+         722.8          722.8
+    1
+722.8
 [1] 722.8</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Estas igualdades prueban que no hay variables omitidas?</p><details><summary>Mostrar respuesta</summary><p>No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especificación sea inadecuada.</p></details></div></details><p class="data-note"><a href="#C4-08">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-09" data-title="Rango completo: cuándo falla la inversa"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-09"><span class="slide-chevron" aria-hidden="true">▶</span><span>Rango completo: cuándo falla la inversa</span></button></h3><span class="number">LÁMINA 09</span></header><div class="slide-body" id="body-C4-09" hidden><p class="data-note">Tema 4 · Cátedra 4 · Aplicación en R</p><p>Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.</p><section class="lab" data-kind="rango" aria-label="Ejemplo interactivo: Rango completo: cuándo falla la inversa"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>X_duplicada &lt;- cbind(unos = 1, experiencia = ejemplo$experiencia,
                       repetida = ejemplo$experiencia)
 print(c(columnas = ncol(X_duplicada), rango = qr(X_duplicada)$rank))
@@ -182,10 +180,10 @@ problema &lt;- tryCatch(solve(t(X_duplicada) %*% X_duplicada),
                      error = function(e) conditionMessage(e))
 print(problema)
 ejemplo$repetida &lt;- ejemplo$experiencia
-print(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>qr(X_duplicada)$rank</code></summary><p>Obtiene el número de columnas linealmente independientes. Debe coincidir con el número de parámetros para invertir XᵀX.</p></details><details class="step"><summary><code>tryCatch(..., error = function(e) conditionMessage(e))</code></summary><p>Captura el error esperado y lo muestra como texto para que el notebook continúe. e contiene la información del error.</p></details><details class="step"><summary><code>coef(lm(...))</code></summary><p>Una pendiente puede aparecer como NA porque es redundante; no porque haya una fila con valor faltante.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Hay tres columnas, pero solo dos independientes. No se pueden identificar dos pendientes separadas para columnas idénticas. solve() informa el problema y lm() marca un coeficiente redundante con NA. No se trata de un dato faltante del dataset.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>columnas    rango 
-       3        2 
+print(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>qr(X_duplicada)$rank</code></summary><p>Obtiene el número de columnas linealmente independientes. Debe coincidir con el número de parámetros para invertir XᵀX.</p></details><details class="step"><summary><code>tryCatch(..., error = function(e) conditionMessage(e))</code></summary><p>Captura el error esperado y lo muestra como texto para que el notebook continúe. e contiene la información del error.</p></details><details class="step"><summary><code>coef(lm(...))</code></summary><p>Una pendiente puede aparecer como NA porque es redundante; no porque haya una fila con valor faltante.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Hay tres columnas, pero solo dos independientes. No se pueden identificar dos pendientes separadas para columnas idénticas. solve() informa el problema y lm() marca un coeficiente redundante con NA. No se trata de un dato faltante del dataset.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>columnas    rango
+       3        2
 [1] &quot;Lapack routine dgesv: system is exactly singular: U[3,3] = 0&quot;
-(Intercept) experiencia    repetida 
+(Intercept) experiencia    repetida
   346.39744    28.08974          NA </code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Tener más filas que columnas garantiza rango completo?</p><details><summary>Mostrar respuesta</summary><p>No. Puede haber columnas duplicadas o combinaciones lineales exactas.</p></details></div></details><p class="data-note"><a href="#C4-09">Enlace a esta lámina ↗</a></p></div></article></section><section id="tema5"><div class="chapter-intro"><p class="eyebrow">Tema 5</p><h2>Parte 1 · R² y R² ajustado</h2></div><article class="slide" id="C4-10" data-title="R² y R² ajustado: comparar sobre la misma muestra"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-10"><span class="slide-chevron" aria-hidden="true">▶</span><span>R² y R² ajustado: comparar sobre la misma muestra</span></button></h3><span class="number">LÁMINA 10</span></header><div class="slide-body" id="body-C4-10" hidden><p class="data-note">Tema 5 · Cátedra 4 · Aplicación en R</p><p>Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.</p><div class="formula"><math display="block"><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mi>SSR</mi><mi>SST</mi></mfrac><mspace width="2em"/><mover><msup><mi>R</mi><mn>2</mn></msup><mo>¯</mo></mover><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>−</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mfrac><mi>SSR</mi><mi>SST</mi></mfrac></mrow></math></div><section class="lab" data-kind="ajuste" aria-label="Ejemplo interactivo: R² y R² ajustado: comparar sobre la misma muestra"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>medidas &lt;- function(modelo) {
   s &lt;- summary(modelo)
   c(n = nobs(modelo), R2 = s$r.squared,
@@ -202,9 +200,9 @@ print(c(R2 = 1 - SSR/SST,
 print(c(SST = SST, SSE_mas_SSR = SSE + SSR))</code></pre></div></details><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>summary(modelo)$adj.r.squared</code></summary><p>Extrae el R² ajustado del resumen; r.squared entrega el R² sin penalización.</p></details><details class="step"><summary><code>nobs(modelo) y length(coef(modelo)) - 1</code></summary><p>nobs cuenta observaciones usadas. Restamos el intercepto para contar k en este modelo de rango completo.</p></details><details class="step"><summary><code>function(modelo) y rbind(...)</code></summary><p>Define una función reutilizable y apila sus resultados como filas para comparar.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>Seguimos la nomenclatura de cátedra: SSR es residual; SSE es explicada; SST es total. En modelos anidados con intercepto sobre la misma muestra, R² no disminuye al agregar regresores; el ajustado sí puede disminuir. Ninguno mide por sí solo causalidad o desempeño fuera de muestra.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>           n        R2 R2_ajustado       SSR
 simple   935 0.1070001   0.1060430 136375524
 multiple 935 0.1338534   0.1319947 132274591
-         R2 R2_ajustado 
-  0.1338534   0.1319947 
-        SST SSE_mas_SSR 
+         R2 R2_ajustado
+  0.1338534   0.1319947
+        SST SSE_mas_SSR
   152716168   152716168 </code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Se puede comparar R² directamente si cambia la variable dependiente o la muestra?</p><details><summary>Mostrar respuesta</summary><p>La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la muestra como wage.</p></details></div></details><p class="data-note"><a href="#C4-10">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-11" data-title="La trampa de agregar variables de ruido"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-11"><span class="slide-chevron" aria-hidden="true">▶</span><span>La trampa de agregar variables de ruido</span></button></h3><span class="number">LÁMINA 11</span></header><div class="slide-body" id="body-C4-11" hidden><p class="data-note">Tema 5 · Cátedra 4 · Aplicación en R</p><p>Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.</p><section class="lab" data-kind="ruido" aria-label="Ejemplo interactivo: La trampa de agregar variables de ruido"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>set.seed(5)
 n_sim &lt;- 30
 x_sim &lt;- rnorm(n_sim)
@@ -248,8 +246,8 @@ Call:
 lm(formula = salario ~ experiencia + educacion, data = ejemplo)
 
 Residuals:
-      1       2       3       4       5 
- 63.878 -10.538  29.907 -79.832  -3.415 
+      1       2       3       4       5
+ 63.878 -10.538  29.907 -79.832  -3.415
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)
@@ -258,7 +256,7 @@ experiencia  -16.790     30.964  -0.542    0.642
 educacion      8.237      5.109   1.612    0.248
 
 Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501 
+Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
 F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
 
               Estimate Std. Error    t value  Pr(&gt;|t|)
@@ -271,9 +269,9 @@ Response: salario
             Df Sum Sq Mean Sq F value Pr(&gt;F)
 experiencia  1  24618 24617.9  4.2923 0.1741
 educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3               
-         R2 R2_ajustado 
-  0.7750615   0.5501230 
+Residuals    2  11471  5735.3
+         R2 R2_ajustado
+  0.7750615   0.5501230
 [1] 2</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿La ANOVA secuencial de experiencia equivale a su prueba t controlando educación?</p><details><summary>Mostrar respuesta</summary><p>No en general. La primera fila entra antes de educación; la prueba t del modelo completo controla ambas variables.</p></details></div></details><p class="data-note"><a href="#C4-12">Enlace a esta lámina ↗</a></p></div></article><article class="slide" id="C4-13" data-title="Ejercicio guiado: estimar y explicar una regresión múltiple real"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-13"><span class="slide-chevron" aria-hidden="true">▶</span><span>Ejercicio guiado: estimar y explicar una regresión múltiple real</span></button></h3><span class="number">LÁMINA 13</span></header><div class="slide-body" id="body-C4-13" hidden><p class="data-note">Tema 6 · Cátedra 4 · Aplicación en R</p><p>Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.</p><section class="lab" data-kind="practica" aria-label="Ejemplo interactivo: Ejercicio guiado: estimar y explicar una regresión múltiple real"></section><h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>fit &lt;- lm(wage ~ educ + IQ, data = datos)
 print(summary(fit))
 print(anova(fit))
@@ -290,34 +288,34 @@ Call:
 lm(formula = wage ~ educ + IQ, data = datos)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--860.29 -251.00  -35.31  203.98 2110.38 
+    Min      1Q  Median      3Q     Max
+-860.29 -251.00  -35.31  203.98 2110.38
 
 Coefficients:
-             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -128.8899    92.1823  -1.398    0.162    
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -128.8899    92.1823  -1.398    0.162
 educ          42.0576     6.5498   6.421 2.15e-10 ***
 IQ             5.1380     0.9558   5.375 9.66e-08 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 376.7 on 932 degrees of freedom
-Multiple R-squared:  0.1339,	Adjusted R-squared:  0.132 
+Multiple R-squared:  0.1339,	Adjusted R-squared:  0.132
 F-statistic: 72.02 on 2 and 932 DF,  p-value: &lt; 2.2e-16
 
 Analysis of Variance Table
 
 Response: wage
-           Df    Sum Sq  Mean Sq F value    Pr(&gt;F)    
+           Df    Sum Sq  Mean Sq F value    Pr(&gt;F)
 educ        1  16340645 16340645 115.135 &lt; 2.2e-16 ***
 IQ          1   4100932  4100932  28.895  9.66e-08 ***
-Residuals 932 132274591   141926                      
+Residuals 932 132274591   141926
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-(Intercept)        educ          IQ 
--128.889881   42.057619    5.137958 
-       1 
-889.5973 
+(Intercept)        educ          IQ
+-128.889881   42.057619    5.137958
+       1
+889.5973
                    [,1]
 (Intercept) -128.889881
 educ          42.057619
@@ -393,8 +391,8 @@ Call:
 lm(formula = salario ~ experiencia + educacion, data = ejercicio)
 
 Residuals:
-      1       2       3       4       5 
- 63.878 -10.538  29.907 -79.832  -3.415 
+      1       2       3       4       5
+ 63.878 -10.538  29.907 -79.832  -3.415
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)
@@ -403,7 +401,7 @@ experiencia  -16.790     30.964  -0.542    0.642
 educacion      8.237      5.109   1.612    0.248
 
 Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501 
+Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
 F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
 
 Analysis of Variance Table
@@ -412,7 +410,7 @@ Response: salario
             Df Sum Sq Mean Sq F value Pr(&gt;F)
 experiencia  1  24618 24617.9  4.2923 0.1741
 educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3               
+Residuals    2  11471  5735.3
   experiencia educacion salario ajustado    residuo
 1          12        93     769 705.1220  63.877990
 2          18       119     808 818.5382 -10.538161

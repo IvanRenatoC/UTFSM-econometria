@@ -61,10 +61,10 @@ wage es salario mensual en dólares; educ son años de educación; IQ es una pun
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-wage educ   IQ 
-   0    0    0 
-filas_originales     filas_usadas 
-             935              935 
+wage educ   IQ
+   0    0    0
+filas_originales     filas_usadas
+             935              935
 'data.frame':	935 obs. of  3 variables:
  $ wage: int  769 808 825 650 562 1400 600 1081 1154 1000 ...
  $ educ: int  12 18 14 12 11 16 10 18 15 12 ...
@@ -131,10 +131,10 @@ Al incluir IQ cambia la asociación estimada de educación con salario. La pendi
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-(Intercept)        educ 
-  146.95244    60.21428 
-(Intercept)        educ          IQ 
--128.889881   42.057619    5.137958 
+(Intercept)        educ
+  146.95244    60.21428
+(Intercept)        educ          IQ
+-128.889881   42.057619    5.137958
   modelo pendiente_educ
 1 Simple       60.21428
 2 Con IQ       42.05762
@@ -194,10 +194,10 @@ La diferencia entre 13 y 12 años, manteniendo IQ = 100, coincide con la pendien
   educ  IQ salario_predicho
 1   12 100         889.5973
 2   13 100         931.6549
-       2 
-42.05762 
-    educ 
-42.05762 
+       2
+42.05762
+    educ
+42.05762
 ```
 
 </details>
@@ -252,8 +252,8 @@ fitted() entrega los valores ajustados; resid() calcula observado menos ajustado
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-(Intercept) experiencia   educacion 
- 140.586358  -16.789532    8.236667 
+(Intercept) experiencia   educacion
+ 140.586358  -16.789532    8.236667
   persona experiencia educacion salario ajustado    residuo
 1    Juan          12        93     769 705.1220  63.877990
 2   Pedro          18       119     808 818.5382 -10.538161
@@ -291,9 +291,9 @@ Construye la matriz de diseño según la fórmula y las observaciones del modelo
 
 Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.
 
-**`dim(X), colnames(X) y unname(X)`**
+**`dim(X), colnames(X) y as.vector(X)`**
 
-dim entrega filas y columnas; colnames muestra nombres; unname los quita para comparar solo valores.
+dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos.
 
 ```r
 X <- model.matrix(modelo5)
@@ -304,7 +304,7 @@ print(dim(X))
 print(length(y))
 print(colnames(X))
 X_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
-print(all.equal(unname(X), unname(X_manual)))
+print(identical(as.vector(X), as.vector(X_manual)))
 ```
 
 ### Cómo leer el resultado
@@ -325,10 +325,8 @@ attr(,"assign")
 [1] 769 808 825 650 562
 [1] 5 3
 [1] 5
-[1] "(Intercept)" "experiencia" "educacion"  
-[1] "Attributes: < Names: 1 string mismatch >"                         
-[2] "Attributes: < Length mismatch: comparison on first 1 components >"
-[3] "Attributes: < Component 1: Numeric: lengths (3, 2) differ >"      
+[1] "(Intercept)" "experiencia" "educacion"
+[1] TRUE
 ```
 
 </details>
@@ -458,10 +456,10 @@ educacion     8.236667
 (Intercept) 140.586358
 experiencia -16.789532
 educacion     8.236667
-(Intercept) experiencia   educacion 
- 140.586358  -16.789532    8.236667 
+(Intercept) experiencia   educacion
+ 140.586358  -16.789532    8.236667
 [1] TRUE
-  observado         
+  observado
 1       769 705.1220
 2       808 818.5382
 3       825 795.0930
@@ -522,10 +520,10 @@ La suma de residuos y la suma de cada regresor multiplicado por los residuos son
 (Intercept)    0
 experiencia    0
 educacion      0
-       media_y media_ajustada 
-         722.8          722.8 
-    1 
-722.8 
+       media_y media_ajustada
+         722.8          722.8
+    1
+722.8
 [1] 722.8
 ```
 
@@ -577,11 +575,11 @@ Hay tres columnas, pero solo dos independientes. No se pueden identificar dos pe
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-columnas    rango 
-       3        2 
+columnas    rango
+       3        2
 [1] "Lapack routine dgesv: system is exactly singular: U[3,3] = 0"
-(Intercept) experiencia    repetida 
-  346.39744    28.08974          NA 
+(Intercept) experiencia    repetida
+  346.39744    28.08974          NA
 ```
 
 </details>
@@ -643,10 +641,10 @@ Seguimos la nomenclatura de cátedra: SSR es residual; SSE es explicada; SST es 
            n        R2 R2_ajustado       SSR
 simple   935 0.1070001   0.1060430 136375524
 multiple 935 0.1338534   0.1319947 132274591
-         R2 R2_ajustado 
-  0.1338534   0.1319947 
-        SST SSE_mas_SSR 
-  152716168   152716168 
+         R2 R2_ajustado
+  0.1338534   0.1319947
+        SST SSE_mas_SSR
+  152716168   152716168
 ```
 
 </details>
@@ -777,8 +775,8 @@ Call:
 lm(formula = salario ~ experiencia + educacion, data = ejemplo)
 
 Residuals:
-      1       2       3       4       5 
- 63.878 -10.538  29.907 -79.832  -3.415 
+      1       2       3       4       5
+ 63.878 -10.538  29.907 -79.832  -3.415
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)
@@ -787,7 +785,7 @@ experiencia  -16.790     30.964  -0.542    0.642
 educacion      8.237      5.109   1.612    0.248
 
 Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501 
+Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
 F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
 
               Estimate Std. Error    t value  Pr(>|t|)
@@ -800,9 +798,9 @@ Response: salario
             Df Sum Sq Mean Sq F value Pr(>F)
 experiencia  1  24618 24617.9  4.2923 0.1741
 educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3               
-         R2 R2_ajustado 
-  0.7750615   0.5501230 
+Residuals    2  11471  5735.3
+         R2 R2_ajustado
+  0.7750615   0.5501230
 [1] 2
 ```
 
@@ -863,34 +861,34 @@ Call:
 lm(formula = wage ~ educ + IQ, data = datos)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--860.29 -251.00  -35.31  203.98 2110.38 
+    Min      1Q  Median      3Q     Max
+-860.29 -251.00  -35.31  203.98 2110.38
 
 Coefficients:
-             Estimate Std. Error t value Pr(>|t|)    
-(Intercept) -128.8899    92.1823  -1.398    0.162    
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept) -128.8899    92.1823  -1.398    0.162
 educ          42.0576     6.5498   6.421 2.15e-10 ***
 IQ             5.1380     0.9558   5.375 9.66e-08 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Residual standard error: 376.7 on 932 degrees of freedom
-Multiple R-squared:  0.1339,	Adjusted R-squared:  0.132 
+Multiple R-squared:  0.1339,	Adjusted R-squared:  0.132
 F-statistic: 72.02 on 2 and 932 DF,  p-value: < 2.2e-16
 
 Analysis of Variance Table
 
 Response: wage
-           Df    Sum Sq  Mean Sq F value    Pr(>F)    
+           Df    Sum Sq  Mean Sq F value    Pr(>F)
 educ        1  16340645 16340645 115.135 < 2.2e-16 ***
 IQ          1   4100932  4100932  28.895  9.66e-08 ***
-Residuals 932 132274591   141926                      
+Residuals 932 132274591   141926
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-(Intercept)        educ          IQ 
--128.889881   42.057619    5.137958 
-       1 
-889.5973 
+(Intercept)        educ          IQ
+-128.889881   42.057619    5.137958
+       1
+889.5973
                    [,1]
 (Intercept) -128.889881
 educ          42.057619
@@ -1102,8 +1100,8 @@ Call:
 lm(formula = salario ~ experiencia + educacion, data = ejercicio)
 
 Residuals:
-      1       2       3       4       5 
- 63.878 -10.538  29.907 -79.832  -3.415 
+      1       2       3       4       5
+ 63.878 -10.538  29.907 -79.832  -3.415
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)
@@ -1112,7 +1110,7 @@ experiencia  -16.790     30.964  -0.542    0.642
 educacion      8.237      5.109   1.612    0.248
 
 Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501 
+Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
 F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
 
 Analysis of Variance Table
@@ -1121,7 +1119,7 @@ Response: salario
             Df Sum Sq Mean Sq F value Pr(>F)
 experiencia  1  24618 24617.9  4.2923 0.1741
 educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3               
+Residuals    2  11471  5735.3
   experiencia educacion salario ajustado    residuo
 1          12        93     769 705.1220  63.877990
 2          18       119     808 818.5382 -10.538161
