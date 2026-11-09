@@ -1,13 +1,11 @@
 {
-  "codigo_sha256": "aa884a5bc2f720f8961c4127dbb4d6116542bd38baf8d50c71726ff8a21d6796",
-  "ejemplos_ejecutados": 18,
+  "codigo_sha256": "1a2e2957f9694bd59dfa4e877afef629299c01b5c775bcc1c823fea1270c5850",
+  "ejemplos_ejecutados": 12,
   "motor": "webR 0.6.0",
   "pruebas": [
     "Muestra común de 935 observaciones",
-    "lm coincide con cálculo matricial",
-    "Ortogonalidad de residuos",
-    "Determinante 34276",
-    "Inversa por cofactores e identidad",
+    "Muestra común de 663 filas para ambos modelos",
+    "Selección reproducible de cinco regresores",
     "R² no decrece en modelos anidados"
   ]
 }

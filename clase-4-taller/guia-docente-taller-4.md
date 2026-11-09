@@ -11,12 +11,12 @@ Ejecuta en orden con kernel R. En Google Colab selecciona R como tipo de entorno
 | 18:50–19:10 | Del modelo simple al múltiple |
 | 19:10–19:25 | MCO con dos regresores |
 | 19:25–19:45 | Notación y operaciones matriciales |
-| 19:45–20:00 | Fórmula de MCO y propiedades |
+| 19:45–20:00 | Modelo completo y ANOVA |
 | 20:00–20:15 | Descanso |
-| 20:15–20:35 | R² y R² ajustado |
-| 20:35–20:55 | Ejemplo y lectura de resultados |
-| 20:55–21:20 | Inversa por cofactores |
-| 21:20–21:25 | Síntesis y cierre |
+| 20:15–20:35 | Coeficientes y significancia |
+| 20:35–20:55 | Correlaciones y modelo reducido |
+| 20:55–21:05 | Comparación de R² y R² ajustado |
+| 21:05–21:25 | Ejercicio en Colab |
 
 ## 01 · Regresión múltiple: notación y función lm()
 
@@ -122,7 +122,7 @@ wage2 es una base de corte transversal del paquete wooldridge con 935 observacio
 | `feduc` | Educación del padre. |
 | `lwage` | Logaritmo natural del salario mensual. |
 
-[Documentación de wage2](https://justinmshea.github.io/wooldridge/reference/wage2.html)
+[Documentación del conjunto de datos](https://justinmshea.github.io/wooldridge/reference/wage2.html)
 
 ### Cómo leer el resultado
 
@@ -727,788 +727,394 @@ No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.
 
 </details>
 
-## 11 · Calcular los coeficientes con solve() y compararlos con lm()
+## 11 · Modelo completo de salario y tabla ANOVA
 
-Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.
-
-$$\widehat\beta=(X^\top X)^{-1}X^\top y$$
+Recupera las 17 columnas de wage2 desde original. Para predecir wage, usa los 15 regresores disponibles y deja lwage para la exploración de correlaciones. Como lwage se calcula a partir de wage, incorporarlo usaría información de la respuesta para predecirla.
 
 ### En R · Tu turno
 
 ### El código, paso a paso
 
-**`solve(XtX)`**
+**`original[complete.cases(original), ]`**
 
-Devuelve la inversa de XtX si es invertible. Aquí permite reproducir la fórmula teórica.
+Selecciona las filas completas en las 17 columnas. La coma seguida de un espacio vacío conserva todas las columnas. Usaremos estas mismas filas en el modelo completo, las correlaciones y el modelo reducido.
 
-**`solve(XtX, Xty)`**
+**`setdiff(names(datos_comunes), "lwage")`**
 
-Resuelve XtX · beta = Xty sin pedir una inversa explícita. No elimina los problemas de condicionamiento de las ecuaciones normales.
+names() entrega los nombres de las columnas. setdiff() conserva los nombres del primer argumento que no están en el segundo.
 
-**`all.equal(...), as.numeric(...) e isTRUE(...)`**
+**`lm(wage ~ ., data = datos_modelo)`**
 
-as.numeric convierte a vector; all.equal compara con tolerancia numérica; isTRUE produce un único TRUE o FALSE.
+El punto incluye todas las demás columnas de datos_modelo como regresores. wage queda como respuesta. lm() agrega el intercepto por defecto.
 
-**`unname(coef(modelo5))`**
+**`anova(modelo_completo)`**
 
-Quita las etiquetas de los coeficientes para compararlos con beta_sistema convertido a vector numérico. all.equal() comprueba la igualdad aproximada e isTRUE() devuelve TRUE solo si la comprobación tiene éxito.
+Muestra grados de libertad, sumas de cuadrados, cuadrados medios, estadísticos F y valores p secuenciales. La fila Residuals corresponde al modelo con todos los regresores.
 
 ```r
-beta_formula <- solve(XtX) %*% Xty
-beta_sistema <- solve(XtX, Xty)
-print(beta_formula)
-print(beta_sistema)
-print(coef(modelo5))
-print(isTRUE(all.equal(as.numeric(beta_sistema), unname(coef(modelo5)))))
-y_ajustado <- X %*% beta_sistema
-print(cbind(observado = y, ajustado = y_ajustado))
+# Una muestra común para todos los análisis de este tema
+datos_comunes <- original[complete.cases(original), ]
+campos_modelo <- setdiff(names(datos_comunes), "lwage")
+datos_modelo <- datos_comunes[, campos_modelo]
+
+modelo_completo <- lm(wage ~ ., data = datos_modelo)
+print(nobs(modelo_completo))
+print(anova(modelo_completo))
 ```
 
 ### Cómo leer el resultado
 
-Los tres métodos coinciden salvo diferencias de redondeo: aproximadamente 140,586; −16,790; 8,237. solve(A) calcula la inversa; solve(A,b) resuelve A·x = b. Para ajustar regresiones en la práctica usamos lm(), que evita formar las ecuaciones normales explícitamente y utiliza QR.
+El modelo usa 663 observaciones completas y 15 regresores. Cada fila de la ANOVA mide la reducción de la suma de cuadrados residual al añadir ese término después de los anteriores. Por eso el valor p de la ANOVA secuencial puede diferir del valor p de ese coeficiente en summary().
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-                  [,1]
-(Intercept) 140.586358
-experiencia -16.789532
-educacion     8.236667
-                  [,1]
-(Intercept) 140.586358
-experiencia -16.789532
-educacion     8.236667
-(Intercept) experiencia   educacion
- 140.586358  -16.789532    8.236667
-[1] TRUE
-  observado
-1       769 705.1220
-2       808 818.5382
-3       825 795.0930
-4       650 729.8320
-5       562 565.4149
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Conviene redondear la inversa antes de multiplicar?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Redondea solo al mostrar; conserva precisión durante los cálculos.
-
-</details>
-
-## 12 · Verificar las propiedades algebraicas de MCO
-
-Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.
-
-$$X^\top\widehat u=0,\quad\bar y=\overline{\widehat y}$$
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`round(t(X) %*% u_hat, 8)`**
-
-Muestra con ocho decimales la ortogonalidad de los residuos con cada columna de X.
-
-**`mean(y_ajustado)`**
-
-Promedia los salarios ajustados; con intercepto coincide con mean(y).
-
-**`predict(modelo5, newdata = medias)`**
-
-Evalúa el plano en la media de cada variable explicativa.
-
-```r
-u_hat <- y - as.numeric(y_ajustado)
-print(round(t(X) %*% u_hat, 8))
-print(c(media_y = mean(y), media_ajustada = mean(y_ajustado)))
-medias <- data.frame(experiencia = mean(ejemplo$experiencia),
-                     educacion = mean(ejemplo$educacion))
-print(predict(modelo5, newdata = medias))
-print(mean(y))
-```
-
-### Cómo leer el resultado
-
-La suma de residuos y la suma de cada regresor multiplicado por los residuos son cercanas a cero. La media observada coincide con la ajustada. El plano pasa por el punto de medias. Un valor como 10⁻¹⁰ es un residuo de precisión numérica, no una contradicción.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-            [,1]
-(Intercept)    0
-experiencia    0
-educacion      0
-       media_y media_ajustada
-         722.8          722.8
-    1
-722.8
-[1] 722.8
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Estas igualdades prueban que no hay variables omitidas?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especificación sea inadecuada.
-
-</details>
-
-## 13 · Rango completo: cuándo falla la inversa
-
-Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`qr(X_duplicada)$rank`**
-
-Obtiene el número de columnas linealmente independientes. Debe coincidir con el número de parámetros para invertir XᵀX.
-
-**`tryCatch(..., error = function(e) conditionMessage(e))`**
-
-Captura el error esperado y lo muestra como texto para que el notebook continúe. e contiene la información del error.
-
-**`coef(lm(...))`**
-
-Una pendiente puede aparecer como NA porque es redundante; no porque haya una fila con valor faltante.
-
-**`ncol(X_duplicada)`**
-
-Cuenta las columnas de la matriz. Comparamos ese número con el rango que devuelve la descomposición QR.
-
-**`ejemplo$repetida <- ejemplo$experiencia`**
-
-Crea una columna nueva llamada repetida y le asigna los mismos valores de experiencia, fila por fila.
-
-```r
-X_duplicada <- cbind(unos = 1, experiencia = ejemplo$experiencia,
-                      repetida = ejemplo$experiencia)
-print(c(columnas = ncol(X_duplicada), rango = qr(X_duplicada)$rank))
-problema <- tryCatch(solve(t(X_duplicada) %*% X_duplicada),
-                     error = function(e) conditionMessage(e))
-print(problema)
-ejemplo$repetida <- ejemplo$experiencia
-print(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))
-```
-
-### Cómo leer el resultado
-
-Hay tres columnas, pero solo dos independientes. No se pueden identificar dos pendientes separadas para columnas idénticas. solve() informa el problema y lm() marca un coeficiente redundante con NA. No se trata de un dato faltante del dataset.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-columnas    rango
-       3        2
-[1] "Lapack routine dgesv: system is exactly singular: U[3,3] = 0"
-(Intercept) experiencia    repetida
-  346.39744    28.08974          NA
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Tener más filas que columnas garantiza rango completo?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Puede haber columnas duplicadas o combinaciones lineales exactas.
-
-</details>
-
-## 14 · R² y R² ajustado: comparar sobre la misma muestra
-
-Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.
-
-$$R^2=1-\frac{SSR}{SST},\quad\overline R^2=1-\frac{n-1}{n-k-1}\frac{SSR}{SST}$$
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`summary(modelo)$adj.r.squared`**
-
-Extrae el R² ajustado del resumen; r.squared entrega el R² sin penalización.
-
-**`nobs(modelo) y length(coef(modelo)) - 1`**
-
-nobs cuenta observaciones usadas. Restamos el intercepto para contar k en este modelo de rango completo.
-
-**`function(modelo) y rbind(...)`**
-
-function(modelo) { ... } define una función con un argumento llamado modelo. Cada llamada calcula cuatro medidas para el ajuste entregado y devuelve la última expresión, el vector c(...). rbind() apila los vectores resultantes como filas para comparar ambos modelos.
-
-```r
-medidas <- function(modelo) {
-  s <- summary(modelo)
-  c(n = nobs(modelo), R2 = s$r.squared,
-    R2_ajustado = s$adj.r.squared, SSR = sum(resid(modelo)^2))
-}
-print(rbind(simple = medidas(simple), multiple = medidas(multiple)))
-SSR <- sum(resid(multiple)^2)
-SST <- sum((datos$wage - mean(datos$wage))^2)
-SSE <- sum((fitted(multiple) - mean(datos$wage))^2)
-n <- nobs(multiple)
-k <- length(coef(multiple)) - 1
-print(c(R2 = 1 - SSR/SST,
-        R2_ajustado = 1 - (SSR/(n-k-1))/(SST/(n-1))))
-print(c(SST = SST, SSE_mas_SSR = SSE + SSR))
-```
-
-### Cómo leer el resultado
-
-Seguimos la nomenclatura de cátedra: SSR es residual; SSE es explicada; SST es total. En modelos anidados con intercepto sobre la misma muestra, R² no disminuye al agregar regresores; el ajustado sí puede disminuir. Ninguno mide por sí solo causalidad o desempeño fuera de muestra.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-           n        R2 R2_ajustado       SSR
-simple   935 0.1070001   0.1060430 136375524
-multiple 935 0.1338534   0.1319947 132274591
-         R2 R2_ajustado
-  0.1338534   0.1319947
-        SST SSE_mas_SSR
-  152716168   152716168
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Se puede comparar R² directamente si cambia la variable dependiente o la muestra?
-
-<details><summary>Mostrar respuesta</summary>
-
-La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la muestra como wage.
-
-</details>
-
-## 15 · La trampa de agregar variables de ruido
-
-Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`matrix(..., nrow = ..., ncol = ...)`**
-
-Ordena los valores aleatorios en una matriz de 30 filas y 10 columnas.
-
-**`ruido[, seq_len(j), drop = FALSE]`**
-
-Conserva las primeras j columnas; drop = FALSE evita convertir la selección de una sola columna en un vector.
-
-**`matplot(x, y, type = "l", lty = 1)`**
-
-Dibuja una línea por columna de y. type elige líneas y lty su estilo.
-
-**`set.seed(5) y rnorm(n_sim, sd = 2)`**
-
-set.seed() inicia el generador en un estado reproducible. rnorm() genera n_sim valores de una distribución normal con media 0 por defecto. sd = 2 fija la desviación estándar del ruido. Al omitir sd se usa 1.
-
-**`for (j in 0:10) y if (j == 0)`**
-
-0:10 crea los enteros de 0 a 10. for ejecuta el bloque con cada valor de j. Para j = 0 ajustamos sin ruido. Para j > 0 añadimos las primeras j columnas de ruido. Guardamos cada resultado en la fila j + 1 porque las posiciones de R empiezan en 1. NA reserva las posiciones aún sin calcular.
-
-**`legend("bottomright", ..., lty = 1, col = ...)`**
-
-Agrega una leyenda en la esquina inferior derecha. El vector de textos sigue el orden de las líneas. lty = 1 indica línea continua y col asigna los colores correspondientes.
-
-```r
-set.seed(5)
-n_sim <- 30
-x_sim <- rnorm(n_sim)
-y_sim <- 1 + 2*x_sim + rnorm(n_sim, sd = 2)
-ruido <- matrix(rnorm(n_sim*10), nrow = n_sim, ncol = 10)
-trayectoria <- data.frame(k_ruido = 0:10, R2 = NA, R2_ajustado = NA)
-for (j in 0:10) {
-  if (j == 0) {
-    modelo_ruido <- lm(y_sim ~ x_sim)
-  } else {
-    z <- ruido[, seq_len(j), drop = FALSE]
-    modelo_ruido <- lm(y_sim ~ x_sim + z)
-  }
-  s <- summary(modelo_ruido)
-  trayectoria$R2[j+1] <- s$r.squared
-  trayectoria$R2_ajustado[j+1] <- s$adj.r.squared
-}
-print(trayectoria)
-matplot(trayectoria$k_ruido, trayectoria[, c("R2", "R2_ajustado")],
-        type = "l", lty = 1, col = c("#005F96", "#D6A600"),
-        xlab = "Variables de ruido añadidas", ylab = "Bondad de ajuste")
-legend("bottomright", c("R²", "R² ajustado"), lty = 1,
-       col = c("#005F96", "#D6A600"))
-```
-
-### Cómo leer el resultado
-
-Las variables añadidas se generaron sin relación poblacional con y, pero pueden ajustar variación accidental de esta muestra. R² sube o se mantiene; el ajustado puede subir o bajar. No es una prueba definitiva de relevancia ni una medida de validación fuera de muestra.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-   k_ruido        R2 R2_ajustado
-1        0 0.6519739   0.6395443
-2        1 0.6623217   0.6373085
-3        2 0.6697446   0.6316382
-4        3 0.6711030   0.6184794
-5        4 0.6757681   0.6082198
-6        5 0.6833896   0.6007956
-7        6 0.6860987   0.5862211
-8        7 0.6957605   0.5798597
-9        8 0.6959812   0.5591727
-10       9 0.6979866   0.5390321
-11      10 0.6993595   0.5156348
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿El R² ajustado siempre baja al agregar ruido?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Puede subir por una asociación accidental en una muestra. La simulación muestra por qué no basta con mirar R².
-
-</details>
-
-## 16 · Interpretar summary() y ANOVA en el ejemplo de cátedra
-
-Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`summary(modelo5)$coefficients`**
-
-Estimate es el coeficiente; Std. Error su error estándar; t value contrasta coeficiente cero y Pr(>|t|) es su p-valor bajo los supuestos del contraste.
-
-**`anova(modelo5)`**
-
-Da ANOVA secuencial: cada fila incorpora el regresor después de los anteriores. El orden puede afectar estas contribuciones cuando están correlacionados.
-
-**`df.residual(modelo5)`**
-
-Entrega n menos el rango de X: aquí 5 − 3 = 2. La prueba F global de summary contrasta conjuntamente las dos pendientes iguales a cero.
-
-```r
-resumen5 <- summary(modelo5)
-print(resumen5)
-print(resumen5$coefficients)
-print(anova(modelo5))
-print(c(R2 = resumen5$r.squared, R2_ajustado = resumen5$adj.r.squared))
-print(df.residual(modelo5))
-```
-
-### Cómo leer el resultado
-
-Los coeficientes coinciden con el cálculo matricial. Un coeficiente estimado negativo no implica una relación conocida con certeza: hay mucha incertidumbre con cinco datos. anova(modelo5) muestra sumas de cuadrados secuenciales, que pueden cambiar de asignación si cambia el orden de los regresores.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-
-Call:
-lm(formula = salario ~ experiencia + educacion, data = ejemplo)
-
-Residuals:
-      1       2       3       4       5
- 63.878 -10.538  29.907 -79.832  -3.415
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)
-(Intercept)  140.586    224.616   0.626    0.595
-experiencia  -16.790     30.964  -0.542    0.642
-educacion      8.237      5.109   1.612    0.248
-
-Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
-F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
-
-              Estimate Std. Error    t value  Pr(>|t|)
-(Intercept) 140.586358 224.616363  0.6258954 0.5952896
-experiencia -16.789532  30.964358 -0.5422212 0.6420030
-educacion     8.236667   5.109131  1.6121463 0.2482525
-Analysis of Variance Table
-
-Response: salario
-            Df Sum Sq Mean Sq F value Pr(>F)
-experiencia  1  24618 24617.9  4.2923 0.1741
-educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3
-         R2 R2_ajustado
-  0.7750615   0.5501230
-[1] 2
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿La ANOVA secuencial de experiencia equivale a su prueba t controlando educación?
-
-<details><summary>Mostrar respuesta</summary>
-
-No en general. La primera fila entra antes de educación; la prueba t del modelo completo controla ambas variables.
-
-</details>
-
-## 17 · Ejercicio guiado: estimar y explicar una regresión múltiple real
-
-Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`model.frame(fit)`**
-
-Recupera las filas y variables que efectivamente utilizó el ajuste.
-
-**`model.response(model.frame(fit))`**
-
-Extrae de esas filas la respuesta, alineada con model.matrix(fit). Evita comparar matrices con observaciones distintas.
-
-**`summary(fit), anova(fit) y coef(fit)`**
-
-Resumen completo, descomposición secuencial y coeficientes. Responde con unidades y distingue asociación de causalidad.
-
-```r
-fit <- lm(wage ~ educ + IQ, data = datos)
-print(summary(fit))
-print(anova(fit))
-print(coef(fit))
-print(predict(fit, newdata = data.frame(educ = 12, IQ = 100)))
-X_real <- model.matrix(fit)
-y_real <- model.response(model.frame(fit))
-beta_real <- solve(t(X_real) %*% X_real, t(X_real) %*% y_real)
-print(beta_real)
-print(isTRUE(all.equal(as.numeric(beta_real), unname(coef(fit)))))
-print(head(data.frame(observado = y_real, predicho = fitted(fit),
-                      residuo = resid(fit))))
-```
-
-### Cómo leer el resultado
-
-Interpreta educación en USD mensuales por un año adicional, manteniendo IQ constante; IQ en USD mensuales por un punto adicional, manteniendo educación constante. El intercepto puede quedar fuera de una situación económicamente plausible.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-
-Call:
-lm(formula = wage ~ educ + IQ, data = datos)
-
-Residuals:
-    Min      1Q  Median      3Q     Max
--860.29 -251.00  -35.31  203.98 2110.38
-
-Coefficients:
-             Estimate Std. Error t value Pr(>|t|)
-(Intercept) -128.8899    92.1823  -1.398    0.162
-educ          42.0576     6.5498   6.421 2.15e-10 ***
-IQ             5.1380     0.9558   5.375 9.66e-08 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 376.7 on 932 degrees of freedom
-Multiple R-squared:  0.1339,	Adjusted R-squared:  0.132
-F-statistic: 72.02 on 2 and 932 DF,  p-value: < 2.2e-16
-
+[1] 663
 Analysis of Variance Table
 
 Response: wage
-           Df    Sum Sq  Mean Sq F value    Pr(>F)
-educ        1  16340645 16340645 115.135 < 2.2e-16 ***
-IQ          1   4100932  4100932  28.895  9.66e-08 ***
-Residuals 932 132274591   141926
+           Df   Sum Sq  Mean Sq F value    Pr(>F)
+hours       1   127695   127695  1.0184 0.3132815
+IQ          1 10486791 10486791 83.6329 < 2.2e-16 ***
+KWW         1  5170696  5170696 41.2367 2.612e-10 ***
+educ        1  2345638  2345638 18.7066 1.765e-05 ***
+exper       1  1762013  1762013 14.0522 0.0001937 ***
+tenure      1   145724   145724  1.1622 0.2814203
+age         1   173557   173557  1.3841 0.2398313
+married     1  1687971  1687971 13.4617 0.0002635 ***
+black       1   281031   281031  2.2412 0.1348606
+south       1   522399   522399  4.1662 0.0416442 *
+urban       1  4214399  4214399 33.6101 1.053e-08 ***
+sibs        1      364      364  0.0029 0.9570614
+brthord     1   443713   443713  3.5386 0.0604034 .
+meduc       1   555852   555852  4.4330 0.0356361 *
+feduc       1   350897   350897  2.7984 0.0948403 .
+Residuals 647 81127825   125391
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-(Intercept)        educ          IQ
--128.889881   42.057619    5.137958
-       1
-889.5973
-                   [,1]
-(Intercept) -128.889881
-educ          42.057619
-IQ             5.137958
-[1] TRUE
-  observado  predicho   residuo
-1       769  853.6316  -84.6316
-2       808 1239.5642 -431.5642
-3       825 1014.8162 -189.8162
-4       650  869.0455 -219.0455
-5       562  713.9528 -151.9528
-6      1400 1140.0351  259.9649
 ```
 
 </details>
 
 ### Comprueba lo aprendido
 
-¿Qué debes reportar además del signo de una pendiente?
+¿Por qué la tabla ANOVA depende del orden de los regresores?
 
 <details><summary>Mostrar respuesta</summary>
 
-Su valor, sus unidades, qué variables se mantienen constantes y la incertidumbre de la estimación.
+Cada fila mide el aporte de un término después de los que lo preceden.
 
 </details>
 
-## 18 · Inversa por cofactores: elegir un menor
+## 12 · Coeficientes, significancia y medidas de ajuste
 
-Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.
-
-$$C_{ij}=(-1)^{i+j}\det(A_{-i,-j})$$
+Usa summary() para interpretar cada coeficiente del modelo completo. Aplica un nivel de significancia del 5 % y guarda R² y R² ajustado para comparar después.
 
 ### En R · Tu turno
 
 ### El código, paso a paso
 
-**`A[-i, -j]`**
+**`summary(modelo_completo)$coefficients`**
 
-Los índices negativos excluyen una fila y una columna. Aquí se elimina la fila 1 y la columna 2.
+Extrae la matriz de coeficientes. Estimate es el valor estimado. Std. Error mide su incertidumbre. t value divide la estimación por su error estándar. Pr(>|t|) es el valor p bilateral de la prueba de coeficiente cero, dado el resto de los regresores.
 
-**`det(menor)`**
+**`rownames(coeficientes) e ifelse(p_valores < alfa, "Sí", "No")`**
 
-Calcula el determinante de la submatriz. En 2 × 2 equivale a a·d − b·c.
+rownames() recupera el término de cada fila. ifelse() revisa la condición para cada valor p y devuelve una etiqueta por coeficiente.
 
-**`(-1)^(i+j)`**
+**`r.squared y adj.r.squared`**
 
-Aplica el patrón de signos del cofactor: positivo si i+j es par, negativo si es impar.
-
-```r
-A <- t(X) %*% X
-print(A)
-i <- 1
-j <- 2
-menor <- A[-i, -j]
-print(menor)
-print(det(menor))
-print((-1)^(i+j) * det(menor))
-```
-
-### Cómo leer el resultado
-
-Para (i,j) = (1,2), el menor tiene determinante −6518 y el cofactor cambia el signo, por lo que vale 6518. Un menor es un determinante; la submatriz es el bloque que queda al eliminar fila y columna.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-            (Intercept) experiencia educacion
-(Intercept)           5          67       490
-experiencia          67         929      6736
-educacion           490        6736     49166
-            (Intercept) educacion
-experiencia          67      6736
-educacion           490     49166
-[1] -6518
-[1] 6518
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Un menor negativo siempre produce un cofactor negativo?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Depende también del factor (−1)^(i+j).
-
-</details>
-
-## 19 · Cofactores, adjunta, determinante e inversa
-
-Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.
-
-$$A^{-1}=\frac{C^\top}{\det(A)}$$
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`for (i in 1:3) y for (j in 1:3)`**
-
-Recorren las nueve celdas: una fila y, dentro de ella, las tres columnas.
-
-**`sum(A[1, ] * cofactores[1, ])`**
-
-Expande el determinante por la primera fila. No es la suma simple de los elementos de A.
-
-**`adjunta / determinante`**
-
-Divide cada elemento de la adjunta por un escalar. Solo se puede hacer si el determinante no es cero.
-
-**`all.equal(..., check.attributes = FALSE)`**
-
-Compara los valores de la inversa por cofactores con los de solve(A) y omite los atributos en esa comparación. La comprobación posterior A %*% inversa muestra la matriz identidad redondeada.
+R² mide la proporción de variación muestral explicada. R² ajustado tiene en cuenta el número de regresores y observaciones. Los guardamos como números para usarlos en la lámina 14.
 
 ```r
-cofactores <- matrix(0, nrow = 3, ncol = 3)
-for (i in 1:3) {
-  for (j in 1:3) {
-    cofactores[i, j] <- (-1)^(i+j) * det(A[-i, -j])
-  }
-}
-adjunta <- t(cofactores)
-determinante <- sum(A[1, ] * cofactores[1, ])
-inversa <- adjunta / determinante
-print(round(cofactores))
-print(determinante)
-print(round(inversa, 6))
-print(isTRUE(all.equal(inversa, unname(solve(A)), check.attributes = FALSE)))
-print(round(A %*% inversa, 8))
-```
+resumen_completo <- summary(modelo_completo)
+print(resumen_completo)
+coeficientes <- resumen_completo$coefficients
+alfa <- 0.05
+p_valores <- coeficientes[, "Pr(>|t|)"]
 
-### Cómo leer el resultado
-
-El determinante es 34276. La matriz producto A·A⁻¹ es la identidad. La adjunta coincide con los cofactores en este ejemplo simétrico, pero la definición general exige transponer. El procedimiento es didáctico; para sistemas reales se prefieren algoritmos numéricos.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-       [,1] [,2]  [,3]
-[1,] 301518 6518 -3898
-[2,]   6518 5730  -850
-[3,]  -3898 -850   156
-[1] 34276
-          [,1]      [,2]      [,3]
-[1,]  8.796767  0.190162 -0.113724
-[2,]  0.190162  0.167172 -0.024799
-[3,] -0.113724 -0.024799  0.004551
-[1] TRUE
-            [,1] [,2] [,3]
-(Intercept)    1    0    0
-experiencia    0    1    0
-educacion      0    0    1
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿La adjunta es siempre igual a la matriz de cofactores?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. Es su transpuesta; aquí coinciden por simetría.
-
-</details>
-
-## 20 · Cerrar el recorrido: de los datos a la predicción
-
-Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`lm(salario ~ experiencia + educacion, data = ejercicio)`**
-
-Especifica la relación que se estima: dos pendientes e intercepto.
-
-**`X_final %*% beta_final`**
-
-Reconstruye las predicciones con las mismas columnas y en el mismo orden.
-
-**`t(X_final) %*% resid(fit_final)`**
-
-Comprueba las tres condiciones de ortogonalidad del ajuste.
-
-```r
-ejercicio <- data.frame(
-  experiencia = c(12, 18, 14, 12, 11),
-  educacion = c(93, 119, 108, 96, 74),
-  salario = c(769, 808, 825, 650, 562)
+detalle <- data.frame(
+  termino = rownames(coeficientes),
+  estimacion = coeficientes[, "Estimate"],
+  error_estandar = coeficientes[, "Std. Error"],
+  t = coeficientes[, "t value"],
+  valor_p = p_valores,
+  significativo = ifelse(p_valores < alfa, "Sí", "No")
 )
-fit_final <- lm(salario ~ experiencia + educacion, data = ejercicio)
-X_final <- model.matrix(fit_final)
-y_final <- ejercicio$salario
-beta_final <- solve(t(X_final) %*% X_final, t(X_final) %*% y_final)
-print(beta_final)
-print(summary(fit_final))
-print(anova(fit_final))
-print(data.frame(ejercicio, ajustado = as.numeric(X_final %*% beta_final),
-                 residuo = resid(fit_final)))
-print(round(t(X_final) %*% resid(fit_final), 8))
+print(detalle, row.names = FALSE)
+
+r2_completo <- resumen_completo$r.squared
+r2_ajustado_completo <- resumen_completo$adj.r.squared
+print(c(R2 = r2_completo, R2_ajustado = r2_ajustado_completo))
 ```
 
 ### Cómo leer el resultado
 
-La fórmula matricial y lm() llegan al mismo ajuste. Antes de interpretar: identifica respuesta, unidades, regresores, muestra y grados de libertad. Al agregar variables, recuerda que un mejor ajuste muestral no demuestra causalidad ni asegura mejores predicciones nuevas.
+Cada fila informa estimación, error estándar, estadístico t, valor p y significancia al 5 %. Entre los regresores, hours, IQ, educ, exper, married y urban cumplen p < 0,05. Para un regresor numérico, el coeficiente expresa la diferencia predicha en USD por unidad adicional con los otros campos fijos. Para un indicador, compara el valor 1 con el valor 0. El intercepto es la predicción con todos los regresores en cero.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
-                  [,1]
-(Intercept) 140.586358
-experiencia -16.789532
-educacion     8.236667
 
 Call:
-lm(formula = salario ~ experiencia + educacion, data = ejercicio)
+lm(formula = wage ~ ., data = datos_modelo)
 
 Residuals:
-      1       2       3       4       5
- 63.878 -10.538  29.907 -79.832  -3.415
+    Min      1Q  Median      3Q     Max
+-812.38 -207.81  -43.22  168.91 2047.32
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)
-(Intercept)  140.586    224.616   0.626    0.595
-experiencia  -16.790     30.964  -0.542    0.642
-educacion      8.237      5.109   1.612    0.248
+(Intercept) -676.890    227.469  -2.976 0.003032 **
+hours         -4.391      1.953  -2.248 0.024899 *
+IQ             3.089      1.235   2.501 0.012630 *
+KWW            4.673      2.413   1.936 0.053293 .
+educ          38.146      9.029   4.225 2.73e-05 ***
+exper          9.767      4.478   2.181 0.029525 *
+tenure         2.747      2.922   0.940 0.347486
+age            8.865      6.035   1.469 0.142312
+married      177.051     46.444   3.812 0.000151 ***
+black        -96.187     56.207  -1.711 0.087503 .
+south        -21.698     31.051  -0.699 0.484940
+urban        178.488     31.543   5.659 2.29e-08 ***
+sibs           8.509      7.952   1.070 0.285044
+brthord      -17.090     11.681  -1.463 0.143951
+meduc          6.839      6.227   1.098 0.272485
+feduc          9.117      5.450   1.673 0.094840 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 75.73 on 2 degrees of freedom
-Multiple R-squared:  0.7751,	Adjusted R-squared:  0.5501
-F-statistic: 3.446 on 2 and 2 DF,  p-value: 0.2249
+Residual standard error: 354.1 on 647 degrees of freedom
+Multiple R-squared:  0.2584,	Adjusted R-squared:  0.2412
+F-statistic: 15.03 on 15 and 647 DF,  p-value: < 2.2e-16
 
-Analysis of Variance Table
-
-Response: salario
-            Df Sum Sq Mean Sq F value Pr(>F)
-experiencia  1  24618 24617.9  4.2923 0.1741
-educacion    1  14906 14906.3  2.5990 0.2483
-Residuals    2  11471  5735.3
-  experiencia educacion salario ajustado    residuo
-1          12        93     769 705.1220  63.877990
-2          18       119     808 818.5382 -10.538161
-3          14       108     825 795.0930  29.907049
-4          12        96     650 729.8320 -79.832011
-5          11        74     562 565.4149  -3.414868
-            [,1]
-(Intercept)    0
-experiencia    0
-educacion      0
+     termino  estimacion error_estandar          t      valor_p significativo
+ (Intercept) -676.889881     227.469009 -2.9757455 3.031810e-03            Sí
+       hours   -4.390648       1.952959 -2.2482023 2.489916e-02            Sí
+          IQ    3.089307       1.235228  2.5010010 1.263038e-02            Sí
+         KWW    4.672608       2.413435  1.9360817 5.329292e-02            No
+        educ   38.145971       9.028508  4.2250579 2.732028e-05            Sí
+       exper    9.766998       4.477736  2.1812360 2.952527e-02            Sí
+      tenure    2.747384       2.922248  0.9401610 3.474859e-01            No
+         age    8.865405       6.034885  1.4690262 1.423117e-01            No
+     married  177.051342      46.443732  3.8121688 1.509164e-04            Sí
+       black  -96.186846      56.206598 -1.7113088 8.750340e-02            No
+       south  -21.697682      31.050727 -0.6987818 4.849395e-01            No
+       urban  178.487730      31.542872  5.6585756 2.293937e-08            Sí
+        sibs    8.508701       7.952480  1.0699431 2.850439e-01            No
+     brthord  -17.090091      11.681473 -1.4630083 1.439507e-01            No
+       meduc    6.838524       6.226500  1.0982934 2.724849e-01            No
+       feduc    9.117406       5.450224  1.6728498 9.484029e-02            No
+         R2 R2_ajustado
+  0.2584061   0.2412131
 ```
 
 </details>
 
 ### Comprueba lo aprendido
 
-¿Qué conecta los siete temas de la clase?
+¿Por qué un valor p mayor que 0,05 recibe la etiqueta «No»?
 
 <details><summary>Mostrar respuesta</summary>
 
-La matriz X organiza el modelo; MCO estima sus coeficientes; los residuos verifican propiedades y las medidas de ajuste resumen cuánto se explica.
+Con ese umbral, los datos no aportan evidencia suficiente para rechazar que el coeficiente sea cero, dado el resto del modelo.
 
 </details>
 
-## Para la próxima clase
+## 13 · Correlaciones y modelo reducido
 
-Revisa las indicaciones de la cátedra. Repasa los siete temas y reconstruye el ejemplo de cinco personas sin mirar la solución.
+Explora las 17 columnas con pairs() y cor(). Luego filtra los regresores con p < 0,05. Entre dos regresores que pasen el filtro y tengan |r| ≥ 0,50, conserva el que tenga menor valor p en el modelo completo.
+
+### En R · Tu turno
+
+### El código, paso a paso
+
+**`pairs(datos_comunes, upper.panel = NULL, ...)`**
+
+Dibuja un gráfico por par de columnas. La diagonal indica los nombres. upper.panel = NULL oculta la mitad repetida. pch elige el símbolo y cex reduce el tamaño de los puntos.
+
+**`cor(datos_comunes)`**
+
+Calcula la matriz de correlaciones de Pearson. r resume dirección e intensidad de la relación lineal entre dos columnas.
+
+**`which(upper.tri(...) & abs(...) >= 0.50, arr.ind = TRUE)`**
+
+upper.tri() selecciona la mitad superior sin diagonal. abs() permite buscar asociaciones positivas y negativas. & combina las condiciones. which() devuelve las coordenadas de los pares que superan el umbral.
+
+**`setdiff(significativas, "(Intercept)") y setdiff(regresores, "IQ")`**
+
+El primer filtro retira el nombre del intercepto de la lista de regresores. El segundo aplica la decisión de conservar educación entre los dos regresores correlacionados que pasaron el filtro. El nuevo lm() usa las mismas filas.
+
+```r
+pairs(datos_comunes, upper.panel = NULL, pch = 16, cex = 0.25,
+      col = "#005F9640", main = "wage2 · Matriz de gráficos de dispersión")
+correlaciones <- cor(datos_comunes)
+indices <- which(upper.tri(correlaciones) & abs(correlaciones) >= 0.50,
+                 arr.ind = TRUE)
+pares <- data.frame(
+  variable_1 = rownames(correlaciones)[indices[, 1]],
+  variable_2 = colnames(correlaciones)[indices[, 2]],
+  r = round(correlaciones[indices], 3)
+)
+print(pares, row.names = FALSE)
+
+significativas <- rownames(coeficientes)[p_valores < alfa]
+regresores <- setdiff(significativas, "(Intercept)")
+print(c(r_educ_IQ = correlaciones["educ", "IQ"],
+        p_educ = p_valores["educ"], p_IQ = p_valores["IQ"]))
+
+# Entre educación e IQ, educación tiene el menor valor p
+elegidas <- setdiff(regresores, "IQ")
+datos_reducidos <- datos_modelo[, c("wage", elegidas)]
+modelo_reducido <- lm(wage ~ ., data = datos_reducidos)
+print(elegidas)
+print(summary(modelo_reducido))
+```
+
+### Cómo leer el resultado
+
+Con el umbral elegido, destacan wage y lwage (r = 0,954), sibs y brthord (0,578), meduc y feduc (0,577) y educ e IQ (0,543). wage y lwage son la misma magnitud en dos escalas. Los pares familiares quedan fuera por el filtro de significancia. Entre educación e IQ, conservamos educación por su menor valor p en el modelo completo. El ajuste reducido queda con hours, educ, exper, married y urban. Esta selección sirve para explorar especificaciones y debe justificarse con el contexto y los diagnósticos.
+
+<details><summary>Resultados de referencia ejecutados en R</summary>
+
+```text
+ variable_1 variable_2     r
+         IQ       educ 0.543
+       sibs    brthord 0.578
+      meduc      feduc 0.577
+       wage      lwage 0.954
+   r_educ_IQ  p_educ.educ      p_IQ.IQ
+5.434635e-01 2.732028e-05 1.263038e-02
+[1] "hours"   "educ"    "exper"   "married" "urban"
+
+Call:
+lm(formula = wage ~ ., data = datos_reducidos)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-767.68 -232.16  -35.05  175.53 2025.75
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) -357.811    155.721  -2.298   0.0219 *
+hours         -3.428      1.994  -1.719   0.0861 .
+educ          72.641      7.159  10.146  < 2e-16 ***
+exper         16.844      3.754   4.488 8.50e-06 ***
+married      198.179     47.638   4.160 3.60e-05 ***
+urban        185.105     31.736   5.833 8.56e-09 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 364.9 on 657 degrees of freedom
+Multiple R-squared:  0.2001,	Adjusted R-squared:  0.194
+F-statistic: 32.88 on 5 and 657 DF,  p-value: < 2.2e-16
+
+```
+
+</details>
+
+### Comprueba lo aprendido
+
+¿Qué regresor se conserva entre educación e IQ y con qué criterio?
+
+<details><summary>Mostrar respuesta</summary>
+
+Educación, porque tiene el menor valor p en el ajuste completo entre esas dos variables correlacionadas.
+
+</details>
+
+## 14 · Comparar R² y R² ajustado
+
+Compara el modelo completo y el reducido sobre las mismas 663 filas y la misma variable respuesta. Revisa cuánto ajuste se pierde al retirar regresores y cómo cambia el ajuste al considerar el número de parámetros.
+
+### En R · Tu turno
+
+### El código, paso a paso
+
+**`nobs() y length(coef(...)) - 1`**
+
+nobs() cuenta las observaciones usadas. En estos ajustes de rango completo, restar uno al número de coeficientes deja el número de regresores sin el intercepto.
+
+**`data.frame(modelo = ..., R2 = ..., R2_ajustado = ...)`**
+
+Reúne las medidas guardadas en una fila por modelo y muestra el tamaño de muestra para verificar la comparabilidad.
+
+```r
+resumen_reducido <- summary(modelo_reducido)
+r2_reducido <- resumen_reducido$r.squared
+r2_ajustado_reducido <- resumen_reducido$adj.r.squared
+
+comparacion_ajuste <- data.frame(
+  modelo = c("Completo", "Reducido"),
+  observaciones = c(nobs(modelo_completo), nobs(modelo_reducido)),
+  regresores = c(length(coef(modelo_completo)), length(coef(modelo_reducido))) - 1,
+  R2 = c(r2_completo, r2_reducido),
+  R2_ajustado = c(r2_ajustado_completo, r2_ajustado_reducido)
+)
+print(comparacion_ajuste, row.names = FALSE)
+```
+
+### Cómo leer el resultado
+
+El modelo completo obtiene R² de 25,84 % y R² ajustado de 24,12 %. El reducido obtiene 20,01 % y 19,40 %, respectivamente. En esta muestra, el modelo completo conserva un mayor ajuste incluso después de considerar el número de regresores. El reducido usa 5 regresores frente a 15. Completa la comparación con una revisión de los residuos y del propósito del modelo.
+
+<details><summary>Resultados de referencia ejecutados en R</summary>
+
+```text
+   modelo observaciones regresores        R2 R2_ajustado
+ Completo           663         15 0.2584061   0.2412131
+ Reducido           663          5 0.2001345   0.1940473
+```
+
+</details>
+
+### Comprueba lo aprendido
+
+¿Qué condición hace comparable el R² de estos dos modelos?
+
+<details><summary>Mostrar respuesta</summary>
+
+Los dos ajustes usan la misma respuesta y las mismas observaciones.
+
+</details>
+
+## 15 · Ejercicio en clase
+
+Abre un Google Colab nuevo y selecciona un entorno con R. Copia este código y ejecútalo para cargar la base.
+
+```r
+if (!requireNamespace("wooldridge", quietly = TRUE)) {
+  install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+}
+datos_ejercicio <- wooldridge::gpa2
+```
+
+gpa2 reúne 4.137 estudiantes de una universidad. Cada fila representa a un estudiante. La variable dependiente del ejercicio es colgpa, el promedio de notas universitario al finalizar el semestre de otoño.
+
+| Campo | Significado |
+|---|---|
+| `sat` | Puntaje total en la prueba SAT. |
+| `tothrs` | Créditos acumulados hasta el semestre de otoño. |
+| `colgpa` | Promedio de notas universitario al final del semestre de otoño. |
+| `athlete` | Indicador de participación deportiva. |
+| `verbmath` | Razón entre el puntaje verbal y matemático del SAT. |
+| `hsize` | Tamaño de la generación de egreso de secundaria, en centenas de estudiantes. |
+| `hsrank` | Posición del estudiante en su generación de secundaria. |
+| `hsperc` | Percentil de secundaria medido desde los primeros puestos. |
+| `female` | Indicador registrado para mujeres. |
+| `white` | Indicador registrado para estudiantes blancos. |
+| `black` | Indicador registrado para estudiantes negros. |
+| `hsizesq` | Cuadrado de hsize. |
+
+[Documentación del conjunto de datos](https://justinmshea.github.io/wooldridge/reference/gpa2.html)
+
+### Actividades
+
+1. Haz un histograma de colgpa y otro de su logaritmo natural. Para el logaritmo usa los valores estrictamente positivos y reporta cuántos excluiste.
+2. Ajusta una regresión lineal con colgpa como respuesta y todas las demás variables como regresores.
+3. Construye la matriz de correlaciones de todas las variables e identifica los pares con mayor correlación absoluta.
+4. Elige y justifica los regresores de un modelo alternativo. Revisa si los residuos respaldan la forma lineal y la varianza constante. Examina la colinealidad y explica qué información necesitarías para evaluar independencia y exogeneidad.
+
+### Mensaje final
+
+Justifica las variables que conservas y describe qué diagnóstico usarías para evaluar cada supuesto del modelo.
