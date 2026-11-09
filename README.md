@@ -39,7 +39,7 @@ Taller de causalidad y variable omitida, con 16 láminas y notebook sincronizado
 
 ## Clase 4
 
-Regresión lineal múltiple, 18 láminas en el orden de la cátedra y notebook R sincronizado.
+Regresión lineal múltiple, 19 láminas en el orden de la cátedra y notebook R sincronizado.
 
 - [Página de la clase](clase-4-taller/index.html)
 - [Notebook R](clase-4-taller/clase-taller-4.ipynb)

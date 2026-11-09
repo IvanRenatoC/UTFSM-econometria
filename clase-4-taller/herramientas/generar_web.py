@@ -9,19 +9,19 @@ assert hashlib.sha256(code.encode()).hexdigest()==V['codigo_sha256'],'Ejecutar v
 O=json.loads((ROOT/'datos/salidas-verificadas-r.json').read_text())
 e=html.escape
 M={
-'C4-04':'<mrow><mover><mi>wage</mi><mo>^</mo></mover><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>educ</mi><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>2</mn></msub><mi>IQ</mi></mrow>',
-'C4-05':'<mrow><mi>Δŷ</mi><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>Δeduc</mi><mtext> con IQ fijo</mtext></mrow>',
-'C4-06':'<mrow><mi>SSR</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow>',
-'C4-07':'<mrow><mi>y</mi><mo>=</mo><mi>Xβ</mi><mo>+</mo><mi>u</mi><mspace width="1em"/><mtext>X: n × (k + 1); β: (k + 1) × 1</mtext></mrow>',
-'C4-08':'<mrow><msub><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>23</mn></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i1</mi></msub><msub><mi>x</mi><mi>i2</mi></msub></mrow>',
-'C4-09':'<mrow><mover><mi>β</mi><mo>^</mo></mover><mo>=</mo><msup><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>−1</mn></msup><msup><mi>X</mi><mi>T</mi></msup><mi>y</mi></mrow>',
-'C4-10':'<mrow><msup><mi>X</mi><mi>T</mi></msup><mover><mi>u</mi><mo>^</mo></mover><mo>=</mo><mn>0</mn><mspace width="2em"/><mover><mi>y</mi><mo>¯</mo></mover><mo>=</mo><mover><mover><mi>y</mi><mo>^</mo></mover><mo>¯</mo></mover></mrow>',
-'C4-12':'<mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mi>SSR</mi><mi>SST</mi></mfrac><mspace width="2em"/><mover><msup><mi>R</mi><mn>2</mn></msup><mo>¯</mo></mover><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>−</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mfrac><mi>SSR</mi><mi>SST</mi></mfrac></mrow>',
-'C4-16':'<mrow><msub><mi>C</mi><mi>ij</mi></msub><mo>=</mo><msup><mrow><mo>(</mo><mn>−1</mn><mo>)</mo></mrow><mrow><mi>i</mi><mo>+</mo><mi>j</mi></mrow></msup><mi>det</mi><mo>(</mo><msub><mi>A</mi><mrow><mo>−</mo><mi>i</mi><mo>,</mo><mo>−</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow>',
-'C4-17':'<mrow><msup><mi>A</mi><mn>−1</mn></msup><mo>=</mo><mfrac><msup><mi>C</mi><mi>T</mi></msup><mrow><mi>det</mi><mo>(</mo><mi>A</mi><mo>)</mo></mrow></mfrac></mrow>'}
+'C4-05':'<mrow><mover><mi>wage</mi><mo>^</mo></mover><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>educ</mi><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>2</mn></msub><mi>IQ</mi></mrow>',
+'C4-06':'<mrow><mi>Δŷ</mi><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>Δeduc</mi><mtext> con IQ fijo</mtext></mrow>',
+'C4-07':'<mrow><mi>SSR</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow>',
+'C4-08':'<mrow><mi>y</mi><mo>=</mo><mi>Xβ</mi><mo>+</mo><mi>u</mi><mspace width="1em"/><mtext>X: n × (k + 1); β: (k + 1) × 1</mtext></mrow>',
+'C4-09':'<mrow><msub><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>23</mn></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i1</mi></msub><msub><mi>x</mi><mi>i2</mi></msub></mrow>',
+'C4-10':'<mrow><mover><mi>β</mi><mo>^</mo></mover><mo>=</mo><msup><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>−1</mn></msup><msup><mi>X</mi><mi>T</mi></msup><mi>y</mi></mrow>',
+'C4-11':'<mrow><msup><mi>X</mi><mi>T</mi></msup><mover><mi>u</mi><mo>^</mo></mover><mo>=</mo><mn>0</mn><mspace width="2em"/><mover><mi>y</mi><mo>¯</mo></mover><mo>=</mo><mover><mover><mi>y</mi><mo>^</mo></mover><mo>¯</mo></mover></mrow>',
+'C4-13':'<mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mi>SSR</mi><mi>SST</mi></mfrac><mspace width="2em"/><mover><msup><mi>R</mi><mn>2</mn></msup><mo>¯</mo></mover><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>−</mo><mi>k</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mfrac><mi>SSR</mi><mi>SST</mi></mfrac></mrow>',
+'C4-17':'<mrow><msub><mi>C</mi><mi>ij</mi></msub><mo>=</mo><msup><mrow><mo>(</mo><mn>−1</mn><mo>)</mo></mrow><mrow><mi>i</mi><mo>+</mo><mi>j</mi></mrow></msup><mi>det</mi><mo>(</mo><msub><mi>A</mi><mrow><mo>−</mo><mi>i</mi><mo>,</mo><mo>−</mo><mi>j</mi></mrow></msub><mo>)</mo></mrow>',
+'C4-18':'<mrow><msup><mi>A</mi><mn>−1</mn></msup><mo>=</mo><mfrac><msup><mi>C</mi><mi>T</mi></msup><mrow><mi>det</mi><mo>(</mo><mi>A</mi><mo>)</mo></mrow></mfrac></mrow>'}
 
 M['C4-01']='<mtable><mtr><mtd><mover><mi>Y</mi><mo>^</mo></mover><mo>=</mo><mi>X</mi><mover><mi>β</mi><mo>^</mo></mover></mtd></mtr><mtr><mtd><msub><mover><mi>Y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>p</mi></munderover><msub><mover><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><msub><mi>X</mi><mi>ij</mi></msub></mtd></mtr></mtable>'
-M['C4-03']=M['C4-04']
+M['C4-04']=M['C4-05']
 
 # Notebook, Markdown y script comparten el orden y el código exacto de las láminas.
 cells=[]; guide=[]; script=['# Clase 4: ejecutar desde clase-4-taller/ o con kernel R en Colab.']
@@ -34,10 +34,13 @@ md('## Agenda\n\n| Horario | Actividad |\n|---|---|\n'+'\n'.join('| '+h+' | '+t+
 for a in C['laminas']:
  id=a['id'].lower();md('## '+a['id'].split('-')[1]+' · '+a['titulo']+'\n\n'+a['texto'],id+'-intro')
  if a['formula']:md('$$'+a['formula']+'$$',id+'-formula')
- md('### El código, paso a paso\n\n'+'\n\n'.join('**`'+line+'`**\n\n'+desc for line,desc in a['pasos']),id+'-pasos')
- rc(a['codigo'],id+'-r')
+ if a.get('campos'):
+  md('| Campo | Significado |\n|---|---|\n'+'\n'.join('| `'+k+'` | '+v+' |' for k,v in a['campos'])+'\n\n[Documentación de wage2]('+a['fuente_campos']+')',id+'-campos')
+ if a.get('codigo_primero'):rc(a['codigo'],id+'-r')
+ if a['pasos']:md('### El código, paso a paso\n\n'+'\n\n'.join('**`'+line+'`**\n\n'+desc for line,desc in a['pasos']),id+'-pasos')
+ if a['codigo'] and not a.get('codigo_primero'):rc(a['codigo'],id+'-r')
  md('### Cómo leer el resultado\n\n'+a['lectura'],id+'-lectura')
- md('<details><summary>Resultados de referencia ejecutados en R</summary>\n\n```text\n'+O[a['id']]+'\n```\n\n</details>',id+'-salida')
+ if a['codigo']:md('<details><summary>Resultados de referencia ejecutados en R</summary>\n\n```text\n'+O[a['id']]+'\n```\n\n</details>',id+'-salida')
  md('### Comprueba lo aprendido\n\n'+a['pregunta']+'\n\n<details><summary>Mostrar respuesta</summary>\n\n'+a['respuesta']+'\n\n</details>',id+'-pregunta')
 md('## Para la próxima clase\n\nRevisa las indicaciones de la cátedra. Repasa los siete temas y reconstruye el ejemplo de cinco personas sin mirar la solución.','cierre')
 nb=dict(cells=cells,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source')),nbformat=4,nbformat_minor=5)
@@ -59,9 +62,20 @@ for tid,title,lo,hi in C['temas']:
   id=a['id'];steps=''.join('<details class="step"><summary><code>'+e(line)+'</code></summary><p>'+e(desc)+'</p></details>' for line,desc in a['pasos'])
   formula='<div class="formula"><math display="block">'+M[id]+'</math></div>' if id in M else ''
   widget='<section class="lab" data-kind="'+a['interactivo']+'" aria-label="Ejemplo interactivo: '+e(a['titulo'])+'"></section>' if a['interactivo'] else ''
-  output='<details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>'+e(O[id])+'</code></pre></div></details>'
-  solution='<details class="solution"><summary>Ver código completo en R</summary><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>'+e(a['codigo'])+'</code></pre></div></details>'
-  cards.append(f'''<article class="slide" id="{id}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{id}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {id[-2:]}</span></header><div class="slide-body" id="body-{id}" hidden><p class="data-note">Tema {C['temas'].index([tid,title,lo,hi])+1} · Cátedra 4 · Aplicación en R</p><p>{e(a['texto'])}</p>{formula}{widget}<h4>En R · Tu turno</h4><p>Escribe y ejecuta las instrucciones en el notebook. Predice el resultado antes de abrir la salida de referencia.</p><h4>El código, paso a paso</h4><div class="code-explorer">{steps}</div>{solution}<div class="reading"><h4>Cómo leer el resultado</h4><p>{e(a['lectura'])}</p></div>{output}<details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>{e(a['pregunta'])}</p><details><summary>Mostrar respuesta</summary><p>{e(a['respuesta'])}</p></details></div></details><p class="data-note"><a href="#{id}">Enlace a esta lámina ↗</a></p></div></article>''')
+  campos=''
+  if a.get('campos'):
+   campos='<div class="table-wrap"><table class="agenda"><thead><tr><th>Campo</th><th>Significado</th></tr></thead><tbody>'+''.join('<tr><th scope="row"><code>'+e(k)+'</code></th><td>'+e(v)+'</td></tr>' for k,v in a['campos'])+'</tbody></table></div><p><a href="'+e(a['fuente_campos'])+'">Documentación de wage2</a></p>'
+  code_block='<div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code>'+e(a['codigo'])+'</code></pre></div>'
+  exercise=''
+  output=''
+  if a['codigo']:
+   output='<details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>'+e(O[id])+'</code></pre></div></details>'
+   instructions='<h4>El código, paso a paso</h4><div class="code-explorer">'+steps+'</div>'
+   if a.get('codigo_primero'):
+    exercise='<h4>Código completo en R</h4>'+code_block+instructions
+   else:
+    exercise='<h4>En R · Tu turno</h4><p>Ejecuta las instrucciones en el notebook y compara tu resultado con la salida de referencia.</p>'+instructions+'<details class="solution"><summary>Ver código completo en R</summary>'+code_block+'</details>'
+  cards.append(f'''<article class="slide" id="{id}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{id}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {id[-2:]}</span></header><div class="slide-body" id="body-{id}" hidden><p class="data-note">Tema {C['temas'].index([tid,title,lo,hi])+1} · Cátedra 4 · Aplicación en R</p><p>{e(a['texto'])}</p>{formula}{widget}{campos}{exercise}<div class="reading"><h4>Cómo leer el resultado</h4><p>{e(a['lectura'])}</p></div>{output}<details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>{e(a['pregunta'])}</p><details><summary>Mostrar respuesta</summary><p>{e(a['respuesta'])}</p></details></div></details><p class="data-note"><a href="#{id}">Enlace a esta lámina ↗</a></p></div></article>''')
  sections.append('<section id="'+tid+'"><div class="chapter-intro"><p class="eyebrow">Tema '+str(len(sections)+1)+'</p><h2>'+e(title)+'</h2></div>'+''.join(cards)+'</section>')
 agenda='<section id="agenda"><h2>Agenda y tabla de contenidos</h2><table class="agenda"><thead><tr><th>Horario</th><th>Actividad</th></tr></thead><tbody>'+''.join('<tr><td>'+h+'</td><td>'+('<a href="#'+id+'">'+e(t)+'</a>' if id else e(t))+'</td></tr>' for h,t,id in C['agenda'])+'</tbody></table><p>140 minutos de trabajo y 15 minutos de descanso.</p></section>'
 links='<a href="#agenda">Agenda</a><a href="#objetivos">Objetivos y preparación</a>'+''.join('<a href="#'+a['id']+'">'+a['id'][-2:]+' · '+e(a['titulo'])+'</a>' for a in C['laminas'])

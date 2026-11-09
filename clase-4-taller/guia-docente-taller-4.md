@@ -96,39 +96,49 @@ X reúne los regresores observados; estimamos β y calculamos Ŷ. El índice i f
 
 </details>
 
-## 02 · Preparar wage2 y reconocer las unidades
+## 02 · Conocer la base wage2 y sus campos
 
-Comenzamos con datos reales de salarios, educación e IQ. La copia local permite trabajar sin conexión; en Colab se carga el paquete cuando no está el CSV.
+wage2 es una base de corte transversal del paquete wooldridge con 935 observaciones y 17 campos. Cada fila representa a un trabajador observado en 1980. En el taller usaremos el salario mensual como respuesta y la educación y el IQ como regresores.
 
-### El código, paso a paso
+| Campo | Significado |
+|---|---|
+| `wage` | Salario mensual en dólares. Variable respuesta. |
+| `educ` | Años de educación. Regresor. |
+| `IQ` | Puntaje de coeficiente intelectual. Regresor. |
+| `hours` | Promedio de horas trabajadas por semana. |
+| `KWW` | Puntaje en una prueba de conocimientos sobre el mundo laboral. |
+| `exper` | Años de experiencia laboral. |
+| `tenure` | Años con el empleador actual. |
+| `age` | Edad en años. |
+| `married` | Indicador de estado civil. Vale 1 si está casado. |
+| `black` | Indicador racial en el registro. Vale 1 para personas negras. |
+| `south` | Indicador de residencia en el sur de Estados Unidos. |
+| `urban` | Indicador de residencia en un área metropolitana estadística (SMSA). |
+| `sibs` | Número de hermanos. |
+| `brthord` | Orden de nacimiento entre los hermanos. |
+| `meduc` | Educación de la madre. |
+| `feduc` | Educación del padre. |
+| `lwage` | Logaritmo natural del salario mensual. |
 
-**`if (file.exists(...)) { ... } else { ... }`**
+[Documentación de wage2](https://justinmshea.github.io/wooldridge/reference/wage2.html)
 
-file.exists() devuelve TRUE si el archivo está en la ruta indicada. if ejecuta el primer bloque cuando la condición se cumple. else ejecuta la alternativa. read.csv() lee el archivo con encabezados como una tabla.
+### Cómo leer el resultado
 
-**`!requireNamespace(...) e install.packages(...)`**
+En la lámina 3 cargaremos las 17 columnas en original y crearemos datos con las tres columnas del modelo. Cada regresión de wage2 del taller parte de esa tabla de trabajo.
 
-requireNamespace() comprueba si el paquete se puede cargar. quietly = TRUE sirve para evitar mensajes de diagnóstico. ! invierte el valor lógico. Si el paquete falta, install.packages() lo descarga desde el repositorio indicado en repos.
+### Comprueba lo aprendido
 
-**`as.data.frame(wooldridge::wage2)`**
+¿Qué columna se quiere predecir y cuáles se usarán para predecirla?
 
-:: accede a wage2 dentro del paquete wooldridge. as.data.frame() lo convierte al formato de tabla que usaremos.
+<details><summary>Mostrar respuesta</summary>
 
-**`colSums(is.na(original[variables]))`**
+Queremos predecir wage a partir de educ e IQ.
 
-original[variables] selecciona las columnas nombradas en el vector variables. is.na() marca cada faltante como TRUE. colSums() suma esos indicadores por columna y entrega el número de faltantes de cada variable.
+</details>
 
-**`complete.cases(original[variables])`**
+## 03 · Cargar wage2 y crear datos
 
-Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos.
-
-**`original[filas, columnas]`**
-
-Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar.
-
-**`nrow(), str(), summary() y head()`**
-
-nrow() cuenta filas. str() muestra la estructura y el tipo de cada columna. Para una tabla como datos, summary() resume cada columna. head() muestra las primeras seis filas por defecto.
+Ejecuta este bloque completo para crear datos. La línea que comienza con datos <- conserva wage, educ e IQ y selecciona las filas que tienen un valor en las tres columnas. Los modelos de wage2 usan este objeto a partir de la lámina 4.
 
 ```r
 if (file.exists("datos/wage2.csv")) {
@@ -148,9 +158,35 @@ summary(datos)
 head(datos)
 ```
 
+### El código, paso a paso
+
+**`if (file.exists(...)) { ... } else { ... }`**
+
+file.exists() devuelve TRUE si el archivo está en la ruta indicada. if ejecuta el primer bloque cuando la condición se cumple. else ejecuta la alternativa. read.csv() lee el archivo con encabezados como una tabla.
+
+**`!requireNamespace(...) e install.packages(...)`**
+
+requireNamespace() comprueba si el paquete se puede cargar. quietly = TRUE sirve para evitar mensajes de diagnóstico. ! invierte el valor lógico. Si el paquete falta, install.packages() lo descarga desde el repositorio indicado en repos.
+
+**`as.data.frame(wooldridge::wage2)`**
+
+:: accede a wage2 dentro del paquete wooldridge. as.data.frame() lo convierte al formato de tabla que usaremos.
+
+**`colSums(is.na(original[variables]))`**
+
+original[variables] selecciona las columnas nombradas en el vector variables. is.na() marca cada faltante como TRUE. colSums() suma esos indicadores por columna y entrega el número de faltantes de cada variable.
+
+**`datos <- original[complete.cases(original[variables]), variables]`**
+
+Esta línea crea datos. Antes de la coma, complete.cases() marca las filas completas en wage, educ e IQ. Después de la coma, variables selecciona esas tres columnas. La flecha guarda el resultado en datos.
+
+**`nrow(), str(), summary() y head()`**
+
+nrow() cuenta filas. str() muestra la estructura y el tipo de cada columna. Para una tabla como datos, summary() resume cada columna. head() muestra las primeras seis filas por defecto.
+
 ### Cómo leer el resultado
 
-wage es salario mensual en dólares; educ son años de educación; IQ es una puntuación de inteligencia. wage2 contiene 935 hombres trabajadores de Estados Unidos en 1980. Cada fila es una persona. Se informa el número de filas para comparar modelos sobre la misma muestra.
+original conserva la base completa. datos contiene wage, educ e IQ. La salida muestra cero faltantes en esas columnas y confirma que se conservan las 935 filas. Ejecuta esta lámina si reinicias la sesión de R antes de ajustar los modelos.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
@@ -184,9 +220,9 @@ No: es una puntuación. Un punto de IQ y un año de educación son unidades dife
 
 </details>
 
-## 03 · Del plano en 3D a una recta con IQ fijo
+## 04 · ¿Cuánto cambia el salario predicho con un año más de educación?
 
-Con dos regresores, educación e IQ, y una respuesta, salario, podemos representar un plano de predicción en tres ejes. La nube de salario contra educación usa solo dos ejes y no muestra IQ. Antes de usar esa vista, distinguimos el plano de predicción y la proyección geométrica de MCO.
+Comparemos el salario mensual predicho para 12 y 13 años de educación. Primero fijamos IQ en 90 y comparamos esas dos predicciones. Luego repetimos la comparación con IQ en 100. El objetivo es distinguir el cambio por un año más de educación del cambio de nivel al elegir otro IQ.
 
 $$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ\qquad IQ=c\Rightarrow\widehat{wage}=(\widehat\beta_0+\widehat\beta_2c)+\widehat\beta_1\,educ$$
 
@@ -200,25 +236,21 @@ El plano de predicción usa los ejes educación, IQ y salario. La proyección MC
 
 MCO proyecta Y sobre Col(X) para obtener Ŷ. El residuo û es perpendicular a ese espacio. Si eliges otro vector de predicciones v dentro de Col(X), su distancia a Y será mayor.
 
-**`seq(9, 18, length.out = 20)`**
-
-Genera 20 valores equidistantes desde 9 hasta 18, incluidos los extremos. length.out fija cuántos valores se generan. La segunda llamada hace lo mismo entre 75 y 125 para IQ.
-
 **`expand.grid(educ = ..., IQ = ...)`**
 
-Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden. La rejilla completa tiene 20 × 20 = 400 filas.
+Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden.
 
 **`predict(modelo_vista, newdata = rejilla_vista)`**
 
-El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de 400 salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste.
+El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de cuatro salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste.
 
 **`matrix(pred_vista, nrow = ..., ncol = ...)`**
 
-persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En el ejemplo de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero.
+persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En esta matriz de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero.
 
 **`length(educ_vista) y length(iq_vista)`**
 
-length() cuenta los elementos del vector. Aquí ambos tienen 20 elementos. nrow fija 20 filas para educación y ncol fija 20 columnas para IQ. Así caben exactamente las 400 predicciones, una por cruce.
+length() cuenta los elementos del vector. Aquí ambos vectores tienen dos elementos. La matriz tiene dos filas para educación y dos columnas para IQ.
 
 **`persp(educ_vista, iq_vista, z_vista, ...)`**
 
@@ -226,28 +258,24 @@ Los dos primeros argumentos son las coordenadas de los ejes horizontales. El ter
 
 ```r
 modelo_vista <- lm(wage ~ educ + IQ, data = datos)
-# Ejemplo pequeño para seguir el orden de las cuatro predicciones
-rejilla_mini <- expand.grid(educ = c(12, 13), IQ = c(90, 100))
-pred_mini <- predict(modelo_vista, newdata = rejilla_mini)
-print(data.frame(rejilla_mini, salario_predicho = pred_mini))
-print(matrix(pred_mini, nrow = 2, ncol = 2))
-
-# Rejilla completa para la superficie
-educ_vista <- seq(9, 18, length.out = 20)
-iq_vista <- seq(75, 125, length.out = 20)
+educ_vista <- c(12, 13)
+iq_vista <- c(90, 100)
 rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
 pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
-z_vista <- matrix(pred_vista,
-                  nrow = length(educ_vista), ncol = length(iq_vista))
+print(data.frame(rejilla_vista, salario_predicho = pred_vista))
+
+# Filas de educación y columnas de IQ
+z_vista <- matrix(pred_vista, nrow = length(educ_vista),
+                  ncol = length(iq_vista))
+print(z_vista)
 persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
       xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
       col = "lightblue", ticktype = "detailed")
-print(coef(modelo_vista))
 ```
 
 ### Cómo leer el resultado
 
-Lee primero la tabla con las cuatro combinaciones y luego la matriz de 2 × 2. Por ejemplo, la predicción de la fila 3 de la tabla va en la celda [1, 2] de la matriz, que corresponde a 12 años de educación e IQ = 100. La rejilla de 20 × 20 usa la misma regla. Con más de dos regresores y una respuesta, usamos cortes para ver la relación en dos ejes. Al fijar IQ obtenemos la recta del modelo múltiple que veremos en la lámina 4.
+Con IQ = 90, la predicción sube de USD 838,22 a USD 880,28 al pasar de 12 a 13 años de educación. Con IQ = 100, sube de USD 889,60 a USD 931,65. Calculada antes de redondear, la diferencia es USD 42,06 en ambos casos. En la matriz, baja una fila dentro de una columna para comparar educación con IQ fijo. Al pasar de una columna a otra manteniendo la fila, cambia el IQ y se conserva la educación. El gráfico usa esos cuatro valores como las esquinas de un tramo del plano.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
@@ -260,23 +288,21 @@ Lee primero la tabla con las cuatro combinaciones y luego la matriz de 2 × 2. P
          [,1]     [,2]
 [1,] 838.2177 889.5973
 [2,] 880.2753 931.6549
-(Intercept)        educ          IQ
--128.889881   42.057619    5.137958
 ```
 
 </details>
 
 ### Comprueba lo aprendido
 
-Si la nube 2D no muestra IQ, ¿la recta con IQ fijo ignora esa variable?
+¿Qué celdas comparas para medir el cambio de 12 a 13 años con IQ = 100?
 
 <details><summary>Mostrar respuesta</summary>
 
-No. La recta usa los coeficientes del modelo múltiple y mantiene IQ en el valor elegido. Los puntos de la nube corresponden a personas con distintos valores de IQ.
+Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde a IQ = 100.
 
 </details>
 
-## 04 · Del modelo simple al múltiple
+## 05 · Del modelo simple al múltiple
 
 El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.
 
@@ -346,7 +372,7 @@ No. Aquí cambia según la relación entre las variables. Puede aumentar, dismin
 
 </details>
 
-## 05 · Ceteris paribus: mover educación y dejar IQ fijo
+## 06 · Ceteris paribus: mover educación y dejar IQ fijo
 
 Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.
 
@@ -410,7 +436,7 @@ Las otras variables incluidas: aquí, IQ.
 
 </details>
 
-## 06 · MCO: elegir el plano que reduce los residuos
+## 07 · MCO: elegir el plano que reduce los residuos
 
 En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.
 
@@ -473,7 +499,7 @@ No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variació
 
 </details>
 
-## 07 · Construir X, y y el vector de parámetros
+## 08 · Construir X, y y el vector de parámetros
 
 Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.
 
@@ -515,7 +541,7 @@ print(identical(as.vector(X), as.vector(X_manual)))
 
 ### Cómo leer el resultado
 
-model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 3, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 3, las filas y columnas son valores de educación e IQ.
+model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
@@ -547,7 +573,7 @@ La tercera columna es la de unos para el intercepto.
 
 </details>
 
-## 08 · Transpuesta y producto matricial: t() y %*%
+## 09 · Transpuesta y producto matricial: t() y %*%
 
 Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.
 
@@ -616,7 +642,7 @@ No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.
 
 </details>
 
-## 09 · Calcular los coeficientes con solve() y compararlos con lm()
+## 10 · Calcular los coeficientes con solve() y compararlos con lm()
 
 Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.
 
@@ -689,7 +715,7 @@ No. Redondea solo al mostrar; conserva precisión durante los cálculos.
 
 </details>
 
-## 10 · Verificar las propiedades algebraicas de MCO
+## 11 · Verificar las propiedades algebraicas de MCO
 
 Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.
 
@@ -749,7 +775,7 @@ No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especi
 
 </details>
 
-## 11 · Rango completo: cuándo falla la inversa
+## 12 · Rango completo: cuándo falla la inversa
 
 Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.
 
@@ -812,7 +838,7 @@ No. Puede haber columnas duplicadas o combinaciones lineales exactas.
 
 </details>
 
-## 12 · R² y R² ajustado: comparar sobre la misma muestra
+## 13 · R² y R² ajustado: comparar sobre la misma muestra
 
 Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.
 
@@ -877,7 +903,7 @@ La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la m
 
 </details>
 
-## 13 · La trampa de agregar variables de ruido
+## 14 · La trampa de agregar variables de ruido
 
 Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.
 
@@ -966,7 +992,7 @@ No. Puede subir por una asociación accidental en una muestra. La simulación mu
 
 </details>
 
-## 14 · Interpretar summary() y ANOVA en el ejemplo de cátedra
+## 15 · Interpretar summary() y ANOVA en el ejemplo de cátedra
 
 Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.
 
@@ -1046,7 +1072,7 @@ No en general. La primera fila entra antes de educación; la prueba t del modelo
 
 </details>
 
-## 15 · Ejercicio guiado: estimar y explicar una regresión múltiple real
+## 16 · Ejercicio guiado: estimar y explicar una regresión múltiple real
 
 Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.
 
@@ -1145,7 +1171,7 @@ Su valor, sus unidades, qué variables se mantienen constantes y la incertidumbr
 
 </details>
 
-## 16 · Inversa por cofactores: elegir un menor
+## 17 · Inversa por cofactores: elegir un menor
 
 Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.
 
@@ -1206,7 +1232,7 @@ No. Depende también del factor (−1)^(i+j).
 
 </details>
 
-## 17 · Cofactores, adjunta, determinante e inversa
+## 18 · Cofactores, adjunta, determinante e inversa
 
 Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.
 
@@ -1282,7 +1308,7 @@ No. Es su transpuesta; aquí coinciden por simetría.
 
 </details>
 
-## 18 · Cerrar el recorrido: de los datos a la predicción
+## 19 · Cerrar el recorrido: de los datos a la predicción
 
 Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.
 
