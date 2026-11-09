@@ -18,7 +18,77 @@ Ejecuta en orden con kernel R. En Google Colab selecciona R como tipo de entorno
 | 20:55–21:20 | Inversa por cofactores |
 | 21:20–21:25 | Síntesis y cierre |
 
-## 01 · Preparar wage2 y reconocer las unidades
+## 01 · Regresión múltiple: notación y función lm()
+
+El modelo ajustado se escribe Ŷ = Xβ̂: Ŷ contiene las predicciones y β̂ los coeficientes estimados. X contiene los valores observados de los regresores y no lleva acento. Para una observación i, sumamos los p términos de esa fila. Aquí p = k + 1 incluye el intercepto, con Xᵢ₁ = 1; j recorre los parámetros e i identifica la observación.
+
+$$\widehat{Y}=X\widehat{\beta}\qquad \widehat{Y}_i=\sum_{j=1}^{p}\widehat{\beta}_jX_{ij},\quad X_{i1}=1,\quad p=k+1$$
+
+### El código, paso a paso
+
+**`lm(formula, data, subset, weights, na.action, method = "qr", ...)`**
+
+Es una referencia de argumentos, no una llamada lista para ejecutar. Normalmente basta con formula y data. method = "qr" usa descomposición QR.
+
+**`formula: y ~ x1 + x2`**
+
+y es la respuesta; x1 y x2 son regresores. + incorpora columnas al modelo. El intercepto se incluye por defecto; y ~ x1 + x2 - 1 lo elimina.
+
+**`data = demo`**
+
+Indica el data frame que contiene las variables. Es recomendable para que R no tome por accidente variables del entorno.
+
+**`subset = condición`**
+
+Opcional: selecciona las filas a utilizar antes del ajuste, por ejemplo subset = x1 >= 2. Cambiar la muestra cambia la comparación.
+
+**`na.action = na.exclude`**
+
+Gestiona filas incompletas. na.omit las excluye; na.exclude también, pero reinserta NA en residuos y predicciones sobre los datos originales. Sin especificarlo se consulta getOption("na.action"). Aquí no hay faltantes.
+
+**`weights = vector_de_pesos`**
+
+Opcional: ajusta por mínimos cuadrados ponderados. No se necesita para los ejemplos MCO sin ponderación de este taller.
+
+**`coef(modelo_demo) y fitted(modelo_demo)`**
+
+coef extrae β̂; fitted entrega Ŷ para las filas usadas. summary(modelo_demo) amplía el resumen y predict(modelo_demo, newdata = ...) predice para nuevos valores.
+
+```r
+demo <- data.frame(y = c(4, 6, 7, 9, 8, 11),
+                   x1 = c(1, 2, 3, 4, 2, 5),
+                   x2 = c(2, 1, 3, 2, 4, 3))
+modelo_demo <- lm(y ~ x1 + x2, data = demo, na.action = na.exclude)
+print(coef(modelo_demo))
+print(fitted(modelo_demo))
+```
+
+### Cómo leer el resultado
+
+La fórmula con acentos representa el ajuste, no la respuesta observada exacta: Y = Ŷ + û. Usamos β̂₁ para el intercepto en la suma indexada desde j = 1; en la convención habitual que comienza en cero se llama β̂₀. lm() incluye intercepto por defecto. Este ejemplo usa seis observaciones simuladas solo para reconocer la sintaxis.
+
+<details><summary>Resultados de referencia ejecutados en R</summary>
+
+```text
+(Intercept)          x1          x2
+  1.9040698   1.4389535   0.6075581
+        1         2         3         4         5         6
+ 4.558140  5.389535  8.043605  8.875000  7.212209 10.921512
+```
+
+</details>
+
+### Comprueba lo aprendido
+
+¿Por qué X no lleva acento y por qué la suma usa j?
+
+<details><summary>Mostrar respuesta</summary>
+
+X reúne los regresores observados; estimamos β y calculamos Ŷ. El índice i fija la observación y j recorre las p columnas de esa fila.
+
+</details>
+
+## 02 · Preparar wage2 y reconocer las unidades
 
 Comenzamos con datos reales de salarios, educación e IQ. La copia local permite trabajar sin conexión; en Colab se carga el paquete cuando no está el CSV.
 
@@ -90,7 +160,71 @@ No: es una puntuación. Un punto de IQ y un año de educación son unidades dife
 
 </details>
 
-## 02 · Del modelo simple al múltiple
+## 03 · Del plano en 3D a una recta con IQ fijo
+
+Con dos regresores, educación e IQ, y una respuesta, salario, podemos representar un plano de predicción en tres ejes. La nube de salario contra educación usa solo dos ejes y no muestra IQ. Antes de usar esa vista, distinguimos el plano de predicción y la proyección geométrica de MCO.
+
+$$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ\qquad IQ=c\Rightarrow\widehat{wage}=(\widehat\beta_0+\widehat\beta_2c)+\widehat\beta_1\,educ$$
+
+### El código, paso a paso
+
+**`Dos geometrías diferentes`**
+
+El plano de predicción vive en los ejes de las variables (educación, IQ y salario). El esquema de proyección vive en el espacio de las n observaciones: W es el espacio generado por las columnas de X. No son el mismo plano.
+
+**`Proyección MCO: Y = Ŷ + û`**
+
+MCO proyecta Y sobre W para obtener Ŷ; û es perpendicular a W. Cualquier otra predicción v que pertenezca a W queda al menos tan lejos de Y como Ŷ. El esquema simplifica un espacio que puede tener muchas dimensiones.
+
+**`expand.grid(educ = educ_vista, IQ = iq_vista)`**
+
+Construye todas las combinaciones de educación e IQ de la rejilla. No añade observaciones reales a la muestra.
+
+**`matrix(predict(...), nrow = ..., ncol = ...)`**
+
+Organiza las predicciones en una superficie: cada fila corresponde a educación y cada columna a IQ.
+
+**`persp(x, y, z, theta = 35, phi = 25, ...)`**
+
+Dibuja la superficie en perspectiva. x e y son los ejes de regresores; z es la matriz de predicciones. theta y phi controlan el ángulo de la cámara, no los coeficientes del modelo.
+
+```r
+modelo_vista <- lm(wage ~ educ + IQ, data = datos)
+educ_vista <- seq(9, 18, length.out = 20)
+iq_vista <- seq(75, 125, length.out = 20)
+rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
+z_vista <- matrix(predict(modelo_vista, newdata = rejilla_vista),
+                  nrow = length(educ_vista), ncol = length(iq_vista))
+persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
+      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
+      col = "lightblue", ticktype = "detailed")
+print(coef(modelo_vista))
+```
+
+### Cómo leer el resultado
+
+Con más de dos regresores y una respuesta, la superficie vive en más de tres dimensiones y no puede mostrarse directamente con tres ejes: usamos cortes y proyecciones. En 3D las pendientes existen, pero la perspectiva puede dificultar su lectura. Por eso después fijamos IQ y dibujamos salario predicho frente a educación. Esa recta no es una regresión simple nueva; es un corte del modelo múltiple. Cambiar IQ desplaza la recta y no cambia la pendiente de educación en este modelo sin interacciones.
+
+<details><summary>Resultados de referencia ejecutados en R</summary>
+
+```text
+(Intercept)        educ          IQ
+-128.889881   42.057619    5.137958
+```
+
+</details>
+
+### Comprueba lo aprendido
+
+Si la nube 2D no muestra IQ, ¿la recta con IQ fijo ignora esa variable?
+
+<details><summary>Mostrar respuesta</summary>
+
+No. La recta usa los coeficientes del modelo múltiple y mantiene IQ en el valor elegido. Los puntos de la nube corresponden a personas con distintos valores de IQ.
+
+</details>
+
+## 04 · Del modelo simple al múltiple
 
 Compara la pendiente de educación antes y después de incluir IQ. El signo + en una fórmula añade una variable explicativa; no suma sus columnas previamente.
 
@@ -152,7 +286,7 @@ No. Aquí cambia según la relación entre las variables. Puede aumentar, dismin
 
 </details>
 
-## 03 · Ceteris paribus: mover educación y dejar IQ fijo
+## 05 · Ceteris paribus: mover educación y dejar IQ fijo
 
 Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.
 
@@ -212,7 +346,7 @@ Las otras variables incluidas: aquí, IQ.
 
 </details>
 
-## 04 · MCO: elegir el plano que reduce los residuos
+## 06 · MCO: elegir el plano que reduce los residuos
 
 En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.
 
@@ -275,7 +409,7 @@ No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variació
 
 </details>
 
-## 05 · Construir X, y y el vector de parámetros
+## 07 · Construir X, y y el vector de parámetros
 
 Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.
 
@@ -341,7 +475,7 @@ La tercera columna es la de unos para el intercepto.
 
 </details>
 
-## 06 · Transpuesta y producto matricial: t() y %*%
+## 08 · Transpuesta y producto matricial: t() y %*%
 
 Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.
 
@@ -410,7 +544,7 @@ No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.
 
 </details>
 
-## 07 · Calcular los coeficientes con solve() y compararlos con lm()
+## 09 · Calcular los coeficientes con solve() y compararlos con lm()
 
 Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.
 
@@ -479,7 +613,7 @@ No. Redondea solo al mostrar; conserva precisión durante los cálculos.
 
 </details>
 
-## 08 · Verificar las propiedades algebraicas de MCO
+## 10 · Verificar las propiedades algebraicas de MCO
 
 Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.
 
@@ -539,7 +673,7 @@ No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especi
 
 </details>
 
-## 09 · Rango completo: cuándo falla la inversa
+## 11 · Rango completo: cuándo falla la inversa
 
 Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.
 
@@ -594,7 +728,7 @@ No. Puede haber columnas duplicadas o combinaciones lineales exactas.
 
 </details>
 
-## 10 · R² y R² ajustado: comparar sobre la misma muestra
+## 12 · R² y R² ajustado: comparar sobre la misma muestra
 
 Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.
 
@@ -659,7 +793,7 @@ La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la m
 
 </details>
 
-## 11 · La trampa de agregar variables de ruido
+## 13 · La trampa de agregar variables de ruido
 
 Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.
 
@@ -736,7 +870,7 @@ No. Puede subir por una asociación accidental en una muestra. La simulación mu
 
 </details>
 
-## 12 · Interpretar summary() y ANOVA en el ejemplo de cátedra
+## 14 · Interpretar summary() y ANOVA en el ejemplo de cátedra
 
 Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.
 
@@ -816,7 +950,7 @@ No en general. La primera fila entra antes de educación; la prueba t del modelo
 
 </details>
 
-## 13 · Ejercicio guiado: estimar y explicar una regresión múltiple real
+## 15 · Ejercicio guiado: estimar y explicar una regresión múltiple real
 
 Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.
 
@@ -915,7 +1049,7 @@ Su valor, sus unidades, qué variables se mantienen constantes y la incertidumbr
 
 </details>
 
-## 14 · Inversa por cofactores: elegir un menor
+## 16 · Inversa por cofactores: elegir un menor
 
 Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.
 
@@ -976,7 +1110,7 @@ No. Depende también del factor (−1)^(i+j).
 
 </details>
 
-## 15 · Cofactores, adjunta, determinante e inversa
+## 17 · Cofactores, adjunta, determinante e inversa
 
 Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.
 
@@ -1048,7 +1182,7 @@ No. Es su transpuesta; aquí coinciden por simetría.
 
 </details>
 
-## 16 · Cerrar el recorrido: de los datos a la predicción
+## 18 · Cerrar el recorrido: de los datos a la predicción
 
 Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.
 
