@@ -111,127 +111,68 @@ print(sum(X[, 2] * X[, 3]))
 print(XtX[2, 3])
 print(head(X * X))
 
-beta_formula <- solve(XtX) %*% Xty
-beta_sistema <- solve(XtX, Xty)
-print(beta_formula)
-print(beta_sistema)
-print(coef(modelo5))
-print(isTRUE(all.equal(as.numeric(beta_sistema), unname(coef(modelo5)))))
-y_ajustado <- X %*% beta_sistema
-print(cbind(observado = y, ajustado = y_ajustado))
+# Una muestra común para todos los análisis de este tema
+datos_comunes <- original[complete.cases(original), ]
+campos_modelo <- setdiff(names(datos_comunes), "lwage")
+datos_modelo <- datos_comunes[, campos_modelo]
 
-u_hat <- y - as.numeric(y_ajustado)
-print(round(t(X) %*% u_hat, 8))
-print(c(media_y = mean(y), media_ajustada = mean(y_ajustado)))
-medias <- data.frame(experiencia = mean(ejemplo$experiencia),
-                     educacion = mean(ejemplo$educacion))
-print(predict(modelo5, newdata = medias))
-print(mean(y))
+modelo_completo <- lm(wage ~ ., data = datos_modelo)
+print(nobs(modelo_completo))
+print(anova(modelo_completo))
 
-X_duplicada <- cbind(unos = 1, experiencia = ejemplo$experiencia,
-                      repetida = ejemplo$experiencia)
-print(c(columnas = ncol(X_duplicada), rango = qr(X_duplicada)$rank))
-problema <- tryCatch(solve(t(X_duplicada) %*% X_duplicada),
-                     error = function(e) conditionMessage(e))
-print(problema)
-ejemplo$repetida <- ejemplo$experiencia
-print(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))
+resumen_completo <- summary(modelo_completo)
+print(resumen_completo)
+coeficientes <- resumen_completo$coefficients
+alfa <- 0.05
+p_valores <- coeficientes[, "Pr(>|t|)"]
 
-medidas <- function(modelo) {
-  s <- summary(modelo)
-  c(n = nobs(modelo), R2 = s$r.squared,
-    R2_ajustado = s$adj.r.squared, SSR = sum(resid(modelo)^2))
-}
-print(rbind(simple = medidas(simple), multiple = medidas(multiple)))
-SSR <- sum(resid(multiple)^2)
-SST <- sum((datos$wage - mean(datos$wage))^2)
-SSE <- sum((fitted(multiple) - mean(datos$wage))^2)
-n <- nobs(multiple)
-k <- length(coef(multiple)) - 1
-print(c(R2 = 1 - SSR/SST,
-        R2_ajustado = 1 - (SSR/(n-k-1))/(SST/(n-1))))
-print(c(SST = SST, SSE_mas_SSR = SSE + SSR))
-
-set.seed(5)
-n_sim <- 30
-x_sim <- rnorm(n_sim)
-y_sim <- 1 + 2*x_sim + rnorm(n_sim, sd = 2)
-ruido <- matrix(rnorm(n_sim*10), nrow = n_sim, ncol = 10)
-trayectoria <- data.frame(k_ruido = 0:10, R2 = NA, R2_ajustado = NA)
-for (j in 0:10) {
-  if (j == 0) {
-    modelo_ruido <- lm(y_sim ~ x_sim)
-  } else {
-    z <- ruido[, seq_len(j), drop = FALSE]
-    modelo_ruido <- lm(y_sim ~ x_sim + z)
-  }
-  s <- summary(modelo_ruido)
-  trayectoria$R2[j+1] <- s$r.squared
-  trayectoria$R2_ajustado[j+1] <- s$adj.r.squared
-}
-print(trayectoria)
-matplot(trayectoria$k_ruido, trayectoria[, c("R2", "R2_ajustado")],
-        type = "l", lty = 1, col = c("#005F96", "#D6A600"),
-        xlab = "Variables de ruido añadidas", ylab = "Bondad de ajuste")
-legend("bottomright", c("R²", "R² ajustado"), lty = 1,
-       col = c("#005F96", "#D6A600"))
-
-resumen5 <- summary(modelo5)
-print(resumen5)
-print(resumen5$coefficients)
-print(anova(modelo5))
-print(c(R2 = resumen5$r.squared, R2_ajustado = resumen5$adj.r.squared))
-print(df.residual(modelo5))
-
-fit <- lm(wage ~ educ + IQ, data = datos)
-print(summary(fit))
-print(anova(fit))
-print(coef(fit))
-print(predict(fit, newdata = data.frame(educ = 12, IQ = 100)))
-X_real <- model.matrix(fit)
-y_real <- model.response(model.frame(fit))
-beta_real <- solve(t(X_real) %*% X_real, t(X_real) %*% y_real)
-print(beta_real)
-print(isTRUE(all.equal(as.numeric(beta_real), unname(coef(fit)))))
-print(head(data.frame(observado = y_real, predicho = fitted(fit),
-                      residuo = resid(fit))))
-
-A <- t(X) %*% X
-print(A)
-i <- 1
-j <- 2
-menor <- A[-i, -j]
-print(menor)
-print(det(menor))
-print((-1)^(i+j) * det(menor))
-
-cofactores <- matrix(0, nrow = 3, ncol = 3)
-for (i in 1:3) {
-  for (j in 1:3) {
-    cofactores[i, j] <- (-1)^(i+j) * det(A[-i, -j])
-  }
-}
-adjunta <- t(cofactores)
-determinante <- sum(A[1, ] * cofactores[1, ])
-inversa <- adjunta / determinante
-print(round(cofactores))
-print(determinante)
-print(round(inversa, 6))
-print(isTRUE(all.equal(inversa, unname(solve(A)), check.attributes = FALSE)))
-print(round(A %*% inversa, 8))
-
-ejercicio <- data.frame(
-  experiencia = c(12, 18, 14, 12, 11),
-  educacion = c(93, 119, 108, 96, 74),
-  salario = c(769, 808, 825, 650, 562)
+detalle <- data.frame(
+  termino = rownames(coeficientes),
+  estimacion = coeficientes[, "Estimate"],
+  error_estandar = coeficientes[, "Std. Error"],
+  t = coeficientes[, "t value"],
+  valor_p = p_valores,
+  significativo = ifelse(p_valores < alfa, "Sí", "No")
 )
-fit_final <- lm(salario ~ experiencia + educacion, data = ejercicio)
-X_final <- model.matrix(fit_final)
-y_final <- ejercicio$salario
-beta_final <- solve(t(X_final) %*% X_final, t(X_final) %*% y_final)
-print(beta_final)
-print(summary(fit_final))
-print(anova(fit_final))
-print(data.frame(ejercicio, ajustado = as.numeric(X_final %*% beta_final),
-                 residuo = resid(fit_final)))
-print(round(t(X_final) %*% resid(fit_final), 8))
+print(detalle, row.names = FALSE)
+
+r2_completo <- resumen_completo$r.squared
+r2_ajustado_completo <- resumen_completo$adj.r.squared
+print(c(R2 = r2_completo, R2_ajustado = r2_ajustado_completo))
+
+pairs(datos_comunes, upper.panel = NULL, pch = 16, cex = 0.25,
+      col = "#005F9640", main = "wage2 · Matriz de gráficos de dispersión")
+correlaciones <- cor(datos_comunes)
+indices <- which(upper.tri(correlaciones) & abs(correlaciones) >= 0.50,
+                 arr.ind = TRUE)
+pares <- data.frame(
+  variable_1 = rownames(correlaciones)[indices[, 1]],
+  variable_2 = colnames(correlaciones)[indices[, 2]],
+  r = round(correlaciones[indices], 3)
+)
+print(pares, row.names = FALSE)
+
+significativas <- rownames(coeficientes)[p_valores < alfa]
+regresores <- setdiff(significativas, "(Intercept)")
+print(c(r_educ_IQ = correlaciones["educ", "IQ"],
+        p_educ = p_valores["educ"], p_IQ = p_valores["IQ"]))
+
+# Entre educación e IQ, educación tiene el menor valor p
+elegidas <- setdiff(regresores, "IQ")
+datos_reducidos <- datos_modelo[, c("wage", elegidas)]
+modelo_reducido <- lm(wage ~ ., data = datos_reducidos)
+print(elegidas)
+print(summary(modelo_reducido))
+
+resumen_reducido <- summary(modelo_reducido)
+r2_reducido <- resumen_reducido$r.squared
+r2_ajustado_reducido <- resumen_reducido$adj.r.squared
+
+comparacion_ajuste <- data.frame(
+  modelo = c("Completo", "Reducido"),
+  observaciones = c(nobs(modelo_completo), nobs(modelo_reducido)),
+  regresores = c(length(coef(modelo_completo)), length(coef(modelo_reducido))) - 1,
+  R2 = c(r2_completo, r2_reducido),
+  R2_ajustado = c(r2_ajustado_completo, r2_ajustado_reducido)
+)
+print(comparacion_ajuste, row.names = FALSE)

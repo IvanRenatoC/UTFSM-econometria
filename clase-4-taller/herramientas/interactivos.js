@@ -1,12 +1,8 @@
 (()=>{'use strict';
 const D=window.datosC4,N='#1b2a5e',B='#005f96',G='#d6a600',R='#b93e42';
 const f=(x,n=3)=>Number(x).toLocaleString('es-CL',{minimumFractionDigits:n,maximumFractionDigits:n});
-const model=D.modelos[1],beta=D.beta5.map(x=>x.beta),X=D.cinco.map(p=>[1,p.experiencia,p.educacion]),y=D.cinco.map(p=>p.salario);
+const model=D.modelos[1],beta=D.beta5.map(x=>x.beta),X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
 const A=Array.from({length:3},(_,i)=>Array.from({length:3},(_,j)=>X.reduce((s,row)=>s+row[i]*row[j],0)));
-const det2=m=>m[0][0]*m[1][1]-m[0][1]*m[1][0];
-const minor=(i,j)=>A.filter((_,r)=>r!==i).map(row=>row.filter((_,c)=>c!==j));
-const C=A.map((row,i)=>row.map((_,j)=>(-1)**(i+j)*det2(minor(i,j))));
-const det=A[0].reduce((s,v,j)=>s+v*C[0][j],0),inv=C.map((r,i)=>r.map((_,j)=>C[j][i]/det));
 const table=(headers,rows,cls='')=>'<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map((r,i)=>'<tr '+(cls===String(i)?'class="selected"':'')+'>'+r.map((x,j)=>`<${j?'td':'th scope="row"'}>${x}</${j?'td':'th'}>`).join('')+'</tr>').join('')+'</tbody></table></div>';
 function axes(xmin,xmax,ymin,ymax,xlabel,ylabel){const px=x=>65+(x-xmin)/(xmax-xmin)*610,py=y=>295-(y-ymin)/(ymax-ymin)*240;let body='';for(let i=0;i<=5;i++){let x=xmin+(xmax-xmin)*i/5,z=ymin+(ymax-ymin)*i/5;body+=`<line x1="65" x2="675" y1="${py(z)}" y2="${py(z)}" stroke="#dce2ea"/><text x="55" y="${py(z)+4}" text-anchor="end">${f(z,0)}</text><text x="${px(x)}" y="316" text-anchor="middle">${f(x,0)}</text>`;}body+=`<line x1="65" y1="55" x2="65" y2="295" stroke="${N}"/><line x1="65" y1="295" x2="675" y2="295" stroke="${N}"/><text x="370" y="343" text-anchor="middle">${xlabel}</text><text x="65" y="25">${ylabel}</text>`;return{px,py,body};}
 function chart(body,label){return `<svg viewBox="0 0 720 355" role="img" aria-label="${label}" style="font:12px sans-serif;fill:${N}">${body}</svg>`;}
@@ -15,26 +11,18 @@ function controls(l,html){l.innerHTML='<div class="controls">'+html+'</div><div 
 function btn(text,value){return `<button type="button" data-value="${value}" aria-pressed="false">${text}</button>`;}
 for(const lab of document.querySelectorAll('.lab')){
  const kind=lab.dataset.kind;
- if(kind==='comparar'||kind==='condicional'){
-  const conditional=kind==='condicional';const o=controls(lab,conditional?'<label>IQ fijo <input type="range" min="75" max="125" value="100" step="1" aria-label="IQ fijo"></label><label>Educación <input type="range" min="9" max="18" value="12" step="1" aria-label="Educación"></label><button type="button" class="reset-conditional">Restablecer gráfico</button>':'');
-  function draw(){const iq=conditional?+lab.querySelectorAll('input')[0].value:100,ed=conditional?+lab.querySelectorAll('input')[1].value:12;const m=conditional?model:D.modelos[0],ax=axes(8,18,0,3100,'Educación (años)','Salario mensual (USD)');let b=ax.body;
-   b+=D.wage.map(p=>`<circle cx="${ax.px(p.educ)}" cy="${ax.py(Math.min(p.wage,3100))}" r="2" fill="${B}" opacity=".25"><title>Educación ${p.educ}; salario ${p.wage}; IQ ${p.IQ}</title></circle>`).join('');
-   b+=line(ax.px(8),ax.py(m.b0+m.b1*8+m.b2*iq),ax.px(18),ax.py(m.b0+m.b1*18+m.b2*iq),G);
-   if(conditional){const pred=m.b0+m.b1*ed+m.b2*iq;b+=`<circle cx="${ax.px(ed)}" cy="${ax.py(pred)}" r="6" fill="${R}"/>`;o.r.textContent=`IQ = ${iq}; educación = ${ed} años; salario predicho = USD ${f(pred,2)}. Un año más con IQ fijo cambia la predicción en USD ${f(m.b1,2)}.`;}
-   else {
-    const inicio=model.b0+model.b1*8+model.b2*iq;
-    const fin=model.b0+model.b1*18+model.b2*iq;
-    b+=`<line x1="${ax.px(8)}" y1="${ax.py(inicio)}" x2="${ax.px(18)}" y2="${ax.py(fin)}" stroke="${R}" stroke-width="3" stroke-dasharray="8 5"/>`;
-    o.r.textContent=`a) Dorada continua, solo educación. Pendiente de USD ${f(m.b1,2)} por año. b) Roja discontinua, educación e IQ fijo en 100. Pendiente de USD ${f(model.b1,2)} por año. Ambas rectas se muestran sobre la misma nube de puntos.`;
-   }
-   o.v.innerHTML=chart(b,conditional?'Salario y educación con IQ fijo':'Salario y educación con las rectas de ambos modelos');
-  }
-  if(conditional){
-   const inputs=lab.querySelectorAll('input');
-   lab.querySelector('button').onclick=()=>{inputs[0].value=100;inputs[1].value=12;draw();};
-   inputs.forEach(input=>input.oninput=draw);
-  }
-  draw();
+ if(kind==='comparar'){
+  const o=controls(lab,'');
+  const simple=D.modelos[0],iq=100;
+  const ax=axes(8,18,0,3100,'Educación (años)','Salario mensual (USD)');
+  let b=ax.body;
+  b+=D.wage.map(p=>`<circle cx="${ax.px(p.educ)}" cy="${ax.py(Math.min(p.wage,3100))}" r="2" fill="${B}" opacity=".25"><title>Educación ${p.educ}; salario ${p.wage}; IQ ${p.IQ}</title></circle>`).join('');
+  b+=line(ax.px(8),ax.py(simple.b0+simple.b1*8),ax.px(18),ax.py(simple.b0+simple.b1*18),G);
+  const inicio=model.b0+model.b1*8+model.b2*iq;
+  const fin=model.b0+model.b1*18+model.b2*iq;
+  b+=`<line x1="${ax.px(8)}" y1="${ax.py(inicio)}" x2="${ax.px(18)}" y2="${ax.py(fin)}" stroke="${R}" stroke-width="3" stroke-dasharray="8 5"/>`;
+  o.r.textContent=`a) Dorada continua, solo educación. Pendiente de USD ${f(simple.b1,2)} por año. b) Roja discontinua, educación e IQ fijo en 100. Pendiente de USD ${f(model.b1,2)} por año. Ambas rectas se muestran sobre la misma nube de puntos.`;
+  o.v.innerHTML=chart(b,'Salario y educación con las rectas de ambos modelos');
  }
  else if(kind==='geometria'){
   const o=controls(lab,btn('Plano de predicción (variables)',0)+btn('Proyección MCO (observaciones)',1));
@@ -54,32 +42,12 @@ for(const lab of document.querySelectorAll('.lab')){
   function draw(){const i=+lab.querySelector('select').value,p=D.cinco[i];o.v.innerHTML=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(p=>[p.persona,1,p.experiencia,p.educacion,p.salario]),String(i));o.r.textContent=`Fila ${i+1}: [1, ${p.experiencia}, ${p.educacion}]. Predicción = ${f(beta[0])} + (${f(beta[1])}) × ${p.experiencia} + ${f(beta[2])} × ${p.educacion} = ${f(p.predicho)}. Salario observado: ${p.salario}.`;}
   lab.querySelector('select').onchange=draw;draw();
  }
- else if(kind==='producto'||kind==='cofactor'){
-  const isProduct=kind==='producto',o=controls(lab,'<p>Selecciona una de las nueve celdas.</p>');let i=0,j=0;
-  function draw(){o.v.innerHTML='<h4>A = XᵀX</h4><div class="table-wrap"><table><tbody>'+A.map((row,r)=>'<tr>'+row.map((v,c)=>`<td class="${r===i&&c===j?'selected':!isProduct&&(r===i||c===j)?'removed':''}"><button type="button" aria-label="Fila ${r+1}, columna ${c+1}: ${v}" data-r="${r}" data-c="${c}">${v}</button></td>`).join('')+'</tr>').join('')+'</tbody></table></div>';
-   if(isProduct){const terms=X.map(row=>row[i]*row[j]);o.r.textContent=`Celda (${i+1},${j+1}): ${X.map(row=>row[i]+' × '+row[j]).join(' + ')} = ${terms.reduce((a,b)=>a+b,0)}. Se multiplican las columnas ${i+1} y ${j+1} de X y se suman los cinco productos.`;}
-   else{const m=minor(i,j),s=(-1)**(i+j);o.v.innerHTML+='<h4>Submatriz que queda</h4>'+table(['Columna 1','Columna 2'],m);o.r.textContent=`Menor (${i+1},${j+1}) = ${m[0][0]} × ${m[1][1]} − ${m[0][1]} × ${m[1][0]} = ${det2(m)}. Signo del cofactor: ${s===1?'+':'−'}; cofactor = ${C[i][j]}.`;}
+ else if(kind==='producto'){
+  const o=controls(lab,'<p>Selecciona una de las nueve celdas.</p>');let i=0,j=0;
+  function draw(){o.v.innerHTML='<h4>A = XᵀX</h4><div class="table-wrap"><table><tbody>'+A.map((row,r)=>'<tr>'+row.map((v,c)=>`<td class="${r===i&&c===j?'selected':''}"><button type="button" aria-label="Fila ${r+1}, columna ${c+1}: ${v}" data-r="${r}" data-c="${c}">${v}</button></td>`).join('')+'</tr>').join('')+'</tbody></table></div>';
+   const terms=X.map(row=>row[i]*row[j]);o.r.textContent=`Celda (${i+1},${j+1}): ${X.map(row=>row[i]+' × '+row[j]).join(' + ')} = ${terms.reduce((a,b)=>a+b,0)}. Se multiplican las columnas ${i+1} y ${j+1} de X y se suman los cinco productos.`;
    o.v.querySelectorAll('button').forEach(b=>b.onclick=()=>{i=+b.dataset.r;j=+b.dataset.c;draw();});
   }draw();
- }
- else if(kind==='estimacion'||kind==='propiedades'||kind==='rango'||kind==='practica'||kind==='cierre'){
-  const opts=kind==='estimacion'?['Coeficientes','Predicciones']:kind==='propiedades'?['Residuos','Xᵀû y medias']:kind==='rango'?['Columnas independientes','Columna duplicada']:kind==='practica'?['Coeficientes wage2','Predicción: 12 años, IQ 100']:['Datos','Coeficientes','Predicciones'];
-  const o=controls(lab,opts.map((t,i)=>btn(t,i)).join(''));
-  function draw(j){lab.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===j)));
-   if(kind==='rango'){o.v.innerHTML=table(['Unos','Experiencia',j?'Repetida':'Educación'],X.map(r=>[r[0],r[1],j?r[1]:r[2]]));o.r.textContent=j?'3 columnas, rango 2. Dos columnas idénticas: no existe una inversa de XᵀX.':'3 columnas, rango 3. Las columnas del ejemplo son linealmente independientes.';}
-   else if(kind==='practica'){o.v.innerHTML=table(['Parámetro','Valor'],[['Intercepto',f(model.b0)],['Educación',f(model.b1)],['IQ',f(model.b2)]]);o.r.textContent=j?`Para educ = 12 e IQ = 100, salario mensual predicho = USD ${f(model.b0+12*model.b1+100*model.b2,2)}.`:'Cada pendiente corresponde a un cambio de una unidad manteniendo fijo el otro regresor.';}
-   else if(kind==='propiedades'&&j){o.v.innerHTML=table(['Comprobación','Resultado'],[['Σû',f(D.cinco.reduce((s,p)=>s+p.residuo,0),8)],['Σ experiencia × û',f(D.cinco.reduce((s,p)=>s+p.experiencia*p.residuo,0),8)],['Σ educación × û',f(D.cinco.reduce((s,p)=>s+p.educacion*p.residuo,0),8)],['Media observada',f(y.reduce((a,b)=>a+b,0)/5)],['Media ajustada',f(D.cinco.reduce((s,p)=>s+p.predicho,0)/5)]]);o.r.textContent='Las primeras tres cantidades son cero salvo precisión numérica. Con intercepto las dos medias coinciden.';}
-   else if((kind==='estimacion'&&j===0)||(kind==='cierre'&&j===1)){o.v.innerHTML=table(['Coeficiente','MCO matricial = lm()'],[['Intercepto',f(beta[0],6)],['Experiencia',f(beta[1],6)],['Educación',f(beta[2],6)]]);o.r.textContent='Usa los mismos datos y no redondees durante las operaciones.';}
-   else{o.v.innerHTML=table(['Persona','Observado','Ajustado','Residuo'],D.cinco.map(p=>[p.persona,p.salario,f(p.predicho),f(p.residuo)]));o.r.textContent='Observado = ajustado + residuo. El signo del residuo indica si el punto queda por encima o por debajo de la predicción.';}
-  }lab.querySelectorAll('button').forEach(b=>b.onclick=()=>draw(+b.dataset.value));draw(0);
- }
- else if(kind==='ajuste'||kind==='ruido'){
-  const noise=kind==='ruido',o=controls(lab,noise?'<label>Variables de ruido añadidas <input type="range" min="0" max="10" value="0" step="1" aria-label="Número de regresores de ruido"></label>':btn('Solo educación',0)+btn('Educación + IQ',1));
-  function draw(j=0){if(noise)j=+lab.querySelector('input').value;const m=noise?D.ruido[j]:D.modelos[j],r=m.R2,adj=noise?m.R2_ajustado:m.R2aj;let b='';
-   if(noise){const ax=axes(0,10,0,1,'Regresores de ruido añadidos','Bondad de ajuste');b=ax.body;for(const [key,color] of [['R2',B],['R2_ajustado',G]]){b+=`<polyline points="${D.ruido.map(p=>ax.px(p.k_ruido)+','+ax.py(p[key])).join(' ')}" fill="none" stroke="${color}" stroke-width="3"/>`;b+=`<circle cx="${ax.px(j)}" cy="${ax.py(m[key])}" r="6" fill="${color}"/>`;}}
-   else{for(const [i,val,color,title] of [[0,r,B,'R²'],[1,adj,G,'R² ajustado']])b+=`<rect class="bar-animated" x="${140+i*260}" y="${285-val*220}" width="130" height="${val*220}" fill="${color}"/><text x="${205+i*260}" y="310" text-anchor="middle">${title}</text><text x="${205+i*260}" y="${275-val*220}" text-anchor="middle">${f(val,4)}</text>`;lab.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===j)));}
-   o.v.innerHTML=chart(b,'Comparación de R² y R² ajustado');o.r.textContent=`${noise?j+' variables de ruido':j?'Educación + IQ':'Solo educación'}; R² = ${f(r,4)}; R² ajustado = ${f(adj,4)}. Azul: R²; dorado: ajustado. ${noise?'Simulación con 30 observaciones, misma respuesta y muestra.':'Muestra común de 935 personas.'}`;
-  }lab.querySelectorAll('button').forEach(b=>b.onclick=()=>draw(+b.dataset.value));if(noise)lab.querySelector('input').oninput=()=>draw();draw();
  }
  else if(kind==='anova_wage'){
   const o=controls(lab,btn('Educación primero',0)+btn('IQ primero',1));
@@ -99,20 +67,6 @@ for(const lab of document.querySelectorAll('.lab')){
   }
   botones.forEach((b,i)=>b.onclick=()=>draw(i===1));
   draw(false);
- }
- else if(kind==='salida'){
-  const o=controls(lab,btn('Coeficientes · summary()',0)+btn('ANOVA secuencial',1)+btn('Ajuste y prueba global',2));
-  function draw(j){lab.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===j)));
-   if(j===0){o.v.innerHTML=table(['Parámetro','Estimación','Error estándar','t','p-valor'],D.summary.map(p=>[p.coef,...Object.entries(p).filter(([k])=>k!=='coef').map(([,v])=>f(v,4))]));o.r.textContent='Cada prueba t evalúa un coeficiente nulo dado el resto de regresores. Solo hay 2 grados de libertad residuales: las estimaciones son imprecisas.';}
-   else if(j===1){o.v.innerHTML=table(['Fuente','gl','Suma cuadrados','Cuadrado medio','F','p-valor'],D.anova.map(p=>[p.fuente,p.Df,...['Sum Sq','Mean Sq','F value','Pr(>F)'].map(k=>p[k]===null?'—':f(p[k],4))]));o.r.textContent='Sumas de cuadrados secuenciales: experiencia entra primero, educación después. Cambiar el orden puede cambiar estas filas, aunque el modelo final sea el mismo.';}
-   else{o.v.innerHTML=table(['Concepto','Interpretación'],[['R²','Proporción de variación muestral explicada'],['R² ajustado','Penaliza el número de regresores'],['Prueba F global','H₀: ambas pendientes son cero'],['Grados de libertad residuales','n − k − 1 = 5 − 2 − 1 = 2']]);o.r.textContent='Los valores numéricos completos están en la salida R desplegable de esta lámina. No confundas la F global con las F secuenciales de anova().';}
-  }lab.querySelectorAll('button').forEach(b=>b.onclick=()=>draw(+b.dataset.value));draw(0);
- }
- else if(kind==='inversa'){
-  const titles=['Menores','Cofactores','Adjunta','Determinante','Inversa','Identidad'],o=controls(lab,titles.map((t,i)=>btn(t,i)).join('')+'<button type="button" class="play">Reproducir pasos</button>');let stage=0,timer=null;
-  function draw(j){stage=j;lab.querySelectorAll('button[data-value]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===j)));let mat=j===0?A.map((row,i)=>row.map((_,q)=>det2(minor(i,q)))):j<3?C:j===4?inv:j===5?[[1,0,0],[0,1,0],[0,0,1]]:null;o.v.innerHTML=mat?table(['Columna 1','Columna 2','Columna 3'],mat.map(row=>row.map(v=>f(v,j===4?6:0)))):`<p style="font-size:2em;text-align:center">det(A) = ${det}</p>`;o.r.textContent=['Calcula el determinante de cada submatriz 2 × 2.','Aplica los signos (+ − +; − + −; + − +).','Transpón la matriz de cofactores; aquí coincide por simetría.','5 × 301518 + 67 × 6518 − 490 × 3898 = 34276.','Divide la adjunta por 34276, conservando precisión.','A · A⁻¹ = I: se obtiene la matriz identidad, salvo redondeo numérico.'][j];}
-  function stop(){clearInterval(timer);timer=null;lab.querySelector('.play').textContent='Reproducir pasos';}
-  lab.querySelectorAll('button[data-value]').forEach(b=>b.onclick=()=>{stop();draw(+b.dataset.value);});lab.querySelector('.play').onclick=()=>{if(timer){stop();return;}draw(0);lab.querySelector('.play').textContent='Pausar';timer=setInterval(()=>{draw(stage+1);if(stage===5)stop();},1800);};draw(0);
  }
 }
 })();
