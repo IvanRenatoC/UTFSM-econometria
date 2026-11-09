@@ -10,17 +10,17 @@
     [
       "19:10–19:25",
       "MCO con dos regresores",
-      "C4-06"
+      "C4-07"
     ],
     [
       "19:25–19:45",
       "Notación y operaciones matriciales",
-      "C4-07"
+      "C4-08"
     ],
     [
       "19:45–20:00",
       "Fórmula de MCO y propiedades",
-      "C4-09"
+      "C4-10"
     ],
     [
       "20:00–20:15",
@@ -30,22 +30,22 @@
     [
       "20:15–20:35",
       "R² y R² ajustado",
-      "C4-12"
+      "C4-13"
     ],
     [
       "20:35–20:55",
       "Ejemplo y lectura de resultados",
-      "C4-14"
+      "C4-15"
     ],
     [
       "20:55–21:20",
       "Inversa por cofactores",
-      "C4-16"
+      "C4-17"
     ],
     [
       "21:20–21:25",
       "Síntesis y cierre",
-      "C4-18"
+      "C4-19"
     ]
   ],
   "temas": [
@@ -53,43 +53,43 @@
       "tema1",
       "Parte 1 · Del simple al múltiple",
       1,
-      5
+      6
     ],
     [
       "tema2",
       "Parte 1 · MCO con k variables",
-      6,
-      6
+      7,
+      7
     ],
     [
       "tema3",
       "Parte 1 · Notación matricial",
-      7,
-      8
+      8,
+      9
     ],
     [
       "tema4",
       "Parte 1 · Fórmula de MCO y propiedades",
-      9,
-      11
+      10,
+      12
     ],
     [
       "tema5",
       "Parte 1 · R² y R² ajustado",
-      12,
-      13
+      13,
+      14
     ],
     [
       "tema6",
       "Parte 1 · Ejemplo y salida en R",
-      14,
-      15
+      15,
+      16
     ],
     [
       "tema7",
       "Parte 2 · Ayudantía · Inversa por cofactores",
-      16,
-      18
+      17,
+      19
     ]
   ],
   "laminas": [
@@ -144,10 +144,93 @@
     },
     {
       "id": "C4-02",
-      "titulo": "Preparar wage2 y reconocer las unidades",
-      "texto": "Comenzamos con datos reales de salarios, educación e IQ. La copia local permite trabajar sin conexión; en Colab se carga el paquete cuando no está el CSV.",
+      "titulo": "Conocer la base wage2 y sus campos",
+      "texto": "wage2 es una base de corte transversal del paquete wooldridge con 935 observaciones y 17 campos. Cada fila representa a un trabajador observado en 1980. En el taller usaremos el salario mensual como respuesta y la educación y el IQ como regresores.",
+      "campos": [
+        [
+          "wage",
+          "Salario mensual en dólares. Variable respuesta."
+        ],
+        [
+          "educ",
+          "Años de educación. Regresor."
+        ],
+        [
+          "IQ",
+          "Puntaje de coeficiente intelectual. Regresor."
+        ],
+        [
+          "hours",
+          "Promedio de horas trabajadas por semana."
+        ],
+        [
+          "KWW",
+          "Puntaje en una prueba de conocimientos sobre el mundo laboral."
+        ],
+        [
+          "exper",
+          "Años de experiencia laboral."
+        ],
+        [
+          "tenure",
+          "Años con el empleador actual."
+        ],
+        [
+          "age",
+          "Edad en años."
+        ],
+        [
+          "married",
+          "Indicador de estado civil. Vale 1 si está casado."
+        ],
+        [
+          "black",
+          "Indicador racial en el registro. Vale 1 para personas negras."
+        ],
+        [
+          "south",
+          "Indicador de residencia en el sur de Estados Unidos."
+        ],
+        [
+          "urban",
+          "Indicador de residencia en un área metropolitana estadística (SMSA)."
+        ],
+        [
+          "sibs",
+          "Número de hermanos."
+        ],
+        [
+          "brthord",
+          "Orden de nacimiento entre los hermanos."
+        ],
+        [
+          "meduc",
+          "Educación de la madre."
+        ],
+        [
+          "feduc",
+          "Educación del padre."
+        ],
+        [
+          "lwage",
+          "Logaritmo natural del salario mensual."
+        ]
+      ],
+      "fuente_campos": "https://justinmshea.github.io/wooldridge/reference/wage2.html",
+      "codigo": "",
+      "lectura": "En la lámina 3 cargaremos las 17 columnas en original y crearemos datos con las tres columnas del modelo. Cada regresión de wage2 del taller parte de esa tabla de trabajo.",
+      "pasos": [],
+      "interactivo": "",
+      "pregunta": "¿Qué columna se quiere predecir y cuáles se usarán para predecirla?",
+      "respuesta": "Queremos predecir wage a partir de educ e IQ.",
+      "formula": ""
+    },
+    {
+      "id": "C4-03",
+      "titulo": "Cargar wage2 y crear datos",
+      "texto": "Ejecuta este bloque completo para crear datos. La línea que comienza con datos <- conserva wage, educ e IQ y selecciona las filas que tienen un valor en las tres columnas. Los modelos de wage2 usan este objeto a partir de la lámina 4.",
       "codigo": "if (file.exists(\"datos/wage2.csv\")) {\n  original <- read.csv(\"datos/wage2.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  original <- as.data.frame(wooldridge::wage2)\n}\nvariables <- c(\"wage\", \"educ\", \"IQ\")\nprint(colSums(is.na(original[variables])))\ndatos <- original[complete.cases(original[variables]), variables]\nprint(c(filas_originales = nrow(original), filas_usadas = nrow(datos)))\nstr(datos)\nsummary(datos)\nhead(datos)",
-      "lectura": "wage es salario mensual en dólares; educ son años de educación; IQ es una puntuación de inteligencia. wage2 contiene 935 hombres trabajadores de Estados Unidos en 1980. Cada fila es una persona. Se informa el número de filas para comparar modelos sobre la misma muestra.",
+      "lectura": "original conserva la base completa. datos contiene wage, educ e IQ. La salida muestra cero faltantes en esas columnas y confirma que se conservan las 935 filas. Ejecuta esta lámina si reinicias la sesión de R antes de ajustar los modelos.",
       "pasos": [
         [
           "if (file.exists(...)) { ... } else { ... }",
@@ -166,12 +249,8 @@
           "original[variables] selecciona las columnas nombradas en el vector variables. is.na() marca cada faltante como TRUE. colSums() suma esos indicadores por columna y entrega el número de faltantes de cada variable."
         ],
         [
-          "complete.cases(original[variables])",
-          "Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos."
-        ],
-        [
-          "original[filas, columnas]",
-          "Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar."
+          "datos <- original[complete.cases(original[variables]), variables]",
+          "Esta línea crea datos. Antes de la coma, complete.cases() marca las filas completas en wage, educ e IQ. Después de la coma, variables selecciona esas tres columnas. La flecha guarda el resultado en datos."
         ],
         [
           "nrow(), str(), summary() y head()",
@@ -181,15 +260,16 @@
       "interactivo": "",
       "pregunta": "¿La columna IQ es un porcentaje?",
       "respuesta": "No: es una puntuación. Un punto de IQ y un año de educación son unidades diferentes.",
-      "formula": ""
+      "formula": "",
+      "codigo_primero": true
     },
     {
-      "id": "C4-03",
-      "titulo": "Del plano en 3D a una recta con IQ fijo",
-      "texto": "Con dos regresores, educación e IQ, y una respuesta, salario, podemos representar un plano de predicción en tres ejes. La nube de salario contra educación usa solo dos ejes y no muestra IQ. Antes de usar esa vista, distinguimos el plano de predicción y la proyección geométrica de MCO.",
+      "id": "C4-04",
+      "titulo": "¿Cuánto cambia el salario predicho con un año más de educación?",
+      "texto": "Comparemos el salario mensual predicho para 12 y 13 años de educación. Primero fijamos IQ en 90 y comparamos esas dos predicciones. Luego repetimos la comparación con IQ en 100. El objetivo es distinguir el cambio por un año más de educación del cambio de nivel al elegir otro IQ.",
       "formula": "\\widehat{wage}=\\widehat\\beta_0+\\widehat\\beta_1\\,educ+\\widehat\\beta_2\\,IQ\\qquad IQ=c\\Rightarrow\\widehat{wage}=(\\widehat\\beta_0+\\widehat\\beta_2c)+\\widehat\\beta_1\\,educ",
-      "codigo": "modelo_vista <- lm(wage ~ educ + IQ, data = datos)\n# Ejemplo pequeño para seguir el orden de las cuatro predicciones\nrejilla_mini <- expand.grid(educ = c(12, 13), IQ = c(90, 100))\npred_mini <- predict(modelo_vista, newdata = rejilla_mini)\nprint(data.frame(rejilla_mini, salario_predicho = pred_mini))\nprint(matrix(pred_mini, nrow = 2, ncol = 2))\n\n# Rejilla completa para la superficie\neduc_vista <- seq(9, 18, length.out = 20)\niq_vista <- seq(75, 125, length.out = 20)\nrejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)\npred_vista <- predict(modelo_vista, newdata = rejilla_vista)\nz_vista <- matrix(pred_vista,\n                  nrow = length(educ_vista), ncol = length(iq_vista))\npersp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,\n      xlab = \"Educación\", ylab = \"IQ\", zlab = \"Salario predicho\",\n      col = \"lightblue\", ticktype = \"detailed\")\nprint(coef(modelo_vista))",
-      "lectura": "Lee primero la tabla con las cuatro combinaciones y luego la matriz de 2 × 2. Por ejemplo, la predicción de la fila 3 de la tabla va en la celda [1, 2] de la matriz, que corresponde a 12 años de educación e IQ = 100. La rejilla de 20 × 20 usa la misma regla. Con más de dos regresores y una respuesta, usamos cortes para ver la relación en dos ejes. Al fijar IQ obtenemos la recta del modelo múltiple que veremos en la lámina 4.",
+      "codigo": "modelo_vista <- lm(wage ~ educ + IQ, data = datos)\neduc_vista <- c(12, 13)\niq_vista <- c(90, 100)\nrejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)\npred_vista <- predict(modelo_vista, newdata = rejilla_vista)\nprint(data.frame(rejilla_vista, salario_predicho = pred_vista))\n\n# Filas de educación y columnas de IQ\nz_vista <- matrix(pred_vista, nrow = length(educ_vista),\n                  ncol = length(iq_vista))\nprint(z_vista)\npersp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,\n      xlab = \"Educación\", ylab = \"IQ\", zlab = \"Salario predicho\",\n      col = \"lightblue\", ticktype = \"detailed\")",
+      "lectura": "Con IQ = 90, la predicción sube de USD 838,22 a USD 880,28 al pasar de 12 a 13 años de educación. Con IQ = 100, sube de USD 889,60 a USD 931,65. Calculada antes de redondear, la diferencia es USD 42,06 en ambos casos. En la matriz, baja una fila dentro de una columna para comparar educación con IQ fijo. Al pasar de una columna a otra manteniendo la fila, cambia el IQ y se conserva la educación. El gráfico usa esos cuatro valores como las esquinas de un tramo del plano.",
       "pasos": [
         [
           "Dos geometrías diferentes",
@@ -200,24 +280,20 @@
           "MCO proyecta Y sobre Col(X) para obtener Ŷ. El residuo û es perpendicular a ese espacio. Si eliges otro vector de predicciones v dentro de Col(X), su distancia a Y será mayor."
         ],
         [
-          "seq(9, 18, length.out = 20)",
-          "Genera 20 valores equidistantes desde 9 hasta 18, incluidos los extremos. length.out fija cuántos valores se generan. La segunda llamada hace lo mismo entre 75 y 125 para IQ."
-        ],
-        [
           "expand.grid(educ = ..., IQ = ...)",
-          "Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden. La rejilla completa tiene 20 × 20 = 400 filas."
+          "Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden."
         ],
         [
           "predict(modelo_vista, newdata = rejilla_vista)",
-          "El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de 400 salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste."
+          "El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de cuatro salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste."
         ],
         [
           "matrix(pred_vista, nrow = ..., ncol = ...)",
-          "persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En el ejemplo de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero."
+          "persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En esta matriz de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero."
         ],
         [
           "length(educ_vista) y length(iq_vista)",
-          "length() cuenta los elementos del vector. Aquí ambos tienen 20 elementos. nrow fija 20 filas para educación y ncol fija 20 columnas para IQ. Así caben exactamente las 400 predicciones, una por cruce."
+          "length() cuenta los elementos del vector. Aquí ambos vectores tienen dos elementos. La matriz tiene dos filas para educación y dos columnas para IQ."
         ],
         [
           "persp(educ_vista, iq_vista, z_vista, ...)",
@@ -225,11 +301,11 @@
         ]
       ],
       "interactivo": "geometria",
-      "pregunta": "Si la nube 2D no muestra IQ, ¿la recta con IQ fijo ignora esa variable?",
-      "respuesta": "No. La recta usa los coeficientes del modelo múltiple y mantiene IQ en el valor elegido. Los puntos de la nube corresponden a personas con distintos valores de IQ."
+      "pregunta": "¿Qué celdas comparas para medir el cambio de 12 a 13 años con IQ = 100?",
+      "respuesta": "Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde a IQ = 100."
     },
     {
-      "id": "C4-04",
+      "id": "C4-05",
       "titulo": "Del modelo simple al múltiple",
       "texto": "El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.",
       "codigo": "simple <- lm(wage ~ educ, data = datos)\nmultiple <- lm(wage ~ educ + IQ, data = datos)\nprint(coef(simple))\nprint(coef(multiple))\ncomparacion <- data.frame(\n  modelo = c(\"Simple\", \"Con IQ\"),\n  pendiente_educ = c(coef(simple)[\"educ\"], coef(multiple)[\"educ\"])\n)\nprint(comparacion)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\")\nabline(simple, col = \"#D6A600\", lwd = 3)",
@@ -262,7 +338,7 @@
       "formula": "\\widehat{wage}=\\widehat\\beta_0+\\widehat\\beta_1\\,educ+\\widehat\\beta_2\\,IQ"
     },
     {
-      "id": "C4-05",
+      "id": "C4-06",
       "titulo": "Ceteris paribus: mover educación y dejar IQ fijo",
       "texto": "Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.",
       "codigo": "nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))\npredicciones <- predict(multiple, newdata = nuevos)\nprint(data.frame(nuevos, salario_predicho = predicciones))\nprint(diff(predicciones))\nprint(coef(multiple)[\"educ\"])\nrejilla <- data.frame(educ = seq(9, 18, length.out = 50), IQ = 100)\nplot(rejilla$educ, predict(multiple, newdata = rejilla), type = \"l\",\n     col = \"#005F96\", lwd = 3, xlab = \"Educación (años)\",\n     ylab = \"Salario mensual predicho (USD)\")",
@@ -291,7 +367,7 @@
       "formula": "\\Delta\\widehat{wage}=\\widehat\\beta_1\\Delta educ\\quad\\text{con IQ fijo}"
     },
     {
-      "id": "C4-06",
+      "id": "C4-07",
       "titulo": "MCO: elegir el plano que reduce los residuos",
       "texto": "En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.",
       "codigo": "ejemplo <- data.frame(\n  persona = c(\"Juan\", \"Pedro\", \"Sofía\", \"Caro\", \"Alex\"),\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nmodelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)\nprint(coef(modelo5))\nprint(data.frame(ejemplo, ajustado = fitted(modelo5), residuo = resid(modelo5)))\nprint(sum(resid(modelo5)^2))",
@@ -316,11 +392,11 @@
       "formula": "\\min_{b_0,b_1,b_2}\\sum_i(y_i-b_0-b_1x_{i1}-b_2x_{i2})^2"
     },
     {
-      "id": "C4-07",
+      "id": "C4-08",
       "titulo": "Construir X, y y el vector de parámetros",
       "texto": "Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.",
       "codigo": "X <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(identical(as.vector(X), as.vector(X_manual)))",
-      "lectura": "model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 3, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 3, las filas y columnas son valores de educación e IQ.",
+      "lectura": "model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.",
       "pasos": [
         [
           "model.matrix(modelo5)",
@@ -349,7 +425,7 @@
       "formula": "y=X\\beta+u,\\quad X:\\ n\\times(k+1),\\quad\\beta:\\ (k+1)\\times1"
     },
     {
-      "id": "C4-08",
+      "id": "C4-09",
       "titulo": "Transpuesta y producto matricial: t() y %*%",
       "texto": "Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.",
       "codigo": "XtX <- t(X) %*% X\nXty <- t(X) %*% y\nprint(XtX)\nprint(Xty)\nprint(dim(XtX))\nprint(sum(X[, 2] * X[, 3]))\nprint(XtX[2, 3])\nprint(head(X * X))",
@@ -374,7 +450,7 @@
       "formula": "(X^\\top X)_{23}=\\sum_{i=1}^5x_{i1}x_{i2}"
     },
     {
-      "id": "C4-09",
+      "id": "C4-10",
       "titulo": "Calcular los coeficientes con solve() y compararlos con lm()",
       "texto": "Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.",
       "codigo": "beta_formula <- solve(XtX) %*% Xty\nbeta_sistema <- solve(XtX, Xty)\nprint(beta_formula)\nprint(beta_sistema)\nprint(coef(modelo5))\nprint(isTRUE(all.equal(as.numeric(beta_sistema), unname(coef(modelo5)))))\ny_ajustado <- X %*% beta_sistema\nprint(cbind(observado = y, ajustado = y_ajustado))",
@@ -403,7 +479,7 @@
       "formula": "\\widehat\\beta=(X^\\top X)^{-1}X^\\top y"
     },
     {
-      "id": "C4-10",
+      "id": "C4-11",
       "titulo": "Verificar las propiedades algebraicas de MCO",
       "texto": "Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.",
       "codigo": "u_hat <- y - as.numeric(y_ajustado)\nprint(round(t(X) %*% u_hat, 8))\nprint(c(media_y = mean(y), media_ajustada = mean(y_ajustado)))\nmedias <- data.frame(experiencia = mean(ejemplo$experiencia),\n                     educacion = mean(ejemplo$educacion))\nprint(predict(modelo5, newdata = medias))\nprint(mean(y))",
@@ -428,7 +504,7 @@
       "formula": "X^\\top\\widehat u=0,\\quad\\bar y=\\overline{\\widehat y}"
     },
     {
-      "id": "C4-11",
+      "id": "C4-12",
       "titulo": "Rango completo: cuándo falla la inversa",
       "texto": "Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.",
       "codigo": "X_duplicada <- cbind(unos = 1, experiencia = ejemplo$experiencia,\n                      repetida = ejemplo$experiencia)\nprint(c(columnas = ncol(X_duplicada), rango = qr(X_duplicada)$rank))\nproblema <- tryCatch(solve(t(X_duplicada) %*% X_duplicada),\n                     error = function(e) conditionMessage(e))\nprint(problema)\nejemplo$repetida <- ejemplo$experiencia\nprint(coef(lm(salario ~ experiencia + repetida, data = ejemplo)))",
@@ -461,7 +537,7 @@
       "formula": ""
     },
     {
-      "id": "C4-12",
+      "id": "C4-13",
       "titulo": "R² y R² ajustado: comparar sobre la misma muestra",
       "texto": "Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.",
       "codigo": "medidas <- function(modelo) {\n  s <- summary(modelo)\n  c(n = nobs(modelo), R2 = s$r.squared,\n    R2_ajustado = s$adj.r.squared, SSR = sum(resid(modelo)^2))\n}\nprint(rbind(simple = medidas(simple), multiple = medidas(multiple)))\nSSR <- sum(resid(multiple)^2)\nSST <- sum((datos$wage - mean(datos$wage))^2)\nSSE <- sum((fitted(multiple) - mean(datos$wage))^2)\nn <- nobs(multiple)\nk <- length(coef(multiple)) - 1\nprint(c(R2 = 1 - SSR/SST,\n        R2_ajustado = 1 - (SSR/(n-k-1))/(SST/(n-1))))\nprint(c(SST = SST, SSE_mas_SSR = SSE + SSR))",
@@ -486,7 +562,7 @@
       "formula": "R^2=1-\\frac{SSR}{SST},\\quad\\overline R^2=1-\\frac{n-1}{n-k-1}\\frac{SSR}{SST}"
     },
     {
-      "id": "C4-13",
+      "id": "C4-14",
       "titulo": "La trampa de agregar variables de ruido",
       "texto": "Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.",
       "codigo": "set.seed(5)\nn_sim <- 30\nx_sim <- rnorm(n_sim)\ny_sim <- 1 + 2*x_sim + rnorm(n_sim, sd = 2)\nruido <- matrix(rnorm(n_sim*10), nrow = n_sim, ncol = 10)\ntrayectoria <- data.frame(k_ruido = 0:10, R2 = NA, R2_ajustado = NA)\nfor (j in 0:10) {\n  if (j == 0) {\n    modelo_ruido <- lm(y_sim ~ x_sim)\n  } else {\n    z <- ruido[, seq_len(j), drop = FALSE]\n    modelo_ruido <- lm(y_sim ~ x_sim + z)\n  }\n  s <- summary(modelo_ruido)\n  trayectoria$R2[j+1] <- s$r.squared\n  trayectoria$R2_ajustado[j+1] <- s$adj.r.squared\n}\nprint(trayectoria)\nmatplot(trayectoria$k_ruido, trayectoria[, c(\"R2\", \"R2_ajustado\")],\n        type = \"l\", lty = 1, col = c(\"#005F96\", \"#D6A600\"),\n        xlab = \"Variables de ruido añadidas\", ylab = \"Bondad de ajuste\")\nlegend(\"bottomright\", c(\"R²\", \"R² ajustado\"), lty = 1,\n       col = c(\"#005F96\", \"#D6A600\"))",
@@ -523,7 +599,7 @@
       "formula": ""
     },
     {
-      "id": "C4-14",
+      "id": "C4-15",
       "titulo": "Interpretar summary() y ANOVA en el ejemplo de cátedra",
       "texto": "Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.",
       "codigo": "resumen5 <- summary(modelo5)\nprint(resumen5)\nprint(resumen5$coefficients)\nprint(anova(modelo5))\nprint(c(R2 = resumen5$r.squared, R2_ajustado = resumen5$adj.r.squared))\nprint(df.residual(modelo5))",
@@ -548,7 +624,7 @@
       "formula": ""
     },
     {
-      "id": "C4-15",
+      "id": "C4-16",
       "titulo": "Ejercicio guiado: estimar y explicar una regresión múltiple real",
       "texto": "Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.",
       "codigo": "fit <- lm(wage ~ educ + IQ, data = datos)\nprint(summary(fit))\nprint(anova(fit))\nprint(coef(fit))\nprint(predict(fit, newdata = data.frame(educ = 12, IQ = 100)))\nX_real <- model.matrix(fit)\ny_real <- model.response(model.frame(fit))\nbeta_real <- solve(t(X_real) %*% X_real, t(X_real) %*% y_real)\nprint(beta_real)\nprint(isTRUE(all.equal(as.numeric(beta_real), unname(coef(fit)))))\nprint(head(data.frame(observado = y_real, predicho = fitted(fit),\n                      residuo = resid(fit))))",
@@ -573,7 +649,7 @@
       "formula": ""
     },
     {
-      "id": "C4-16",
+      "id": "C4-17",
       "titulo": "Inversa por cofactores: elegir un menor",
       "texto": "Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.",
       "codigo": "A <- t(X) %*% X\nprint(A)\ni <- 1\nj <- 2\nmenor <- A[-i, -j]\nprint(menor)\nprint(det(menor))\nprint((-1)^(i+j) * det(menor))",
@@ -598,7 +674,7 @@
       "formula": "C_{ij}=(-1)^{i+j}\\det(A_{-i,-j})"
     },
     {
-      "id": "C4-17",
+      "id": "C4-18",
       "titulo": "Cofactores, adjunta, determinante e inversa",
       "texto": "Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.",
       "codigo": "cofactores <- matrix(0, nrow = 3, ncol = 3)\nfor (i in 1:3) {\n  for (j in 1:3) {\n    cofactores[i, j] <- (-1)^(i+j) * det(A[-i, -j])\n  }\n}\nadjunta <- t(cofactores)\ndeterminante <- sum(A[1, ] * cofactores[1, ])\ninversa <- adjunta / determinante\nprint(round(cofactores))\nprint(determinante)\nprint(round(inversa, 6))\nprint(isTRUE(all.equal(inversa, unname(solve(A)), check.attributes = FALSE)))\nprint(round(A %*% inversa, 8))",
@@ -627,7 +703,7 @@
       "formula": "A^{-1}=\\frac{C^\\top}{\\det(A)}"
     },
     {
-      "id": "C4-18",
+      "id": "C4-19",
       "titulo": "Cerrar el recorrido: de los datos a la predicción",
       "texto": "Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.",
       "codigo": "ejercicio <- data.frame(\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nfit_final <- lm(salario ~ experiencia + educacion, data = ejercicio)\nX_final <- model.matrix(fit_final)\ny_final <- ejercicio$salario\nbeta_final <- solve(t(X_final) %*% X_final, t(X_final) %*% y_final)\nprint(beta_final)\nprint(summary(fit_final))\nprint(anova(fit_final))\nprint(data.frame(ejercicio, ajustado = as.numeric(X_final %*% beta_final),\n                 residuo = resid(fit_final)))\nprint(round(t(X_final) %*% resid(fit_final), 8))",

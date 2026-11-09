@@ -13,7 +13,7 @@ Horario: 18:50 a 21:25; descanso de 20:00 a 20:15. Son 140 minutos efectivos.
 
 La lámina inicial presenta Ŷ = Xβ̂, su versión por observación y los argumentos principales de lm(). Antes de comparar modelos se distinguen el plano de predicción y la proyección MCO. La recta con IQ fijo incluye un botón para restablecer IQ = 100 y educación = 12.
 
-18 láminas distribuidas en los siete temas de la cátedra: del simple al múltiple; MCO con k variables; notación matricial; fórmula y propiedades; R² y R² ajustado; ejemplo y salida de R; inversa por cofactores.
+19 láminas distribuidas en los siete temas de la cátedra: del simple al múltiple; MCO con k variables; notación matricial; fórmula y propiedades; R² y R² ajustado; ejemplo y salida de R; inversa por cofactores.
 
 Los gráficos usan resultados calculados por el mismo código R del notebook. Se incluyen `wage2` (935 observaciones), el ejemplo numérico de cinco personas de la cátedra y una simulación de variables de ruido. Los valores de educación 74 a 119 del ejemplo de cinco personas son valores didácticos; no se interpretan como años reales.
 
@@ -29,6 +29,6 @@ WEBR_MODULE=/ruta/a/webr/dist/webr.mjs node clase-4-taller/herramientas/verifica
 python3 clase-4-taller/herramientas/generar_web.py
 ```
 
-El verificador ejecuta las 18 láminas y comprueba muestra común, igualdad de coeficientes matriciales y `lm`, ortogonalidad, determinante, identidad e incremento no negativo de R² en modelos anidados. Guarda salidas, datos de los gráficos y una huella del código; el generador exige esa huella antes de actualizar web, notebook, script y guía.
+El verificador ejecuta los 18 bloques de R y comprueba muestra común, igualdad de coeficientes matriciales y `lm`, ortogonalidad, determinante, identidad e incremento no negativo de R² en modelos anidados. Guarda salidas, datos de los gráficos y una huella del código; el generador exige esa huella antes de actualizar web, notebook, script y guía.
 
 Fuentes técnicas: documentación oficial de R para [model.matrix](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/model.matrix.html), [solve](https://stat.ethz.ch/R-manual/R-devel/library/base/html/solve.html), [lm](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html) y documentación de [wage2](https://justinmshea.github.io/wooldridge/reference/wage2.html).

@@ -24,23 +24,19 @@ summary(datos)
 head(datos)
 
 modelo_vista <- lm(wage ~ educ + IQ, data = datos)
-# Ejemplo pequeño para seguir el orden de las cuatro predicciones
-rejilla_mini <- expand.grid(educ = c(12, 13), IQ = c(90, 100))
-pred_mini <- predict(modelo_vista, newdata = rejilla_mini)
-print(data.frame(rejilla_mini, salario_predicho = pred_mini))
-print(matrix(pred_mini, nrow = 2, ncol = 2))
-
-# Rejilla completa para la superficie
-educ_vista <- seq(9, 18, length.out = 20)
-iq_vista <- seq(75, 125, length.out = 20)
+educ_vista <- c(12, 13)
+iq_vista <- c(90, 100)
 rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
 pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
-z_vista <- matrix(pred_vista,
-                  nrow = length(educ_vista), ncol = length(iq_vista))
+print(data.frame(rejilla_vista, salario_predicho = pred_vista))
+
+# Filas de educación y columnas de IQ
+z_vista <- matrix(pred_vista, nrow = length(educ_vista),
+                  ncol = length(iq_vista))
+print(z_vista)
 persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
       xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
       col = "lightblue", ticktype = "detailed")
-print(coef(modelo_vista))
 
 simple <- lm(wage ~ educ, data = datos)
 multiple <- lm(wage ~ educ + IQ, data = datos)

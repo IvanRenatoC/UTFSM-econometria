@@ -9,7 +9,7 @@ const r=new WebR();await r.init();await r.FS.mkdir('/work');await r.FS.mkdir('/w
 await r.FS.writeFile('/work/datos/wage2.csv',await fs.readFile(path.join(root,'datos/wage2.csv')));
 await r.evalRVoid('setwd("/work");pdf("graficos.pdf",width=8,height=5)');
 const outputs={};
-for(const a of content.laminas){console.log('Ejecutando',a.id);outputs[a.id]=await r.evalRString(`paste(capture.output({${a.codigo}\n}),collapse="\\n")`);}
+for(const a of content.laminas.filter(a=>a.codigo)){console.log('Ejecutando',a.id);outputs[a.id]=await r.evalRString(`paste(capture.output({${a.codigo}\n}),collapse="\\n")`);}
 await r.evalRVoid(`
 stopifnot(nrow(datos)==935,all(complete.cases(datos)))
 stopifnot(isTRUE(all.equal(as.numeric(beta_sistema),unname(coef(modelo5)))))
@@ -34,5 +34,5 @@ for(const name of ['wage','cinco','ruido','modelos','beta5','summary','anova']){
 }
 await fs.writeFile(path.join(root,'datos/resultados-interactivos.json'),JSON.stringify(data)+'\n');
 await fs.writeFile(path.join(root,'datos/salidas-verificadas-r.json'),JSON.stringify(outputs,null,2)+'\n');
-await fs.writeFile(path.join(root,'datos/verificacion.json'),JSON.stringify({codigo_sha256:createHash('sha256').update(content.laminas.map(a=>a.id+'\n'+a.codigo).join('\n\n')).digest('hex'),ejemplos_ejecutados:content.laminas.length,motor:'webR 0.6.0',pruebas:['Muestra común de 935 observaciones','lm coincide con cálculo matricial','Ortogonalidad de residuos','Determinante 34276','Inversa por cofactores e identidad','R² no decrece en modelos anidados']},null,2)+'\n');
+await fs.writeFile(path.join(root,'datos/verificacion.json'),JSON.stringify({codigo_sha256:createHash('sha256').update(content.laminas.map(a=>a.id+'\n'+a.codigo).join('\n\n')).digest('hex'),ejemplos_ejecutados:Object.keys(outputs).length,motor:'webR 0.6.0',pruebas:['Muestra común de 935 observaciones','lm coincide con cálculo matricial','Ortogonalidad de residuos','Determinante 34276','Inversa por cofactores e identidad','R² no decrece en modelos anidados']},null,2)+'\n');
 await r.close();console.log('Todos los ejemplos y comprobaciones pasaron.');
