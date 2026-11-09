@@ -170,11 +170,11 @@ $$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ\qquad
 
 **`Dos geometrías diferentes`**
 
-El plano de predicción vive en los ejes de las variables (educación, IQ y salario). El esquema de proyección vive en el espacio de las n observaciones: W es el espacio generado por las columnas de X. No son el mismo plano.
+El plano de predicción usa los ejes educación, IQ y salario. La proyección MCO ocurre en el espacio de las n observaciones. Col(X) reúne todas las combinaciones lineales de las columnas de X, es decir, todos los vectores de predicciones que el modelo puede producir.
 
 **`Proyección MCO: Y = Ŷ + û`**
 
-MCO proyecta Y sobre W para obtener Ŷ; û es perpendicular a W. Cualquier otra predicción v que pertenezca a W queda al menos tan lejos de Y como Ŷ. El esquema simplifica un espacio que puede tener muchas dimensiones.
+MCO proyecta Y sobre Col(X) para obtener Ŷ. El residuo û es perpendicular a ese espacio. Si eliges otro vector de predicciones v dentro de Col(X), su distancia a Y será mayor.
 
 **`expand.grid(educ = educ_vista, IQ = iq_vista)`**
 
@@ -226,7 +226,7 @@ No. La recta usa los coeficientes del modelo múltiple y mantiene IQ en el valor
 
 ## 04 · Del modelo simple al múltiple
 
-Compara la pendiente de educación antes y después de incluir IQ. El signo + en una fórmula añade una variable explicativa; no suma sus columnas previamente.
+El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.
 
 $$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ$$
 
@@ -260,7 +260,7 @@ abline(simple, col = "#D6A600", lwd = 3)
 
 ### Cómo leer el resultado
 
-Al incluir IQ cambia la asociación estimada de educación con salario. La pendiente múltiple se interpreta manteniendo IQ fijo. Ninguna de las dos regresiones demuestra por sí sola un efecto causal.
+Con IQ = 100, la altura de la recta múltiple se calcula con intercepto β̂₀ + 100·β̂₂. Si eliges otro IQ fijo, cambia la altura y se conserva la pendiente β̂₁ porque el modelo no incluye una interacción entre educación e IQ. La nube muestra a todas las personas de la muestra, con sus distintos valores de IQ. La comparación de pendientes muestra cuánto cambia la asociación estimada de educación con salario al incorporar IQ al modelo.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
