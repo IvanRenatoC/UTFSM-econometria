@@ -16,15 +16,25 @@ function btn(text,value){return `<button type="button" data-value="${value}" ari
 for(const lab of document.querySelectorAll('.lab')){
  const kind=lab.dataset.kind;
  if(kind==='comparar'||kind==='condicional'){
-  const conditional=kind==='condicional';const o=controls(lab,conditional?'<label>IQ fijo <input type="range" min="75" max="125" value="100" step="1" aria-label="IQ fijo"></label><label>Educación <input type="range" min="9" max="18" value="12" step="1" aria-label="Educación"></label><button type="button" class="reset-conditional">Restablecer gráfico</button>':btn('Modelo simple',0)+btn('Con IQ fijo en 100',1));
-  function draw(j=0){const iq=conditional?+lab.querySelectorAll('input')[0].value:100,ed=conditional?+lab.querySelectorAll('input')[1].value:12;const m=conditional?model:D.modelos[j],ax=axes(8,18,0,3100,'Educación (años)','Salario mensual (USD)');let b=ax.body;
+  const conditional=kind==='condicional';const o=controls(lab,conditional?'<label>IQ fijo <input type="range" min="75" max="125" value="100" step="1" aria-label="IQ fijo"></label><label>Educación <input type="range" min="9" max="18" value="12" step="1" aria-label="Educación"></label><button type="button" class="reset-conditional">Restablecer gráfico</button>':'');
+  function draw(){const iq=conditional?+lab.querySelectorAll('input')[0].value:100,ed=conditional?+lab.querySelectorAll('input')[1].value:12;const m=conditional?model:D.modelos[0],ax=axes(8,18,0,3100,'Educación (años)','Salario mensual (USD)');let b=ax.body;
    b+=D.wage.map(p=>`<circle cx="${ax.px(p.educ)}" cy="${ax.py(Math.min(p.wage,3100))}" r="2" fill="${B}" opacity=".25"><title>Educación ${p.educ}; salario ${p.wage}; IQ ${p.IQ}</title></circle>`).join('');
    b+=line(ax.px(8),ax.py(m.b0+m.b1*8+m.b2*iq),ax.px(18),ax.py(m.b0+m.b1*18+m.b2*iq),G);
    if(conditional){const pred=m.b0+m.b1*ed+m.b2*iq;b+=`<circle cx="${ax.px(ed)}" cy="${ax.py(pred)}" r="6" fill="${R}"/>`;o.r.textContent=`IQ = ${iq}; educación = ${ed} años; salario predicho = USD ${f(pred,2)}. Un año más con IQ fijo cambia la predicción en USD ${f(m.b1,2)}.`;}
-   else{o.r.textContent=`Pendiente de educación: USD ${f(m.b1,2)} por año. ${j?'IQ = 100 es el valor de referencia del corte. Así comparamos salarios predichos al variar educación con IQ constante. Otro IQ fijo desplaza la recta y conserva su pendiente. Los puntos muestran a toda la muestra.':'Recta de regresión simple.'}`;lab.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===j)));}
-   o.v.innerHTML=chart(b,'Salario y educación con recta estimada');
+   else {
+    const inicio=model.b0+model.b1*8+model.b2*iq;
+    const fin=model.b0+model.b1*18+model.b2*iq;
+    b+=`<line x1="${ax.px(8)}" y1="${ax.py(inicio)}" x2="${ax.px(18)}" y2="${ax.py(fin)}" stroke="${R}" stroke-width="3" stroke-dasharray="8 5"/>`;
+    o.r.textContent=`a) Dorada continua, solo educación. Pendiente de USD ${f(m.b1,2)} por año. b) Roja discontinua, educación e IQ fijo en 100. Pendiente de USD ${f(model.b1,2)} por año. Ambas rectas se muestran sobre la misma nube de puntos.`;
+   }
+   o.v.innerHTML=chart(b,conditional?'Salario y educación con IQ fijo':'Salario y educación con las rectas de ambos modelos');
   }
-  lab.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(conditional){const inputs=lab.querySelectorAll('input');inputs[0].value=100;inputs[1].value=12;draw();}else draw(+b.dataset.value);});lab.querySelectorAll('input').forEach(i=>i.oninput=()=>draw());draw();
+  if(conditional){
+   const inputs=lab.querySelectorAll('input');
+   lab.querySelector('button').onclick=()=>{inputs[0].value=100;inputs[1].value=12;draw();};
+   inputs.forEach(input=>input.oninput=draw);
+  }
+  draw();
  }
  else if(kind==='geometria'){
   const o=controls(lab,btn('Plano de predicción (variables)',0)+btn('Proyección MCO (observaciones)',1));
