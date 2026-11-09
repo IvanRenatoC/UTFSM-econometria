@@ -26,6 +26,14 @@ $$\widehat{Y}=X\widehat{\beta}\qquad \widehat{Y}_i=\sum_{j=1}^{p}\widehat{\beta}
 
 ### El código, paso a paso
 
+**`demo <- data.frame(y = c(...), x1 = c(...), x2 = c(...))`**
+
+c() reúne valores en un vector. data.frame() coloca los vectores en columnas con nombre. Cada posición corresponde a la misma observación en las tres columnas. La flecha <- guarda la tabla bajo el nombre demo.
+
+**`print(coef(modelo_demo))`**
+
+R evalúa primero coef(modelo_demo) y luego print() muestra el resultado. La llamada interior obtiene los coeficientes y la exterior los imprime.
+
 **`lm(formula, data, subset, weights, na.action, method = "qr", ...)`**
 
 Es una referencia de argumentos, no una llamada lista para ejecutar. Normalmente basta con formula y data. method = "qr" usa descomposición QR.
@@ -52,7 +60,7 @@ Opcional: ajusta por mínimos cuadrados ponderados. No se necesita para los ejem
 
 **`coef(modelo_demo) y fitted(modelo_demo)`**
 
-coef extrae β̂; fitted entrega Ŷ para las filas usadas. summary(modelo_demo) amplía el resumen y predict(modelo_demo, newdata = ...) predice para nuevos valores.
+coef extrae β̂, con un nombre por parámetro. fitted devuelve Ŷ para las observaciones del ajuste. En cada fila usa los valores de x1 y x2 junto con los coeficientes ya estimados.
 
 ```r
 demo <- data.frame(y = c(4, 6, 7, 9, 8, 11),
@@ -94,6 +102,22 @@ Comenzamos con datos reales de salarios, educación e IQ. La copia local permite
 
 ### El código, paso a paso
 
+**`if (file.exists(...)) { ... } else { ... }`**
+
+file.exists() devuelve TRUE si el archivo está en la ruta indicada. if ejecuta el primer bloque cuando la condición se cumple. else ejecuta la alternativa. read.csv() lee el archivo con encabezados como una tabla.
+
+**`!requireNamespace(...) e install.packages(...)`**
+
+requireNamespace() comprueba si el paquete se puede cargar. quietly = TRUE sirve para evitar mensajes de diagnóstico. ! invierte el valor lógico. Si el paquete falta, install.packages() lo descarga desde el repositorio indicado en repos.
+
+**`as.data.frame(wooldridge::wage2)`**
+
+:: accede a wage2 dentro del paquete wooldridge. as.data.frame() lo convierte al formato de tabla que usaremos.
+
+**`colSums(is.na(original[variables]))`**
+
+original[variables] selecciona las columnas nombradas en el vector variables. is.na() marca cada faltante como TRUE. colSums() suma esos indicadores por columna y entrega el número de faltantes de cada variable.
+
 **`complete.cases(original[variables])`**
 
 Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El mismo conjunto de personas se usará en las regresiones que comparemos.
@@ -102,9 +126,9 @@ Devuelve TRUE en las filas sin faltantes en las tres variables seleccionadas. El
 
 Selecciona filas y columnas de un data frame. variables contiene los nombres que queremos conservar.
 
-**`str() y summary()`**
+**`nrow(), str(), summary() y head()`**
 
-str(datos) describe la estructura; summary(datos) resume cada columna. No ajustan una regresión.
+nrow() cuenta filas. str() muestra la estructura y el tipo de cada columna. Para una tabla como datos, summary() resume cada columna. head() muestra las primeras seis filas por defecto.
 
 ```r
 if (file.exists("datos/wage2.csv")) {
@@ -176,24 +200,44 @@ El plano de predicción usa los ejes educación, IQ y salario. La proyección MC
 
 MCO proyecta Y sobre Col(X) para obtener Ŷ. El residuo û es perpendicular a ese espacio. Si eliges otro vector de predicciones v dentro de Col(X), su distancia a Y será mayor.
 
-**`expand.grid(educ = educ_vista, IQ = iq_vista)`**
+**`seq(9, 18, length.out = 20)`**
 
-Construye todas las combinaciones de educación e IQ de la rejilla. No añade observaciones reales a la muestra.
+Genera 20 valores equidistantes desde 9 hasta 18, incluidos los extremos. length.out fija cuántos valores se generan. La segunda llamada hace lo mismo entre 75 y 125 para IQ.
 
-**`matrix(predict(...), nrow = ..., ncol = ...)`**
+**`expand.grid(educ = ..., IQ = ...)`**
 
-Organiza las predicciones en una superficie: cada fila corresponde a educación y cada columna a IQ.
+Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden. La rejilla completa tiene 20 × 20 = 400 filas.
 
-**`persp(x, y, z, theta = 35, phi = 25, ...)`**
+**`predict(modelo_vista, newdata = rejilla_vista)`**
 
-Dibuja la superficie en perspectiva. x e y son los ejes de regresores; z es la matriz de predicciones. theta y phi controlan el ángulo de la cámara, no los coeficientes del modelo.
+El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de 400 salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste.
+
+**`matrix(pred_vista, nrow = ..., ncol = ...)`**
+
+persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En el ejemplo de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero.
+
+**`length(educ_vista) y length(iq_vista)`**
+
+length() cuenta los elementos del vector. Aquí ambos tienen 20 elementos. nrow fija 20 filas para educación y ncol fija 20 columnas para IQ. Así caben exactamente las 400 predicciones, una por cruce.
+
+**`persp(educ_vista, iq_vista, z_vista, ...)`**
+
+Los dos primeros argumentos son las coordenadas de los ejes horizontales. El tercero es la matriz de alturas. persp() toma z_vista[i, j] como el salario predicho para educ_vista[i] e iq_vista[j] y une los puntos para dibujar la superficie. theta y phi ajustan el ángulo de la cámara. xlab, ylab y zlab nombran los ejes, col colorea la superficie y ticktype = "detailed" muestra marcas con sus valores.
 
 ```r
 modelo_vista <- lm(wage ~ educ + IQ, data = datos)
+# Ejemplo pequeño para seguir el orden de las cuatro predicciones
+rejilla_mini <- expand.grid(educ = c(12, 13), IQ = c(90, 100))
+pred_mini <- predict(modelo_vista, newdata = rejilla_mini)
+print(data.frame(rejilla_mini, salario_predicho = pred_mini))
+print(matrix(pred_mini, nrow = 2, ncol = 2))
+
+# Rejilla completa para la superficie
 educ_vista <- seq(9, 18, length.out = 20)
 iq_vista <- seq(75, 125, length.out = 20)
 rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
-z_vista <- matrix(predict(modelo_vista, newdata = rejilla_vista),
+pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
+z_vista <- matrix(pred_vista,
                   nrow = length(educ_vista), ncol = length(iq_vista))
 persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
       xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
@@ -203,11 +247,19 @@ print(coef(modelo_vista))
 
 ### Cómo leer el resultado
 
-Con más de dos regresores y una respuesta, la superficie vive en más de tres dimensiones y no puede mostrarse directamente con tres ejes: usamos cortes y proyecciones. En 3D las pendientes existen, pero la perspectiva puede dificultar su lectura. Por eso después fijamos IQ y dibujamos salario predicho frente a educación. Esa recta no es una regresión simple nueva; es un corte del modelo múltiple. Cambiar IQ desplaza la recta y no cambia la pendiente de educación en este modelo sin interacciones.
+Lee primero la tabla con las cuatro combinaciones y luego la matriz de 2 × 2. Por ejemplo, la predicción de la fila 3 de la tabla va en la celda [1, 2] de la matriz, que corresponde a 12 años de educación e IQ = 100. La rejilla de 20 × 20 usa la misma regla. Con más de dos regresores y una respuesta, usamos cortes para ver la relación en dos ejes. Al fijar IQ obtenemos la recta del modelo múltiple que veremos en la lámina 4.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
+  educ  IQ salario_predicho
+1   12  90         838.2177
+2   13  90         880.2753
+3   12 100         889.5973
+4   13 100         931.6549
+         [,1]     [,2]
+[1,] 838.2177 889.5973
+[2,] 880.2753 931.6549
 (Intercept)        educ          IQ
 -128.889881   42.057619    5.137958
 ```
@@ -243,6 +295,14 @@ Extrae por su nombre la pendiente de educación del modelo múltiple.
 **`data.frame(modelo = ..., pendiente_educ = ...)`**
 
 Organiza los coeficientes en una tabla para comparar las mismas unidades.
+
+**`plot(wage ~ educ, data = datos, pch = 19, col = ...)`**
+
+Dibuja educación en el eje horizontal y salario en el vertical. data indica de qué tabla salen las columnas, pch = 19 elige puntos sólidos y col fija el color. Los últimos dos dígitos del color hexadecimal controlan la transparencia.
+
+**`abline(simple, col = ..., lwd = 3)`**
+
+Agrega al gráfico abierto una recta con intercepto y pendiente del modelo simple. col fija el color y lwd el grosor.
 
 ```r
 simple <- lm(wage ~ educ, data = datos)
@@ -305,6 +365,10 @@ Resta valores consecutivos: aquí, la segunda predicción menos la primera.
 **`seq(9, 18, length.out = 50)`**
 
 Genera 50 valores equidistantes para dibujar una línea suave.
+
+**`plot(x, y, type = "l")`**
+
+Dibuja los pares de coordenadas x e y. type = "l" une los puntos en el orden del vector de educación. Aquí y son las predicciones del modelo múltiple con IQ fijo.
 
 ```r
 nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))
@@ -419,7 +483,7 @@ $$y=X\beta+u,\quad X:\ n\times(k+1),\quad\beta:\ (k+1)\times1$$
 
 **`model.matrix(modelo5)`**
 
-Construye la matriz de diseño según la fórmula y las observaciones del modelo; incluye una columna de unos si hay intercepto.
+Recibe modelo5, el objeto devuelto por lm(salario ~ experiencia + educacion, data = ejemplo). Lee la fórmula y las observaciones usadas en el ajuste. Devuelve X, una matriz numérica de 5 filas y 3 columnas. Cada fila es una persona. Las columnas son (Intercept), experiencia y educacion, en el mismo orden que coef(modelo5). La primera fila es [1, 12, 93]. El 1 multiplica al intercepto. Las otras dos entradas multiplican a sus pendientes. Salario queda en el vector y. X se usará para calcular los coeficientes con álgebra matricial y para obtener ŷ = Xβ̂.
 
 **`cbind(unos = 1, ...)`**
 
@@ -428,6 +492,14 @@ Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.
 **`dim(X), colnames(X) y as.vector(X)`**
 
 dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos.
+
+**`ejemplo$salario`**
+
+El operador $ extrae una columna por nombre. Aquí devuelve el vector de salarios observados, con el mismo orden de filas de X.
+
+**`identical(as.vector(X), as.vector(X_manual))`**
+
+as.vector() lee los valores por columnas y elimina dimensiones y nombres. identical() exige que ambos vectores sean exactamente iguales en valores y tipo. Así comprobamos las entradas de las matrices aunque los nombres de columnas difieran.
 
 ```r
 X <- model.matrix(modelo5)
@@ -443,7 +515,7 @@ print(identical(as.vector(X), as.vector(X_manual)))
 
 ### Cómo leer el resultado
 
-Hay n = 5 observaciones y k = 2 variables explicativas: X tiene dimensión 5 × 3; el vector de parámetros tiene 3 elementos. Las columnas son intercepto, experiencia y educación. El vector y tiene 5 valores.
+model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 3, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 3, las filas y columnas son valores de educación e IQ.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
@@ -563,6 +635,10 @@ Resuelve XtX · beta = Xty sin pedir una inversa explícita. No elimina los prob
 **`all.equal(...), as.numeric(...) e isTRUE(...)`**
 
 as.numeric convierte a vector; all.equal compara con tolerancia numérica; isTRUE produce un único TRUE o FALSE.
+
+**`unname(coef(modelo5))`**
+
+Quita las etiquetas de los coeficientes para compararlos con beta_sistema convertido a vector numérico. all.equal() comprueba la igualdad aproximada e isTRUE() devuelve TRUE solo si la comprobación tiene éxito.
 
 ```r
 beta_formula <- solve(XtX) %*% Xty
@@ -691,6 +767,14 @@ Captura el error esperado y lo muestra como texto para que el notebook continúe
 
 Una pendiente puede aparecer como NA porque es redundante; no porque haya una fila con valor faltante.
 
+**`ncol(X_duplicada)`**
+
+Cuenta las columnas de la matriz. Comparamos ese número con el rango que devuelve la descomposición QR.
+
+**`ejemplo$repetida <- ejemplo$experiencia`**
+
+Crea una columna nueva llamada repetida y le asigna los mismos valores de experiencia, fila por fila.
+
 ```r
 X_duplicada <- cbind(unos = 1, experiencia = ejemplo$experiencia,
                       repetida = ejemplo$experiencia)
@@ -746,7 +830,7 @@ nobs cuenta observaciones usadas. Restamos el intercepto para contar k en este m
 
 **`function(modelo) y rbind(...)`**
 
-Define una función reutilizable y apila sus resultados como filas para comparar.
+function(modelo) { ... } define una función con un argumento llamado modelo. Cada llamada calcula cuatro medidas para el ajuste entregado y devuelve la última expresión, el vector c(...). rbind() apila los vectores resultantes como filas para comparar ambos modelos.
 
 ```r
 medidas <- function(modelo) {
@@ -810,6 +894,18 @@ Conserva las primeras j columnas; drop = FALSE evita convertir la selección de 
 **`matplot(x, y, type = "l", lty = 1)`**
 
 Dibuja una línea por columna de y. type elige líneas y lty su estilo.
+
+**`set.seed(5) y rnorm(n_sim, sd = 2)`**
+
+set.seed() inicia el generador en un estado reproducible. rnorm() genera n_sim valores de una distribución normal con media 0 por defecto. sd = 2 fija la desviación estándar del ruido. Al omitir sd se usa 1.
+
+**`for (j in 0:10) y if (j == 0)`**
+
+0:10 crea los enteros de 0 a 10. for ejecuta el bloque con cada valor de j. Para j = 0 ajustamos sin ruido. Para j > 0 añadimos las primeras j columnas de ruido. Guardamos cada resultado en la fila j + 1 porque las posiciones de R empiezan en 1. NA reserva las posiciones aún sin calcular.
+
+**`legend("bottomright", ..., lty = 1, col = ...)`**
+
+Agrega una leyenda en la esquina inferior derecha. El vector de textos sigue el orden de las líneas. lty = 1 indica línea continua y col asigna los colores correspondientes.
 
 ```r
 set.seed(5)
@@ -1129,6 +1225,10 @@ Expande el determinante por la primera fila. No es la suma simple de los element
 **`adjunta / determinante`**
 
 Divide cada elemento de la adjunta por un escalar. Solo se puede hacer si el determinante no es cero.
+
+**`all.equal(..., check.attributes = FALSE)`**
+
+Compara los valores de la inversa por cofactores con los de solve(A) y omite los atributos en esa comparación. La comprobación posterior A %*% inversa muestra la matriz identidad redondeada.
 
 ```r
 cofactores <- matrix(0, nrow = 3, ncol = 3)
