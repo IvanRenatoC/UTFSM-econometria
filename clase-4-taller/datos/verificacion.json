@@ -1,6 +1,6 @@
 {
-  "codigo_sha256": "44de7b230fd19fc52b04731ac391362d2b7f931634247660c0e993e660645c50",
-  "ejemplos_ejecutados": 12,
+  "codigo_sha256": "5e49c572e43e785f3198eb35602c023d155e4196709dae684a847679cdf24a28",
+  "ejemplos_ejecutados": 11,
   "motor": "webR 0.6.0",
   "pruebas": [
     "Muestra común de 935 observaciones",

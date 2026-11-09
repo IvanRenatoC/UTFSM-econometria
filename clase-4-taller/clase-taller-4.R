@@ -95,15 +95,6 @@ print(colnames(X))
 X_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
 print(identical(as.vector(X), as.vector(X_manual)))
 
-XtX <- t(X) %*% X
-Xty <- t(X) %*% y
-print(XtX)
-print(Xty)
-print(dim(XtX))
-print(sum(X[, 2] * X[, 3]))
-print(XtX[2, 3])
-print(head(X * X))
-
 # Una muestra común para todos los análisis de este tema
 datos_comunes <- original[complete.cases(original), ]
 campos_modelo <- setdiff(names(datos_comunes), "lwage")

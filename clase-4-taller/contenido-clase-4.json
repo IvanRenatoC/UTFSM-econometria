@@ -14,13 +14,13 @@
     ],
     [
       "19:25–19:45",
-      "Notación y operaciones matriciales",
+      "Notación matricial",
       "C4-09"
     ],
     [
       "19:45–20:00",
       "Modelo completo y ANOVA",
-      "C4-11"
+      "C4-10"
     ],
     [
       "20:00–20:15",
@@ -30,22 +30,22 @@
     [
       "20:15–20:35",
       "Coeficientes y significancia",
-      "C4-12"
+      "C4-11"
     ],
     [
       "20:35–20:55",
       "Correlaciones y modelo reducido",
-      "C4-13"
+      "C4-12"
     ],
     [
       "20:55–21:05",
       "Comparación de R² y R² ajustado",
-      "C4-14"
+      "C4-13"
     ],
     [
       "21:05–21:25",
       "Ejercicio en Colab",
-      "C4-15"
+      "C4-14"
     ]
   ],
   "temas": [
@@ -65,19 +65,19 @@
       "tema3",
       "Parte 1 · Notación matricial",
       9,
-      10
+      9
     ],
     [
       "tema4",
       "Parte 1 · Modelo completo y selección de variables",
-      11,
-      14
+      10,
+      13
     ],
     [
       "ejercicio",
       "Parte 2 · Aplicación en Colab",
-      15,
-      15
+      14,
+      14
     ]
   ],
   "laminas": [
@@ -445,31 +445,6 @@
     },
     {
       "id": "C4-10",
-      "titulo": "Transpuesta y producto matricial: t() y %*%",
-      "texto": "Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.",
-      "codigo": "XtX <- t(X) %*% X\nXty <- t(X) %*% y\nprint(XtX)\nprint(Xty)\nprint(dim(XtX))\nprint(sum(X[, 2] * X[, 3]))\nprint(XtX[2, 3])\nprint(head(X * X))",
-      "lectura": "La entrada (2,3) de XᵀX es la suma de experiencia × educación. %*% multiplica matrices mediante sumas de productos; * multiplica elemento a elemento. XᵀX es 3 × 3; Xᵀy es 3 × 1.",
-      "pasos": [
-        [
-          "t(X)",
-          "Intercambia filas y columnas: de 5 × 3 pasa a 3 × 5."
-        ],
-        [
-          "t(X) %*% X",
-          "Producto matricial. Las dimensiones interiores deben coincidir: (3 × 5)(5 × 3) da 3 × 3."
-        ],
-        [
-          "X[, 2] * X[, 3]",
-          "Multiplica las dos columnas elemento a elemento. sum() produce el producto interno que aparece en XtX[2,3]."
-        ]
-      ],
-      "interactivo": "producto",
-      "pregunta": "¿X * X es lo mismo que t(X) %*% X?",
-      "respuesta": "No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.",
-      "formula": "(X^\\top X)_{23}=\\sum_{i=1}^5x_{i1}x_{i2}"
-    },
-    {
-      "id": "C4-11",
       "titulo": "Modelo completo de salario y tabla ANOVA",
       "texto": "Recupera las 17 columnas de wage2 desde original. Para predecir wage, usa los 15 regresores disponibles y deja lwage para la exploración de correlaciones. Como lwage se calcula a partir de wage, incorporarlo usaría información de la respuesta para predecirla.",
       "codigo": "# Una muestra común para todos los análisis de este tema\ndatos_comunes <- original[complete.cases(original), ]\ncampos_modelo <- setdiff(names(datos_comunes), \"lwage\")\ndatos_modelo <- datos_comunes[, campos_modelo]\n\nmodelo_completo <- lm(wage ~ ., data = datos_modelo)\nprint(nobs(modelo_completo))\nprint(anova(modelo_completo))",
@@ -499,7 +474,7 @@
       "mostrar_salida": true
     },
     {
-      "id": "C4-12",
+      "id": "C4-11",
       "titulo": "Coeficientes, significancia y medidas de ajuste",
       "texto": "Usa summary() para interpretar cada coeficiente del modelo completo. Aplica un nivel de significancia del 5 % y guarda R² y R² ajustado para comparar después.",
       "codigo": "resumen_completo <- summary(modelo_completo)\nprint(resumen_completo)\ncoeficientes <- resumen_completo$coefficients\nalfa <- 0.05\np_valores <- coeficientes[, \"Pr(>|t|)\"]\n\ndetalle <- data.frame(\n  termino = rownames(coeficientes),\n  estimacion = coeficientes[, \"Estimate\"],\n  error_estandar = coeficientes[, \"Std. Error\"],\n  t = coeficientes[, \"t value\"],\n  valor_p = p_valores,\n  significativo = ifelse(p_valores < alfa, \"Sí\", \"No\")\n)\nprint(detalle, row.names = FALSE)\n\nr2_completo <- resumen_completo$r.squared\nr2_ajustado_completo <- resumen_completo$adj.r.squared\nprint(c(R2 = r2_completo, R2_ajustado = r2_ajustado_completo))",
@@ -515,7 +490,7 @@
         ],
         [
           "r.squared y adj.r.squared",
-          "R² mide la proporción de variación muestral explicada. R² ajustado tiene en cuenta el número de regresores y observaciones. Los guardamos como números para usarlos en la lámina 14."
+          "R² mide la proporción de variación muestral explicada. R² ajustado tiene en cuenta el número de regresores y observaciones. Los guardamos como números para usarlos en la lámina 13."
         ]
       ],
       "pregunta": "¿Por qué un valor p mayor que 0,05 recibe la etiqueta «No»?",
@@ -525,7 +500,7 @@
       "mostrar_salida": true
     },
     {
-      "id": "C4-13",
+      "id": "C4-12",
       "titulo": "Correlaciones y modelo reducido",
       "texto": "Explora las 17 columnas con pairs() y cor(). Luego filtra los regresores con p < 0,05. Entre dos regresores que pasen el filtro y tengan |r| ≥ 0,50, conserva el que tenga menor valor p en el modelo completo.",
       "codigo": "pairs(datos_comunes, upper.panel = NULL, pch = 16, cex = 0.25,\n      col = \"#005F9640\", main = \"wage2 · Matriz de gráficos de dispersión\")\ncorrelaciones <- cor(datos_comunes)\nindices <- which(upper.tri(correlaciones) & abs(correlaciones) >= 0.50,\n                 arr.ind = TRUE)\npares <- data.frame(\n  variable_1 = rownames(correlaciones)[indices[, 1]],\n  variable_2 = colnames(correlaciones)[indices[, 2]],\n  r = round(correlaciones[indices], 3)\n)\nprint(pares, row.names = FALSE)\n\nsignificativas <- rownames(coeficientes)[p_valores < alfa]\nregresores <- setdiff(significativas, \"(Intercept)\")\nprint(c(r_educ_IQ = correlaciones[\"educ\", \"IQ\"],\n        p_educ = p_valores[\"educ\"], p_IQ = p_valores[\"IQ\"]))\n\n# Entre educación e IQ, educación tiene el menor valor p\nelegidas <- setdiff(regresores, \"IQ\")\ndatos_reducidos <- datos_modelo[, c(\"wage\", elegidas)]\nmodelo_reducido <- lm(wage ~ ., data = datos_reducidos)\nprint(elegidas)\nprint(summary(modelo_reducido))",
@@ -555,7 +530,7 @@
       "figura": "datos/pares-wage2.png"
     },
     {
-      "id": "C4-14",
+      "id": "C4-13",
       "titulo": "Comparar R² y R² ajustado",
       "texto": "Compara el modelo completo y el reducido sobre las mismas 663 filas y la misma variable respuesta. Revisa cuánto ajuste se pierde al retirar regresores y cómo cambia el ajuste al considerar el número de parámetros.",
       "codigo": "resumen_reducido <- summary(modelo_reducido)\nr2_reducido <- resumen_reducido$r.squared\nr2_ajustado_reducido <- resumen_reducido$adj.r.squared\n\ncomparacion_ajuste <- data.frame(\n  modelo = c(\"Completo\", \"Reducido\"),\n  observaciones = c(nobs(modelo_completo), nobs(modelo_reducido)),\n  regresores = c(length(coef(modelo_completo)), length(coef(modelo_reducido))) - 1,\n  R2 = c(r2_completo, r2_reducido),\n  R2_ajustado = c(r2_ajustado_completo, r2_ajustado_reducido)\n)\nprint(comparacion_ajuste, row.names = FALSE)",
@@ -577,7 +552,7 @@
       "mostrar_salida": true
     },
     {
-      "id": "C4-15",
+      "id": "C4-14",
       "titulo": "Ejercicio en clase",
       "texto": "Abre un Google Colab nuevo y selecciona un entorno con R. Copia este código y ejecútalo para cargar la base.",
       "codigo": "",

@@ -2,7 +2,6 @@
 const D=window.datosC4,N='#1b2a5e',B='#005f96',G='#d6a600',R='#b93e42';
 const f=(x,n=3)=>Number(x).toLocaleString('es-CL',{minimumFractionDigits:n,maximumFractionDigits:n});
 const model=D.modelos[1],beta=D.beta5.map(x=>x.beta),X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
-const A=Array.from({length:3},(_,i)=>Array.from({length:3},(_,j)=>X.reduce((s,row)=>s+row[i]*row[j],0)));
 const table=(headers,rows,cls='')=>'<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map((r,i)=>'<tr '+(cls===String(i)?'class="selected"':'')+'>'+r.map((x,j)=>`<${j?'td':'th scope="row"'}>${x}</${j?'td':'th'}>`).join('')+'</tr>').join('')+'</tbody></table></div>';
 function axes(xmin,xmax,ymin,ymax,xlabel,ylabel){const px=x=>65+(x-xmin)/(xmax-xmin)*610,py=y=>295-(y-ymin)/(ymax-ymin)*240;let body='';for(let i=0;i<=5;i++){let x=xmin+(xmax-xmin)*i/5,z=ymin+(ymax-ymin)*i/5;body+=`<line x1="65" x2="675" y1="${py(z)}" y2="${py(z)}" stroke="#dce2ea"/><text x="55" y="${py(z)+4}" text-anchor="end">${f(z,0)}</text><text x="${px(x)}" y="316" text-anchor="middle">${f(x,0)}</text>`;}body+=`<line x1="65" y1="55" x2="65" y2="295" stroke="${N}"/><line x1="65" y1="295" x2="675" y2="295" stroke="${N}"/><text x="370" y="343" text-anchor="middle">${xlabel}</text><text x="65" y="25">${ylabel}</text>`;return{px,py,body};}
 function chart(body,label){return `<svg viewBox="0 0 720 355" role="img" aria-label="${label}" style="font:12px sans-serif;fill:${N}">${body}</svg>`;}
@@ -41,13 +40,6 @@ for(const lab of document.querySelectorAll('.lab')){
   const o=controls(lab,'<label>Persona <select aria-label="Persona del ejemplo">'+D.cinco.map((p,i)=>`<option value="${i}">${p.persona}</option>`).join('')+'</select></label>');
   function draw(){const i=+lab.querySelector('select').value,p=D.cinco[i];o.v.innerHTML=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(p=>[p.persona,1,p.experiencia,p.educacion,p.salario]),String(i));o.r.textContent=`Fila ${i+1}: [1, ${p.experiencia}, ${p.educacion}]. Predicción = ${f(beta[0])} + (${f(beta[1])}) × ${p.experiencia} + ${f(beta[2])} × ${p.educacion} = ${f(p.predicho)}. Salario observado: ${p.salario}.`;}
   lab.querySelector('select').onchange=draw;draw();
- }
- else if(kind==='producto'){
-  const o=controls(lab,'<p>Selecciona una de las nueve celdas.</p>');let i=0,j=0;
-  function draw(){o.v.innerHTML='<h4>A = XᵀX</h4><div class="table-wrap"><table><tbody>'+A.map((row,r)=>'<tr>'+row.map((v,c)=>`<td class="${r===i&&c===j?'selected':''}"><button type="button" aria-label="Fila ${r+1}, columna ${c+1}: ${v}" data-r="${r}" data-c="${c}">${v}</button></td>`).join('')+'</tr>').join('')+'</tbody></table></div>';
-   const terms=X.map(row=>row[i]*row[j]);o.r.textContent=`Celda (${i+1},${j+1}): ${X.map(row=>row[i]+' × '+row[j]).join(' + ')} = ${terms.reduce((a,b)=>a+b,0)}. Se multiplican las columnas ${i+1} y ${j+1} de X y se suman los cinco productos.`;
-   o.v.querySelectorAll('button').forEach(b=>b.onclick=()=>{i=+b.dataset.r;j=+b.dataset.c;draw();});
-  }draw();
  }
  else if(kind==='anova_wage'){
   lab.innerHTML=table(['Fuente','gl','Suma de cuadrados','Cuadrado medio','F','Valor p'],D.anova_wage.map(p=>[
