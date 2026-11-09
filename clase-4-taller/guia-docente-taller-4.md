@@ -251,81 +251,7 @@ El vector de residuos û = Y − Ŷ.
 
 </details>
 
-## 05 · ¿Cuánto cambia el salario predicho con un año más de educación?
-
-Comparemos el salario mensual predicho para 12 y 13 años de educación. Primero fijamos IQ en 90 y comparamos esas dos predicciones. Luego repetimos la comparación con IQ en 100. El objetivo es distinguir el cambio por un año más de educación del cambio de nivel al elegir otro IQ.
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`expand.grid(educ = ..., IQ = ...)`**
-
-Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden.
-
-**`predict(modelo_vista, newdata = rejilla_vista)`**
-
-El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de cuatro salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste.
-
-**`matrix(pred_vista, nrow = ..., ncol = ...)`**
-
-persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En esta matriz de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero.
-
-**`length(educ_vista) y length(iq_vista)`**
-
-length() cuenta los elementos del vector. Aquí ambos vectores tienen dos elementos. La matriz tiene dos filas para educación y dos columnas para IQ.
-
-**`persp(educ_vista, iq_vista, z_vista, ...)`**
-
-Los dos primeros argumentos son las coordenadas de los ejes horizontales. El tercero es la matriz de alturas. persp() toma z_vista[i, j] como el salario predicho para educ_vista[i] e iq_vista[j] y une los puntos para dibujar la superficie. theta y phi ajustan el ángulo de la cámara. xlab, ylab y zlab nombran los ejes, col colorea la superficie y ticktype = "detailed" muestra marcas con sus valores.
-
-```r
-modelo_vista <- lm(wage ~ educ + IQ, data = datos)
-educ_vista <- c(12, 13)
-iq_vista <- c(90, 100)
-rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
-pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
-print(data.frame(rejilla_vista, salario_predicho = pred_vista))
-
-# Filas de educación y columnas de IQ
-z_vista <- matrix(pred_vista, nrow = length(educ_vista),
-                  ncol = length(iq_vista))
-print(z_vista)
-persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
-      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
-      col = "lightblue", ticktype = "detailed")
-```
-
-### Cómo leer el resultado
-
-Con IQ = 90, la predicción sube de USD 838,22 a USD 880,28 al pasar de 12 a 13 años de educación. Con IQ = 100, sube de USD 889,60 a USD 931,65. Calculada antes de redondear, la diferencia es USD 42,06 en ambos casos. En la matriz, baja una fila dentro de una columna para comparar educación con IQ fijo. Al pasar de una columna a otra manteniendo la fila, cambia el IQ y se conserva la educación. El gráfico usa esos cuatro valores como las esquinas de un tramo del plano.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-  educ  IQ salario_predicho
-1   12  90         838.2177
-2   13  90         880.2753
-3   12 100         889.5973
-4   13 100         931.6549
-         [,1]     [,2]
-[1,] 838.2177 889.5973
-[2,] 880.2753 931.6549
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Qué celdas comparas para medir el cambio de 12 a 13 años con IQ = 100?
-
-<details><summary>Mostrar respuesta</summary>
-
-Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde a IQ = 100.
-
-</details>
-
-## 06 · Del modelo simple al múltiple
+## 05 · Del modelo simple al múltiple
 
 Ajusta dos modelos a las mismas observaciones de wage2. El modelo a usa educación y el modelo b usa educación e IQ. Dibuja ambas rectas sobre la misma nube de educación y salario. Para trazar la recta del modelo b, fija IQ = 100.
 
@@ -414,69 +340,152 @@ No. Aquí cambia según la relación entre las variables. Puede aumentar, dismin
 
 </details>
 
-## 07 · Ceteris paribus: mover educación y dejar IQ fijo
+## 06 · ¿Cuánto cambia el salario predicho con un año más de educación?
 
-Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.
-
-$$\Delta\widehat{wage}=\widehat\beta_1\Delta educ\quad\text{con IQ fijo}$$
+Comparemos el salario mensual predicho para 12 y 13 años de educación. Primero fijamos IQ en 90 y comparamos esas dos predicciones. Luego repetimos la comparación con IQ en 100. El objetivo es distinguir el cambio por un año más de educación del cambio de nivel al elegir otro IQ.
 
 ### En R · Tu turno
 
 ### El código, paso a paso
 
-**`predict(multiple, newdata = nuevos)`**
+**`expand.grid(educ = ..., IQ = ...)`**
 
-Calcula predicciones para cada fila de nuevos. Debe contener las variables explicativas con los mismos nombres que el modelo.
+Devuelve una tabla con todas las parejas de educación e IQ. Educación es el primer argumento y varía primero. Con educ = c(12, 13) e IQ = c(90, 100), las filas son (12, 90), (13, 90), (12, 100) y (13, 100), en ese orden.
 
-**`diff(predicciones)`**
+**`predict(modelo_vista, newdata = rejilla_vista)`**
 
-Resta valores consecutivos: aquí, la segunda predicción menos la primera.
+El primer argumento es el modelo que ya estimamos con lm(). newdata es la tabla donde queremos predecir. Sus columnas deben llamarse educ e IQ, como en la fórmula. R toma una fila, multiplica sus valores por las pendientes estimadas y agrega el intercepto. Repite el cálculo para cada fila. En esta llamada devuelve un vector de cuatro salarios predichos en el mismo orden que la tabla. Los coeficientes se mantienen fijos. Si omites newdata, calcula sobre las observaciones del ajuste.
 
-**`seq(9, 18, length.out = 50)`**
+**`matrix(pred_vista, nrow = ..., ncol = ...)`**
 
-Genera 50 valores equidistantes para dibujar una línea suave.
+persp() necesita una altura z[i, j] para cada cruce entre la educación i y el IQ j. predict() entrega esas alturas en un vector. matrix() conserva los valores y los coloca por columnas. En esta matriz de 2 × 2, las predicciones 1 y 2 llenan la columna de IQ = 90 y las predicciones 3 y 4 llenan la de IQ = 100. Dentro de cada columna, la primera fila es educación 12 y la segunda es educación 13. Este orden coincide con expand.grid() porque educación varía primero.
 
-**`plot(x, y, type = "l")`**
+**`length(educ_vista) y length(iq_vista)`**
 
-Dibuja los pares de coordenadas x e y. type = "l" une los puntos en el orden del vector de educación. Aquí y son las predicciones del modelo múltiple con IQ fijo.
+length() cuenta los elementos del vector. Aquí ambos vectores tienen dos elementos. La matriz tiene dos filas para educación y dos columnas para IQ.
+
+**`persp(educ_vista, iq_vista, z_vista, ...)`**
+
+Los dos primeros argumentos son las coordenadas de los ejes horizontales. El tercero es la matriz de alturas. persp() toma z_vista[i, j] como el salario predicho para educ_vista[i] e iq_vista[j] y une los puntos para dibujar la superficie. theta y phi ajustan el ángulo de la cámara. xlab, ylab y zlab nombran los ejes, col colorea la superficie y ticktype = "detailed" muestra marcas con sus valores.
 
 ```r
-nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))
-predicciones <- predict(multiple, newdata = nuevos)
-print(data.frame(nuevos, salario_predicho = predicciones))
-print(diff(predicciones))
-print(coef(multiple)["educ"])
-rejilla <- data.frame(educ = seq(9, 18, length.out = 50), IQ = 100)
-plot(rejilla$educ, predict(multiple, newdata = rejilla), type = "l",
-     col = "#005F96", lwd = 3, xlab = "Educación (años)",
-     ylab = "Salario mensual predicho (USD)")
+modelo_vista <- lm(wage ~ educ + IQ, data = datos)
+educ_vista <- c(12, 13)
+iq_vista <- c(90, 100)
+rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
+pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
+print(data.frame(rejilla_vista, salario_predicho = pred_vista))
+
+# Filas de educación y columnas de IQ
+z_vista <- matrix(pred_vista, nrow = length(educ_vista),
+                  ncol = length(iq_vista))
+print(z_vista)
+persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
+      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
+      col = "lightblue", ticktype = "detailed")
 ```
 
 ### Cómo leer el resultado
 
-La diferencia entre 13 y 12 años, manteniendo IQ = 100, coincide con la pendiente de educación. Es una diferencia de predicciones del modelo, no una comparación causal garantizada entre personas.
+Con IQ = 90, la predicción sube de USD 838,22 a USD 880,28 al pasar de 12 a 13 años de educación. Con IQ = 100, sube de USD 889,60 a USD 931,65. Calculada antes de redondear, la diferencia es USD 42,06 en ambos casos. En la matriz, baja una fila dentro de una columna para comparar educación con IQ fijo. Al pasar de una columna a otra manteniendo la fila, cambia el IQ y se conserva la educación. El gráfico usa esos cuatro valores como las esquinas de un tramo del plano.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
   educ  IQ salario_predicho
-1   12 100         889.5973
-2   13 100         931.6549
-       2
-42.05762
-    educ
-42.05762
+1   12  90         838.2177
+2   13  90         880.2753
+3   12 100         889.5973
+4   13 100         931.6549
+         [,1]     [,2]
+[1,] 838.2177 889.5973
+[2,] 880.2753 931.6549
 ```
 
 </details>
 
 ### Comprueba lo aprendido
 
-¿Qué se mantiene constante cuando se interpreta la pendiente de educación?
+¿Qué celdas comparas para medir el cambio de 12 a 13 años con IQ = 100?
 
 <details><summary>Mostrar respuesta</summary>
 
-Las otras variables incluidas: aquí, IQ.
+Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde a IQ = 100.
+
+</details>
+
+## 07 · ANOVA interactiva del modelo de salario
+
+La tabla muestra cuánto disminuye la suma de residuos al cuadrado al incorporar educación e IQ. Cambia el orden de entrada para comparar cómo se reparte la variación explicada.
+
+### En R · Tu turno
+
+### El código, paso a paso
+
+**`anova(multiple)`**
+
+Con un solo modelo, anova() construye una tabla secuencial. La fila educ mide la reducción de la suma de cuadrados residual al pasar del intercepto solo a educación. La fila IQ mide la reducción adicional al agregar IQ.
+
+**`Df, Sum Sq y Mean Sq`**
+
+Df cuenta grados de libertad. Sum Sq muestra la suma de cuadrados asociada a cada fila. Mean Sq divide esa suma por sus grados de libertad. Residuals muestra la variación que queda tras ajustar ambos regresores.
+
+**`F value y Pr(>F)`**
+
+Para cada término, F divide su cuadrado medio por el cuadrado medio residual del modelo completo. Pr(>F) es el valor p de esa prueba secuencial.
+
+**`lm(wage ~ IQ + educ, data = datos)`**
+
+Invierte el orden de entrada. Conserva los regresores y los valores ajustados. Cambia cuánto se atribuye a cada variable al entrar primero o segundo.
+
+```r
+# Modelo solicitado. Educación entra primero e IQ después.
+multiple <- lm(wage ~ educ + IQ, data = datos)
+anova_wage <- anova(multiple)
+print(anova_wage)
+
+# Mismos regresores con el orden invertido
+multiple_iq_primero <- lm(wage ~ IQ + educ, data = datos)
+anova_wage_invertida <- anova(multiple_iq_primero)
+print(anova_wage_invertida)
+```
+
+### Cómo leer el resultado
+
+Con educación primero, la fila IQ responde cuánto aporta IQ después de incluir educación. Para leer el aporte de educación después de IQ, usa el orden invertido. En ambos órdenes se conserva la suma de cuadrados residual del modelo completo.
+
+<details><summary>Resultados de referencia ejecutados en R</summary>
+
+```text
+Analysis of Variance Table
+
+Response: wage
+           Df    Sum Sq  Mean Sq F value    Pr(>F)
+educ        1  16340645 16340645 115.135 < 2.2e-16 ***
+IQ          1   4100932  4100932  28.895  9.66e-08 ***
+Residuals 932 132274591   141926
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Analysis of Variance Table
+
+Response: wage
+           Df    Sum Sq  Mean Sq F value    Pr(>F)
+IQ          1  14589783 14589783 102.799 < 2.2e-16 ***
+educ        1   5851794  5851794  41.231 2.152e-10 ***
+Residuals 932 132274591   141926
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+```
+
+</details>
+
+### Comprueba lo aprendido
+
+¿Qué fila muestra el aporte de IQ una vez incluida educación?
+
+<details><summary>Mostrar respuesta</summary>
+
+La fila IQ de la tabla con educación primero.
 
 </details>
 
@@ -547,13 +556,43 @@ No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variació
 
 ## 09 · Construir X, y y el vector de parámetros
 
-Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.
+Ejecuta el bloque completo para crear la tabla de cinco personas, ajustar el modelo y obtener sus coeficientes y predicciones. Después examina la matriz X y el vector y que corresponden al mismo ajuste.
 
 $$y=X\beta+u,\quad X:\ n\times(k+1),\quad\beta:\ (k+1)\times1$$
 
-### En R · Tu turno
+```r
+# Cinco observaciones del ejemplo
+ejemplo <- data.frame(
+  persona = c("Juan", "Pedro", "Sofía", "Caro", "Alex"),
+  experiencia = c(12, 18, 14, 12, 11),
+  educacion = c(93, 119, 108, 96, 74),
+  salario = c(769, 808, 825, 650, 562)
+)
+modelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)
+print(coef(modelo5))
+print(data.frame(ejemplo, prediccion = fitted(modelo5)))
+
+# Matriz de diseño y respuesta
+X <- model.matrix(modelo5)
+y <- ejemplo$salario
+print(X)
+print(y)
+print(dim(X))
+print(length(y))
+print(colnames(X))
+X_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
+print(identical(as.vector(X), as.vector(X_manual)))
+```
 
 ### El código, paso a paso
+
+**`ejemplo <- data.frame(...)`**
+
+Crea la tabla exhibida en la lámina. Cada posición de los cuatro vectores corresponde a la misma persona.
+
+**`lm(salario ~ experiencia + educacion, data = ejemplo)`**
+
+Ajusta el salario con intercepto, experiencia y educación. coef() muestra los tres coeficientes. fitted() devuelve las cinco predicciones para las filas de ejemplo, en su orden original.
 
 **`model.matrix(modelo5)`**
 
@@ -575,18 +614,6 @@ El operador $ extrae una columna por nombre. Aquí devuelve el vector de salario
 
 as.vector() lee los valores por columnas y elimina dimensiones y nombres. identical() exige que ambos vectores sean exactamente iguales en valores y tipo. Así comprobamos las entradas de las matrices aunque los nombres de columnas difieran.
 
-```r
-X <- model.matrix(modelo5)
-y <- ejemplo$salario
-print(X)
-print(y)
-print(dim(X))
-print(length(y))
-print(colnames(X))
-X_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
-print(identical(as.vector(X), as.vector(X_manual)))
-```
-
 ### Cómo leer el resultado
 
 model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.
@@ -594,6 +621,14 @@ model.matrix() construye X con los valores de los regresores que entran al ajust
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
+(Intercept) experiencia   educacion
+ 140.586358  -16.789532    8.236667
+  persona experiencia educacion salario prediccion
+1    Juan          12        93     769   705.1220
+2   Pedro          18       119     808   818.5382
+3   Sofía          14       108     825   795.0930
+4    Caro          12        96     650   729.8320
+5    Alex          11        74     562   565.4149
   (Intercept) experiencia educacion
 1           1          12        93
 2           1          18       119

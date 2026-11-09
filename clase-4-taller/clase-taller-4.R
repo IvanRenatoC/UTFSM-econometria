@@ -23,21 +23,6 @@ str(datos)
 summary(datos)
 head(datos)
 
-modelo_vista <- lm(wage ~ educ + IQ, data = datos)
-educ_vista <- c(12, 13)
-iq_vista <- c(90, 100)
-rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
-pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
-print(data.frame(rejilla_vista, salario_predicho = pred_vista))
-
-# Filas de educación y columnas de IQ
-z_vista <- matrix(pred_vista, nrow = length(educ_vista),
-                  ncol = length(iq_vista))
-print(z_vista)
-persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
-      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
-      col = "lightblue", ticktype = "detailed")
-
 # a) Modelo simple
 simple <- lm(wage ~ educ, data = datos)
 # b) Modelo múltiple
@@ -59,15 +44,30 @@ abline(a = b["(Intercept)"] + b["IQ"] * iq_referencia,
 legend("topleft", legend = c("a) Solo educación", "b) Educación + IQ (IQ = 100)"),
        col = c("#D6A600", "#B93E42"), lwd = 3, lty = c(1, 2), bty = "n")
 
-nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))
-predicciones <- predict(multiple, newdata = nuevos)
-print(data.frame(nuevos, salario_predicho = predicciones))
-print(diff(predicciones))
-print(coef(multiple)["educ"])
-rejilla <- data.frame(educ = seq(9, 18, length.out = 50), IQ = 100)
-plot(rejilla$educ, predict(multiple, newdata = rejilla), type = "l",
-     col = "#005F96", lwd = 3, xlab = "Educación (años)",
-     ylab = "Salario mensual predicho (USD)")
+modelo_vista <- lm(wage ~ educ + IQ, data = datos)
+educ_vista <- c(12, 13)
+iq_vista <- c(90, 100)
+rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
+pred_vista <- predict(modelo_vista, newdata = rejilla_vista)
+print(data.frame(rejilla_vista, salario_predicho = pred_vista))
+
+# Filas de educación y columnas de IQ
+z_vista <- matrix(pred_vista, nrow = length(educ_vista),
+                  ncol = length(iq_vista))
+print(z_vista)
+persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
+      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
+      col = "lightblue", ticktype = "detailed")
+
+# Modelo solicitado. Educación entra primero e IQ después.
+multiple <- lm(wage ~ educ + IQ, data = datos)
+anova_wage <- anova(multiple)
+print(anova_wage)
+
+# Mismos regresores con el orden invertido
+multiple_iq_primero <- lm(wage ~ IQ + educ, data = datos)
+anova_wage_invertida <- anova(multiple_iq_primero)
+print(anova_wage_invertida)
 
 ejemplo <- data.frame(
   persona = c("Juan", "Pedro", "Sofía", "Caro", "Alex"),
@@ -80,6 +80,18 @@ print(coef(modelo5))
 print(data.frame(ejemplo, ajustado = fitted(modelo5), residuo = resid(modelo5)))
 print(sum(resid(modelo5)^2))
 
+# Cinco observaciones del ejemplo
+ejemplo <- data.frame(
+  persona = c("Juan", "Pedro", "Sofía", "Caro", "Alex"),
+  experiencia = c(12, 18, 14, 12, 11),
+  educacion = c(93, 119, 108, 96, 74),
+  salario = c(769, 808, 825, 650, 562)
+)
+modelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)
+print(coef(modelo5))
+print(data.frame(ejemplo, prediccion = fitted(modelo5)))
+
+# Matriz de diseño y respuesta
 X <- model.matrix(modelo5)
 y <- ejemplo$salario
 print(X)
