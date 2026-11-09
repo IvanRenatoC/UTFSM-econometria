@@ -10,7 +10,7 @@ Ejecuta en orden con kernel R. En Google Colab selecciona R como tipo de entorno
 |---|---|
 | 18:50–19:10 | Del modelo simple al múltiple |
 | 19:10–19:25 | MCO con dos regresores |
-| 19:25–19:45 | Notación y operaciones matriciales |
+| 19:25–19:45 | Notación matricial |
 | 19:45–20:00 | Modelo completo y ANOVA |
 | 20:00–20:15 | Descanso |
 | 20:15–20:35 | Coeficientes y significancia |
@@ -602,78 +602,7 @@ La tercera columna es la de unos para el intercepto.
 
 </details>
 
-## 10 · Transpuesta y producto matricial: t() y %*%
-
-Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.
-
-$$(X^\top X)_{23}=\sum_{i=1}^5x_{i1}x_{i2}$$
-
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`t(X)`**
-
-Intercambia filas y columnas: de 5 × 3 pasa a 3 × 5.
-
-**`t(X) %*% X`**
-
-Producto matricial. Las dimensiones interiores deben coincidir: (3 × 5)(5 × 3) da 3 × 3.
-
-**`X[, 2] * X[, 3]`**
-
-Multiplica las dos columnas elemento a elemento. sum() produce el producto interno que aparece en XtX[2,3].
-
-```r
-XtX <- t(X) %*% X
-Xty <- t(X) %*% y
-print(XtX)
-print(Xty)
-print(dim(XtX))
-print(sum(X[, 2] * X[, 3]))
-print(XtX[2, 3])
-print(head(X * X))
-```
-
-### Cómo leer el resultado
-
-La entrada (2,3) de XᵀX es la suma de experiencia × educación. %*% multiplica matrices mediante sumas de productos; * multiplica elemento a elemento. XᵀX es 3 × 3; Xᵀy es 3 × 1.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
-
-```text
-            (Intercept) experiencia educacion
-(Intercept)           5          67       490
-experiencia          67         929      6736
-educacion           490        6736     49166
-              [,1]
-(Intercept)   3614
-experiencia  49304
-educacion   360757
-[1] 3 3
-[1] 6736
-[1] 6736
-  (Intercept) experiencia educacion
-1           1         144      8649
-2           1         324     14161
-3           1         196     11664
-4           1         144      9216
-5           1         121      5476
-```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿X * X es lo mismo que t(X) %*% X?
-
-<details><summary>Mostrar respuesta</summary>
-
-No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.
-
-</details>
-
-## 11 · Modelo completo de salario y tabla ANOVA
+## 10 · Modelo completo de salario y tabla ANOVA
 
 Recupera las 17 columnas de wage2 desde original. Para predecir wage, usa los 15 regresores disponibles y deja lwage para la exploración de correlaciones. Como lwage se calcula a partir de wage, incorporarlo usaría información de la respuesta para predecirla.
 
@@ -752,7 +681,7 @@ Cada fila mide el aporte de un término después de los que lo preceden.
 
 </details>
 
-## 12 · Coeficientes, significancia y medidas de ajuste
+## 11 · Coeficientes, significancia y medidas de ajuste
 
 Usa summary() para interpretar cada coeficiente del modelo completo. Aplica un nivel de significancia del 5 % y guarda R² y R² ajustado para comparar después.
 
@@ -770,7 +699,7 @@ rownames() recupera el término de cada fila. ifelse() revisa la condición para
 
 **`r.squared y adj.r.squared`**
 
-R² mide la proporción de variación muestral explicada. R² ajustado tiene en cuenta el número de regresores y observaciones. Los guardamos como números para usarlos en la lámina 14.
+R² mide la proporción de variación muestral explicada. R² ajustado tiene en cuenta el número de regresores y observaciones. Los guardamos como números para usarlos en la lámina 13.
 
 ```r
 resumen_completo <- summary(modelo_completo)
@@ -867,7 +796,7 @@ Con ese umbral, los datos no aportan evidencia suficiente para rechazar que el c
 
 </details>
 
-## 13 · Correlaciones y modelo reducido
+## 12 · Correlaciones y modelo reducido
 
 Explora las 17 columnas con pairs() y cor(). Luego filtra los regresores con p < 0,05. Entre dos regresores que pasen el filtro y tengan |r| ≥ 0,50, conserva el que tenga menor valor p en el modelo completo.
 
@@ -969,7 +898,7 @@ Educación, porque tiene el menor valor p en el ajuste completo entre esas dos v
 
 </details>
 
-## 14 · Comparar R² y R² ajustado
+## 13 · Comparar R² y R² ajustado
 
 Compara el modelo completo y el reducido sobre las mismas 663 filas y la misma variable respuesta. Revisa cuánto ajuste se pierde al retirar regresores y cómo cambia el ajuste al considerar el número de parámetros.
 
@@ -1024,7 +953,7 @@ Los dos ajustes usan la misma respuesta y las mismas observaciones.
 
 </details>
 
-## 15 · Ejercicio en clase
+## 14 · Ejercicio en clase
 
 Abre un Google Colab nuevo y selecciona un entorno con R. Copia este código y ejecútalo para cargar la base.
 
