@@ -404,9 +404,9 @@
     {
       "id": "C4-09",
       "titulo": "Construir X, y y el vector de parámetros",
-      "texto": "Ejecuta el bloque completo para crear la tabla de cinco personas, ajustar el modelo y obtener sus coeficientes y predicciones. Después examina la matriz X y el vector y que corresponden al mismo ajuste.",
-      "codigo": "# Cinco observaciones del ejemplo\nejemplo <- data.frame(\n  persona = c(\"Juan\", \"Pedro\", \"Sofía\", \"Caro\", \"Alex\"),\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nmodelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)\nprint(coef(modelo5))\nprint(data.frame(ejemplo, prediccion = fitted(modelo5)))\n\n# Matriz de diseño y respuesta\nX <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(identical(as.vector(X), as.vector(X_manual)))",
-      "lectura": "model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.",
+      "texto": "Compara el salario observado con el predicho para cada persona. El segmento une ambos valores y su longitud muestra el tamaño del residuo. Selecciona una persona para ver la resta con signo y la fila de X que produce su predicción.",
+      "codigo": "# Cinco observaciones del ejemplo\nejemplo <- data.frame(\n  persona = c(\"Juan\", \"Pedro\", \"Sofía\", \"Caro\", \"Alex\"),\n  experiencia = c(12, 18, 14, 12, 11),\n  educacion = c(93, 119, 108, 96, 74),\n  salario = c(769, 808, 825, 650, 562)\n)\nmodelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)\nprint(coef(modelo5))\npredicho5 <- fitted(modelo5)\nresiduo5 <- resid(modelo5)\nprint(data.frame(ejemplo, prediccion = predicho5, residuo = residuo5))\n\n# Comparar cada salario observado con su predicción\nposicion <- 5:1\nplot(ejemplo$salario, posicion, type = \"n\", yaxt = \"n\",\n     xlim = range(c(ejemplo$salario, predicho5)),\n     xlab = \"Salario (unidades del ejemplo)\", ylab = \"\",\n     main = \"Salario observado y predicho\")\naxis(2, at = posicion, labels = ejemplo$persona, las = 1)\nsegments(predicho5, posicion, ejemplo$salario, posicion, col = \"gray50\", lwd = 2)\npoints(ejemplo$salario, posicion, pch = 19, col = \"#005F96\")\npoints(predicho5, posicion, pch = 18, col = \"#B93E42\")\nlegend(\"bottomright\", legend = c(\"Observado\", \"Predicho\"),\n       pch = c(19, 18), col = c(\"#005F96\", \"#B93E42\"), bty = \"n\")\n\n# Matriz de diseño y respuesta\nX <- model.matrix(modelo5)\ny <- ejemplo$salario\nprint(X)\nprint(y)\nprint(dim(X))\nprint(length(y))\nprint(colnames(X))\nX_manual <- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)\nprint(identical(as.vector(X), as.vector(X_manual)))",
+      "lectura": "El residuo estimado es salario observado menos salario predicho. Si el círculo azul está a la derecha del rombo rojo, el residuo es positivo y el modelo predice un valor menor que el observado. Si queda a la izquierda, el residuo es negativo. model.matrix() construye X con los valores de los regresores que entran al ajuste.",
       "pasos": [
         [
           "ejemplo <- data.frame(...)",
@@ -415,6 +415,10 @@
         [
           "lm(salario ~ experiencia + educacion, data = ejemplo)",
           "Ajusta el salario con intercepto, experiencia y educación. coef() muestra los tres coeficientes. fitted() devuelve las cinco predicciones para las filas de ejemplo, en su orden original."
+        ],
+        [
+          "axis(), segments() y points()",
+          "axis(2, ...) coloca los nombres en el eje vertical. segments() une la predicción con el valor observado en la misma fila. points() dibuja el círculo observado y el rombo predicho. type = \"n\" prepara los ejes y yaxt = \"n\" deja espacio para el eje con nombres."
         ],
         [
           "model.matrix(modelo5)",
