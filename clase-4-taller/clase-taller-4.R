@@ -59,15 +59,8 @@ persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
       xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
       col = "lightblue", ticktype = "detailed")
 
-# Modelo solicitado. Educación entra primero e IQ después.
-multiple <- lm(wage ~ educ + IQ, data = datos)
 anova_wage <- anova(multiple)
 print(anova_wage)
-
-# Mismos regresores con el orden invertido
-multiple_iq_primero <- lm(wage ~ IQ + educ, data = datos)
-anova_wage_invertida <- anova(multiple_iq_primero)
-print(anova_wage_invertida)
 
 ejemplo <- data.frame(
   persona = c("Juan", "Pedro", "Sofía", "Caro", "Alex"),
