@@ -24,6 +24,8 @@ El modelo ajustado se escribe Ŷ = Xβ̂: Ŷ contiene las predicciones y β̂ lo
 
 $$\widehat{Y}=X\widehat{\beta}\qquad \widehat{Y}_i=\sum_{j=1}^{p}\widehat{\beta}_jX_{ij},\quad X_{i1}=1,\quad p=k+1$$
 
+### En R · Tu turno
+
 ### El código, paso a paso
 
 **`demo <- data.frame(y = c(...), x1 = c(...), x2 = c(...))`**
@@ -220,21 +222,42 @@ No: es una puntuación. Un punto de IQ y un año de educación son unidades dife
 
 </details>
 
-## 04 · ¿Cuánto cambia el salario predicho con un año más de educación?
+## 04 · El plano de predicción y los vectores de MCO
+
+El plano da el salario mensual predicho para cada combinación de educación e IQ. Cada eje representa una variable. Fija el IQ para recorrer una recta sobre el plano y leer cómo cambia el salario predicho al aumentar la educación.
+
+$$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ\qquad IQ=c\Rightarrow\widehat{wage}=(\widehat\beta_0+\widehat\beta_2c)+\widehat\beta_1\,educ\qquad Y=\widehat Y+\widehat u,\quad \widehat Y=X\widehat\beta$$
+
+### Vectores y notación
+
+- **β̂**. Vector de coeficientes estimados. β̂₀ es el intercepto, β̂₁ es el cambio en el salario predicho por un año adicional de educación con IQ fijo y β̂₂ es el cambio por un punto adicional de IQ con educación fija.
+- **Y**. Vector de salarios observados. Tiene un valor por trabajador de la muestra.
+- **Ŷ = Xβ̂**. Vector de salarios predichos para esos mismos trabajadores. Cada fila de X aporta el 1 del intercepto, los años de educación y el IQ de un trabajador.
+- **û = Y − Ŷ**. Vector de residuos. Cada entrada es la diferencia entre el salario observado y el predicho. En el esquema de proyección, û es perpendicular a Col(X).
+- **v**. Otro vector posible de predicciones dentro de Col(X). El segmento Y − v muestra el error que resulta al elegir v. MCO elige Ŷ para minimizar la suma de los errores al cuadrado.
+- **Col(X)**. Espacio generado por las columnas de X. Contiene los vectores de predicciones posibles. El gráfico del plano usa los ejes de las variables. El esquema de proyección representa los vectores en el espacio de las observaciones.
+
+### Cómo leer el resultado
+
+En el plano, el corte con IQ fijo permite leer la pendiente de educación. En el esquema de proyección, la distancia de Y a Ŷ representa el tamaño del vector de residuos.
+
+### Comprueba lo aprendido
+
+¿Qué vector reúne las diferencias entre los salarios observados y los predichos?
+
+<details><summary>Mostrar respuesta</summary>
+
+El vector de residuos û = Y − Ŷ.
+
+</details>
+
+## 05 · ¿Cuánto cambia el salario predicho con un año más de educación?
 
 Comparemos el salario mensual predicho para 12 y 13 años de educación. Primero fijamos IQ en 90 y comparamos esas dos predicciones. Luego repetimos la comparación con IQ en 100. El objetivo es distinguir el cambio por un año más de educación del cambio de nivel al elegir otro IQ.
 
-$$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ\qquad IQ=c\Rightarrow\widehat{wage}=(\widehat\beta_0+\widehat\beta_2c)+\widehat\beta_1\,educ$$
+### En R · Tu turno
 
 ### El código, paso a paso
-
-**`Dos geometrías diferentes`**
-
-El plano de predicción usa los ejes educación, IQ y salario. La proyección MCO ocurre en el espacio de las n observaciones. Col(X) reúne todas las combinaciones lineales de las columnas de X, es decir, todos los vectores de predicciones que el modelo puede producir.
-
-**`Proyección MCO: Y = Ŷ + û`**
-
-MCO proyecta Y sobre Col(X) para obtener Ŷ. El residuo û es perpendicular a ese espacio. Si eliges otro vector de predicciones v dentro de Col(X), su distancia a Y será mayor.
 
 **`expand.grid(educ = ..., IQ = ...)`**
 
@@ -302,11 +325,13 @@ Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde 
 
 </details>
 
-## 05 · Del modelo simple al múltiple
+## 06 · Del modelo simple al múltiple
 
 El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.
 
 $$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -372,11 +397,13 @@ No. Aquí cambia según la relación entre las variables. Puede aumentar, dismin
 
 </details>
 
-## 06 · Ceteris paribus: mover educación y dejar IQ fijo
+## 07 · Ceteris paribus: mover educación y dejar IQ fijo
 
 Usa los controles para comparar salarios predichos a un IQ fijo. Después cambia IQ: se desplaza la recta condicional, pero la pendiente de educación se conserva porque este modelo no incluye interacciones.
 
 $$\Delta\widehat{wage}=\widehat\beta_1\Delta educ\quad\text{con IQ fijo}$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -436,11 +463,13 @@ Las otras variables incluidas: aquí, IQ.
 
 </details>
 
-## 07 · MCO: elegir el plano que reduce los residuos
+## 08 · MCO: elegir el plano que reduce los residuos
 
 En el modelo múltiple elegimos tres coeficientes para minimizar la suma de residuos al cuadrado. La ilustración usa los cinco datos de la cátedra para poder seguir cada observación.
 
 $$\min_{b_0,b_1,b_2}\sum_i(y_i-b_0-b_1x_{i1}-b_2x_{i2})^2$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -499,11 +528,13 @@ No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variació
 
 </details>
 
-## 08 · Construir X, y y el vector de parámetros
+## 09 · Construir X, y y el vector de parámetros
 
 Cada fila de X representa una persona. La columna de unos permite estimar el intercepto. Recorre las filas para ver qué datos entran en cada ecuación.
 
 $$y=X\beta+u,\quad X:\ n\times(k+1),\quad\beta:\ (k+1)\times1$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -573,11 +604,13 @@ La tercera columna es la de unos para el intercepto.
 
 </details>
 
-## 09 · Transpuesta y producto matricial: t() y %*%
+## 10 · Transpuesta y producto matricial: t() y %*%
 
 Selecciona una celda de XᵀX: verás qué dos columnas se multiplican y suman para obtenerla. La transpuesta convierte filas en columnas.
 
 $$(X^\top X)_{23}=\sum_{i=1}^5x_{i1}x_{i2}$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -642,11 +675,13 @@ No. X * X mantiene la dimensión 5 × 3 y eleva cada celda al cuadrado.
 
 </details>
 
-## 10 · Calcular los coeficientes con solve() y compararlos con lm()
+## 11 · Calcular los coeficientes con solve() y compararlos con lm()
 
 Primero reproducimos la fórmula de la cátedra. Después resolvemos las ecuaciones normales sin formar explícitamente la inversa.
 
 $$\widehat\beta=(X^\top X)^{-1}X^\top y$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -715,11 +750,13 @@ No. Redondea solo al mostrar; conserva precisión durante los cálculos.
 
 </details>
 
-## 11 · Verificar las propiedades algebraicas de MCO
+## 12 · Verificar las propiedades algebraicas de MCO
 
 Comprueba las condiciones de primer orden con los mismos cinco datos. Son propiedades del ajuste con intercepto, no supuestos sobre la distribución del error.
 
 $$X^\top\widehat u=0,\quad\bar y=\overline{\widehat y}$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -775,9 +812,11 @@ No. Se cumplen algebraicamente en el ajuste MCO con intercepto, aunque la especi
 
 </details>
 
-## 12 · Rango completo: cuándo falla la inversa
+## 13 · Rango completo: cuándo falla la inversa
 
 Duplica deliberadamente una columna para reconocer la colinealidad exacta. Este es un ejemplo de diagnóstico, no una instrucción para construir el modelo final.
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -838,11 +877,13 @@ No. Puede haber columnas duplicadas o combinaciones lineales exactas.
 
 </details>
 
-## 13 · R² y R² ajustado: comparar sobre la misma muestra
+## 14 · R² y R² ajustado: comparar sobre la misma muestra
 
 Usa la botonera para cambiar de modelo. La comparación utiliza siempre las mismas 935 personas y la misma variable dependiente.
 
 $$R^2=1-\frac{SSR}{SST},\quad\overline R^2=1-\frac{n-1}{n-k-1}\frac{SSR}{SST}$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -903,9 +944,11 @@ La comparación deja de aislar el cambio de regresores. Aquí fijamos tanto la m
 
 </details>
 
-## 14 · La trampa de agregar variables de ruido
+## 15 · La trampa de agregar variables de ruido
 
 Un experimento simulado separa ajuste dentro de muestra de información real. Mueve el número de variables añadidas y observa qué medida sube o baja.
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -992,9 +1035,11 @@ No. Puede subir por una asociación accidental en una muestra. La simulación mu
 
 </details>
 
-## 15 · Interpretar summary() y ANOVA en el ejemplo de cátedra
+## 16 · Interpretar summary() y ANOVA en el ejemplo de cátedra
 
 Abre los componentes para identificar estimaciones, incertidumbre, grados de libertad y suma de cuadrados. Aquí n = 5 y k = 2: solo quedan dos grados de libertad residuales.
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -1072,9 +1117,11 @@ No en general. La primera fila entra antes de educación; la prueba t del modelo
 
 </details>
 
-## 16 · Ejercicio guiado: estimar y explicar una regresión múltiple real
+## 17 · Ejercicio guiado: estimar y explicar una regresión múltiple real
 
 Con wage2, escribe el modelo wage ~ educ + IQ. Compara los coeficientes, calcula la predicción para educ = 12 e IQ = 100 y comprueba la fórmula matricial. Intenta resolverlo antes de desplegar el código.
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -1171,11 +1218,13 @@ Su valor, sus unidades, qué variables se mantienen constantes y la incertidumbr
 
 </details>
 
-## 17 · Inversa por cofactores: elegir un menor
+## 18 · Inversa por cofactores: elegir un menor
 
 Usamos A = XᵀX del ejemplo de cinco personas. Al seleccionar una celda, se destaca la fila y columna que se eliminan para formar el menor 2 × 2.
 
 $$C_{ij}=(-1)^{i+j}\det(A_{-i,-j})$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -1232,11 +1281,13 @@ No. Depende también del factor (−1)^(i+j).
 
 </details>
 
-## 18 · Cofactores, adjunta, determinante e inversa
+## 19 · Cofactores, adjunta, determinante e inversa
 
 Construye la matriz de cofactores mediante dos ciclos for. Luego transpón y divide por el determinante. Recorre los pasos en la animación.
 
 $$A^{-1}=\frac{C^\top}{\det(A)}$$
+
+### En R · Tu turno
 
 ### El código, paso a paso
 
@@ -1308,9 +1359,11 @@ No. Es su transpuesta; aquí coinciden por simetría.
 
 </details>
 
-## 19 · Cerrar el recorrido: de los datos a la predicción
+## 20 · Cerrar el recorrido: de los datos a la predicción
 
 Ejecuta este bloque completo con los cinco datos, sin depender de variables anteriores. Reproduce el cálculo matricial, las predicciones, el resumen y la ANOVA. Después explica cada resultado con tus palabras.
+
+### En R · Tu turno
 
 ### El código, paso a paso
 

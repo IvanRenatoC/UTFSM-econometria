@@ -13,7 +13,7 @@ Horario: 18:50 a 21:25; descanso de 20:00 a 20:15. Son 140 minutos efectivos.
 
 La lámina inicial presenta Ŷ = Xβ̂, su versión por observación y los argumentos principales de lm(). Antes de comparar modelos se distinguen el plano de predicción y la proyección MCO. La recta con IQ fijo incluye un botón para restablecer IQ = 100 y educación = 12.
 
-19 láminas distribuidas en los siete temas de la cátedra: del simple al múltiple; MCO con k variables; notación matricial; fórmula y propiedades; R² y R² ajustado; ejemplo y salida de R; inversa por cofactores.
+20 láminas distribuidas en los siete temas de la cátedra: del simple al múltiple; MCO con k variables; notación matricial; fórmula y propiedades; R² y R² ajustado; ejemplo y salida de R; inversa por cofactores.
 
 Los gráficos usan resultados calculados por el mismo código R del notebook. Se incluyen `wage2` (935 observaciones), el ejemplo numérico de cinco personas de la cátedra y una simulación de variables de ruido. Los valores de educación 74 a 119 del ejemplo de cinco personas son valores didácticos; no se interpretan como años reales.
 
