@@ -1,5 +1,12 @@
 # Clase 4: ejecutar desde clase-4-taller/ o con kernel R en Colab.
 
+demo <- data.frame(y = c(4, 6, 7, 9, 8, 11),
+                   x1 = c(1, 2, 3, 4, 2, 5),
+                   x2 = c(2, 1, 3, 2, 4, 3))
+modelo_demo <- lm(y ~ x1 + x2, data = demo, na.action = na.exclude)
+print(coef(modelo_demo))
+print(fitted(modelo_demo))
+
 if (file.exists("datos/wage2.csv")) {
   original <- read.csv("datos/wage2.csv")
 } else {
@@ -15,6 +22,17 @@ print(c(filas_originales = nrow(original), filas_usadas = nrow(datos)))
 str(datos)
 summary(datos)
 head(datos)
+
+modelo_vista <- lm(wage ~ educ + IQ, data = datos)
+educ_vista <- seq(9, 18, length.out = 20)
+iq_vista <- seq(75, 125, length.out = 20)
+rejilla_vista <- expand.grid(educ = educ_vista, IQ = iq_vista)
+z_vista <- matrix(predict(modelo_vista, newdata = rejilla_vista),
+                  nrow = length(educ_vista), ncol = length(iq_vista))
+persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
+      xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
+      col = "lightblue", ticktype = "detailed")
+print(coef(modelo_vista))
 
 simple <- lm(wage ~ educ, data = datos)
 multiple <- lm(wage ~ educ + IQ, data = datos)
