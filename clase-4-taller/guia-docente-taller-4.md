@@ -502,7 +502,7 @@ No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variació
 
 ## 09 · Construir X, y y el vector de parámetros
 
-Ejecuta el bloque completo para crear la tabla de cinco personas, ajustar el modelo y obtener sus coeficientes y predicciones. Después examina la matriz X y el vector y que corresponden al mismo ajuste.
+Compara el salario observado con el predicho para cada persona. El segmento une ambos valores y su longitud muestra el tamaño del residuo. Selecciona una persona para ver la resta con signo y la fila de X que produce su predicción.
 
 $$y=X\beta+u,\quad X:\ n\times(k+1),\quad\beta:\ (k+1)\times1$$
 
@@ -516,7 +516,22 @@ ejemplo <- data.frame(
 )
 modelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)
 print(coef(modelo5))
-print(data.frame(ejemplo, prediccion = fitted(modelo5)))
+predicho5 <- fitted(modelo5)
+residuo5 <- resid(modelo5)
+print(data.frame(ejemplo, prediccion = predicho5, residuo = residuo5))
+
+# Comparar cada salario observado con su predicción
+posicion <- 5:1
+plot(ejemplo$salario, posicion, type = "n", yaxt = "n",
+     xlim = range(c(ejemplo$salario, predicho5)),
+     xlab = "Salario (unidades del ejemplo)", ylab = "",
+     main = "Salario observado y predicho")
+axis(2, at = posicion, labels = ejemplo$persona, las = 1)
+segments(predicho5, posicion, ejemplo$salario, posicion, col = "gray50", lwd = 2)
+points(ejemplo$salario, posicion, pch = 19, col = "#005F96")
+points(predicho5, posicion, pch = 18, col = "#B93E42")
+legend("bottomright", legend = c("Observado", "Predicho"),
+       pch = c(19, 18), col = c("#005F96", "#B93E42"), bty = "n")
 
 # Matriz de diseño y respuesta
 X <- model.matrix(modelo5)
@@ -540,6 +555,10 @@ Crea la tabla exhibida en la lámina. Cada posición de los cuatro vectores corr
 
 Ajusta el salario con intercepto, experiencia y educación. coef() muestra los tres coeficientes. fitted() devuelve las cinco predicciones para las filas de ejemplo, en su orden original.
 
+**`axis(), segments() y points()`**
+
+axis(2, ...) coloca los nombres en el eje vertical. segments() une la predicción con el valor observado en la misma fila. points() dibuja el círculo observado y el rombo predicho. type = "n" prepara los ejes y yaxt = "n" deja espacio para el eje con nombres.
+
 **`model.matrix(modelo5)`**
 
 Recibe modelo5, el objeto devuelto por lm(salario ~ experiencia + educacion, data = ejemplo). Lee la fórmula y las observaciones usadas en el ajuste. Devuelve X, una matriz numérica de 5 filas y 3 columnas. Cada fila es una persona. Las columnas son (Intercept), experiencia y educacion, en el mismo orden que coef(modelo5). La primera fila es [1, 12, 93]. El 1 multiplica al intercepto. Las otras dos entradas multiplican a sus pendientes. Salario queda en el vector y. X se usará para calcular los coeficientes con álgebra matricial y para obtener ŷ = Xβ̂.
@@ -562,19 +581,19 @@ as.vector() lee los valores por columnas y elimina dimensiones y nombres. identi
 
 ### Cómo leer el resultado
 
-model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.
+El residuo estimado es salario observado menos salario predicho. Si el círculo azul está a la derecha del rombo rojo, el residuo es positivo y el modelo predice un valor menor que el observado. Si queda a la izquierda, el residuo es negativo. model.matrix() construye X con los valores de los regresores que entran al ajuste.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
 (Intercept) experiencia   educacion
  140.586358  -16.789532    8.236667
-  persona experiencia educacion salario prediccion
-1    Juan          12        93     769   705.1220
-2   Pedro          18       119     808   818.5382
-3   Sofía          14       108     825   795.0930
-4    Caro          12        96     650   729.8320
-5    Alex          11        74     562   565.4149
+  persona experiencia educacion salario prediccion    residuo
+1    Juan          12        93     769   705.1220  63.877990
+2   Pedro          18       119     808   818.5382 -10.538161
+3   Sofía          14       108     825   795.0930  29.907049
+4    Caro          12        96     650   729.8320 -79.832011
+5    Alex          11        74     562   565.4149  -3.414868
   (Intercept) experiencia educacion
 1           1          12        93
 2           1          18       119

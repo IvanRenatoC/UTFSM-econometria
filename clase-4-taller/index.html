@@ -116,7 +116,7 @@ print(sum(resid(modelo5)^2))</code></pre></div></details><div class="reading"><h
 3   Sofía          14       108     825 795.0930  29.907049
 4    Caro          12        96     650 729.8320 -79.832011
 5    Alex          11        74     562 565.4149  -3.414868
-[1] 11470.69</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Minimizar residuos al cuadrado obliga a que todos los residuos sean cero?</p><details><summary>Mostrar respuesta</summary><p>No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variación sin explicar.</p></details></div></details><p class="data-note"><a href="#C4-08">Enlace a esta lámina ↗</a></p></div></article></section><section id="tema3"><div class="chapter-intro"><p class="eyebrow">Tema 3</p><h2>Parte 1 · Notación matricial</h2></div><article class="slide" id="C4-09" data-title="Construir X, y y el vector de parámetros"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-09"><span class="slide-chevron" aria-hidden="true">▶</span><span>Construir X, y y el vector de parámetros</span></button></h3><span class="number">LÁMINA 09</span></header><div class="slide-body" id="body-C4-09" hidden><p class="data-note">Tema 3 · Cátedra 4 · Aplicación en R</p><p>Ejecuta el bloque completo para crear la tabla de cinco personas, ajustar el modelo y obtener sus coeficientes y predicciones. Después examina la matriz X y el vector y que corresponden al mismo ajuste.</p><div class="formula"><math display="block"><mrow><mi>y</mi><mo>=</mo><mi>Xβ</mi><mo>+</mo><mi>u</mi><mspace width="1em"/><mtext>X: n × (k + 1); β: (k + 1) × 1</mtext></mrow></math></div><section class="lab" data-kind="matriz" aria-label="Ejemplo interactivo: Construir X, y y el vector de parámetros"></section><h4>Código completo en R</h4><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code># Cinco observaciones del ejemplo
+[1] 11470.69</code></pre></div></details><details class="solution"><summary>Comprueba lo aprendido</summary><div class="solution-body"><p>¿Minimizar residuos al cuadrado obliga a que todos los residuos sean cero?</p><details><summary>Mostrar respuesta</summary><p>No. MCO elige el mejor ajuste dentro de este modelo, pero suele quedar variación sin explicar.</p></details></div></details><p class="data-note"><a href="#C4-08">Enlace a esta lámina ↗</a></p></div></article></section><section id="tema3"><div class="chapter-intro"><p class="eyebrow">Tema 3</p><h2>Parte 1 · Notación matricial</h2></div><article class="slide" id="C4-09" data-title="Construir X, y y el vector de parámetros"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-C4-09"><span class="slide-chevron" aria-hidden="true">▶</span><span>Construir X, y y el vector de parámetros</span></button></h3><span class="number">LÁMINA 09</span></header><div class="slide-body" id="body-C4-09" hidden><p class="data-note">Tema 3 · Cátedra 4 · Aplicación en R</p><p>Compara el salario observado con el predicho para cada persona. El segmento une ambos valores y su longitud muestra el tamaño del residuo. Selecciona una persona para ver la resta con signo y la fila de X que produce su predicción.</p><div class="formula"><math display="block"><mrow><mi>y</mi><mo>=</mo><mi>Xβ</mi><mo>+</mo><mi>u</mi><mspace width="1em"/><mtext>X: n × (k + 1); β: (k + 1) × 1</mtext></mrow></math></div><section class="lab" data-kind="matriz" aria-label="Ejemplo interactivo: Construir X, y y el vector de parámetros"></section><h4>Código completo en R</h4><div class="solution-body"><div class="code-head"><span>R · Ejecutar en orden</span><button class="copy" type="button">Copiar código</button></div><pre><code># Cinco observaciones del ejemplo
 ejemplo &lt;- data.frame(
   persona = c(&quot;Juan&quot;, &quot;Pedro&quot;, &quot;Sofía&quot;, &quot;Caro&quot;, &quot;Alex&quot;),
   experiencia = c(12, 18, 14, 12, 11),
@@ -125,7 +125,22 @@ ejemplo &lt;- data.frame(
 )
 modelo5 &lt;- lm(salario ~ experiencia + educacion, data = ejemplo)
 print(coef(modelo5))
-print(data.frame(ejemplo, prediccion = fitted(modelo5)))
+predicho5 &lt;- fitted(modelo5)
+residuo5 &lt;- resid(modelo5)
+print(data.frame(ejemplo, prediccion = predicho5, residuo = residuo5))
+
+# Comparar cada salario observado con su predicción
+posicion &lt;- 5:1
+plot(ejemplo$salario, posicion, type = &quot;n&quot;, yaxt = &quot;n&quot;,
+     xlim = range(c(ejemplo$salario, predicho5)),
+     xlab = &quot;Salario (unidades del ejemplo)&quot;, ylab = &quot;&quot;,
+     main = &quot;Salario observado y predicho&quot;)
+axis(2, at = posicion, labels = ejemplo$persona, las = 1)
+segments(predicho5, posicion, ejemplo$salario, posicion, col = &quot;gray50&quot;, lwd = 2)
+points(ejemplo$salario, posicion, pch = 19, col = &quot;#005F96&quot;)
+points(predicho5, posicion, pch = 18, col = &quot;#B93E42&quot;)
+legend(&quot;bottomright&quot;, legend = c(&quot;Observado&quot;, &quot;Predicho&quot;),
+       pch = c(19, 18), col = c(&quot;#005F96&quot;, &quot;#B93E42&quot;), bty = &quot;n&quot;)
 
 # Matriz de diseño y respuesta
 X &lt;- model.matrix(modelo5)
@@ -136,14 +151,14 @@ print(dim(X))
 print(length(y))
 print(colnames(X))
 X_manual &lt;- cbind(unos = 1, ejemplo$experiencia, ejemplo$educacion)
-print(identical(as.vector(X), as.vector(X_manual)))</code></pre></div><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>ejemplo &lt;- data.frame(...)</code></summary><p>Crea la tabla exhibida en la lámina. Cada posición de los cuatro vectores corresponde a la misma persona.</p></details><details class="step"><summary><code>lm(salario ~ experiencia + educacion, data = ejemplo)</code></summary><p>Ajusta el salario con intercepto, experiencia y educación. coef() muestra los tres coeficientes. fitted() devuelve las cinco predicciones para las filas de ejemplo, en su orden original.</p></details><details class="step"><summary><code>model.matrix(modelo5)</code></summary><p>Recibe modelo5, el objeto devuelto por lm(salario ~ experiencia + educacion, data = ejemplo). Lee la fórmula y las observaciones usadas en el ajuste. Devuelve X, una matriz numérica de 5 filas y 3 columnas. Cada fila es una persona. Las columnas son (Intercept), experiencia y educacion, en el mismo orden que coef(modelo5). La primera fila es [1, 12, 93]. El 1 multiplica al intercepto. Las otras dos entradas multiplican a sus pendientes. Salario queda en el vector y. X se usará para calcular los coeficientes con álgebra matricial y para obtener ŷ = Xβ̂.</p></details><details class="step"><summary><code>cbind(unos = 1, ...)</code></summary><p>Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.</p></details><details class="step"><summary><code>dim(X), colnames(X) y as.vector(X)</code></summary><p>dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos.</p></details><details class="step"><summary><code>ejemplo$salario</code></summary><p>El operador $ extrae una columna por nombre. Aquí devuelve el vector de salarios observados, con el mismo orden de filas de X.</p></details><details class="step"><summary><code>identical(as.vector(X), as.vector(X_manual))</code></summary><p>as.vector() lee los valores por columnas y elimina dimensiones y nombres. identical() exige que ambos vectores sean exactamente iguales en valores y tipo. Así comprobamos las entradas de las matrices aunque los nombres de columnas difieran.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>model.matrix() construye X con los valores de los regresores que entran al ajuste. En la lámina 4, matrix() ordenó los salarios ya predichos en una cuadrícula para el gráfico. Aquí las filas son observaciones y las columnas son términos del modelo. En la rejilla de la lámina 4, las filas y columnas son valores de educación e IQ.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept) experiencia   educacion
+print(identical(as.vector(X), as.vector(X_manual)))</code></pre></div><h4>El código, paso a paso</h4><div class="code-explorer"><details class="step"><summary><code>ejemplo &lt;- data.frame(...)</code></summary><p>Crea la tabla exhibida en la lámina. Cada posición de los cuatro vectores corresponde a la misma persona.</p></details><details class="step"><summary><code>lm(salario ~ experiencia + educacion, data = ejemplo)</code></summary><p>Ajusta el salario con intercepto, experiencia y educación. coef() muestra los tres coeficientes. fitted() devuelve las cinco predicciones para las filas de ejemplo, en su orden original.</p></details><details class="step"><summary><code>axis(), segments() y points()</code></summary><p>axis(2, ...) coloca los nombres en el eje vertical. segments() une la predicción con el valor observado en la misma fila. points() dibuja el círculo observado y el rombo predicho. type = &quot;n&quot; prepara los ejes y yaxt = &quot;n&quot; deja espacio para el eje con nombres.</p></details><details class="step"><summary><code>model.matrix(modelo5)</code></summary><p>Recibe modelo5, el objeto devuelto por lm(salario ~ experiencia + educacion, data = ejemplo). Lee la fórmula y las observaciones usadas en el ajuste. Devuelve X, una matriz numérica de 5 filas y 3 columnas. Cada fila es una persona. Las columnas son (Intercept), experiencia y educacion, en el mismo orden que coef(modelo5). La primera fila es [1, 12, 93]. El 1 multiplica al intercepto. Las otras dos entradas multiplican a sus pendientes. Salario queda en el vector y. X se usará para calcular los coeficientes con álgebra matricial y para obtener ŷ = Xβ̂.</p></details><details class="step"><summary><code>cbind(unos = 1, ...)</code></summary><p>Une columnas. El 1 se repite en las cinco filas al combinarse con los vectores.</p></details><details class="step"><summary><code>dim(X), colnames(X) y as.vector(X)</code></summary><p>dim entrega filas y columnas; colnames muestra los nombres; as.vector permite comparar los valores de ambas matrices sin sus atributos.</p></details><details class="step"><summary><code>ejemplo$salario</code></summary><p>El operador $ extrae una columna por nombre. Aquí devuelve el vector de salarios observados, con el mismo orden de filas de X.</p></details><details class="step"><summary><code>identical(as.vector(X), as.vector(X_manual))</code></summary><p>as.vector() lee los valores por columnas y elimina dimensiones y nombres. identical() exige que ambos vectores sean exactamente iguales en valores y tipo. Así comprobamos las entradas de las matrices aunque los nombres de columnas difieran.</p></details></div><div class="reading"><h4>Cómo leer el resultado</h4><p>El residuo estimado es salario observado menos salario predicho. Si el círculo azul está a la derecha del rombo rojo, el residuo es positivo y el modelo predice un valor menor que el observado. Si queda a la izquierda, el residuo es negativo. model.matrix() construye X con los valores de los regresores que entran al ajuste.</p></div><details class="solution"><summary>Ver resultados de referencia en R</summary><div class="solution-body"><pre><code>(Intercept) experiencia   educacion
  140.586358  -16.789532    8.236667
-  persona experiencia educacion salario prediccion
-1    Juan          12        93     769   705.1220
-2   Pedro          18       119     808   818.5382
-3   Sofía          14       108     825   795.0930
-4    Caro          12        96     650   729.8320
-5    Alex          11        74     562   565.4149
+  persona experiencia educacion salario prediccion    residuo
+1    Juan          12        93     769   705.1220  63.877990
+2   Pedro          18       119     808   818.5382 -10.538161
+3   Sofía          14       108     825   795.0930  29.907049
+4    Caro          12        96     650   729.8320 -79.832011
+5    Alex          11        74     562   565.4149  -3.414868
   (Intercept) experiencia educacion
 1           1          12        93
 2           1          18       119
@@ -326,7 +341,7 @@ datos_ejercicio &lt;- wooldridge::gpa2</code></pre></div><h4>La base gpa2</h4><p
 ;</script><script>(()=>{'use strict';
 const D=window.datosC4,N='#1b2a5e',B='#005f96',G='#d6a600',R='#b93e42';
 const f=(x,n=3)=>Number(x).toLocaleString('es-CL',{minimumFractionDigits:n,maximumFractionDigits:n});
-const model=D.modelos[1],beta=D.beta5.map(x=>x.beta),X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
+const model=D.modelos[1],X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
 const table=(headers,rows,cls='')=>'<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map((r,i)=>'<tr '+(cls===String(i)?'class="selected"':'')+'>'+r.map((x,j)=>`<${j?'td':'th scope="row"'}>${x}</${j?'td':'th'}>`).join('')+'</tr>').join('')+'</tbody></table></div>';
 function axes(xmin,xmax,ymin,ymax,xlabel,ylabel){const px=x=>65+(x-xmin)/(xmax-xmin)*610,py=y=>295-(y-ymin)/(ymax-ymin)*240;let body='';for(let i=0;i<=5;i++){let x=xmin+(xmax-xmin)*i/5,z=ymin+(ymax-ymin)*i/5;body+=`<line x1="65" x2="675" y1="${py(z)}" y2="${py(z)}" stroke="#dce2ea"/><text x="55" y="${py(z)+4}" text-anchor="end">${f(z,0)}</text><text x="${px(x)}" y="316" text-anchor="middle">${f(x,0)}</text>`;}body+=`<line x1="65" y1="55" x2="65" y2="295" stroke="${N}"/><line x1="65" y1="295" x2="675" y2="295" stroke="${N}"/><text x="370" y="343" text-anchor="middle">${xlabel}</text><text x="65" y="25">${ylabel}</text>`;return{px,py,body};}
 function chart(body,label){return `<svg viewBox="0 0 720 355" role="img" aria-label="${label}" style="font:12px sans-serif;fill:${N}">${body}</svg>`;}
@@ -363,7 +378,34 @@ for(const lab of document.querySelectorAll('.lab')){
  }
  else if(kind==='matriz'){
   const o=controls(lab,'<label>Persona <select aria-label="Persona del ejemplo">'+D.cinco.map((p,i)=>`<option value="${i}">${p.persona}</option>`).join('')+'</select></label>');
-  function draw(){const i=+lab.querySelector('select').value,p=D.cinco[i];o.v.innerHTML=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(p=>[p.persona,1,p.experiencia,p.educacion,p.salario]),String(i));o.r.textContent=`Fila ${i+1}: [1, ${p.experiencia}, ${p.educacion}]. Predicción = ${f(beta[0])} + (${f(beta[1])}) × ${p.experiencia} + ${f(beta[2])} × ${p.educacion} = ${f(p.predicho)}. Salario observado: ${p.salario}.`;}
+  function draw(){
+   const i=Number(lab.querySelector('select').value),p=D.cinco[i];
+   const valores=D.cinco.flatMap(persona=>[persona.salario,persona.predicho]);
+   const minimo=Math.floor(Math.min(...valores)/100)*100;
+   const maximo=Math.ceil(Math.max(...valores)/100)*100;
+   const x=valor=>110+(valor-minimo)/(maximo-minimo)*460;
+   let figura=`<circle cx="116" cy="24" r="6" fill="${B}"/><text x="130" y="29">Observado</text>
+    <path d="M 246 17 L 253 24 L 246 31 L 239 24 Z" fill="${R}"/><text x="260" y="29">Predicho</text>
+    <text x="655" y="29" text-anchor="middle">Residuo</text>`;
+   for(let valor=minimo;valor<=maximo;valor+=100){
+    figura+=line(x(valor),49,x(valor),298,'#dce2ea',1);
+    figura+=`<text x="${x(valor)}" y="319" text-anchor="middle">${f(valor,0)}</text>`;
+   }
+   D.cinco.forEach((persona,j)=>{
+    const y=73+j*49;
+    const observado=x(persona.salario),predicho=x(persona.predicho);
+    if(j===i)figura+=`<rect x="8" y="${y-19}" width="704" height="38" rx="6" fill="#eaf4fa"/>`;
+    figura+=`<text x="90" y="${y+5}" text-anchor="end">${persona.persona}</text>`;
+    figura+=line(observado,y,predicho,y,'#687b8c',3);
+    figura+=`<circle cx="${observado}" cy="${y}" r="6" fill="${B}"><title>Observado: ${f(persona.salario,2)}</title></circle>
+     <path d="M ${predicho} ${y-8} L ${predicho+8} ${y} L ${predicho} ${y+8} L ${predicho-8} ${y} Z" fill="${R}"><title>Predicho: ${f(persona.predicho,2)}</title></path>
+     <text x="655" y="${y+5}" text-anchor="middle">${persona.residuo>0?'+':''}${f(persona.residuo,2)}</text>`;
+   });
+   figura+='<text x="340" y="344" text-anchor="middle">Salario (unidades del ejemplo)</text>';
+   o.v.innerHTML=chart(figura,'Salarios observados y predichos por persona con su residuo');
+   o.v.innerHTML+=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(persona=>[persona.persona,1,persona.experiencia,persona.educacion,persona.salario]),String(i));
+   o.r.textContent=`${p.persona}: residuo = ${f(p.salario,2)} − ${f(p.predicho,2)} = ${f(p.residuo,2)}. Fila ${i+1} de X: [1, ${p.experiencia}, ${p.educacion}].`;
+  }
   lab.querySelector('select').onchange=draw;draw();
  }
  else if(kind==='anova_wage'){

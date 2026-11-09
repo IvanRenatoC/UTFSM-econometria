@@ -82,7 +82,22 @@ ejemplo <- data.frame(
 )
 modelo5 <- lm(salario ~ experiencia + educacion, data = ejemplo)
 print(coef(modelo5))
-print(data.frame(ejemplo, prediccion = fitted(modelo5)))
+predicho5 <- fitted(modelo5)
+residuo5 <- resid(modelo5)
+print(data.frame(ejemplo, prediccion = predicho5, residuo = residuo5))
+
+# Comparar cada salario observado con su predicción
+posicion <- 5:1
+plot(ejemplo$salario, posicion, type = "n", yaxt = "n",
+     xlim = range(c(ejemplo$salario, predicho5)),
+     xlab = "Salario (unidades del ejemplo)", ylab = "",
+     main = "Salario observado y predicho")
+axis(2, at = posicion, labels = ejemplo$persona, las = 1)
+segments(predicho5, posicion, ejemplo$salario, posicion, col = "gray50", lwd = 2)
+points(ejemplo$salario, posicion, pch = 19, col = "#005F96")
+points(predicho5, posicion, pch = 18, col = "#B93E42")
+legend("bottomright", legend = c("Observado", "Predicho"),
+       pch = c(19, 18), col = c("#005F96", "#B93E42"), bty = "n")
 
 # Matriz de diseño y respuesta
 X <- model.matrix(modelo5)

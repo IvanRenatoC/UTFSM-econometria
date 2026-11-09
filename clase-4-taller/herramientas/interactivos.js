@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const D=window.datosC4,N='#1b2a5e',B='#005f96',G='#d6a600',R='#b93e42';
 const f=(x,n=3)=>Number(x).toLocaleString('es-CL',{minimumFractionDigits:n,maximumFractionDigits:n});
-const model=D.modelos[1],beta=D.beta5.map(x=>x.beta),X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
+const model=D.modelos[1],X=D.cinco.map(p=>[1,p.experiencia,p.educacion]);
 const table=(headers,rows,cls='')=>'<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map((r,i)=>'<tr '+(cls===String(i)?'class="selected"':'')+'>'+r.map((x,j)=>`<${j?'td':'th scope="row"'}>${x}</${j?'td':'th'}>`).join('')+'</tr>').join('')+'</tbody></table></div>';
 function axes(xmin,xmax,ymin,ymax,xlabel,ylabel){const px=x=>65+(x-xmin)/(xmax-xmin)*610,py=y=>295-(y-ymin)/(ymax-ymin)*240;let body='';for(let i=0;i<=5;i++){let x=xmin+(xmax-xmin)*i/5,z=ymin+(ymax-ymin)*i/5;body+=`<line x1="65" x2="675" y1="${py(z)}" y2="${py(z)}" stroke="#dce2ea"/><text x="55" y="${py(z)+4}" text-anchor="end">${f(z,0)}</text><text x="${px(x)}" y="316" text-anchor="middle">${f(x,0)}</text>`;}body+=`<line x1="65" y1="55" x2="65" y2="295" stroke="${N}"/><line x1="65" y1="295" x2="675" y2="295" stroke="${N}"/><text x="370" y="343" text-anchor="middle">${xlabel}</text><text x="65" y="25">${ylabel}</text>`;return{px,py,body};}
 function chart(body,label){return `<svg viewBox="0 0 720 355" role="img" aria-label="${label}" style="font:12px sans-serif;fill:${N}">${body}</svg>`;}
@@ -38,7 +38,34 @@ for(const lab of document.querySelectorAll('.lab')){
  }
  else if(kind==='matriz'){
   const o=controls(lab,'<label>Persona <select aria-label="Persona del ejemplo">'+D.cinco.map((p,i)=>`<option value="${i}">${p.persona}</option>`).join('')+'</select></label>');
-  function draw(){const i=+lab.querySelector('select').value,p=D.cinco[i];o.v.innerHTML=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(p=>[p.persona,1,p.experiencia,p.educacion,p.salario]),String(i));o.r.textContent=`Fila ${i+1}: [1, ${p.experiencia}, ${p.educacion}]. Predicción = ${f(beta[0])} + (${f(beta[1])}) × ${p.experiencia} + ${f(beta[2])} × ${p.educacion} = ${f(p.predicho)}. Salario observado: ${p.salario}.`;}
+  function draw(){
+   const i=Number(lab.querySelector('select').value),p=D.cinco[i];
+   const valores=D.cinco.flatMap(persona=>[persona.salario,persona.predicho]);
+   const minimo=Math.floor(Math.min(...valores)/100)*100;
+   const maximo=Math.ceil(Math.max(...valores)/100)*100;
+   const x=valor=>110+(valor-minimo)/(maximo-minimo)*460;
+   let figura=`<circle cx="116" cy="24" r="6" fill="${B}"/><text x="130" y="29">Observado</text>
+    <path d="M 246 17 L 253 24 L 246 31 L 239 24 Z" fill="${R}"/><text x="260" y="29">Predicho</text>
+    <text x="655" y="29" text-anchor="middle">Residuo</text>`;
+   for(let valor=minimo;valor<=maximo;valor+=100){
+    figura+=line(x(valor),49,x(valor),298,'#dce2ea',1);
+    figura+=`<text x="${x(valor)}" y="319" text-anchor="middle">${f(valor,0)}</text>`;
+   }
+   D.cinco.forEach((persona,j)=>{
+    const y=73+j*49;
+    const observado=x(persona.salario),predicho=x(persona.predicho);
+    if(j===i)figura+=`<rect x="8" y="${y-19}" width="704" height="38" rx="6" fill="#eaf4fa"/>`;
+    figura+=`<text x="90" y="${y+5}" text-anchor="end">${persona.persona}</text>`;
+    figura+=line(observado,y,predicho,y,'#687b8c',3);
+    figura+=`<circle cx="${observado}" cy="${y}" r="6" fill="${B}"><title>Observado: ${f(persona.salario,2)}</title></circle>
+     <path d="M ${predicho} ${y-8} L ${predicho+8} ${y} L ${predicho} ${y+8} L ${predicho-8} ${y} Z" fill="${R}"><title>Predicho: ${f(persona.predicho,2)}</title></path>
+     <text x="655" y="${y+5}" text-anchor="middle">${persona.residuo>0?'+':''}${f(persona.residuo,2)}</text>`;
+   });
+   figura+='<text x="340" y="344" text-anchor="middle">Salario (unidades del ejemplo)</text>';
+   o.v.innerHTML=chart(figura,'Salarios observados y predichos por persona con su residuo');
+   o.v.innerHTML+=table(['Persona','Unos','Experiencia','Educación','Salario'],D.cinco.map(persona=>[persona.persona,1,persona.experiencia,persona.educacion,persona.salario]),String(i));
+   o.r.textContent=`${p.persona}: residuo = ${f(p.salario,2)} − ${f(p.predicho,2)} = ${f(p.residuo,2)}. Fila ${i+1} de X: [1, ${p.experiencia}, ${p.educacion}].`;
+  }
   lab.querySelector('select').onchange=draw;draw();
  }
  else if(kind==='anova_wage'){
