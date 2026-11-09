@@ -327,7 +327,7 @@ Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde 
 
 ## 06 · Del modelo simple al múltiple
 
-El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.
+Ajusta dos modelos a las mismas observaciones de wage2. El modelo a usa educación y el modelo b usa educación e IQ. Dibuja ambas rectas sobre la misma nube de educación y salario. Para trazar la recta del modelo b, fija IQ = 100.
 
 $$\widehat{wage}=\widehat\beta_0+\widehat\beta_1\,educ+\widehat\beta_2\,IQ$$
 
@@ -355,8 +355,18 @@ Dibuja educación en el eje horizontal y salario en el vertical. data indica de 
 
 Agrega al gráfico abierto una recta con intercepto y pendiente del modelo simple. col fija el color y lwd el grosor.
 
+**`abline(a = ..., b = ..., lty = 2)`**
+
+Agrega la recta del modelo múltiple al mismo gráfico. a es el intercepto del corte con IQ = 100 y b es la pendiente de educación. lty = 2 dibuja la línea discontinua.
+
+**`legend("topleft", ..., bty = "n")`**
+
+Identifica las dos rectas en la esquina superior izquierda. Cada etiqueta usa el color y el tipo de línea de su modelo. bty = "n" quita el borde de la leyenda.
+
 ```r
+# a) Modelo simple
 simple <- lm(wage ~ educ, data = datos)
+# b) Modelo múltiple
 multiple <- lm(wage ~ educ + IQ, data = datos)
 print(coef(simple))
 print(coef(multiple))
@@ -367,11 +377,18 @@ comparacion <- data.frame(
 print(comparacion)
 plot(wage ~ educ, data = datos, pch = 19, col = "#005F9640")
 abline(simple, col = "#D6A600", lwd = 3)
+
+iq_referencia <- 100
+b <- coef(multiple)
+abline(a = b["(Intercept)"] + b["IQ"] * iq_referencia,
+       b = b["educ"], col = "#B93E42", lwd = 3, lty = 2)
+legend("topleft", legend = c("a) Solo educación", "b) Educación + IQ (IQ = 100)"),
+       col = c("#D6A600", "#B93E42"), lwd = 3, lty = c(1, 2), bty = "n")
 ```
 
 ### Cómo leer el resultado
 
-Con IQ = 100, la altura de la recta múltiple se calcula con intercepto β̂₀ + 100·β̂₂. Si eliges otro IQ fijo, cambia la altura y se conserva la pendiente β̂₁ porque el modelo no incluye una interacción entre educación e IQ. La nube muestra a todas las personas de la muestra, con sus distintos valores de IQ. La comparación de pendientes muestra cuánto cambia la asociación estimada de educación con salario al incorporar IQ al modelo.
+La recta dorada continua corresponde al modelo a. La roja discontinua corresponde al modelo b con IQ = 100. Las dos usan la misma nube de observaciones. Compara sus pendientes para ver cuánto cambia la asociación estimada entre educación y salario al incluir IQ. Si fijas otro IQ, cambia el intercepto del corte y se conserva la pendiente del modelo b.
 
 <details><summary>Resultados de referencia ejecutados en R</summary>
 

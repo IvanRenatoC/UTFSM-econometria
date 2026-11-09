@@ -337,9 +337,9 @@
     {
       "id": "C4-06",
       "titulo": "Del modelo simple al múltiple",
-      "texto": "El objetivo es comparar cuánto cambia el salario predicho por un año adicional de educación en cada modelo. En el múltiple, fijamos IQ = 100 para comparar predicciones a un mismo nivel de IQ y mostrar un corte del plano en dos ejes. Elegimos 100 como valor de referencia para el ejemplo.",
-      "codigo": "simple <- lm(wage ~ educ, data = datos)\nmultiple <- lm(wage ~ educ + IQ, data = datos)\nprint(coef(simple))\nprint(coef(multiple))\ncomparacion <- data.frame(\n  modelo = c(\"Simple\", \"Con IQ\"),\n  pendiente_educ = c(coef(simple)[\"educ\"], coef(multiple)[\"educ\"])\n)\nprint(comparacion)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\")\nabline(simple, col = \"#D6A600\", lwd = 3)",
-      "lectura": "Con IQ = 100, la altura de la recta múltiple se calcula con intercepto β̂₀ + 100·β̂₂. Si eliges otro IQ fijo, cambia la altura y se conserva la pendiente β̂₁ porque el modelo no incluye una interacción entre educación e IQ. La nube muestra a todas las personas de la muestra, con sus distintos valores de IQ. La comparación de pendientes muestra cuánto cambia la asociación estimada de educación con salario al incorporar IQ al modelo.",
+      "texto": "Ajusta dos modelos a las mismas observaciones de wage2. El modelo a usa educación y el modelo b usa educación e IQ. Dibuja ambas rectas sobre la misma nube de educación y salario. Para trazar la recta del modelo b, fija IQ = 100.",
+      "codigo": "# a) Modelo simple\nsimple <- lm(wage ~ educ, data = datos)\n# b) Modelo múltiple\nmultiple <- lm(wage ~ educ + IQ, data = datos)\nprint(coef(simple))\nprint(coef(multiple))\ncomparacion <- data.frame(\n  modelo = c(\"Simple\", \"Con IQ\"),\n  pendiente_educ = c(coef(simple)[\"educ\"], coef(multiple)[\"educ\"])\n)\nprint(comparacion)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\")\nabline(simple, col = \"#D6A600\", lwd = 3)\n\niq_referencia <- 100\nb <- coef(multiple)\nabline(a = b[\"(Intercept)\"] + b[\"IQ\"] * iq_referencia,\n       b = b[\"educ\"], col = \"#B93E42\", lwd = 3, lty = 2)\nlegend(\"topleft\", legend = c(\"a) Solo educación\", \"b) Educación + IQ (IQ = 100)\"),\n       col = c(\"#D6A600\", \"#B93E42\"), lwd = 3, lty = c(1, 2), bty = \"n\")",
+      "lectura": "La recta dorada continua corresponde al modelo a. La roja discontinua corresponde al modelo b con IQ = 100. Las dos usan la misma nube de observaciones. Compara sus pendientes para ver cuánto cambia la asociación estimada entre educación y salario al incluir IQ. Si fijas otro IQ, cambia el intercepto del corte y se conserva la pendiente del modelo b.",
       "pasos": [
         [
           "lm(wage ~ educ + IQ, data = datos)",
@@ -360,6 +360,14 @@
         [
           "abline(simple, col = ..., lwd = 3)",
           "Agrega al gráfico abierto una recta con intercepto y pendiente del modelo simple. col fija el color y lwd el grosor."
+        ],
+        [
+          "abline(a = ..., b = ..., lty = 2)",
+          "Agrega la recta del modelo múltiple al mismo gráfico. a es el intercepto del corte con IQ = 100 y b es la pendiente de educación. lty = 2 dibuja la línea discontinua."
+        ],
+        [
+          "legend(\"topleft\", ..., bty = \"n\")",
+          "Identifica las dos rectas en la esquina superior izquierda. Cada etiqueta usa el color y el tipo de línea de su modelo. bty = \"n\" quita el borde de la leyenda."
         ]
       ],
       "interactivo": "comparar",

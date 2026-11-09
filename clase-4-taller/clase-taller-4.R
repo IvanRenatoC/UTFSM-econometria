@@ -38,7 +38,9 @@ persp(educ_vista, iq_vista, z_vista, theta = 35, phi = 25,
       xlab = "Educación", ylab = "IQ", zlab = "Salario predicho",
       col = "lightblue", ticktype = "detailed")
 
+# a) Modelo simple
 simple <- lm(wage ~ educ, data = datos)
+# b) Modelo múltiple
 multiple <- lm(wage ~ educ + IQ, data = datos)
 print(coef(simple))
 print(coef(multiple))
@@ -49,6 +51,13 @@ comparacion <- data.frame(
 print(comparacion)
 plot(wage ~ educ, data = datos, pch = 19, col = "#005F9640")
 abline(simple, col = "#D6A600", lwd = 3)
+
+iq_referencia <- 100
+b <- coef(multiple)
+abline(a = b["(Intercept)"] + b["IQ"] * iq_referencia,
+       b = b["educ"], col = "#B93E42", lwd = 3, lty = 2)
+legend("topleft", legend = c("a) Solo educación", "b) Educación + IQ (IQ = 100)"),
+       col = c("#D6A600", "#B93E42"), lwd = 3, lty = c(1, 2), bty = "n")
 
 nuevos <- data.frame(educ = c(12, 13), IQ = c(100, 100))
 predicciones <- predict(multiple, newdata = nuevos)
