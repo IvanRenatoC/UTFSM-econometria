@@ -23,11 +23,14 @@ write.csv(data.frame(modelo=c("simple","multiple"),b0=c(coef(simple)[1],coef(mul
 write.csv(data.frame(beta=as.numeric(coef(modelo5))),"beta5.csv",row.names=FALSE)
 write.csv(data.frame(coef=rownames(summary(modelo5)$coefficients),summary(modelo5)$coefficients,check.names=FALSE),"summary.csv",row.names=FALSE)
 write.csv(data.frame(fuente=rownames(anova(modelo5)),anova(modelo5),check.names=FALSE),"anova.csv",row.names=FALSE)
+stopifnot(isTRUE(all.equal(fitted(multiple), fitted(multiple_iq_primero))))
+write.csv(data.frame(fuente=rownames(anova_wage),anova_wage,check.names=FALSE),"anova_wage.csv",row.names=FALSE)
+write.csv(data.frame(fuente=rownames(anova_wage_invertida),anova_wage_invertida,check.names=FALSE),"anova_wage_invertida.csv",row.names=FALSE)
 dev.off()
 `);
 const data={};
 // Las tablas exportadas no contienen comas dentro de sus campos.
-for(const name of ['wage','cinco','ruido','modelos','beta5','summary','anova']){
+for(const name of ['wage','cinco','ruido','modelos','beta5','summary','anova','anova_wage','anova_wage_invertida']){
  const lines=new TextDecoder().decode(await r.FS.readFile('/work/'+name+'.csv')).trim().split('\n');
  const keys=lines.shift().split(',').map(x=>x.replace(/^"|"$/g,''));
  data[name]=lines.map(l=>Object.fromEntries(l.split(',').map((v,i)=>[keys[i],v==='NA'?null:isNaN(Number(v))?v.replace(/^"|"$/g,''):Number(v)])));

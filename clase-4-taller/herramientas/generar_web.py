@@ -9,8 +9,7 @@ assert hashlib.sha256(code.encode()).hexdigest()==V['codigo_sha256'],'Ejecutar v
 O=json.loads((ROOT/'datos/salidas-verificadas-r.json').read_text())
 e=html.escape
 M={
-'C4-06':'<mrow><mover><mi>wage</mi><mo>^</mo></mover><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>educ</mi><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>2</mn></msub><mi>IQ</mi></mrow>',
-'C4-07':'<mrow><mi>Δŷ</mi><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>Δeduc</mi><mtext> con IQ fijo</mtext></mrow>',
+'C4-05':'<mrow><mover><mi>wage</mi><mo>^</mo></mover><mo>=</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>0</mn></msub><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>1</mn></msub><mi>educ</mi><mo>+</mo><msub><mover><mi>β</mi><mo>^</mo></mover><mn>2</mn></msub><mi>IQ</mi></mrow>',
 'C4-08':'<mrow><mi>SSR</mi><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msup><mrow><mo>(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow>',
 'C4-09':'<mrow><mi>y</mi><mo>=</mo><mi>Xβ</mi><mo>+</mo><mi>u</mi><mspace width="1em"/><mtext>X: n × (k + 1); β: (k + 1) × 1</mtext></mrow>',
 'C4-10':'<mrow><msub><mrow><mo>(</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mo>)</mo></mrow><mn>23</mn></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i1</mi></msub><msub><mi>x</mi><mi>i2</mi></msub></mrow>',
@@ -21,7 +20,7 @@ M={
 'C4-19':'<mrow><msup><mi>A</mi><mn>−1</mn></msup><mo>=</mo><mfrac><msup><mi>C</mi><mi>T</mi></msup><mrow><mi>det</mi><mo>(</mo><mi>A</mi><mo>)</mo></mrow></mfrac></mrow>'}
 
 M['C4-01']='<mtable><mtr><mtd><mover><mi>Y</mi><mo>^</mo></mover><mo>=</mo><mi>X</mi><mover><mi>β</mi><mo>^</mo></mover></mtd></mtr><mtr><mtd><msub><mover><mi>Y</mi><mo>^</mo></mover><mi>i</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>p</mi></munderover><msub><mover><mi>β</mi><mo>^</mo></mover><mi>j</mi></msub><msub><mi>X</mi><mi>ij</mi></msub></mtd></mtr></mtable>'
-M['C4-04']='<mtable><mtr><mtd>'+M['C4-06']+'</mtd></mtr><mtr><mtd><mrow><mi>Y</mi><mo>=</mo><mi>Ŷ</mi><mo>+</mo><mi>û</mi><mspace width="2em"/><mi>Ŷ</mi><mo>=</mo><mi>X</mi><mi>β̂</mi></mrow></mtd></mtr></mtable>'
+M['C4-04']='<mtable><mtr><mtd>' +M['C4-05']+'</mtd></mtr><mtr><mtd><mrow><mi>Y</mi><mo>=</mo><mi>Ŷ</mi><mo>+</mo><mi>û</mi><mspace width="2em"/><mi>Ŷ</mi><mo>=</mo><mi>X</mi><mi>β̂</mi></mrow></mtd></mtr></mtable>'
 
 # Notebook, Markdown y script comparten el orden y el código exacto de las láminas.
 cells=[]; guide=[]; script=['# Clase 4: ejecutar desde clase-4-taller/ o con kernel R en Colab.']
