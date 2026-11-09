@@ -414,47 +414,14 @@ Las celdas [1, 2] y [2, 2]. Ambas están en la segunda columna, que corresponde 
 
 </details>
 
-## 07 · ANOVA interactiva del modelo de salario
+## 07 · ANOVA de wage ~ educ + IQ
 
-La tabla muestra cuánto disminuye la suma de residuos al cuadrado al incorporar educación e IQ. Cambia el orden de entrada para comparar cómo se reparte la variación explicada.
 
-### En R · Tu turno
-
-### El código, paso a paso
-
-**`anova(multiple)`**
-
-Con un solo modelo, anova() construye una tabla secuencial. La fila educ mide la reducción de la suma de cuadrados residual al pasar del intercepto solo a educación. La fila IQ mide la reducción adicional al agregar IQ.
-
-**`Df, Sum Sq y Mean Sq`**
-
-Df cuenta grados de libertad. Sum Sq muestra la suma de cuadrados asociada a cada fila. Mean Sq divide esa suma por sus grados de libertad. Residuals muestra la variación que queda tras ajustar ambos regresores.
-
-**`F value y Pr(>F)`**
-
-Para cada término, F divide su cuadrado medio por el cuadrado medio residual del modelo completo. Pr(>F) es el valor p de esa prueba secuencial.
-
-**`lm(wage ~ IQ + educ, data = datos)`**
-
-Invierte el orden de entrada. Conserva los regresores y los valores ajustados. Cambia cuánto se atribuye a cada variable al entrar primero o segundo.
 
 ```r
-# Modelo solicitado. Educación entra primero e IQ después.
-multiple <- lm(wage ~ educ + IQ, data = datos)
 anova_wage <- anova(multiple)
 print(anova_wage)
-
-# Mismos regresores con el orden invertido
-multiple_iq_primero <- lm(wage ~ IQ + educ, data = datos)
-anova_wage_invertida <- anova(multiple_iq_primero)
-print(anova_wage_invertida)
 ```
-
-### Cómo leer el resultado
-
-Con educación primero, la fila IQ responde cuánto aporta IQ después de incluir educación. Para leer el aporte de educación después de IQ, usa el orden invertido. En ambos órdenes se conserva la suma de cuadrados residual del modelo completo.
-
-<details><summary>Resultados de referencia ejecutados en R</summary>
 
 ```text
 Analysis of Variance Table
@@ -466,28 +433,7 @@ IQ          1   4100932  4100932  28.895  9.66e-08 ***
 Residuals 932 132274591   141926
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-Analysis of Variance Table
-
-Response: wage
-           Df    Sum Sq  Mean Sq F value    Pr(>F)
-IQ          1  14589783 14589783 102.799 < 2.2e-16 ***
-educ        1   5851794  5851794  41.231 2.152e-10 ***
-Residuals 932 132274591   141926
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 ```
-
-</details>
-
-### Comprueba lo aprendido
-
-¿Qué fila muestra el aporte de IQ una vez incluida educación?
-
-<details><summary>Mostrar respuesta</summary>
-
-La fila IQ de la tabla con educación primero.
-
-</details>
 
 ## 08 · MCO: elegir el plano que reduce los residuos
 

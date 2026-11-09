@@ -50,23 +50,12 @@ for(const lab of document.querySelectorAll('.lab')){
   }draw();
  }
  else if(kind==='anova_wage'){
-  const o=controls(lab,btn('Educación primero',0)+btn('IQ primero',1));
-  const botones=lab.querySelectorAll('button');
-  function draw(invertido){
-   const filas=invertido?D.anova_wage_invertida:D.anova_wage;
-   o.v.innerHTML=table(['Fuente','gl','Suma de cuadrados','Cuadrado medio','F','Valor p'],filas.map(p=>[
-    p.fuente==='Residuals'?'Residuos':p.fuente,
-    p.Df,f(p['Sum Sq'],2),f(p['Mean Sq'],2),
-    p['F value']===null?'—':f(p['F value'],2),
-    p['Pr(>F)']===null?'—':p['Pr(>F)'].toExponential(3)
-   ]),'1');
-   o.r.textContent=invertido
-    ?'La fila educ mide el aporte adicional de educación después de IQ. Compara la fila de residuos con la del orden original.'
-    :'La fila IQ mide el aporte adicional de IQ después de educación. La F de cada término usa el cuadrado medio residual como denominador.';
-   botones.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===Number(invertido))));
-  }
-  botones.forEach((b,i)=>b.onclick=()=>draw(i===1));
-  draw(false);
+  lab.innerHTML=table(['Fuente','gl','Suma de cuadrados','Cuadrado medio','F','Valor p'],D.anova_wage.map(p=>[
+   p.fuente==='Residuals'?'Residuos':p.fuente,
+   p.Df,f(p['Sum Sq'],2),f(p['Mean Sq'],2),
+   p['F value']===null?'—':f(p['F value'],2),
+   p['Pr(>F)']===null?'—':p['Pr(>F)'].toExponential(3)
+  ]));
  }
 }
 })();

@@ -365,32 +365,16 @@
     },
     {
       "id": "C4-07",
-      "titulo": "ANOVA interactiva del modelo de salario",
-      "texto": "La tabla muestra cuánto disminuye la suma de residuos al cuadrado al incorporar educación e IQ. Cambia el orden de entrada para comparar cómo se reparte la variación explicada.",
-      "codigo": "# Modelo solicitado. Educación entra primero e IQ después.\nmultiple <- lm(wage ~ educ + IQ, data = datos)\nanova_wage <- anova(multiple)\nprint(anova_wage)\n\n# Mismos regresores con el orden invertido\nmultiple_iq_primero <- lm(wage ~ IQ + educ, data = datos)\nanova_wage_invertida <- anova(multiple_iq_primero)\nprint(anova_wage_invertida)",
-      "pasos": [
-        [
-          "anova(multiple)",
-          "Con un solo modelo, anova() construye una tabla secuencial. La fila educ mide la reducción de la suma de cuadrados residual al pasar del intercepto solo a educación. La fila IQ mide la reducción adicional al agregar IQ."
-        ],
-        [
-          "Df, Sum Sq y Mean Sq",
-          "Df cuenta grados de libertad. Sum Sq muestra la suma de cuadrados asociada a cada fila. Mean Sq divide esa suma por sus grados de libertad. Residuals muestra la variación que queda tras ajustar ambos regresores."
-        ],
-        [
-          "F value y Pr(>F)",
-          "Para cada término, F divide su cuadrado medio por el cuadrado medio residual del modelo completo. Pr(>F) es el valor p de esa prueba secuencial."
-        ],
-        [
-          "lm(wage ~ IQ + educ, data = datos)",
-          "Invierte el orden de entrada. Conserva los regresores y los valores ajustados. Cambia cuánto se atribuye a cada variable al entrar primero o segundo."
-        ]
-      ],
+      "titulo": "ANOVA de wage ~ educ + IQ",
+      "texto": "",
+      "codigo": "anova_wage <- anova(multiple)\nprint(anova_wage)",
+      "pasos": [],
       "interactivo": "anova_wage",
       "formula": "",
-      "lectura": "Con educación primero, la fila IQ responde cuánto aporta IQ después de incluir educación. Para leer el aporte de educación después de IQ, usa el orden invertido. En ambos órdenes se conserva la suma de cuadrados residual del modelo completo.",
-      "pregunta": "¿Qué fila muestra el aporte de IQ una vez incluida educación?",
-      "respuesta": "La fila IQ de la tabla con educación primero."
+      "lectura": "",
+      "pregunta": "",
+      "respuesta": "",
+      "solo_tabla": true
     },
     {
       "id": "C4-08",

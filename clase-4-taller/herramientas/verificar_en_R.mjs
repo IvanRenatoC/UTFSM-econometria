@@ -25,15 +25,13 @@ write.csv(data.frame(datos),"wage.csv",row.names=FALSE)
 write.csv(data.frame(ejemplo[,1:4],predicho=fitted(modelo5),residuo=resid(modelo5)),"cinco.csv",row.names=FALSE)
 write.csv(data.frame(modelo=c("simple","multiple"),b0=c(coef(simple)[1],coef(multiple)[1]),b1=c(coef(simple)[2],coef(multiple)[2]),b2=c(0,coef(multiple)[3]),R2=c(summary(simple)$r.squared,summary(multiple)$r.squared),R2aj=c(summary(simple)$adj.r.squared,summary(multiple)$adj.r.squared)),"modelos.csv",row.names=FALSE)
 write.csv(data.frame(beta=as.numeric(coef(modelo5))),"beta5.csv",row.names=FALSE)
-stopifnot(isTRUE(all.equal(fitted(multiple), fitted(multiple_iq_primero))))
 write.csv(data.frame(fuente=rownames(anova_wage),anova_wage,check.names=FALSE),"anova_wage.csv",row.names=FALSE)
-write.csv(data.frame(fuente=rownames(anova_wage_invertida),anova_wage_invertida,check.names=FALSE),"anova_wage_invertida.csv",row.names=FALSE)
 dev.off()
 `);
 await fs.writeFile(path.join(root,'datos/pares-wage2.png'), await r.FS.readFile('/work/pares-wage2.png'));
 const data={};
 // Las tablas exportadas no contienen comas dentro de sus campos.
-for(const name of ['wage','cinco','modelos','beta5','anova_wage','anova_wage_invertida']){
+for(const name of ['wage','cinco','modelos','beta5','anova_wage']){
  const lines=new TextDecoder().decode(await r.FS.readFile('/work/'+name+'.csv')).trim().split('\n');
  const keys=lines.shift().split(',').map(x=>x.replace(/^"|"$/g,''));
  data[name]=lines.map(l=>Object.fromEntries(l.split(',').map((v,i)=>[keys[i],v==='NA'?null:isNaN(Number(v))?v.replace(/^"|"$/g,''):Number(v)])));

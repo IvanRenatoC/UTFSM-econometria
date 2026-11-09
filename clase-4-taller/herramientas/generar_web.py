@@ -34,6 +34,10 @@ md('# '+C['titulo']+'\n\nEjecuta en orden con kernel R. En Google Colab seleccio
 md('## Agenda\n\n| Horario | Actividad |\n|---|---|\n'+'\n'.join('| '+h+' | '+t+' |' for h,t,_ in C['agenda']),'agenda')
 for a in C['laminas']:
  id=a['id'].lower();md('## '+a['id'].split('-')[1]+' · '+a['titulo']+'\n\n'+a['texto'],id+'-intro')
+ if a.get('solo_tabla'):
+  rc(a['codigo'],id+'-r')
+  md('```text\n'+O[a['id']]+'\n```',id+'-salida')
+  continue
  if a['formula']:md('$$'+a['formula']+'$$',id+'-formula')
  if a.get('carga_ejercicio'):
   rc(a['carga_ejercicio'],id+'-carga',guardar_script=False)
@@ -99,7 +103,12 @@ for tid,title,lo,hi in C['temas']:
    campos=carga+'<h4>La base gpa2</h4><p>'+e(a['descripcion_base'])+'</p>'+campos
    exercise='<h4>Actividades</h4><ol>'+''.join('<li>'+e(t)+'</li>' for t in a['consignas'])+'</ol>'
    lectura_titulo='Mensaje final'
-  cards.append(f'''<article class="slide" id="{id}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{id}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {id[-2:]}</span></header><div class="slide-body" id="body-{id}" hidden><p class="data-note">Tema {C['temas'].index([tid,title,lo,hi])+1} · Cátedra 4 · Aplicación en R</p><p>{e(a['texto'])}</p>{formula}{widget}{conceptos}{campos}{figura}{exercise}<div class="reading"><h4>{lectura_titulo}</h4><p>{e(a['lectura'])}</p></div>{output}{quiz}<p class="data-note"><a href="#{id}">Enlace a esta lámina ↗</a></p></div></article>''')
+  if a.get('solo_tabla'):
+   exercise=''
+   output=''
+  lectura='<div class="reading"><h4>'+e(lectura_titulo)+'</h4><p>'+e(a['lectura'])+'</p></div>' if a['lectura'] else ''
+  introduccion='<p>'+e(a['texto'])+'</p>' if a['texto'] else ''
+  cards.append(f'''<article class="slide" id="{id}" data-title="{e(a['titulo'])}"><header class="slide-head"><h3><button class="slide-toggle" type="button" aria-expanded="false" aria-controls="body-{id}"><span class="slide-chevron" aria-hidden="true">▶</span><span>{e(a['titulo'])}</span></button></h3><span class="number">LÁMINA {id[-2:]}</span></header><div class="slide-body" id="body-{id}" hidden><p class="data-note">Tema {C['temas'].index([tid,title,lo,hi])+1} · Cátedra 4 · Aplicación en R</p>{introduccion}{formula}{widget}{conceptos}{campos}{figura}{exercise}{lectura}{output}{quiz}<p class="data-note"><a href="#{id}">Enlace a esta lámina ↗</a></p></div></article>''')
  sections.append('<section id="'+tid+'"><div class="chapter-intro"><p class="eyebrow">Tema '+str(len(sections)+1)+'</p><h2>'+e(title)+'</h2></div>'+''.join(cards)+'</section>')
 agenda='<section id="agenda"><h2>Agenda y tabla de contenidos</h2><table class="agenda"><thead><tr><th>Horario</th><th>Actividad</th></tr></thead><tbody>'+''.join('<tr><td>'+h+'</td><td>'+('<a href="#'+id+'">'+e(t)+'</a>' if id else e(t))+'</td></tr>' for h,t,id in C['agenda'])+'</tbody></table><p>140 minutos de trabajo y 15 minutos de descanso.</p></section>'
 links='<a href="#agenda">Agenda</a><a href="#objetivos">Objetivos y preparación</a>'+''.join('<a href="#'+a['id']+'">'+a['id'][-2:]+' · '+e(a['titulo'])+'</a>' for a in C['laminas'])
