@@ -18,5 +18,5 @@ Para regenerar después de editar el contenido, ejecuta desde la raíz del repos
     python3 clase-6-taller/herramientas/generar_web.py
 
 El módulo también puede resolverse desde una instalación local de webr mediante Node.
-La carga de datos usa la copia local si está disponible y el paquete wooldridge en Colab.
-El notebook tiene las mismas 16 celdas de código que los 8 ejemplos y sus 8 soluciones de la página.
+La carga didáctica usa directamente wooldridge::wage1. La instalación se presenta en una celda separada, para preparar Colab una vez.
+El notebook tiene 17 celdas de código, una de instalación, ocho ejemplos y ocho soluciones, sincronizadas con la página.

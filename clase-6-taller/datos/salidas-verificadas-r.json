@@ -1,6 +1,6 @@
 {
   "C6-01": {
-    "ejemplo": " wage  educ exper \n    0     0     0 \noriginales utilizadas \n       526        526 \n'data.frame':\t526 obs. of  3 variables:\n $ wage : num  3.1 3.24 3 6 5.3 ...\n $ educ : int  11 12 11 8 12 16 18 12 12 17 ...\n $ exper: int  2 22 2 44 7 9 15 5 26 22 ...\n  wage educ exper\n1 3.10   11     2\n2 3.24   12    22\n3 3.00   11     2\n4 6.00    8    44\n5 5.30   12     7\n6 8.75   16     9",
+    "ejemplo": "'data.frame':\t526 obs. of  3 variables:\n $ wage : num  3.1 3.24 3 6 5.3 ...\n $ educ : int  11 12 11 8 12 16 18 12 12 17 ...\n $ exper: int  2 22 2 44 7 9 15 5 26 22 ...\n      wage             educ           exper      \n Min.   : 0.530   Min.   : 0.00   Min.   : 1.00  \n 1st Qu.: 3.330   1st Qu.:12.00   1st Qu.: 5.00  \n Median : 4.650   Median :12.00   Median :13.50  \n Mean   : 5.896   Mean   :12.56   Mean   :17.02  \n 3rd Qu.: 6.880   3rd Qu.:14.00   3rd Qu.:26.00  \n Max.   :24.980   Max.   :18.00   Max.   :51.00  ",
     "solucion": "   media  mediana \n5.896103 4.650000 "
   },
   "C6-02": {
