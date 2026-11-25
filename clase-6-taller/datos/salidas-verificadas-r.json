@@ -1,0 +1,34 @@
+{
+  "C6-01": {
+    "ejemplo": " wage  educ exper \n    0     0     0 \noriginales utilizadas \n       526        526 \n'data.frame':\t526 obs. of  3 variables:\n $ wage : num  3.1 3.24 3 6 5.3 ...\n $ educ : int  11 12 11 8 12 16 18 12 12 17 ...\n $ exper: int  2 22 2 44 7 9 15 5 26 22 ...\n  wage educ exper\n1 3.10   11     2\n2 3.24   12    22\n3 3.00   11     2\n4 6.00    8    44\n5 5.30   12     7\n6 8.75   16     9",
+    "solucion": "   media  mediana \n5.896103 4.650000 "
+  },
+  "C6-02": {
+    "ejemplo": "(Intercept)        educ \n -0.9048516   0.5413593 \n(Intercept)        educ \n 0.58377267  0.08274437 \n  aproximado.educ exacto_curva.educ \n         8.274437          8.626409 ",
+    "solucion": "  aproximado.educ exacto_curva.educ \n         16.54887          17.99697 "
+  },
+  "C6-03": {
+    "ejemplo": "            antes con_educ_positiva \n              526               524 \n(Intercept)   log(educ) \n  -7.460211    5.329674 \n(Intercept)   log(educ) \n -0.4446768   0.8252071 \n     usd_h_por_1pct.log(educ) porcentaje_por_1pct.log(educ) \n                   0.05329674                    0.82520715 \n     usd_h_por_10pct.log(educ) porcentaje_por_10pct.log(educ) \n                     0.5079722                      8.1826311 ",
+    "solucion": "           usd_h.log(educ) porcentaje_curva.log(educ) \n                 0.2600357                  4.1083494 "
+  },
+  "C6-04": {
+    "ejemplo": " (Intercept)        exper   I(exper^2) \n 3.725405759  0.298100104 -0.006129887 \n  exper efecto_local\n1     5   0.23680123\n2    20   0.05290461\n3    35  -0.13099201\ngiro.exper     minimo     maximo \n   24.3153     1.0000    51.0000 ",
+    "solucion": "[1]  0.17550236 -0.06969314\n        2 \n0.1693725 "
+  },
+  "C6-05": {
+    "ejemplo": " (Intercept)         educ        exper   educ:exper \n-2.859915627  0.601735470  0.045768911  0.002062345 \n  exper usd_h_por_ano_educ\n1     5          0.6120472\n2    20          0.6429824\n3    35          0.6739175\n  educ exper predicho\n1   12     5 4.713495\n2   13     5 5.325542\n3   12    20 5.771251\n4   13    20 6.414233",
+    "solucion": "diferencia.2 formula.educ \n   0.6739175    0.6739175 "
+  },
+  "C6-06": {
+    "ejemplo": "         (Intercept)         educ\ndolares   -0.9048516   0.54135925\npesos   -904.8516120 541.35925467\nmeses     -0.9048516   0.04511327\nR2_dolares   R2_pesos   R2_meses \n 0.1647575  0.1647575  0.1647575 \n SCR_dolares    SCR_pesos \n5.980682e+03 5.980682e+09 \n[1] TRUE\n[1] TRUE",
+    "solucion": "(Intercept)        educ \n  -90.48516    54.13593 \n[1] 10000"
+  },
+  "C6-07": {
+    "ejemplo": "      wage            tenure      \n Min.   : 0.530   Min.   : 0.000  \n 1st Qu.: 3.330   1st Qu.: 0.000  \n Median : 4.650   Median : 2.000  \n Mean   : 5.896   Mean   : 5.105  \n 3rd Qu.: 6.880   3rd Qu.: 7.000  \n Max.   :24.980   Max.   :44.000  ",
+    "solucion": "(Intercept)      tenure \n 1.50100711  0.02395138 \n  aproximado.tenure exacto_curva.tenure \n           7.185414            7.449861 \n(Intercept)       meses \n1.501007108 0.001995948 "
+  },
+  "C6-08": {
+    "ejemplo": "   nivel_nivel.educ      log_nivel.educ nivel_log.log(educ)   log_log.log(educ) \n         0.54135925          0.08274437          5.32967449          0.82520715 ",
+    "solucion": "           usd_h_por_ano.educ       porcentaje_por_ano.educ \n                   0.54135925                    8.27443659 \n     usd_h_por_1pct.log(educ) porcentaje_por_1pct.log(educ) \n                   0.05329674                    0.82520715 "
+  }
+}
