@@ -1,0 +1,13 @@
+{
+  "codigo_sha256": "86bbf0316f202261677f34f3957f48bdf60dd1fef15d3ea3fd3773fc9f495af5",
+  "ejemplos": 8,
+  "soluciones": 8,
+  "motor": "webR",
+  "pruebas": [
+    "526 personas con salarios positivos",
+    "524 personas con educación positiva",
+    "Predicciones invariantes al reescalar",
+    "Pendiente por mes igual a pendiente anual / 12",
+    "Interacción igual a diferencia predicha"
+  ]
+}

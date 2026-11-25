@@ -1,0 +1,203 @@
+{
+  "titulo": "Clase 6 · Interpretación de modelos en R",
+  "fuente": "https://hizocar.github.io/econometria-usm/clases/clase6/",
+  "duracion": 110,
+  "laminas": [
+    {
+      "id": "C6-01",
+      "titulo": "Abrir wage1 y reconocer las unidades",
+      "minutos": 10,
+      "texto": "Trabajaremos con personas de la encuesta CPS de Estados Unidos de 1976. Cada fila representa una persona. wage es salario por hora en USD nominales de 1976, educ son años de educación y exper son años de experiencia potencial. Las asociaciones estimadas describen estos datos. Ejecuta las celdas en orden con kernel R en Colab.",
+      "codigo": "# Ejecuta desde clase-6-taller/ si usas la copia local.\nif (file.exists(\"datos/wage1.csv\")) {\n  original <- read.csv(\"datos/wage1.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  original <- as.data.frame(wooldridge::wage1)\n}\nvariables <- c(\"wage\", \"educ\", \"exper\")\nprint(colSums(is.na(original[variables])))\ndatos <- original[complete.cases(original[variables]), variables]\ndatos <- datos[datos$wage > 0, ]\nprint(c(originales = nrow(original), utilizadas = nrow(datos)))\nstr(datos)\nsummary(datos)\nhead(datos)",
+      "pasos": [
+        [
+          "complete.cases(original[variables])",
+          "Entrega TRUE para las filas sin faltantes en las tres variables seleccionadas. Los corchetes seleccionan filas y columnas."
+        ],
+        [
+          "datos$wage > 0",
+          "Conserva salarios positivos para poder calcular su logaritmo. La salida informa cuántas personas usamos."
+        ],
+        [
+          "str(datos) y summary(datos)",
+          "La primera muestra los tipos de columnas y la segunda resume su distribución."
+        ]
+      ],
+      "ejercicio": "Identifica la unidad de wage y calcula su media y mediana.",
+      "solucion": "print(c(media = mean(datos$wage), mediana = median(datos$wage)))",
+      "respuesta": "La media y la mediana se expresan en dólares por hora de 1976. Cada observación corresponde a una persona.",
+      "grafico": ""
+    },
+    {
+      "id": "C6-02",
+      "titulo": "De dólares a porcentajes con log(wage)",
+      "minutos": 15,
+      "texto": "Estima primero wage ~ educ y luego log(wage) ~ educ. En el primer modelo, la pendiente mide USD por hora por un año adicional. En el segundo, 100 por la pendiente aproxima el cambio porcentual por año. El porcentaje de la curva exponenciada para un salto de d años es 100[exp(b·d) − 1]. El gráfico muestra exp de la predicción del logaritmo, una media geométrica ajustada. Para estimar la media aritmética del salario se requiere una corrección de retransformación.",
+      "codigo": "modelo_nivel <- lm(wage ~ educ, data = datos)\nmodelo_log <- lm(log(wage) ~ educ, data = datos)\nprint(coef(modelo_nivel))\nprint(coef(modelo_log))\nb_educ <- coef(modelo_log)[\"educ\"]\nprint(c(aproximado = 100 * b_educ,\n        exacto_curva = 100 * (exp(b_educ) - 1)))\nnuevos <- data.frame(educ = 6:18)\najuste_log <- predict(modelo_log, newdata = nuevos)\ncurva <- exp(ajuste_log)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Educación (años)\", ylab = \"Salario (USD/h, 1976)\")\nlines(nuevos$educ, curva, col = \"#D6A600\", lwd = 3)",
+      "pasos": [
+        [
+          "log(wage)",
+          "Calcula el logaritmo natural de cada salario. Solo está definido aquí para valores positivos."
+        ],
+        [
+          "exp(b_educ) - 1",
+          "exp es la función inversa de log. Convierte un cambio de logaritmos en cambio proporcional de la curva ajustada."
+        ],
+        [
+          "predict(modelo_log, newdata = nuevos)",
+          "Recibe el modelo y un data frame con la columna educ. Devuelve un vector de predicciones en escala logarítmica, una por fila."
+        ],
+        [
+          "lines(nuevos$educ, curva, ...)",
+          "Agrega la curva al gráfico abierto. lwd controla el grosor y col el color."
+        ]
+      ],
+      "ejercicio": "Calcula el cambio aproximado y el cambio de la curva exponenciada para dos años adicionales de educación.",
+      "solucion": "print(c(aproximado = 100 * b_educ * 2,\n        exacto_curva = 100 * (exp(b_educ * 2) - 1)))",
+      "respuesta": "El porcentaje aproximado se duplica. El cambio porcentual de la curva usa exp(2·b) y puede diferir de dos veces el porcentaje de un año. Usa el control para contrastar saltos de 1 a 4 años.",
+      "grafico": "log"
+    },
+    {
+      "id": "C6-03",
+      "titulo": "Nivel-log y log-log sobre una muestra común",
+      "minutos": 15,
+      "texto": "Ahora educ también entrará en logaritmo. Conservamos educ > 0 y ajustamos ambos modelos sobre esas mismas personas. En wage ~ log(educ), aumentar la educación 1% se asocia aproximadamente con b/100 USD/h de cambio. En log(wage) ~ log(educ), b es una elasticidad y un aumento de 1% en educación se asocia aproximadamente con b% de cambio en la curva salarial. Un 1% de educación es distinto de un año adicional.",
+      "codigo": "datos_log <- datos[datos$educ > 0, ]\nprint(c(antes = nrow(datos), con_educ_positiva = nrow(datos_log)))\nmodelo_nivel_log <- lm(wage ~ log(educ), data = datos_log)\nmodelo_log_log <- lm(log(wage) ~ log(educ), data = datos_log)\nprint(coef(modelo_nivel_log))\nprint(coef(modelo_log_log))\nb_nl <- coef(modelo_nivel_log)[\"log(educ)\"]\nb_ll <- coef(modelo_log_log)[\"log(educ)\"]\nprint(c(usd_h_por_1pct = b_nl / 100,\n        porcentaje_por_1pct = b_ll))\nprint(c(usd_h_por_10pct = b_nl * log(1.10),\n        porcentaje_por_10pct = 100 * (1.10^b_ll - 1)))",
+      "pasos": [
+        [
+          "datos[datos$educ > 0, ]",
+          "Selecciona educación positiva antes de aplicar log. Informa la diferencia de tamaño muestral."
+        ],
+        [
+          "log(1.10)",
+          "Es el cambio exacto en log(educ) cuando educ aumenta 10%."
+        ],
+        [
+          "1.10^b_ll",
+          "Eleva el factor de crecimiento de educación a la elasticidad para obtener el factor de la curva salarial."
+        ]
+      ],
+      "ejercicio": "Calcula en ambos modelos los cambios asociados con un aumento de educación de 5%. Indica las unidades.",
+      "solucion": "print(c(usd_h = b_nl * log(1.05),\n        porcentaje_curva = 100 * (1.05^b_ll - 1)))",
+      "respuesta": "La primera salida está en USD/h y la segunda en porcentaje. Cada interpretación corresponde a una escala de Y distinta. Los R² de modelos con wage y log(wage) resumen variaciones diferentes.",
+      "grafico": ""
+    },
+    {
+      "id": "C6-04",
+      "titulo": "La experiencia cambia la pendiente",
+      "minutos": 15,
+      "texto": "Ajusta una curva cuadrática. La pendiente local es b_exper + 2·b_cuadrado·exper y cambia con la experiencia. El punto de giro es −b_exper/(2·b_cuadrado). Si el coeficiente cuadrático es negativo, el punto es un máximo. Revisa si está dentro del rango observado. La derivada es un cambio local. El salto exacto de e a e+1 agrega además b_cuadrado.",
+      "codigo": "modelo_cuad <- lm(wage ~ exper + I(exper^2), data = datos)\nb <- coef(modelo_cuad)\nprint(b)\nexperiencias <- c(5, 20, 35)\nefecto <- b[\"exper\"] + 2 * b[\"I(exper^2)\"] * experiencias\nprint(data.frame(exper = experiencias, efecto_local = efecto))\ngiro <- -b[\"exper\"] / (2 * b[\"I(exper^2)\"])\nprint(c(giro = giro, minimo = min(datos$exper), maximo = max(datos$exper)))\ngrilla <- data.frame(exper = seq(min(datos$exper), max(datos$exper), length.out = 100))\nplot(wage ~ exper, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Experiencia potencial (años)\", ylab = \"Salario (USD/h, 1976)\")\nlines(grilla$exper, predict(modelo_cuad, newdata = grilla),\n      col = \"#D6A600\", lwd = 3)",
+      "pasos": [
+        [
+          "I(exper^2)",
+          "Dentro de la fórmula, I hace que R calcule el cuadrado numérico. Sin I, ^ tiene otro significado en las fórmulas de modelos."
+        ],
+        [
+          "b[\"I(exper^2)\"]",
+          "Extrae el coeficiente cuadrático mediante el nombre exacto mostrado por coef()."
+        ],
+        [
+          "seq(..., length.out = 100)",
+          "Construye 100 puntos ordenados entre la experiencia mínima y máxima para dibujar la curva."
+        ]
+      ],
+      "ejercicio": "Calcula la pendiente local con 10 y 30 años. Compara con el salto predicho entre 10 y 11 años.",
+      "solucion": "print(b[\"exper\"] + 2 * b[\"I(exper^2)\"] * c(10, 30))\np <- predict(modelo_cuad, newdata = data.frame(exper = c(10, 11)))\nprint(p[2] - p[1])",
+      "respuesta": "El coeficiente de exper se interpreta conjuntamente con el cuadrado. La diferencia finita entre 10 y 11 puede diferir de la pendiente local en 10.",
+      "grafico": "cuad"
+    },
+    {
+      "id": "C6-05",
+      "titulo": "Educación y experiencia interactúan",
+      "minutos": 15,
+      "texto": "La asociación entre educación y salario puede variar con la experiencia potencial. Ajustaremos wage ~ educ * exper. Manteniendo fija la experiencia, el cambio predicho por un año de educación es b_educ + b_interacción·exper. Compara personas en niveles de experiencia 5, 20 y 35 para interpretar las rectas. Son asociaciones condicionadas al modelo.",
+      "codigo": "modelo_int <- lm(wage ~ educ * exper, data = datos)\nbi <- coef(modelo_int)\nprint(bi)\nexperiencias <- c(5, 20, 35)\nefecto_educ <- bi[\"educ\"] + bi[\"educ:exper\"] * experiencias\nprint(data.frame(exper = experiencias, usd_h_por_ano_educ = efecto_educ))\ncomparar <- data.frame(educ = c(12, 13, 12, 13), exper = c(5, 5, 20, 20))\ncomparar$predicho <- predict(modelo_int, newdata = comparar)\nprint(comparar)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Educación (años)\", ylab = \"Salario (USD/h, 1976)\")\nfor (e in experiencias) {\n  nuevos <- data.frame(educ = 6:18, exper = e)\n  lines(nuevos$educ, predict(modelo_int, newdata = nuevos),\n        col = c(\"#005F96\", \"#D6A600\", \"#B2292E\")[match(e, experiencias)], lwd = 2)\n}\nlegend(\"topleft\", legend = paste(experiencias, \"años de experiencia\"),\n       col = c(\"#005F96\", \"#D6A600\", \"#B2292E\"), lwd = 2, bty = \"n\")",
+      "pasos": [
+        [
+          "educ * exper",
+          "En una fórmula de R se expande a educ + exper + educ:exper. El término con : es el producto de ambas variables."
+        ],
+        [
+          "comparar$predicho <- predict(...)",
+          "Agrega a cada fila la predicción correspondiente a su educación y experiencia."
+        ],
+        [
+          "match(e, experiencias)",
+          "Entrega la posición de e en el vector para escoger el color de esa recta."
+        ],
+        [
+          "legend(..., bty = \"n\")",
+          "Identifica los colores de las tres rectas. bty = \"n\" dibuja la leyenda sin marco."
+        ]
+      ],
+      "ejercicio": "Calcula la diferencia predicha al pasar de 12 a 13 años de educación con experiencia fija en 35. Contrástala con la fórmula del efecto.",
+      "solucion": "p <- predict(modelo_int, newdata = data.frame(educ = c(12, 13), exper = c(35, 35)))\nprint(c(diferencia = p[2] - p[1],\n        formula = bi[\"educ\"] + bi[\"educ:exper\"] * 35))",
+      "respuesta": "Los dos cálculos coinciden. b_educ es la pendiente cuando exper = 0. Para otra experiencia hay que sumar el término de interacción.",
+      "grafico": "int"
+    },
+    {
+      "id": "C6-06",
+      "titulo": "Cambiar unidades y comprobar qué se conserva",
+      "minutos": 15,
+      "texto": "Usa un tipo de cambio hipotético de 1.000 pesos por dólar para practicar reescalamiento. Al multiplicar Y por 1.000, el intercepto y la pendiente se multiplican por 1.000, y los residuos también. La suma de cuadrados residuales se multiplica por un millón. Si educación pasa de años a meses, su pendiente se divide por 12. En los tres casos, el R² coincide.",
+      "codigo": "datos$salario_pesos <- 1000 * datos$wage\ndatos$educ_meses <- 12 * datos$educ\nmodelo_pesos <- lm(salario_pesos ~ educ, data = datos)\nmodelo_meses <- lm(wage ~ educ_meses, data = datos)\nprint(rbind(dolares = coef(modelo_nivel),\n            pesos = coef(modelo_pesos), meses = coef(modelo_meses)))\nprint(c(R2_dolares = summary(modelo_nivel)$r.squared,\n        R2_pesos = summary(modelo_pesos)$r.squared,\n        R2_meses = summary(modelo_meses)$r.squared))\nprint(c(SCR_dolares = sum(resid(modelo_nivel)^2),\n        SCR_pesos = sum(resid(modelo_pesos)^2)))\nprint(all.equal(fitted(modelo_pesos) / 1000, fitted(modelo_nivel)))\nprint(all.equal(fitted(modelo_meses), fitted(modelo_nivel)))",
+      "pasos": [
+        [
+          "rbind(...)",
+          "Apila los vectores de coeficientes como filas para compararlos. Cada fila conserva el orden intercepto y pendiente."
+        ],
+        [
+          "summary(modelo)$r.squared",
+          "Extrae el R² del resumen de cada modelo."
+        ],
+        [
+          "resid(modelo) y fitted(modelo)",
+          "Devuelven, respectivamente, los residuos y los valores ajustados para las personas usadas en el modelo."
+        ],
+        [
+          "all.equal(a, b)",
+          "Compara resultados numéricos admitiendo pequeñas diferencias de redondeo. TRUE indica coincidencia dentro de la tolerancia."
+        ]
+      ],
+      "ejercicio": "Expresa wage en centavos de dólar y vuelve a estimar el modelo. ¿Por cuánto se multiplican la pendiente y la SCR?",
+      "solucion": "datos$centavos <- 100 * datos$wage\nmodelo_centavos <- lm(centavos ~ educ, data = datos)\nprint(coef(modelo_centavos))\nprint(sum(resid(modelo_centavos)^2) / sum(resid(modelo_nivel)^2))",
+      "respuesta": "Los coeficientes se multiplican por 100 y la SCR por 10.000. El R² conserva su valor. El selector permite comparar unidades.",
+      "grafico": "escala"
+    },
+    {
+      "id": "C6-07",
+      "titulo": "Ejercicio en parejas con tenure",
+      "minutos": 10,
+      "texto": "Cada pareja abre la base wage1 y escribe su código. tenure son años con el empleador actual. El desafío cambia el regresor para practicar la interpretación sin reutilizar de memoria el coeficiente de educ. Usa 5 minutos para programar y 5 para comparar interpretaciones entre parejas.",
+      "codigo": "# Punto de partida. Ejecuta la carga de la lámina 01 primero.\npractica <- original[, c(\"wage\", \"tenure\")]\npractica <- practica[complete.cases(practica) & practica$wage > 0, ]\nhead(practica)\nsummary(practica)",
+      "pasos": [
+        [
+          "original[, c(\"wage\", \"tenure\")]",
+          "Recupera estas dos columnas de la base completa. datos contiene inicialmente solo wage, educ y exper."
+        ]
+      ],
+      "ejercicio": "Ajusta log(wage) ~ tenure. Calcula el cambio porcentual aproximado y el de la curva para tres años adicionales. Dibuja la nube de tenure y log(wage), con la recta superpuesta. Finalmente expresa tenure en meses y anticipa cómo cambia la pendiente.",
+      "solucion": "modelo_tenure <- lm(log(wage) ~ tenure, data = practica)\nbt <- coef(modelo_tenure)[\"tenure\"]\nprint(coef(modelo_tenure))\nprint(c(aproximado = 100 * bt * 3,\n        exacto_curva = 100 * (exp(bt * 3) - 1)))\nplot(log(wage) ~ tenure, data = practica, pch = 19, col = \"#005F9640\",\n     xlab = \"Antigüedad con el empleador (años)\", ylab = \"Logaritmo del salario\")\nabline(modelo_tenure, col = \"#D6A600\", lwd = 3)\npractica$meses <- 12 * practica$tenure\nmodelo_tenure_meses <- lm(log(wage) ~ meses, data = practica)\nprint(coef(modelo_tenure_meses))",
+      "respuesta": "La pendiente por mes es la pendiente por año dividida por 12. Los cambios porcentuales para el mismo período de tiempo coinciden. El gráfico tiene log(wage) en el eje vertical.",
+      "grafico": ""
+    },
+    {
+      "id": "C6-08",
+      "titulo": "Puesta en común y cierre práctico",
+      "minutos": 15,
+      "texto": "Cada pareja explica una salida de su ejercicio durante 8 minutos. En los 7 restantes, verifica los cuatro cambios de interpretación con este código. Primero completa la frase de cada fila y después abre la solución. La clase suma 110 minutos de trabajo y revisión.",
+      "codigo": "# Recupera las cuatro pendientes vistas hoy.\nprint(c(nivel_nivel = coef(modelo_nivel)[\"educ\"],\n        log_nivel = coef(modelo_log)[\"educ\"],\n        nivel_log = coef(modelo_nivel_log)[\"log(educ)\"],\n        log_log = coef(modelo_log_log)[\"log(educ)\"]))",
+      "pasos": [
+        [
+          "coef(modelo)[\"nombre\"]",
+          "Extrae una pendiente mediante su nombre exacto. Cada modelo define su propia escala para Y y X."
+        ]
+      ],
+      "ejercicio": "Completa las unidades. Nivel-nivel, por un año adicional de educación. Log-nivel, por un año adicional. Nivel-log, por 1% más de educación. Log-log, por 1% más de educación. ¿En cuál de las cuatro frases la pendiente ya es una elasticidad?",
+      "solucion": "print(c(usd_h_por_ano = coef(modelo_nivel)[\"educ\"],\n        porcentaje_por_ano = 100 * coef(modelo_log)[\"educ\"],\n        usd_h_por_1pct = coef(modelo_nivel_log)[\"log(educ)\"] / 100,\n        porcentaje_por_1pct = coef(modelo_log_log)[\"log(educ)\"]))",
+      "respuesta": "Nivel-nivel entrega USD/h por año. Log-nivel entrega aproximadamente porcentaje por año. Nivel-log entrega aproximadamente USD/h por 1%. Log-log entrega aproximadamente porcentaje por 1% y su pendiente es la elasticidad.",
+      "grafico": ""
+    }
+  ]
+}
