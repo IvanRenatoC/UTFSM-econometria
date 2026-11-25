@@ -7,6 +7,7 @@ const {WebR}=await import(process.env.WEBR_MODULE ? pathToFileURL(process.env.WE
 const content=JSON.parse(await fs.readFile(path.join(root,'contenido-clase-6.json'),'utf8'));
 const r=new WebR();
 await r.init();
+await r.installPackages(["wooldridge"]);
 try {
  await r.FS.mkdir('/work'); await r.FS.mkdir('/work/datos');
  await r.FS.writeFile('/work/datos/wage1.csv',await fs.readFile(path.join(root,'datos/wage1.csv')));

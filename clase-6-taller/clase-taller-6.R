@@ -1,22 +1,12 @@
 # Clase 6. Ejecutar en orden con R desde clase-6-taller/ o en Colab.
 
-# Ejecuta desde clase-6-taller/ si usas la copia local.
-if (file.exists("datos/wage1.csv")) {
-  original <- read.csv("datos/wage1.csv")
-} else {
-  if (!requireNamespace("wooldridge", quietly = TRUE)) {
-    install.packages("wooldridge", repos = "https://cloud.r-project.org/")
-  }
-  original <- as.data.frame(wooldridge::wage1)
-}
-variables <- c("wage", "educ", "exper")
-print(colSums(is.na(original[variables])))
-datos <- original[complete.cases(original[variables]), variables]
-datos <- datos[datos$wage > 0, ]
-print(c(originales = nrow(original), utilizadas = nrow(datos)))
+install.packages("wooldridge", repos = "https://cloud.r-project.org/")
+
+original <- wooldridge::wage1
+datos <- original[, c("wage", "educ", "exper")]
+head(datos)
 str(datos)
 summary(datos)
-head(datos)
 
 print(c(media = mean(datos$wage), mediana = median(datos$wage)))
 

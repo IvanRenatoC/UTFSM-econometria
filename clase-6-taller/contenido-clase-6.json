@@ -7,32 +7,55 @@
       "id": "C6-01",
       "titulo": "Abrir wage1 y reconocer las unidades",
       "minutos": 10,
-      "texto": "Trabajaremos con personas de la encuesta CPS de Estados Unidos de 1976. Cada fila representa una persona. wage es salario por hora en USD nominales de 1976, educ son años de educación y exper son años de experiencia potencial. Las asociaciones estimadas describen estos datos. Ejecuta las celdas en orden con kernel R en Colab.",
-      "codigo": "# Ejecuta desde clase-6-taller/ si usas la copia local.\nif (file.exists(\"datos/wage1.csv\")) {\n  original <- read.csv(\"datos/wage1.csv\")\n} else {\n  if (!requireNamespace(\"wooldridge\", quietly = TRUE)) {\n    install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")\n  }\n  original <- as.data.frame(wooldridge::wage1)\n}\nvariables <- c(\"wage\", \"educ\", \"exper\")\nprint(colSums(is.na(original[variables])))\ndatos <- original[complete.cases(original[variables]), variables]\ndatos <- datos[datos$wage > 0, ]\nprint(c(originales = nrow(original), utilizadas = nrow(datos)))\nstr(datos)\nsummary(datos)\nhead(datos)",
+      "texto": "Trabajaremos con wage1, una base del libro de Wooldridge con 526 personas de la encuesta CPS de Estados Unidos de 1976. Cada fila representa una persona. Revisaremos salario, educación y experiencia potencial. El ejercicio final incorpora la antigüedad con el empleador. Ejecuta las celdas en orden con kernel R en Colab.",
+      "codigo": "original <- wooldridge::wage1\ndatos <- original[, c(\"wage\", \"educ\", \"exper\")]\nhead(datos)\nstr(datos)\nsummary(datos)",
       "pasos": [
         [
-          "complete.cases(original[variables])",
-          "Entrega TRUE para las filas sin faltantes en las tres variables seleccionadas. Los corchetes seleccionan filas y columnas."
+          "install.packages(\"wooldridge\", repos = \"...\")",
+          "Instala el paquete desde CRAN. Ejecuta esta línea una vez al preparar el entorno de Colab."
         ],
         [
-          "datos$wage > 0",
-          "Conserva salarios positivos para poder calcular su logaritmo. La salida informa cuántas personas usamos."
+          "original <- wooldridge::wage1",
+          "Carga la base wage1 del paquete y la guarda con el nombre original. El símbolo :: permite acceder a la base directamente."
         ],
         [
-          "str(datos) y summary(datos)",
-          "La primera muestra los tipos de columnas y la segunda resume su distribución."
+          "original[, c(\"wage\", \"educ\", \"exper\")]",
+          "Conserva todas las filas y selecciona esas tres columnas. La base original sigue disponible para recuperar tenure."
+        ],
+        [
+          "head(datos), str(datos) y summary(datos)",
+          "Muestran las primeras filas, la estructura y las estadísticas descriptivas."
         ]
       ],
       "ejercicio": "Identifica la unidad de wage y calcula su media y mediana.",
       "solucion": "print(c(media = mean(datos$wage), mediana = median(datos$wage)))",
       "respuesta": "La media y la mediana se expresan en dólares por hora de 1976. Cada observación corresponde a una persona.",
-      "grafico": ""
+      "grafico": "",
+      "instalacion": "install.packages(\"wooldridge\", repos = \"https://cloud.r-project.org/\")",
+      "campos": [
+        [
+          "wage",
+          "Salario promedio por hora, en dólares estadounidenses nominales de 1976."
+        ],
+        [
+          "educ",
+          "Años de educación formal."
+        ],
+        [
+          "exper",
+          "Años de experiencia laboral potencial, calculados a partir de la edad y la educación."
+        ],
+        [
+          "tenure",
+          "Años con el empleador actual. Se usará en el ejercicio en parejas."
+        ]
+      ]
     },
     {
       "id": "C6-02",
       "titulo": "De dólares a porcentajes con log(wage)",
       "minutos": 15,
-      "texto": "Estima primero wage ~ educ y luego log(wage) ~ educ. En el primer modelo, la pendiente mide USD por hora por un año adicional. En el segundo, 100 por la pendiente aproxima el cambio porcentual por año. El porcentaje de la curva exponenciada para un salto de d años es 100[exp(b·d) − 1]. El gráfico muestra exp de la predicción del logaritmo, una media geométrica ajustada. Para estimar la media aritmética del salario se requiere una corrección de retransformación.",
+      "texto": "¿Por qué analizar log(wage)? Una diferencia de un dólar por hora representa un cambio proporcional mayor para alguien que gana 3 dólares que para alguien que gana 15. El logaritmo permite estudiar variaciones porcentuales y comprime los valores altos para visualizar la distribución. Compara wage ~ educ con log(wage) ~ educ. En el primero la pendiente mide USD/h por año adicional. En el segundo, 100 por la pendiente aproxima el cambio porcentual por año. El cambio de la curva exponenciada para un salto de d años es 100[exp(b·d) − 1]. Esa curva representa una media geométrica ajustada. La media aritmética del salario requiere una corrección de retransformación.",
       "codigo": "modelo_nivel <- lm(wage ~ educ, data = datos)\nmodelo_log <- lm(log(wage) ~ educ, data = datos)\nprint(coef(modelo_nivel))\nprint(coef(modelo_log))\nb_educ <- coef(modelo_log)[\"educ\"]\nprint(c(aproximado = 100 * b_educ,\n        exacto_curva = 100 * (exp(b_educ) - 1)))\nnuevos <- data.frame(educ = 6:18)\najuste_log <- predict(modelo_log, newdata = nuevos)\ncurva <- exp(ajuste_log)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Educación (años)\", ylab = \"Salario (USD/h, 1976)\")\nlines(nuevos$educ, curva, col = \"#D6A600\", lwd = 3)",
       "pasos": [
         [
@@ -61,7 +84,7 @@
       "id": "C6-03",
       "titulo": "Nivel-log y log-log sobre una muestra común",
       "minutos": 15,
-      "texto": "Ahora educ también entrará en logaritmo. Conservamos educ > 0 y ajustamos ambos modelos sobre esas mismas personas. En wage ~ log(educ), aumentar la educación 1% se asocia aproximadamente con b/100 USD/h de cambio. En log(wage) ~ log(educ), b es una elasticidad y un aumento de 1% en educación se asocia aproximadamente con b% de cambio en la curva salarial. Un 1% de educación es distinto de un año adicional.",
+      "texto": "¿Por qué usar logaritmos en ambas variables? Así podemos comparar cambios proporcionales. Por ejemplo, pasar de 10 a 11 años de educación es un aumento de 10%, mientras que pasar de 15 a 16 es aproximadamente 6,7%. El modelo log-log resume la asociación entre porcentajes mediante una elasticidad. En log(wage) ~ log(educ), un aumento de 1% en educación se asocia aproximadamente con b% de cambio en la curva salarial. Para contrastar escalas también ajustaremos wage ~ log(educ), donde ese 1% corresponde aproximadamente a b/100 USD/h. Ambos ejemplos usan la misma muestra con educ > 0.",
       "codigo": "datos_log <- datos[datos$educ > 0, ]\nprint(c(antes = nrow(datos), con_educ_positiva = nrow(datos_log)))\nmodelo_nivel_log <- lm(wage ~ log(educ), data = datos_log)\nmodelo_log_log <- lm(log(wage) ~ log(educ), data = datos_log)\nprint(coef(modelo_nivel_log))\nprint(coef(modelo_log_log))\nb_nl <- coef(modelo_nivel_log)[\"log(educ)\"]\nb_ll <- coef(modelo_log_log)[\"log(educ)\"]\nprint(c(usd_h_por_1pct = b_nl / 100,\n        porcentaje_por_1pct = b_ll))\nprint(c(usd_h_por_10pct = b_nl * log(1.10),\n        porcentaje_por_10pct = 100 * (1.10^b_ll - 1)))",
       "pasos": [
         [
@@ -84,9 +107,9 @@
     },
     {
       "id": "C6-04",
-      "titulo": "La experiencia cambia la pendiente",
+      "titulo": "Función cuadrática · experiencia y salario",
       "minutos": 15,
-      "texto": "Ajusta una curva cuadrática. La pendiente local es b_exper + 2·b_cuadrado·exper y cambia con la experiencia. El punto de giro es −b_exper/(2·b_cuadrado). Si el coeficiente cuadrático es negativo, el punto es un máximo. Revisa si está dentro del rango observado. La derivada es un cambio local. El salto exacto de e a e+1 agrega además b_cuadrado.",
+      "texto": "Empezamos con una sola variable explicativa, la experiencia potencial, e incorporamos su cuadrado. Queremos representar un salario que aumenta al comienzo y cuya tasa de crecimiento se reduce con la experiencia. En wage = b0 + b1·exper + b2·exper², la pendiente local es b1 + 2·b2·exper. El punto de giro es −b1/(2·b2). Si b2 es negativo, ese punto es un máximo. Revisa si está dentro del rango observado. La derivada describe un cambio local. El salto exacto de e a e+1 agrega además b2.",
       "codigo": "modelo_cuad <- lm(wage ~ exper + I(exper^2), data = datos)\nb <- coef(modelo_cuad)\nprint(b)\nexperiencias <- c(5, 20, 35)\nefecto <- b[\"exper\"] + 2 * b[\"I(exper^2)\"] * experiencias\nprint(data.frame(exper = experiencias, efecto_local = efecto))\ngiro <- -b[\"exper\"] / (2 * b[\"I(exper^2)\"])\nprint(c(giro = giro, minimo = min(datos$exper), maximo = max(datos$exper)))\ngrilla <- data.frame(exper = seq(min(datos$exper), max(datos$exper), length.out = 100))\nplot(wage ~ exper, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Experiencia potencial (años)\", ylab = \"Salario (USD/h, 1976)\")\nlines(grilla$exper, predict(modelo_cuad, newdata = grilla),\n      col = \"#D6A600\", lwd = 3)",
       "pasos": [
         [
@@ -109,9 +132,9 @@
     },
     {
       "id": "C6-05",
-      "titulo": "Educación y experiencia interactúan",
+      "titulo": "Interacción · educación y experiencia",
       "minutos": 15,
-      "texto": "La asociación entre educación y salario puede variar con la experiencia potencial. Ajustaremos wage ~ educ * exper. Manteniendo fija la experiencia, el cambio predicho por un año de educación es b_educ + b_interacción·exper. Compara personas en niveles de experiencia 5, 20 y 35 para interpretar las rectas. Son asociaciones condicionadas al modelo.",
+      "texto": "Ahora usamos dos variables, educación y experiencia, e incorporamos su producto. La pregunta es si un año adicional de educación se asocia con el mismo cambio salarial para personas con distinta experiencia potencial. En wage = b0 + b1·educ + b2·exper + b3·educ·exper, manteniendo fija la experiencia, el cambio predicho por un año de educación es b1 + b3·exper. Compara las rectas con experiencia fija en 5, 20 y 35 años. Cada recta describe una asociación condicionada al modelo.",
       "codigo": "modelo_int <- lm(wage ~ educ * exper, data = datos)\nbi <- coef(modelo_int)\nprint(bi)\nexperiencias <- c(5, 20, 35)\nefecto_educ <- bi[\"educ\"] + bi[\"educ:exper\"] * experiencias\nprint(data.frame(exper = experiencias, usd_h_por_ano_educ = efecto_educ))\ncomparar <- data.frame(educ = c(12, 13, 12, 13), exper = c(5, 5, 20, 20))\ncomparar$predicho <- predict(modelo_int, newdata = comparar)\nprint(comparar)\nplot(wage ~ educ, data = datos, pch = 19, col = \"#005F9640\",\n     xlab = \"Educación (años)\", ylab = \"Salario (USD/h, 1976)\")\nfor (e in experiencias) {\n  nuevos <- data.frame(educ = 6:18, exper = e)\n  lines(nuevos$educ, predict(modelo_int, newdata = nuevos),\n        col = c(\"#005F96\", \"#D6A600\", \"#B2292E\")[match(e, experiencias)], lwd = 2)\n}\nlegend(\"topleft\", legend = paste(experiencias, \"años de experiencia\"),\n       col = c(\"#005F96\", \"#D6A600\", \"#B2292E\"), lwd = 2, bty = \"n\")",
       "pasos": [
         [
