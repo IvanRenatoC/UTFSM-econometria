@@ -41,12 +41,17 @@ def render_graph(kind):
  if kind=='repaso':
   buttons='<div class="review-buttons" role="group" aria-label="Elige un modelo">'+''.join('<button type="button" data-model="'+k+'" aria-pressed="'+str(k=='lognivel').lower()+'">'+t+'</button>' for k,t in [('lognivel','Log-nivel'),('loglog','Log-log'),('cuad','Cuadrática'),('int','Interacción')])+'</div><p class="review-explanation" aria-live="polite"></p>'
  captions={'lognivel':'Logaritmo del salario frente a educación','loglog':'Logaritmo del salario frente a logaritmo de educación','repaso':'Cuatro modelos, cuatro interpretaciones'}
- return '<figure class="demo" data-plot="'+kind+'"><figcaption>'+captions.get(kind,'Explora la curva estimada con R')+'</figcaption>'+buttons+'<div class="controls">'+controls+'<button type="button" class="animate">Dibujar curva</button><button type="button" class="reset">Restablecer</button></div><canvas width="900" height="460" role="img" aria-label="'+captions.get(kind,'Dispersión observada y curva estimada')+'"></canvas><output aria-live="polite"></output><details><summary>Ver los valores de la curva</summary><div class="curve-table"></div></details></figure>'
+ description=''
+ if kind=='repaso':
+  description=' data-interaction-description="'+e(C['laminas'][5]['repaso_interaccion'])+'"'
+ return '<figure class="demo" data-plot="'+kind+'"'+description+'><figcaption>'+captions.get(kind,'Explora la curva estimada con R')+'</figcaption>'+buttons+'<div class="controls">'+controls+'<button type="button" class="animate">Dibujar curva</button><button type="button" class="reset">Restablecer</button></div><canvas width="900" height="460" role="img" aria-label="'+captions.get(kind,'Dispersión observada y curva estimada')+'"></canvas><output aria-live="polite"></output><details><summary>Ver los valores de la curva</summary><div class="curve-table"></div></details></figure>'
 
 for a in C['laminas']:
  id=a['id'].lower()
  steps='\n\n'.join('**'+k+'**\n\n'+v for k,v in a['pasos'])
  md('## '+a['id']+' · '+a['titulo']+'\n\n'+a['texto']+'\n\n### Sentencias del ejemplo\n\n'+steps,id+'-intro')
+ if a.get('repaso_interaccion'):
+  md('### Las dos rectas de la interacción\n\n'+a['repaso_interaccion'],id+'-rectas')
  extra=''
  fields=''
  if a.get('campos'):

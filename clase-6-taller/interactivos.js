@@ -39,7 +39,7 @@ async function initializeGraphs() {
         lognivel: 'Log-nivel · Eje Y en logaritmos y educación en años. La pendiente multiplicada por 100 aproxima el cambio porcentual por un año adicional.',
         loglog: 'Log-log · Ambos ejes en logaritmos. La pendiente es la elasticidad, el cambio porcentual aproximado del salario por 1% más de educación.',
         cuad: 'Cuadrática · wage = b0 + b1·exper + b2·exper². La pendiente b1 + 2·b2·exper cambia a medida que avanzamos por la misma curva.',
-        int: 'Interacción · wage = b0 + b1·educ + b2·exper + b3·educ·exper. Dorado representa 35 años de experiencia y azul representa 5. La pendiente de educación cambia al elegir otra experiencia.'
+        int: demo.dataset.interactionDescription
       };
       if (review) {
         demo.querySelector('.review-explanation').textContent = explanation[type];
