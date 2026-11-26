@@ -27,22 +27,38 @@ async function initializeGraphs() {
     const canvas = demo.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const control = demo.querySelector('input,select');
-    const type = demo.dataset.plot;
+    const plotType = demo.dataset.plot;
     let frame = 0;
     let progress = 1;
     const defaultValue = control.value;
     function draw() {
+      const review = plotType === 'repaso';
+      const type = review ? control.value : plotType;
+      const logged = type === 'lognivel' || type === 'loglog';
+      const explanation = {
+        lognivel: 'Log-nivel · Eje Y en logaritmos y educación en años. La pendiente multiplicada por 100 aproxima el cambio porcentual por un año adicional.',
+        loglog: 'Log-log · Ambos ejes en logaritmos. La pendiente es la elasticidad, el cambio porcentual aproximado del salario por 1% más de educación.',
+        cuad: 'Cuadrática · wage = b0 + b1·exper + b2·exper². La pendiente b1 + 2·b2·exper cambia a medida que avanzamos por la misma curva.',
+        int: 'Interacción · wage = b0 + b1·educ + b2·exper + b3·educ·exper. Dorado representa 35 años de experiencia y azul representa 5. La pendiente de educación cambia al elegir otra experiencia.'
+      };
+      if (review) {
+        demo.querySelector('.review-explanation').textContent = explanation[type];
+        for (const button of demo.querySelectorAll('[data-model]')) {
+          button.setAttribute('aria-pressed', String(button.dataset.model === type));
+        }
+      }
       const unit = type === 'escala' ? control.value : 'usd';
       const fx = unit === 'meses' ? 12 : 1;
       const fy = unit === 'pesos' ? 1000 : 1;
-      const key = type === 'int' ? 'int' + control.value : type === 'escala' ? 'nivel' : type;
+      const key = type === 'int' ? 'int' + (review ? '35' : control.value) : type === 'escala' ? 'nivel' : type;
       const curve = data[key];
-      const points = data.puntos.map(p => ({
-        x: (type === 'cuad' ? p.exper : p.educ) * fx, y: p.wage * fy
+      const points = data.puntos.filter(p => type !== 'loglog' || p.educ > 0).map(p => ({
+        x: (type === 'cuad' ? p.exper : type === 'loglog' ? Math.log(p.educ) : p.educ) * fx,
+        y: (logged ? Math.log(p.wage) : p.wage) * fy
       }));
       const line = curve.map(p => ({x: p.x * fx, y: p.y * fy}));
       const xMax = Math.max(...points.map(p => p.x));
-      const yMin = Math.min(0, ...line.map(p => p.y));
+      const yMin = Math.min(0, ...line.map(p => p.y), ...points.map(p => p.y));
       const yMax = Math.max(...points.map(p => p.y)) * 1.04;
       const left = 90, right = 868, top = 28, bottom = 385;
       const x = v => left + v / xMax * (right - left);
@@ -72,20 +88,27 @@ async function initializeGraphs() {
         else ctx.lineTo(x(p.x), y(p.y));
       });
       ctx.stroke();
+      if (review && type === 'int') {
+        ctx.strokeStyle = '#005F96'; ctx.beginPath();
+        data.int5.slice(0,count).forEach((p,i) => {
+          if (i === 0) ctx.moveTo(x(p.x),y(p.y)); else ctx.lineTo(x(p.x),y(p.y));
+        });
+        ctx.stroke();
+      }
       ctx.fillStyle = '#253047'; ctx.textAlign = 'center';
-      const xLabel = type === 'cuad' ? 'Experiencia potencial (años)' : unit === 'meses' ? 'Educación (meses)' : 'Educación (años)';
+      const xLabel = type === 'loglog' ? 'Logaritmo de educación (años)' : type === 'cuad' ? 'Experiencia potencial (años)' : unit === 'meses' ? 'Educación (meses)' : 'Educación (años)';
       ctx.fillText(xLabel, (left + right) / 2, 440);
       ctx.save(); ctx.translate(20, 220); ctx.rotate(-Math.PI / 2);
-      ctx.fillText(unit === 'pesos' ? 'Salario (pesos/h, TC hipotético)' : 'Salario (USD/h de 1976)', 0, 0); ctx.restore();
+      ctx.fillText(logged ? 'Logaritmo del salario (USD/h)' : unit === 'pesos' ? 'Salario (pesos/h, TC hipotético)' : 'Salario (USD/h de 1976)', 0, 0); ctx.restore();
       let message = type === 'int' ? 'Experiencia fija en ' + control.value + ' años.' : type === 'escala' ? 'Mismas personas y mismo ajuste económico, con unidades ' + unit + '.' : '';
-      if (type === 'log' || type === 'cuad') {
-        const target = Number(control.value);
+      if (!review && ['log', 'cuad', 'lognivel', 'loglog'].includes(type)) {
+        const target = type === 'loglog' ? Math.log(Number(control.value)) : Number(control.value);
         const chosen = line.reduce((best, p) => Math.abs(p.x - target) < Math.abs(best.x - target) ? p : best);
         ctx.fillStyle = '#B2292E'; ctx.beginPath();
         ctx.arc(x(chosen.x), y(chosen.y), 7, 0, Math.PI * 2); ctx.fill();
-        message = xLabel + ' = ' + target + '. ' + (type === 'log' ? 'Curva exp de log ajustado' : 'Salario ajustado') + ' ≈ ' + format(chosen.y) + ' USD/h.';
+        message = xLabel + ' = ' + target + '. ' + (type === 'log' ? 'Curva exp de log ajustado' : logged ? 'Logaritmo del salario ajustado' : 'Salario ajustado') + ' ≈ ' + format(chosen.y) + (logged ? ' en escala logarítmica.' : ' USD/h.');
       }
-      demo.querySelector('output').textContent = message;
+      demo.querySelector('output').textContent = review ? '' : message;
       const table = document.createElement('table');
       table.innerHTML = '<thead><tr><th>' + xLabel + '</th><th>Valor de la curva</th></tr></thead>';
       const body = document.createElement('tbody');
@@ -98,6 +121,12 @@ async function initializeGraphs() {
       }
       table.append(body); demo.querySelector('.curve-table').replaceChildren(table);
     }
+    for (const button of demo.querySelectorAll('[data-model]')) {
+      button.addEventListener('click', () => {
+        control.value = button.dataset.model;
+        demo.querySelector('.animate').click();
+      });
+    }
     control.addEventListener('input', () => { cancelAnimationFrame(frame); progress = 1; draw(); });
     demo.querySelector('.reset').addEventListener('click', () => {
       cancelAnimationFrame(frame); control.value = defaultValue; progress = 1; draw();
@@ -106,7 +135,7 @@ async function initializeGraphs() {
       cancelAnimationFrame(frame);
       const start = performance.now();
       function tick(now) {
-        progress = Math.min(1, (now - start) / 1500); draw();
+        progress = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : Math.min(1, (now - start) / 1500); draw();
         if (progress < 1) frame = requestAnimationFrame(tick);
       }
       frame = requestAnimationFrame(tick);

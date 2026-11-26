@@ -27,6 +27,22 @@ md('## Agenda de 110 minutos\n\n| Tiempo transcurrido | Actividad |\n|---|---|\n
 parts=[]
 def block(c):
  return '<div class="code-head"><span>R</span><button class="copy" type="button">Copiar código</button></div><pre><code>'+e(c)+'</code></pre>'
+def render_graph(kind):
+ controls={
+  'log':'<label>Educación <input type="range" min="6" max="18" value="12" step="1"></label>',
+  'lognivel':'<label>Educación <input type="range" min="6" max="18" value="12" step="1"></label>',
+  'loglog':'<label>Educación <input type="range" min="1" max="18" value="12" step="1"></label>',
+  'cuad':'<label>Experiencia <input type="range" min="1" max="51" value="10" step="1"></label>',
+  'int':'<label>Experiencia fija <select><option value="5">5 años</option><option value="20">20 años</option><option value="35">35 años</option></select></label>',
+  'escala':'<label>Unidades <select><option value="usd">USD/h y años</option><option value="pesos">Pesos/h y años</option><option value="meses">USD/h y meses</option></select></label>',
+  'repaso':'<select hidden aria-label="Modelo de repaso"><option value="lognivel">Log-nivel</option><option value="loglog">Log-log</option><option value="cuad">Cuadrática</option><option value="int">Interacción</option></select>'
+ }[kind]
+ buttons=''
+ if kind=='repaso':
+  buttons='<div class="review-buttons" role="group" aria-label="Elige un modelo">'+''.join('<button type="button" data-model="'+k+'" aria-pressed="'+str(k=='lognivel').lower()+'">'+t+'</button>' for k,t in [('lognivel','Log-nivel'),('loglog','Log-log'),('cuad','Cuadrática'),('int','Interacción')])+'</div><p class="review-explanation" aria-live="polite"></p>'
+ captions={'lognivel':'Logaritmo del salario frente a educación','loglog':'Logaritmo del salario frente a logaritmo de educación','repaso':'Cuatro modelos, cuatro interpretaciones'}
+ return '<figure class="demo" data-plot="'+kind+'"><figcaption>'+captions.get(kind,'Explora la curva estimada con R')+'</figcaption>'+buttons+'<div class="controls">'+controls+'<button type="button" class="animate">Dibujar curva</button><button type="button" class="reset">Restablecer</button></div><canvas width="900" height="460" role="img" aria-label="'+captions.get(kind,'Dispersión observada y curva estimada')+'"></canvas><output aria-live="polite"></output><details><summary>Ver los valores de la curva</summary><div class="curve-table"></div></details></figure>'
+
 for a in C['laminas']:
  id=a['id'].lower()
  steps='\n\n'.join('**'+k+'**\n\n'+v for k,v in a['pasos'])
@@ -43,17 +59,11 @@ for a in C['laminas']:
  md('### Resultados del ejemplo\n\n<pre>'+e(O[a['id']]['ejemplo'])+'</pre>\n\n### Ejercicio\n\n'+a['ejercicio']+'\n\n### Solución comentada\n\n'+a['respuesta'],id+'-ejercicio')
  code(a['solucion'],id+'-solucion')
  md('<pre>'+e(O[a['id']]['solucion'])+'</pre>',id+'-resultado')
- graph=''
- if a['grafico']:
-  controls={
-   'log':'<label>Educación <input type="range" min="6" max="18" value="12" step="1"></label>',
-   'cuad':'<label>Experiencia <input type="range" min="1" max="51" value="10" step="1"></label>',
-   'int':'<label>Experiencia fija <select><option value="5">5 años</option><option value="20">20 años</option><option value="35">35 años</option></select></label>',
-   'escala':'<label>Unidades <select><option value="usd">USD/h y años</option><option value="pesos">Pesos/h y años</option><option value="meses">USD/h y meses</option></select></label>'
-  }[a['grafico']]
-  graph='<figure class="demo" data-plot="'+a['grafico']+'"><figcaption>Explora la curva estimada con R</figcaption><div class="controls">'+controls+'<button type="button" class="animate">Dibujar curva</button><button type="button" class="reset">Restablecer</button></div><canvas width="900" height="460" role="img" aria-label="Dispersión observada y curva estimada"></canvas><output aria-live="polite"></output><details><summary>Ver los valores de la curva</summary><div class="curve-table"></div></details></figure>'
+ graph=render_graph(a['grafico']) if a['grafico'] else ''
+ initial_graphs=''.join(render_graph(k) for k in a.get('graficos_inicio',[]))
+ final_graphs=''.join(render_graph(k) for k in a.get('graficos_final',[]))
  steps_html=''.join('<details class="explain"><summary><code>'+e(k)+'</code></summary><p>'+e(v)+'</p></details>' for k,v in a['pasos'])
- parts.append('<article class="slide" id="'+a['id']+'"><details><summary class="slide-head">'+e(a['titulo'])+'<span>LÁMINA '+a['id'][-2:]+' · '+str(a['minutos'])+' min</span></summary><div class="slide-body"><p>'+e(a['texto'])+'</p>'+fields+extra+graph+'<h4>En R · Ejemplo guiado</h4>'+block(a['codigo'])+'<h4>Haz clic en una sentencia para entenderla</h4>'+steps_html+'<details class="solution"><summary>Resultados del ejemplo</summary><pre>'+e(O[a['id']]['ejemplo'])+'</pre></details><h4>Comprueba lo aprendido</h4><p>'+e(a['ejercicio'])+'</p><details class="solution"><summary>Ver solución y explicación</summary><p>'+e(a['respuesta'])+'</p>'+block(a['solucion'])+'<pre>'+e(O[a['id']]['solucion'])+'</pre></details></div></details></article>')
+ parts.append('<article class="slide" id="'+a['id']+'"><details><summary class="slide-head">'+e(a['titulo'])+'<span>LÁMINA '+a['id'][-2:]+' · '+str(a['minutos'])+' min</span></summary><div class="slide-body">'+initial_graphs+'<p>'+e(a['texto'])+'</p>'+fields+extra+graph+'<h4>En R · Ejemplo guiado</h4>'+block(a['codigo'])+'<h4>Haz clic en una sentencia para entenderla</h4>'+steps_html+'<details class="solution"><summary>Resultados del ejemplo</summary><pre>'+e(O[a['id']]['ejemplo'])+'</pre></details><h4>Comprueba lo aprendido</h4><p>'+e(a['ejercicio'])+'</p><details class="solution"><summary>Ver solución y explicación</summary><p>'+e(a['respuesta'])+'</p>'+block(a['solucion'])+'<pre>'+e(O[a['id']]['solucion'])+'</pre></details>'+final_graphs+'</div></details></article>')
 nb=dict(cells=cells,metadata=dict(kernelspec=dict(display_name='R',language='R',name='ir'),language_info=dict(name='R',file_extension='.r',mimetype='text/x-r-source')),nbformat=4,nbformat_minor=5)
 (ROOT/'clase-taller-6.ipynb').write_text(json.dumps(nb,ensure_ascii=False,indent=2)+'\n')
 (ROOT/'clase-taller-6.R').write_text('\n\n'.join(script)+'\n')
