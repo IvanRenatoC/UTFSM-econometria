@@ -24,10 +24,22 @@ plot(wage ~ educ, data = datos, pch = 19, col = "#005F9640",
      xlab = "Educación (años)", ylab = "Salario (USD/h, 1976)")
 lines(nuevos$educ, curva, col = "#D6A600", lwd = 3)
 
+# El logaritmo del salario en el eje vertical.
+plot(log(wage) ~ educ, data = datos, pch = 19, col = "#005F9640",
+     main = "Logaritmo del salario y educación",
+     xlab = "Educación (años)", ylab = "Logaritmo del salario (USD/h)")
+abline(modelo_log, col = "#D6A600", lwd = 3)
+
 print(c(aproximado = 100 * b_educ * 2,
         exacto_curva = 100 * (exp(b_educ * 2) - 1)))
 
+# Primera mirada en las dos escalas logarítmicas.
 datos_log <- datos[datos$educ > 0, ]
+plot(log(wage) ~ log(educ), data = datos_log, pch = 19, col = "#005F9640",
+     main = "Salario y educación en logaritmos",
+     xlab = "Logaritmo de educación (años)",
+     ylab = "Logaritmo del salario (USD/h)")
+
 print(c(antes = nrow(datos), con_educ_positiva = nrow(datos_log)))
 modelo_nivel_log <- lm(wage ~ log(educ), data = datos_log)
 modelo_log_log <- lm(log(wage) ~ log(educ), data = datos_log)
@@ -39,26 +51,29 @@ print(c(usd_h_por_1pct = b_nl / 100,
         porcentaje_por_1pct = b_ll))
 print(c(usd_h_por_10pct = b_nl * log(1.10),
         porcentaje_por_10pct = 100 * (1.10^b_ll - 1)))
+abline(modelo_log_log, col = "#D6A600", lwd = 3)
 
 print(c(usd_h = b_nl * log(1.05),
         porcentaje_curva = 100 * (1.05^b_ll - 1)))
 
-modelo_cuad <- lm(wage ~ exper + I(exper^2), data = datos)
+datos$exper2 <- datos$exper^2
+modelo_cuad <- lm(wage ~ exper + exper2, data = datos)
 b <- coef(modelo_cuad)
 print(b)
 experiencias <- c(5, 20, 35)
-efecto <- b["exper"] + 2 * b["I(exper^2)"] * experiencias
+efecto <- b["exper"] + 2 * b["exper2"] * experiencias
 print(data.frame(exper = experiencias, efecto_local = efecto))
-giro <- -b["exper"] / (2 * b["I(exper^2)"])
+giro <- -b["exper"] / (2 * b["exper2"])
 print(c(giro = giro, minimo = min(datos$exper), maximo = max(datos$exper)))
 grilla <- data.frame(exper = seq(min(datos$exper), max(datos$exper), length.out = 100))
+grilla$exper2 <- grilla$exper^2
 plot(wage ~ exper, data = datos, pch = 19, col = "#005F9640",
      xlab = "Experiencia potencial (años)", ylab = "Salario (USD/h, 1976)")
 lines(grilla$exper, predict(modelo_cuad, newdata = grilla),
       col = "#D6A600", lwd = 3)
 
-print(b["exper"] + 2 * b["I(exper^2)"] * c(10, 30))
-p <- predict(modelo_cuad, newdata = data.frame(exper = c(10, 11)))
+print(b["exper"] + 2 * b["exper2"] * c(10, 30))
+p <- predict(modelo_cuad, newdata = data.frame(exper = c(10, 11), exper2 = c(10, 11)^2))
 print(p[2] - p[1])
 
 modelo_int <- lm(wage ~ educ * exper, data = datos)
@@ -83,6 +98,17 @@ legend("topleft", legend = paste(experiencias, "años de experiencia"),
 p <- predict(modelo_int, newdata = data.frame(educ = c(12, 13), exper = c(35, 35)))
 print(c(diferencia = p[2] - p[1],
         formula = bi["educ"] + bi["educ:exper"] * 35))
+
+print(c(porcentaje_por_ano_educ = 100 * coef(modelo_log)["educ"],
+        elasticidad = coef(modelo_log_log)["log(educ)"],
+        pendiente_exper_10 = b["exper"] + 2 * b["exper2"] * 10,
+        pendiente_educ_exper_20 = bi["educ"] + bi["educ:exper"] * 20))
+
+print(data.frame(
+  modelo = c("Log-nivel", "Log-log", "Cuadrático en exper", "Interacción"),
+  unidad = c("% aproximado por año de educación", "% aproximado por 1% de educación",
+             "USD/h por año de experiencia, en 10 años",
+             "USD/h por año de educación, con 20 años de experiencia")))
 
 datos$salario_pesos <- 1000 * datos$wage
 datos$educ_meses <- 12 * datos$educ

@@ -1,6 +1,6 @@
 # Clase 6 · Interpretación de modelos en R
 
-Taller de 110 minutos basado en la cátedra 6, con 8 láminas en el orden de sus cuatro temas.
+Taller de 110 minutos basado en la cátedra 6, con 9 láminas en el orden de sus cuatro temas.
 Los tiempos son transcurridos desde el comienzo y suman 110 minutos de actividades.
 
 - Fuente teórica https://hizocar.github.io/econometria-usm/clases/clase6/
@@ -19,4 +19,4 @@ Para regenerar después de editar el contenido, ejecuta desde la raíz del repos
 
 El módulo también puede resolverse desde una instalación local de webr mediante Node.
 La carga didáctica usa directamente wooldridge::wage1. La instalación se presenta en una celda separada, para preparar Colab una vez.
-El notebook tiene 17 celdas de código, una de instalación, ocho ejemplos y ocho soluciones, sincronizadas con la página.
+El notebook tiene 19 celdas de código, una de instalación, nueve ejemplos y nueve soluciones, sincronizadas con la página.

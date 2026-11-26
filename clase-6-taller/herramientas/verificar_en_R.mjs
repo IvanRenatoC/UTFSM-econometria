@@ -26,11 +26,18 @@ try {
  stopifnot(all.equal(fitted(modelo_meses),fitted(modelo_nivel))==TRUE)
  stopifnot(all.equal(unname(coef(modelo_tenure_meses)[2]*12),unname(bt))==TRUE)
  stopifnot(all.equal(unname(p[2]-p[1]),unname(bi["educ"]+bi["educ:exper"]*35))==TRUE)
+
+ modelo_I <- lm(wage ~ exper + I(exper^2), data=datos)
+ stopifnot(isTRUE(all.equal(fitted(modelo_I), fitted(modelo_cuad))))
  write.csv(datos[,c("wage","educ","exper")],"puntos.csv",row.names=FALSE)
+ write.csv(data.frame(x=6:18,y=predict(modelo_log,newdata=data.frame(educ=6:18))),"lognivel.csv",row.names=FALSE)
+ elog <- seq(log(min(datos_log$educ)), log(max(datos_log$educ)), length.out=100)
+ write.csv(data.frame(x=elog,y=predict(modelo_log_log,newdata=data.frame(educ=exp(elog)))),"loglog.csv",row.names=FALSE)
+
  edu <- seq(6,18,length.out=100)
  write.csv(data.frame(x=edu,y=exp(predict(modelo_log,newdata=data.frame(educ=edu)))),"log.csv",row.names=FALSE)
  ex <- seq(min(datos$exper),max(datos$exper),length.out=100)
- write.csv(data.frame(x=ex,y=predict(modelo_cuad,newdata=data.frame(exper=ex))),"cuad.csv",row.names=FALSE)
+ write.csv(data.frame(x=ex,y=predict(modelo_cuad,newdata=data.frame(exper=ex,exper2=ex^2))),"cuad.csv",row.names=FALSE)
  for(e in c(5,20,35)) {
   write.csv(data.frame(x=edu,y=predict(modelo_int,newdata=data.frame(educ=edu,exper=e))),
             paste0("int",e,".csv"),row.names=FALSE)
@@ -39,7 +46,7 @@ try {
  dev.off()
  `);
  const graphs={};
- for(const name of ['puntos','log','cuad','int5','int20','int35','nivel']){
+ for(const name of ['puntos','log','cuad','int5','int20','int35','nivel','lognivel','loglog']){
   const lines=new TextDecoder().decode(await r.FS.readFile('/work/'+name+'.csv')).trim().split('\n');
   const keys=lines.shift().split(',').map(x=>x.replaceAll('"',''));
   graphs[name]=lines.map(line=>Object.fromEntries(line.split(',').map((v,i)=>[keys[i],Number(v)])));
@@ -48,6 +55,6 @@ try {
  await fs.writeFile(path.join(root,'datos/salidas-verificadas-r.json'),JSON.stringify(outputs,null,2)+'\n');
  await fs.writeFile(path.join(root,'datos/verificacion.json'),JSON.stringify({
   codigo_sha256:createHash('sha256').update(JSON.stringify(content)).digest('hex'),
-  ejemplos:8,soluciones:8,motor:'webR',pruebas:['526 personas con salarios positivos','524 personas con educación positiva','Predicciones invariantes al reescalar','Pendiente por mes igual a pendiente anual / 12','Interacción igual a diferencia predicha']
+  ejemplos:9,soluciones:9,motor:'webR',pruebas:['526 personas con salarios positivos','524 personas con educación positiva','Predicciones invariantes al reescalar','Pendiente por mes igual a pendiente anual / 12','Interacción igual a diferencia predicha']
  },null,2)+'\n');
 } finally { await r.close(); }
