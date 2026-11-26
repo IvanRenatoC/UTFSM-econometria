@@ -188,15 +188,20 @@
       "solucion": "print(data.frame(\n  modelo = c(\"Log-nivel\", \"Log-log\", \"Cuadrático en exper\", \"Interacción\"),\n  unidad = c(\"% aproximado por año de educación\", \"% aproximado por 1% de educación\",\n             \"USD/h por año de experiencia, en 10 años\",\n             \"USD/h por año de educación, con 20 años de experiencia\")))",
       "respuesta": "Log-nivel entrega un porcentaje aproximado por año. Log-log entrega una elasticidad. En la cuadrática la pendiente cambia con la propia experiencia. En la interacción la pendiente de educación cambia con la experiencia que se mantiene fija.",
       "grafico": "repaso",
-      "id": "C6-06"
+      "id": "C6-06",
+      "repaso_interaccion": "Las dos rectas provienen del mismo modelo wage = b0 + b1·educ + b2·exper + b3·educ·exper. La recta azul muestra el salario por hora predicho para cada nivel educativo fijando la experiencia potencial en 5 años. La dorada hace lo mismo fijándola en 35 años. Al recorrer cada recta cambia la educación y la experiencia permanece fija. La pendiente azul es b1 + 5·b3 y la dorada es b1 + 35·b3. En estos datos b3 es positivo, por lo que la dorada tiene una pendiente ligeramente mayor. La separación vertical compara los salarios predichos de ambos perfiles con la misma educación. El término de interacción permite que sus pendientes sean distintas."
     },
     {
       "id": "C6-07",
       "titulo": "Cambiar unidades y comprobar qué se conserva",
       "minutos": 10,
-      "texto": "Usa un tipo de cambio hipotético de 1.000 pesos por dólar para practicar reescalamiento. Al multiplicar Y por 1.000, el intercepto y la pendiente se multiplican por 1.000, y los residuos también. La suma de cuadrados residuales se multiplica por un millón. Si educación pasa de años a meses, su pendiente se divide por 12. En los tres casos, el R² coincide.",
+      "texto": "¿Por qué multiplicar por 1.000? Supongamos, para este ejercicio, que 1 dólar equivale a 1.000 pesos. Para expresar el salario en pesos por hora, multiplicamos el salario en dólares por hora por 1.000 pesos/dólar. Por ejemplo, 5 USD/h se expresan como 5.000 pesos/h. El sentido económico es expresar la misma remuneración en otra moneda y facilitar su lectura o comparación con otras cantidades expresadas en esa moneda. El factor 1.000 es un tipo de cambio hipotético elegido para practicar. En una aplicación se elegiría el tipo de cambio adecuado a la fecha y al objetivo del análisis. La base contiene salarios de 1976. Al reescalar Y, el intercepto, la pendiente y los residuos se multiplican por 1.000, mientras que la suma de cuadrados residuales se multiplica por un millón. Si educación pasa de años a meses, su pendiente se divide por 12. En los tres modelos, el R² coincide.",
       "codigo": "datos$salario_pesos <- 1000 * datos$wage\ndatos$educ_meses <- 12 * datos$educ\nmodelo_pesos <- lm(salario_pesos ~ educ, data = datos)\nmodelo_meses <- lm(wage ~ educ_meses, data = datos)\nprint(rbind(dolares = coef(modelo_nivel),\n            pesos = coef(modelo_pesos), meses = coef(modelo_meses)))\nprint(c(R2_dolares = summary(modelo_nivel)$r.squared,\n        R2_pesos = summary(modelo_pesos)$r.squared,\n        R2_meses = summary(modelo_meses)$r.squared))\nprint(c(SCR_dolares = sum(resid(modelo_nivel)^2),\n        SCR_pesos = sum(resid(modelo_pesos)^2)))\nprint(all.equal(fitted(modelo_pesos) / 1000, fitted(modelo_nivel)))\nprint(all.equal(fitted(modelo_meses), fitted(modelo_nivel)))",
       "pasos": [
+        [
+          "datos$salario_pesos <- 1000 * datos$wage",
+          "Multiplica USD por hora por pesos por USD para obtener pesos por hora. El factor 1.000 representa el tipo de cambio hipotético del ejercicio. La conversión expresa la misma magnitud económica en otra moneda."
+        ],
         [
           "rbind(...)",
           "Apila los vectores de coeficientes como filas para compararlos. Cada fila conserva el orden intercepto y pendiente."
